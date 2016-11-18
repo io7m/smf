@@ -21,6 +21,7 @@
     <module>io7m-smfj-format-binary</module>
     <module>io7m-smfj-format-text</module>
     <module>io7m-smfj-parser-api</module>
+    <module>io7m-smfj-serializer-api</module>
     <module>io7m-smfj-tests</module>
   </modules>
 
