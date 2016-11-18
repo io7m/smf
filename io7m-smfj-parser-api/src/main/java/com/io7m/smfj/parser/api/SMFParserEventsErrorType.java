@@ -16,34 +16,19 @@
 
 package com.io7m.smfj.parser.api;
 
-import com.io7m.smfj.core.SMFAttributeName;
-
-import java.io.Closeable;
-
 /**
- * The type of random-access parsers.
+ * A receiver of parse error events.
  */
 
-public interface SMFParserRandomAccessType extends Closeable
+public interface SMFParserEventsErrorType
 {
   /**
-   * Parse the header of the file.
-   */
-
-  void parseHeader();
-
-  /**
-   * Parse data for a specific attribute.
+   * An error has occurred. Parsing will continue but the file as a whole must
+   * be considered invalid.
    *
-   * @param name The attribute name
+   * @param e The error
    */
 
-  void parseAttributeData(
-    SMFAttributeName name);
-
-  /**
-   * Parse triangle data.
-   */
-
-  void parseTriangles();
+  void onError(
+    SMFParseError e);
 }

@@ -17,6 +17,7 @@
 package com.io7m.smfj.core;
 
 import com.io7m.jnull.NullCheck;
+import com.io7m.junreachable.UnreachableCodeException;
 
 /**
  * The kind of components.
@@ -84,5 +85,52 @@ public enum SMFComponentType
   public String toString()
   {
     return this.name;
+  }
+
+  /**
+   * Return a component type for the given integer value.
+   *
+   * @param x The value
+   *
+   * @return A component type
+   *
+   * @throws IllegalArgumentException If the value does not refer to a
+   *                                  recognized type
+   */
+
+  public static SMFComponentType ofInteger(
+    final int x)
+  {
+    switch (x) {
+      case 0:
+        return ELEMENT_TYPE_INTEGER_SIGNED;
+      case 1:
+        return ELEMENT_TYPE_INTEGER_UNSIGNED;
+      case 2:
+        return ELEMENT_TYPE_FLOATING;
+    }
+
+    throw new IllegalArgumentException(
+      "Unrecognized type for integer index: " + x);
+  }
+
+  /**
+   * @return An integer value for the current component type
+   *
+   * @see #ofInteger(int)
+   */
+
+  public int toInteger()
+  {
+    switch (this) {
+      case ELEMENT_TYPE_INTEGER_SIGNED:
+        return 0;
+      case ELEMENT_TYPE_INTEGER_UNSIGNED:
+        return 1;
+      case ELEMENT_TYPE_FLOATING:
+        return 2;
+    }
+
+    throw new UnreachableCodeException();
   }
 }

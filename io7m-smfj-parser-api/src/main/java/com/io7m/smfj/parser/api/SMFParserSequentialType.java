@@ -16,11 +16,13 @@
 
 package com.io7m.smfj.parser.api;
 
+import java.io.Closeable;
+
 /**
  * The type of sequential parsers.
  */
 
-public interface SMFParserSequentialType
+public interface SMFParserSequentialType extends Closeable
 {
   /**
    * Parse the source, delivering events to any provided event listener.

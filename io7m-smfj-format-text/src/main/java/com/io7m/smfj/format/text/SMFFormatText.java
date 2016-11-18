@@ -29,6 +29,7 @@ import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
+import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -43,8 +44,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Collection;
@@ -114,6 +117,17 @@ public final class SMFFormatText implements SMFParserProviderType
       in_events,
       new LineReader(in_path, in_stream),
       new AtomicReference<>(ParserState.STATE_INITIAL));
+  }
+
+  @Override
+  public SMFParserRandomAccessType parserCreateRandomAccess(
+    final SMFParserEventsType events,
+    final Path path,
+    final FileChannel file)
+    throws UnsupportedOperationException
+  {
+    throw new UnsupportedOperationException(
+      "Random access parsing is not supported");
   }
 
   private enum ParserState
@@ -469,11 +483,18 @@ public final class SMFFormatText implements SMFParserProviderType
       this.events.onError(error);
     }
 
-    public void failWithLineNumber(
+    protected final void failWithLineNumber(
       final int line,
       final String message)
     {
       this.onFailure(this.makeErrorWithLine(line, message));
+    }
+
+    @Override
+    public void close()
+      throws IOException
+    {
+
     }
   }
 
@@ -1177,8 +1198,6 @@ public final class SMFFormatText implements SMFParserProviderType
         this.fail("Unexpected EOF");
       } catch (final Exception e) {
         this.fail(e.getMessage());
-      } finally {
-        super.events.onFinish();
       }
     }
 
@@ -1219,6 +1238,14 @@ public final class SMFFormatText implements SMFParserProviderType
             line.toJavaStream().collect(Collectors.joining(" ")))));
         }
       }
+    }
+
+    @Override
+    public void close()
+      throws IOException
+    {
+      LOG.debug("closing parser");
+      super.events.onFinish();
     }
   }
 }

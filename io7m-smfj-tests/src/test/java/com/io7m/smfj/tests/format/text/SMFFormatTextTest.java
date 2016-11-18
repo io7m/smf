@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import mockit.Mocked;
@@ -33,6 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,13 +53,18 @@ public final class SMFFormatTextTest
     final SMFParserEventsType events,
     final StringBuilder text)
   {
-    final ByteArrayInputStream stream =
-      new ByteArrayInputStream(text.toString().getBytes(StandardCharsets.UTF_8));
+    try {
+      final ByteArrayInputStream stream =
+        new ByteArrayInputStream(text.toString().getBytes(StandardCharsets.UTF_8));
 
-    final SMFFormatText format = new SMFFormatText();
-    final SMFParserSequentialType parser =
-      format.parserCreateSequential(events, PATH, stream);
-    parser.parse();
+      final SMFFormatText format = new SMFFormatText();
+      final SMFParserSequentialType parser =
+        format.parserCreateSequential(events, PATH, stream);
+      parser.parse();
+      parser.close();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Test
@@ -520,7 +528,7 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("attribute ");
-    for (int index = 0; index < 129; ++index) {
+    for (int index = 0; index < 65; ++index) {
       s.append("x");
     }
     s.append(" float 4 32");
@@ -533,7 +541,7 @@ public final class SMFFormatTextTest
       events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
-          "Attribute names must be less than 128 characters")));
+          "Attribute names must be less than 64 characters")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
       events.onHeaderFinish();
@@ -1291,7 +1299,7 @@ public final class SMFFormatTextTest
     s.append("data");
     s.append(System.lineSeparator());
     s.append("attribute ");
-    for (int index = 0; index < 129; ++index) {
+    for (int index = 0; index < 65; ++index) {
       s.append("x");
     }
     s.append(System.lineSeparator());
@@ -1315,7 +1323,7 @@ public final class SMFFormatTextTest
       events.onHeaderFinish();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
-          "Attribute names must be less than 128 characters")));
+          "Attribute names must be less than 64 characters")));
       events.onFinish();
     }};
 
@@ -2176,7 +2184,6 @@ public final class SMFFormatTextTest
 
     runForText(events, s);
   }
-
 
   private static class ParseErrorMessageStartsWith extends TypeSafeMatcher<SMFParseError>
   {

@@ -39,6 +39,11 @@
       <artifactId>io7m-smfj-format-text</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>io7m-smfj-format-binary</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
     <!-- JMockit MUST appear before junit, until junit 5 is released -->
     <dependency>
@@ -49,6 +54,11 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.marschall</groupId>
+      <artifactId>memoryfilesystem</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

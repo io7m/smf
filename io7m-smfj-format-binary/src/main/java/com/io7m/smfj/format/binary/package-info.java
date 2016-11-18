@@ -14,36 +14,10 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.parser.api;
-
-import com.io7m.smfj.core.SMFAttributeName;
-
-import java.io.Closeable;
-
 /**
- * The type of random-access parsers.
+ * Parser API.
  */
 
-public interface SMFParserRandomAccessType extends Closeable
-{
-  /**
-   * Parse the header of the file.
-   */
+@com.io7m.jnull.NonNullByDefault
+package com.io7m.smfj.format.binary;
 
-  void parseHeader();
-
-  /**
-   * Parse data for a specific attribute.
-   *
-   * @param name The attribute name
-   */
-
-  void parseAttributeData(
-    SMFAttributeName name);
-
-  /**
-   * Parse triangle data.
-   */
-
-  void parseTriangles();
-}

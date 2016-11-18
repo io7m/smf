@@ -31,8 +31,8 @@
     <!-- Required to use the SuppressionCommentFilter above -->
     <module name="FileContentsHolder"/>
 
-    <module name="AbstractClassName"/>
     <!--
+    <module name="AbstractClassName"/>
     <module name="AnnotationUseStyle"/>
     -->
 
@@ -214,7 +214,9 @@
 
     <module name="UnusedImports"/>
     <module name="UpperEll"/>
-    <module name="VisibilityModifier"/>
+    <module name="VisibilityModifier">
+      <property name="protectedAllowed" value="true"/>
+    </module>
     <module name="WhitespaceAfter"/>
     <module name="WhitespaceAround"/>
   </module>

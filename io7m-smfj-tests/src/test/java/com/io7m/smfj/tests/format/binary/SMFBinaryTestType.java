@@ -14,36 +14,17 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.parser.api;
 
-import com.io7m.smfj.core.SMFAttributeName;
+package com.io7m.smfj.tests.format.binary;
 
-import java.io.Closeable;
+import com.io7m.smfj.parser.api.SMFParserEventsType;
+import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 
-/**
- * The type of random-access parsers.
- */
+import java.util.function.Consumer;
 
-public interface SMFParserRandomAccessType extends Closeable
+public interface SMFBinaryTestType
 {
-  /**
-   * Parse the header of the file.
-   */
-
-  void parseHeader();
-
-  /**
-   * Parse data for a specific attribute.
-   *
-   * @param name The attribute name
-   */
-
-  void parseAttributeData(
-    SMFAttributeName name);
-
-  /**
-   * Parse triangle data.
-   */
-
-  void parseTriangles();
+  SMFParserRandomAccessType parserFor(
+    final SMFParserEventsType events,
+    final Consumer<SMFBinaryTestWriterType> o);
 }

@@ -21,6 +21,7 @@ import com.io7m.smfj.core.SMFFormatVersion;
 import javaslang.collection.SortedSet;
 
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 
 /**
@@ -48,10 +49,34 @@ public interface SMFParserProviderType
    * @param stream An input stream
    *
    * @return A new parser for the format
+   *
+   * @throws UnsupportedOperationException If sequential parsing is not
+   *                                       supported
+   * @see SMFFormatDescription#randomAccess()
    */
 
   SMFParserSequentialType parserCreateSequential(
     SMFParserEventsType events,
     Path path,
-    InputStream stream);
+    InputStream stream)
+    throws UnsupportedOperationException;
+
+  /**
+   * @param events The event receiver
+   * @param path   The path referred to by the input stream, for diagnostic
+   *               messages
+   * @param file   A file channel
+   *
+   * @return A new parser for the format
+   *
+   * @throws UnsupportedOperationException If random-access parsing is not
+   *                                       supported
+   * @see SMFFormatDescription#randomAccess()
+   */
+
+  SMFParserRandomAccessType parserCreateRandomAccess(
+    SMFParserEventsType events,
+    Path path,
+    FileChannel file)
+    throws UnsupportedOperationException;
 }

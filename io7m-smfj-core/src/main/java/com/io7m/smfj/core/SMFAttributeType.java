@@ -92,6 +92,13 @@ public interface SMFAttributeType
 
     switch (this.componentSizeBits()) {
       case 8:
+      {
+        if (this.componentType() == SMFComponentType.ELEMENT_TYPE_FLOATING) {
+          throw new IllegalArgumentException(
+            "No 8-bit floating point formats are defined");
+        }
+        break;
+      }
       case 16:
       case 32:
       case 64: {
