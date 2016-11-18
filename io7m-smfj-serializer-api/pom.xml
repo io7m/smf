@@ -10,11 +10,11 @@
     <artifactId>io7m-smfj</artifactId>
     <version>0.1.0</version>
   </parent>
-  <artifactId>io7m-smfj-core</artifactId>
+  <artifactId>io7m-smfj-serializer-api</artifactId>
 
   <packaging>bundle</packaging>
-  <name>io7m-smfj-core</name>
-  <description>Sequential mesh format (Core)</description>
+  <name>io7m-smfj-serializer-api</name>
+  <description>Sequential mesh format (Serializer API)</description>
   <url>http://io7m.github.io/smfj/</url>
 
   <scm>
@@ -25,12 +25,14 @@
 
   <dependencies>
     <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>io7m-smfj-core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>com.io7m.jnull</groupId>
       <artifactId>io7m-jnull-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.junreachable</groupId>
-      <artifactId>io7m-junreachable-core</artifactId>
     </dependency>
 
     <dependency>
@@ -66,7 +68,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              com.io7m.smfj.core
+              com.io7m.smfj.serializer.api
             </Export-Package>
           </instructions>
         </configuration>

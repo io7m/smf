@@ -14,19 +14,10 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.core;
-
-import java.util.Map;
-
 /**
- * The attributes present in a mesh.
+ * Serializer API.
  */
 
-public interface SMFAttributeSetType
-{
-  /**
-   * @return The available attributes
-   */
+@com.io7m.jnull.NonNullByDefault
+package com.io7m.smfj.serializer.api;
 
-  Map<SMFAttributeNameType, SMFAttributeType> attributes();
-}
