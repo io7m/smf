@@ -21,7 +21,7 @@ import com.io7m.smfj.core.SMFAttribute;
 /**
  * A receiver of parse events for mesh data. The expectation is that the methods
  * in this interface will be called by parsers after the call to {@link
- * SMFParserEventsHeaderType#onHeaderFinish()}.
+ * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
  */
 
 public interface SMFParserEventsDataType extends SMFParserEventsErrorType
