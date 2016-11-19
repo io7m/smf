@@ -52,6 +52,15 @@ public enum SMFComponentType
   }
 
   /**
+   * @return The unique name of the type
+   */
+
+  public String getName()
+  {
+    return this.name;
+  }
+
+  /**
    * Return a component type for the given name.
    *
    * @param name The name
