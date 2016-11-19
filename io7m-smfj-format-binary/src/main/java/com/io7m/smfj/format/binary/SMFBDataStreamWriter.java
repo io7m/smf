@@ -17,7 +17,9 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
+import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jnull.NullCheck;
+import org.apache.commons.io.output.CountingOutputStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -26,10 +28,14 @@ import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
-final class SMFBDataStreamWriter
+/**
+ * The default implementation of the {@link SMFBDataStreamWriterType} interface.
+ */
+
+public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
 {
   private final Path path;
-  private final OutputStream stream;
+  private final CountingOutputStream stream;
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
   private final ByteBuffer buffer2;
@@ -38,14 +44,14 @@ final class SMFBDataStreamWriter
   private final byte[] byte4;
   private final byte[] byte2;
   private final byte[] byte1;
-  private long position;
 
-  SMFBDataStreamWriter(
+  private SMFBDataStreamWriter(
     final Path in_path,
     final OutputStream in_stream)
   {
     this.path = NullCheck.notNull(in_path, "Path");
-    this.stream = NullCheck.notNull(in_stream, "Stream");
+    this.stream =
+      new CountingOutputStream(NullCheck.notNull(in_stream, "Stream"));
 
     this.byte8 = new byte[8];
     this.buffer8 = ByteBuffer.wrap(this.byte8);
@@ -59,135 +65,166 @@ final class SMFBDataStreamWriter
     this.byte1 = new byte[1];
     this.buffer1 = ByteBuffer.wrap(this.byte1);
     this.buffer1.order(ByteOrder.BIG_ENDIAN);
-
-    this.position = 0L;
   }
 
-  long position()
+  /**
+   * Create a data stream writer.
+   *
+   * @param in_path   The path
+   * @param in_stream The stream
+   *
+   * @return A new data stream writer
+   */
+
+  public static SMFBDataStreamWriterType create(
+    final Path in_path,
+    final OutputStream in_stream)
   {
-    return this.position;
+    return new SMFBDataStreamWriter(in_path, in_stream);
   }
 
-  Path path()
+  @Override
+  public long position()
+  {
+    return this.stream.getByteCount();
+  }
+
+  @Override
+  public Path path()
   {
     return this.path;
   }
 
-  void writeBytes(
+  @Override
+  public void putBytes(
     final byte[] data)
     throws IOException
   {
     this.stream.write(data);
-    this.position = Math.addExact(this.position, (long) data.length);
   }
 
-  void writeU8(
+  @Override
+  public void putS8(final long value)
+    throws IOException
+  {
+    this.byte1[0] = (byte) (value & 0x7fL);
+    this.stream.write(this.byte1);
+  }
+
+  @Override
+  public void putU8(
     final long value)
     throws IOException
   {
     this.byte1[0] = (byte) (value & 0xffL);
     this.stream.write(this.byte1);
-    this.position = Math.addExact(this.position, 1L);
   }
 
-  void writePaddedString(
+  @Override
+  public void putStringPadded(
     final String text,
     final int maximum)
     throws IOException
   {
-    final byte[] data = new byte[maximum];
+    this.checkAlignment(8L);
     final byte[] textb = text.getBytes(StandardCharsets.UTF_8);
+
+    Preconditions.checkPreconditionI(
+      textb.length,
+      textb.length <= maximum,
+      n -> "Length " + n + " must be <= " + maximum);
+
+    final byte[] data = new byte[maximum];
     System.arraycopy(textb, 0, data, 0, textb.length);
-    this.writeU32((long) textb.length);
+    this.putU32((long) textb.length);
     this.stream.write(data);
-    this.position = Math.addExact(this.position, (long) data.length);
   }
 
-  void writeU16(
+  @Override
+  public void putU16(
     final long value)
     throws IOException
   {
     this.checkAlignment(2L);
     this.buffer2.putChar(0, (char) (value & 0xffffL));
     this.stream.write(this.byte2);
-    this.position = Math.addExact(this.position, 2L);
   }
 
-  void writeU32(
+  @Override
+  public void putU32(
     final long value)
     throws IOException
   {
     this.checkAlignment(4L);
     this.buffer4.putInt(0, (int) (value & 0xffffffffL));
     this.stream.write(this.byte4);
-    this.position = Math.addExact(this.position, 4L);
   }
 
-  void writeU64(
+  @Override
+  public void putU64(
     final long value)
     throws IOException
   {
     this.checkAlignment(8L);
     this.buffer8.putLong(0, value);
     this.stream.write(this.byte8);
-    this.position = Math.addExact(this.position, 8L);
   }
 
-  void writeS16(
+  @Override
+  public void putS16(
     final long value)
     throws IOException
   {
     this.checkAlignment(2L);
     this.buffer2.putShort(0, (short) (value & 0xffffL));
     this.stream.write(this.byte2);
-    this.position = Math.addExact(this.position, 2L);
   }
 
-  void writeS32(
+  @Override
+  public void putS32(
     final long value)
     throws IOException
   {
     this.checkAlignment(4L);
     this.buffer4.putInt(0, (int) (value & 0xffffffffL));
     this.stream.write(this.byte4);
-    this.position = Math.addExact(this.position, 4L);
   }
 
-  void writeS64(
+  @Override
+  public void putS64(
     final long value)
     throws IOException
   {
     this.checkAlignment(8L);
     this.buffer8.putLong(0, value);
     this.stream.write(this.byte8);
-    this.position = Math.addExact(this.position, 8L);
   }
 
-  void writeF16(
+  @Override
+  public void putF16(
     final double value)
     throws IOException
   {
     this.checkAlignment(2L);
     this.buffer2.putChar(0, Binary16.packDouble(value));
     this.stream.write(this.byte2);
-    this.position = Math.addExact(this.position, 2L);
   }
 
-  void writeF32(
+  @Override
+  public void putF32(
     final double value)
     throws IOException
   {
     this.checkAlignment(4L);
     this.buffer4.putFloat(0, (float) value);
     this.stream.write(this.byte4);
-    this.position = Math.addExact(this.position, 4L);
   }
 
   private void checkAlignment(
     final long align)
     throws IOException
   {
-    if (this.position % align != 0L) {
+    if (this.position() % align != 0L) {
       final StringBuilder sb = new StringBuilder(128);
       sb.append("Unaligned write.");
       sb.append(System.lineSeparator());
@@ -195,19 +232,19 @@ final class SMFBDataStreamWriter
       sb.append(align);
       sb.append(System.lineSeparator());
       sb.append("  Position:           ");
-      sb.append(this.position);
+      sb.append(this.position());
       sb.append(System.lineSeparator());
       throw new IOException(sb.toString());
     }
   }
 
-  void writeF64(
+  @Override
+  public void putF64(
     final double value)
     throws IOException
   {
     this.checkAlignment(8L);
     this.buffer8.putDouble(0, value);
     this.stream.write(this.byte8);
-    this.position = Math.addExact(this.position, 8L);
   }
 }

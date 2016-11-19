@@ -38,12 +38,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
+public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTest
 {
   private static final Logger LOG;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFFormatBinaryTrianglesTest.class);
+    LOG = LoggerFactory.getLogger(SMFFormatBinaryRandomAccessTrianglesTest.class);
   }
 
   @Rule public final ExpectedException expected = ExpectedException.none();
@@ -69,7 +69,7 @@ public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
       events.onDataTrianglesFinish();
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -115,7 +115,7 @@ public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
       events.onDataTrianglesFinish();
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -161,7 +161,7 @@ public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
       events.onDataTrianglesFinish();
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);

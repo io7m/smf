@@ -14,7 +14,6 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-
 package com.io7m.smfj.tests.format.binary;
 
 import com.io7m.junreachable.UnreachableCodeException;
@@ -43,21 +42,21 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
+public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
 {
   private static final Logger LOG;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFFormatBinaryIntegerSignedTest.class);
+    LOG = LoggerFactory.getLogger(SMFFormatBinaryRandomAccessFloatingTest.class);
   }
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
   @Test
-  public void testDataAttributesIntegerSigned64_4(
+  public void testDataAttributesFloating64_4(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed64_4";
+    final String name = "F64_4";
     final long component_count = 4L;
     final long component_size = 64L;
 
@@ -70,7 +69,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -81,13 +80,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
-      events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
-      events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
+      events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
+      events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
+      events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -99,20 +98,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS64(value);
+            Double.valueOf(value));
+          out.putF64(value);
         }
       }
     });
@@ -122,10 +121,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned64_3(
+  public void testDataAttributesFloating64_3(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed64_3";
+    final String name = "F64_3";
     final long component_count = 3L;
     final long component_size = 64L;
 
@@ -138,7 +137,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -149,13 +148,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
-      events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
-      events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
+      events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
+      events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
+      events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -167,20 +166,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS64(value);
+            Double.valueOf(value));
+          out.putF64(value);
         }
       }
     });
@@ -190,10 +189,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned64_2(
+  public void testDataAttributesFloating64_2(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed64_2";
+    final String name = "F64_2";
     final long component_count = 2L;
     final long component_size = 64L;
 
@@ -206,7 +205,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -217,13 +216,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned2(0L, 1L);
-      events.onDataAttributeValueIntegerSigned2(10L, 11L);
-      events.onDataAttributeValueIntegerSigned2(20L, 21L);
+      events.onDataAttributeValueFloat2(0.0, 1.0);
+      events.onDataAttributeValueFloat2(10.0, 11.0);
+      events.onDataAttributeValueFloat2(20.0, 21.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -235,20 +234,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS64(value);
+            Double.valueOf(value));
+          out.putF64(value);
         }
       }
     });
@@ -258,10 +257,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned64_1(
+  public void testDataAttributesFloating64_1(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed64_1";
+    final String name = "F64_1";
     final long component_count = 1L;
     final long component_size = 64L;
 
@@ -274,7 +273,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -285,13 +284,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned1(0L);
-      events.onDataAttributeValueIntegerSigned1(10L);
-      events.onDataAttributeValueIntegerSigned1(20L);
+      events.onDataAttributeValueFloat1(0.0);
+      events.onDataAttributeValueFloat1(10.0);
+      events.onDataAttributeValueFloat1(20.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -303,20 +302,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS64(value);
+            Double.valueOf(value));
+          out.putF64(value);
         }
       }
     });
@@ -326,10 +325,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned32_4(
+  public void testDataAttributesFloating32_4(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed32_4";
+    final String name = "F32_4";
     final long component_count = 4L;
     final long component_size = 32L;
 
@@ -342,7 +341,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -353,13 +352,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
-      events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
-      events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
+      events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
+      events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
+      events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -371,20 +370,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS32(value);
+            Double.valueOf(value));
+          out.putF32(value);
         }
       }
     });
@@ -394,10 +393,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned32_3(
+  public void testDataAttributesFloating32_3(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed32_3";
+    final String name = "F32_3";
     final long component_count = 3L;
     final long component_size = 32L;
 
@@ -410,7 +409,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -421,13 +420,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
-      events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
-      events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
+      events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
+      events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
+      events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -439,20 +438,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS32(value);
+            Double.valueOf(value));
+          out.putF32(value);
         }
       }
     });
@@ -462,10 +461,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned32_2(
+  public void testDataAttributesFloating32_2(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed32_2";
+    final String name = "F32_2";
     final long component_count = 2L;
     final long component_size = 32L;
 
@@ -478,7 +477,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -489,13 +488,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned2(0L, 1L);
-      events.onDataAttributeValueIntegerSigned2(10L, 11L);
-      events.onDataAttributeValueIntegerSigned2(20L, 21L);
+      events.onDataAttributeValueFloat2(0.0, 1.0);
+      events.onDataAttributeValueFloat2(10.0, 11.0);
+      events.onDataAttributeValueFloat2(20.0, 21.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -507,20 +506,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS32(value);
+            Double.valueOf(value));
+          out.putF32(value);
         }
       }
     });
@@ -530,10 +529,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned32_1(
+  public void testDataAttributesFloating32_1(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed32_1";
+    final String name = "F32_1";
     final long component_count = 1L;
     final long component_size = 32L;
 
@@ -546,7 +545,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -557,13 +556,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned1(0L);
-      events.onDataAttributeValueIntegerSigned1(10L);
-      events.onDataAttributeValueIntegerSigned1(20L);
+      events.onDataAttributeValueFloat1(0.0);
+      events.onDataAttributeValueFloat1(10.0);
+      events.onDataAttributeValueFloat1(20.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -575,20 +574,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS32(value);
+            Double.valueOf(value));
+          out.putF32(value);
         }
       }
     });
@@ -598,10 +597,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned16_4(
+  public void testDataAttributesFloating16_4(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed16_4";
+    final String name = "F16_4";
     final long component_count = 4L;
     final long component_size = 16L;
 
@@ -614,7 +613,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -625,13 +624,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
-      events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
-      events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
+      events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
+      events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
+      events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -643,20 +642,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS16(value);
+            Double.valueOf(value));
+          out.putF16(value);
         }
       }
     });
@@ -666,10 +665,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned16_3(
+  public void testDataAttributesFloating16_3(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed16_3";
+    final String name = "F16_3";
     final long component_count = 3L;
     final long component_size = 16L;
 
@@ -682,7 +681,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -693,13 +692,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
-      events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
-      events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
+      events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
+      events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
+      events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -711,20 +710,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS16(value);
+            Double.valueOf(value));
+          out.putF16(value);
         }
       }
     });
@@ -734,10 +733,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned16_2(
+  public void testDataAttributesFloating16_2(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed16_2";
+    final String name = "F16_2";
     final long component_count = 2L;
     final long component_size = 16L;
 
@@ -750,7 +749,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -761,13 +760,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned2(0L, 1L);
-      events.onDataAttributeValueIntegerSigned2(10L, 11L);
-      events.onDataAttributeValueIntegerSigned2(20L, 21L);
+      events.onDataAttributeValueFloat2(0.0, 1.0);
+      events.onDataAttributeValueFloat2(10.0, 11.0);
+      events.onDataAttributeValueFloat2(20.0, 21.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -779,20 +778,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS16(value);
+            Double.valueOf(value));
+          out.putF16(value);
         }
       }
     });
@@ -802,10 +801,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
   }
 
   @Test
-  public void testDataAttributesIntegerSigned16_1(
+  public void testDataAttributesFloating16_1(
     final @Mocked SMFParserEventsType events)
   {
-    final String name = "Signed16_1";
+    final String name = "F16_1";
     final long component_count = 1L;
     final long component_size = 16L;
 
@@ -818,7 +817,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
       final SMFAttribute attribute = SMFAttribute.of(
         SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         (int) component_count,
         (int) component_size);
       events.onHeaderAttributeReceived(attribute);
@@ -829,13 +828,13 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       events.onHeaderFinish();
 
       events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned1(0L);
-      events.onDataAttributeValueIntegerSigned1(10L);
-      events.onDataAttributeValueIntegerSigned1(20L);
+      events.onDataAttributeValueFloat1(0.0);
+      events.onDataAttributeValueFloat1(10.0);
+      events.onDataAttributeValueFloat1(20.0);
       events.onDataAttributeFinish(attribute);
     }};
 
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
+    final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -847,292 +846,20 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
       for (int vertex = 0; vertex < 3; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
+          final double value = (double) ((vertex * 10) + component);
           LOG.debug(
             "vertex {} component {}: {}",
             Integer.valueOf(vertex),
             Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS16(value);
-        }
-      }
-    });
-
-    p.parseHeader();
-    p.parseAttributeData(SMFAttributeName.of(name));
-  }
-
-  @Test
-  public void testDataAttributesIntegerSigned8_4(
-    final @Mocked SMFParserEventsType events)
-  {
-    final String name = "Signed8_4";
-    final long component_count = 4L;
-    final long component_size = 8L;
-
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
-      events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
-      events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
-    }};
-
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(1L);
-      out.putU32(0L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
-      out.putU32(component_count);
-      out.putU32(component_size);
-
-      for (int vertex = 0; vertex < 3; ++vertex) {
-        for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
-          LOG.debug(
-            "vertex {} component {}: {}",
-            Integer.valueOf(vertex),
-            Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS8(value);
-        }
-      }
-    });
-
-    p.parseHeader();
-    p.parseAttributeData(SMFAttributeName.of(name));
-  }
-
-  @Test
-  public void testDataAttributesIntegerSigned8_3(
-    final @Mocked SMFParserEventsType events)
-  {
-    final String name = "Signed8_3";
-    final long component_count = 3L;
-    final long component_size = 8L;
-
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
-      events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
-      events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
-    }};
-
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(1L);
-      out.putU32(0L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
-      out.putU32(component_count);
-      out.putU32(component_size);
-
-      for (int vertex = 0; vertex < 3; ++vertex) {
-        for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
-          LOG.debug(
-            "vertex {} component {}: {}",
-            Integer.valueOf(vertex),
-            Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS8(value);
-        }
-      }
-    });
-
-    p.parseHeader();
-    p.parseAttributeData(SMFAttributeName.of(name));
-  }
-
-  @Test
-  public void testDataAttributesIntegerSigned8_2(
-    final @Mocked SMFParserEventsType events)
-  {
-    final String name = "Signed8_2";
-    final long component_count = 2L;
-    final long component_size = 8L;
-
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned2(0L, 1L);
-      events.onDataAttributeValueIntegerSigned2(10L, 11L);
-      events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
-    }};
-
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(1L);
-      out.putU32(0L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
-      out.putU32(component_count);
-      out.putU32(component_size);
-
-      for (int vertex = 0; vertex < 3; ++vertex) {
-        for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
-          LOG.debug(
-            "vertex {} component {}: {}",
-            Integer.valueOf(vertex),
-            Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS8(value);
-        }
-      }
-    });
-
-    p.parseHeader();
-    p.parseAttributeData(SMFAttributeName.of(name));
-  }
-
-  @Test
-  public void testDataAttributesIntegerSigned8_1(
-    final @Mocked SMFParserEventsType events)
-  {
-    final String name = "Signed8_1";
-    final long component_count = 1L;
-    final long component_size = 8L;
-
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
-      events.onDataAttributeValueIntegerSigned1(0L);
-      events.onDataAttributeValueIntegerSigned1(10L);
-      events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
-    }};
-
-    final SMFParserRandomAccessType p = this.parserFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(1L);
-      out.putU32(0L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPad(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
-      out.putU32(component_count);
-      out.putU32(component_size);
-
-      for (int vertex = 0; vertex < 3; ++vertex) {
-        for (int component = 0; (long) component < component_count; ++component) {
-          final long value = (long) ((vertex * 10) + component);
-          LOG.debug(
-            "vertex {} component {}: {}",
-            Integer.valueOf(vertex),
-            Integer.valueOf(component),
-            Long.valueOf(value));
-          out.putS8(value);
+            Double.valueOf(value));
+          out.putF16(value);
         }
       }
     });
@@ -1155,12 +882,12 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         4,
         64),
       SMFAttribute.of(
         SMFAttributeName.of("y"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         4,
         64));
 
@@ -1174,7 +901,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
 
     this.expected.expect(IllegalStateException.class);
     serializer.serializeData(SMFAttributeName.of("y"));
@@ -1194,7 +921,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         4,
         64));
 
@@ -1210,7 +937,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
   }
 
   @Test
@@ -1227,7 +954,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         3,
         64));
 
@@ -1243,7 +970,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1260,7 +987,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         2,
         64));
 
@@ -1276,7 +1003,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1293,7 +1020,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         1,
         64));
 
@@ -1309,7 +1036,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1326,7 +1053,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         4,
         32));
 
@@ -1342,7 +1069,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
   }
 
   @Test
@@ -1359,7 +1086,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         3,
         32));
 
@@ -1375,7 +1102,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1392,7 +1119,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         2,
         32));
 
@@ -1408,7 +1135,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1425,7 +1152,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         1,
         32));
 
@@ -1441,7 +1168,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
 
@@ -1459,7 +1186,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         4,
         16));
 
@@ -1475,7 +1202,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
   }
 
   @Test
@@ -1492,7 +1219,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         3,
         16));
 
@@ -1508,7 +1235,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1525,7 +1252,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         2,
         16));
 
@@ -1541,7 +1268,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
   @Test
@@ -1558,7 +1285,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
         SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
         1,
         16));
 
@@ -1574,7 +1301,7 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
 
 
@@ -1601,10 +1328,10 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
         Integer.valueOf(4))) {
         attributes = attributes.append(SMFAttribute.of(
           SMFAttributeName.of(String.format(
-            "%s-%d-%d", SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.name(),
+            "%s-%d-%d", SMFComponentType.ELEMENT_TYPE_FLOATING.name(),
             Integer.valueOf(size),
             Integer.valueOf(count))),
-          SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+          SMFComponentType.ELEMENT_TYPE_FLOATING,
           count,
           size));
       }
@@ -1623,19 +1350,19 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {
         case 1: {
-          serializer.serializeValueIntegerSigned1(0);
+          serializer.serializeValueFloat1(0.0);
           break;
         }
         case 2: {
-          serializer.serializeValueIntegerSigned2(0, 1);
+          serializer.serializeValueFloat2(0.0, 1.0);
           break;
         }
         case 3: {
-          serializer.serializeValueIntegerSigned3(0, 1, 2);
+          serializer.serializeValueFloat3(0.0, 1.0, 2.0);
           break;
         }
         case 4: {
-          serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+          serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
           break;
         }
         default: {
@@ -1645,3 +1372,4 @@ public final class SMFFormatBinaryIntegerSignedTest extends SMFBinaryTest
     }
   }
 }
+

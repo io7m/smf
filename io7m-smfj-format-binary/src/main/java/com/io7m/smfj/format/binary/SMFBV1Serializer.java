@@ -54,7 +54,7 @@ final class SMFBV1Serializer implements SMFSerializerType
   }
 
   private final SMFFormatVersion version;
-  private final SMFBDataStreamWriter writer;
+  private final SMFBDataStreamWriterType writer;
   private final byte[] attribute_bytes;
   private final ByteBuffer attribute_buffer;
   private SerializerState state;
@@ -76,7 +76,7 @@ final class SMFBV1Serializer implements SMFSerializerType
       in_version.major() == 1,
       v -> "Major version " + v + " must be 1");
 
-    this.writer = new SMFBDataStreamWriter(in_path, in_stream);
+    this.writer = SMFBDataStreamWriter.create(in_path, in_stream);
     this.attribute_bytes = new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
     this.attribute_buffer = ByteBuffer.wrap(this.attribute_bytes);
     this.attribute_buffer.order(ByteOrder.BIG_ENDIAN);
@@ -95,15 +95,15 @@ final class SMFBV1Serializer implements SMFSerializerType
           final List<SMFAttribute> attributes = in_header.attributesInOrder();
           final long attribute_count = (long) attributes.length();
 
-          this.writer.writeBytes(SMFFormatBinary.magicNumber());
-          this.writer.writeU32((long) this.version.major());
-          this.writer.writeU32((long) this.version.minor());
-          this.writer.writeU64(in_header.vertexCount());
-          this.writer.writeU64(in_header.triangleCount());
-          this.writer.writeU32(in_header.triangleIndexSizeBits());
-          this.writer.writeU32(0x78787878L);
-          this.writer.writeU32(attribute_count);
-          this.writer.writeU32(0x78787878L);
+          this.writer.putBytes(SMFFormatBinary.magicNumber());
+          this.writer.putU32((long) this.version.major());
+          this.writer.putU32((long) this.version.minor());
+          this.writer.putU64(in_header.vertexCount());
+          this.writer.putU64(in_header.triangleCount());
+          this.writer.putU32(in_header.triangleIndexSizeBits());
+          this.writer.putU32(0x78787878L);
+          this.writer.putU32(attribute_count);
+          this.writer.putU32(0x78787878L);
 
           final JPRACursor1DType<SMFBV1AttributeType> cursor =
             JPRACursor1DByteBufferedChecked.newCursor(
@@ -122,7 +122,7 @@ final class SMFBV1Serializer implements SMFSerializerType
             view.setComponentCount(attribute.componentCount());
             view.setComponentSize(attribute.componentSizeBits());
             view.setComponentKind(attribute.componentType().toInteger());
-            this.writer.writeBytes(this.attribute_bytes);
+            this.writer.putBytes(this.attribute_bytes);
           }
 
           this.attribute_queue = Queue.ofAll(attributes);
@@ -271,7 +271,7 @@ final class SMFBV1Serializer implements SMFSerializerType
       d -> "Difference " + d + " must be <= 8");
 
     for (long pad = 0L; pad < diff; ++pad) {
-      this.writer.writeU8(0L);
+      this.writer.putU8(0L);
     }
 
     Invariants.checkInvariantL(
@@ -351,24 +351,24 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeF16(x);
-          this.writer.writeF16(y);
-          this.writer.writeF16(z);
-          this.writer.writeF16(w);
+          this.writer.putF16(x);
+          this.writer.putF16(y);
+          this.writer.putF16(z);
+          this.writer.putF16(w);
           break;
         }
         case 32: {
-          this.writer.writeF32(x);
-          this.writer.writeF32(y);
-          this.writer.writeF32(z);
-          this.writer.writeF32(w);
+          this.writer.putF32(x);
+          this.writer.putF32(y);
+          this.writer.putF32(z);
+          this.writer.putF32(w);
           break;
         }
         case 64: {
-          this.writer.writeF64(x);
-          this.writer.writeF64(y);
-          this.writer.writeF64(z);
-          this.writer.writeF64(w);
+          this.writer.putF64(x);
+          this.writer.putF64(y);
+          this.writer.putF64(z);
+          this.writer.putF64(w);
           break;
         }
       }
@@ -392,21 +392,21 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeF16(x);
-          this.writer.writeF16(y);
-          this.writer.writeF16(z);
+          this.writer.putF16(x);
+          this.writer.putF16(y);
+          this.writer.putF16(z);
           break;
         }
         case 32: {
-          this.writer.writeF32(x);
-          this.writer.writeF32(y);
-          this.writer.writeF32(z);
+          this.writer.putF32(x);
+          this.writer.putF32(y);
+          this.writer.putF32(z);
           break;
         }
         case 64: {
-          this.writer.writeF64(x);
-          this.writer.writeF64(y);
-          this.writer.writeF64(z);
+          this.writer.putF64(x);
+          this.writer.putF64(y);
+          this.writer.putF64(z);
           break;
         }
       }
@@ -429,18 +429,18 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeF16(x);
-          this.writer.writeF16(y);
+          this.writer.putF16(x);
+          this.writer.putF16(y);
           break;
         }
         case 32: {
-          this.writer.writeF32(x);
-          this.writer.writeF32(y);
+          this.writer.putF32(x);
+          this.writer.putF32(y);
           break;
         }
         case 64: {
-          this.writer.writeF64(x);
-          this.writer.writeF64(y);
+          this.writer.putF64(x);
+          this.writer.putF64(y);
           break;
         }
       }
@@ -462,15 +462,15 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeF16(x);
+          this.writer.putF16(x);
           break;
         }
         case 32: {
-          this.writer.writeF32(x);
+          this.writer.putF32(x);
           break;
         }
         case 64: {
-          this.writer.writeF64(x);
+          this.writer.putF64(x);
           break;
         }
       }
@@ -495,24 +495,24 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeS16(x);
-          this.writer.writeS16(y);
-          this.writer.writeS16(z);
-          this.writer.writeS16(w);
+          this.writer.putS16(x);
+          this.writer.putS16(y);
+          this.writer.putS16(z);
+          this.writer.putS16(w);
           break;
         }
         case 32: {
-          this.writer.writeS32(x);
-          this.writer.writeS32(y);
-          this.writer.writeS32(z);
-          this.writer.writeS32(w);
+          this.writer.putS32(x);
+          this.writer.putS32(y);
+          this.writer.putS32(z);
+          this.writer.putS32(w);
           break;
         }
         case 64: {
-          this.writer.writeS64(x);
-          this.writer.writeS64(y);
-          this.writer.writeS64(z);
-          this.writer.writeS64(w);
+          this.writer.putS64(x);
+          this.writer.putS64(y);
+          this.writer.putS64(z);
+          this.writer.putS64(w);
           break;
         }
       }
@@ -536,21 +536,21 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeS16(x);
-          this.writer.writeS16(y);
-          this.writer.writeS16(z);
+          this.writer.putS16(x);
+          this.writer.putS16(y);
+          this.writer.putS16(z);
           break;
         }
         case 32: {
-          this.writer.writeS32(x);
-          this.writer.writeS32(y);
-          this.writer.writeS32(z);
+          this.writer.putS32(x);
+          this.writer.putS32(y);
+          this.writer.putS32(z);
           break;
         }
         case 64: {
-          this.writer.writeS64(x);
-          this.writer.writeS64(y);
-          this.writer.writeS64(z);
+          this.writer.putS64(x);
+          this.writer.putS64(y);
+          this.writer.putS64(z);
           break;
         }
       }
@@ -573,18 +573,18 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeS16(x);
-          this.writer.writeS16(y);
+          this.writer.putS16(x);
+          this.writer.putS16(y);
           break;
         }
         case 32: {
-          this.writer.writeS32(x);
-          this.writer.writeS32(y);
+          this.writer.putS32(x);
+          this.writer.putS32(y);
           break;
         }
         case 64: {
-          this.writer.writeS64(x);
-          this.writer.writeS64(y);
+          this.writer.putS64(x);
+          this.writer.putS64(y);
           break;
         }
       }
@@ -606,15 +606,15 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeS16(x);
+          this.writer.putS16(x);
           break;
         }
         case 32: {
-          this.writer.writeS32(x);
+          this.writer.putS32(x);
           break;
         }
         case 64: {
-          this.writer.writeS64(x);
+          this.writer.putS64(x);
           break;
         }
       }
@@ -639,24 +639,24 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeU16(x);
-          this.writer.writeU16(y);
-          this.writer.writeU16(z);
-          this.writer.writeU16(w);
+          this.writer.putU16(x);
+          this.writer.putU16(y);
+          this.writer.putU16(z);
+          this.writer.putU16(w);
           break;
         }
         case 32: {
-          this.writer.writeU32(x);
-          this.writer.writeU32(y);
-          this.writer.writeU32(z);
-          this.writer.writeU32(w);
+          this.writer.putU32(x);
+          this.writer.putU32(y);
+          this.writer.putU32(z);
+          this.writer.putU32(w);
           break;
         }
         case 64: {
-          this.writer.writeU64(x);
-          this.writer.writeU64(y);
-          this.writer.writeU64(z);
-          this.writer.writeU64(w);
+          this.writer.putU64(x);
+          this.writer.putU64(y);
+          this.writer.putU64(z);
+          this.writer.putU64(w);
           break;
         }
       }
@@ -680,21 +680,21 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeU16(x);
-          this.writer.writeU16(y);
-          this.writer.writeU16(z);
+          this.writer.putU16(x);
+          this.writer.putU16(y);
+          this.writer.putU16(z);
           break;
         }
         case 32: {
-          this.writer.writeU32(x);
-          this.writer.writeU32(y);
-          this.writer.writeU32(z);
+          this.writer.putU32(x);
+          this.writer.putU32(y);
+          this.writer.putU32(z);
           break;
         }
         case 64: {
-          this.writer.writeU64(x);
-          this.writer.writeU64(y);
-          this.writer.writeU64(z);
+          this.writer.putU64(x);
+          this.writer.putU64(y);
+          this.writer.putU64(z);
           break;
         }
       }
@@ -717,18 +717,18 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeU16(x);
-          this.writer.writeU16(y);
+          this.writer.putU16(x);
+          this.writer.putU16(y);
           break;
         }
         case 32: {
-          this.writer.writeU32(x);
-          this.writer.writeU32(y);
+          this.writer.putU32(x);
+          this.writer.putU32(y);
           break;
         }
         case 64: {
-          this.writer.writeU64(x);
-          this.writer.writeU64(y);
+          this.writer.putU64(x);
+          this.writer.putU64(y);
           break;
         }
       }
@@ -750,15 +750,15 @@ final class SMFBV1Serializer implements SMFSerializerType
     try {
       switch (this.attribute_current.componentSizeBits()) {
         case 16: {
-          this.writer.writeU16(x);
+          this.writer.putU16(x);
           break;
         }
         case 32: {
-          this.writer.writeU32(x);
+          this.writer.putU32(x);
           break;
         }
         case 64: {
-          this.writer.writeU64(x);
+          this.writer.putU64(x);
           break;
         }
       }
@@ -828,27 +828,27 @@ final class SMFBV1Serializer implements SMFSerializerType
   {
     switch ((int) this.header.triangleIndexSizeBits()) {
       case 8: {
-        this.writer.writeU8(v0);
-        this.writer.writeU8(v1);
-        this.writer.writeU8(v2);
+        this.writer.putU8(v0);
+        this.writer.putU8(v1);
+        this.writer.putU8(v2);
         break;
       }
       case 16: {
-        this.writer.writeU16(v0);
-        this.writer.writeU16(v1);
-        this.writer.writeU16(v2);
+        this.writer.putU16(v0);
+        this.writer.putU16(v1);
+        this.writer.putU16(v2);
         break;
       }
       case 32: {
-        this.writer.writeU32(v0);
-        this.writer.writeU32(v1);
-        this.writer.writeU32(v2);
+        this.writer.putU32(v0);
+        this.writer.putU32(v1);
+        this.writer.putU32(v2);
         break;
       }
       case 64: {
-        this.writer.writeU64(v0);
-        this.writer.writeU64(v1);
-        this.writer.writeU64(v2);
+        this.writer.putU64(v0);
+        this.writer.putU64(v1);
+        this.writer.putU64(v2);
         break;
       }
       default: {

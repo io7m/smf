@@ -26,7 +26,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.Optional;
 
-final class SMFBDataReader
+final class SMFBDataFileChannelReader
 {
   private final Path path;
   private final FileChannel channel;
@@ -35,7 +35,7 @@ final class SMFBDataReader
   private final ByteBuffer buffer2;
   private final ByteBuffer buffer1;
 
-  SMFBDataReader(
+  SMFBDataFileChannelReader(
     final Path in_path,
     final FileChannel in_channel)
   {

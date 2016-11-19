@@ -43,12 +43,12 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class SMFFormatBinaryTest extends SMFBinaryTest
+public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
 {
   private static final Logger LOG;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFFormatBinaryTest.class);
+    LOG = LoggerFactory.getLogger(SMFFormatBinarySequentialTest.class);
   }
 
   @Rule public final ExpectedException expected = ExpectedException.none();
@@ -66,38 +66,13 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
 
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
-  public void testBadMagicNumberRandom(
-    final @Mocked SMFParserEventsType events)
-  {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.withArgThat(
-        new ParseErrorMessageStartsWith("Bad magic number")));
-      events.onFinish();
-    }};
-
-    this.parserRandomFor(events, out -> {
-      out.putBytes(new byte[]{
-        (byte) 'N',
-        (byte) 'O',
-        (byte) 'T',
-        (byte) 'G',
-        (byte) 'O',
-        (byte) 'O',
-        (byte) 'D',
-        (byte) 'X'});
-    }).parseHeader();
-  }
-
-  @Test
-  public void testBadMagicNumberSequential(
+  public void testBadMagicNumber(
     final @Mocked SMFParserEventsType events)
   {
     new StrictExpectations()
@@ -122,27 +97,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
   }
 
   @Test
-  public void testBadVersionRandom(
-    final @Mocked SMFParserEventsType events)
-  {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(891237, 0));
-      events.onError(this.withArgThat(
-        new ParseErrorMessageStartsWith("Unsupported version")));
-      events.onFinish();
-    }};
-
-    this.parserRandomFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(891237L);
-      out.putU32(0L);
-    }).parseHeader();
-  }
-
-  @Test
-  public void testBadVersionSequential(
+  public void testBadVersion(
     final @Mocked SMFParserEventsType events)
   {
     new StrictExpectations()
@@ -177,7 +132,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onHeaderFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -188,7 +143,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(0x7f7f7f7fL);
       out.putU32(0L);
       out.putU32(0x7f7f7f7fL);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -206,7 +161,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -217,7 +172,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(0x7f7f7f7fL);
       out.putU32(0L);
       out.putU32(0x7f7f7f7fL);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -306,18 +261,18 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
         16
       ));
 
-      events.onHeaderVerticesCountReceived(3L);
+      events.onHeaderVerticesCountReceived(0L);
       events.onHeaderTrianglesCountReceived(0L);
       events.onHeaderTrianglesIndexSizeReceived(32L);
       events.onHeaderFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
 
-      out.putU64(3L);
+      out.putU64(0L);
       out.putU64(0L);
       out.putU32(32L);
       out.putU32(0x7f7f7f7fL);
@@ -383,7 +338,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
       out.putU32(1L);
       out.putU32(16L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -472,18 +427,18 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
         16
       ));
 
-      events.onHeaderVerticesCountReceived(3L);
+      events.onHeaderVerticesCountReceived(0L);
       events.onHeaderTrianglesCountReceived(0L);
       events.onHeaderTrianglesIndexSizeReceived(32L);
       events.onHeaderFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
 
-      out.putU64(3L);
+      out.putU64(0L);
       out.putU64(0L);
       out.putU32(32L);
       out.putU32(0x7f7f7f7fL);
@@ -549,7 +504,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -638,18 +593,18 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
         16
       ));
 
-      events.onHeaderVerticesCountReceived(3L);
+      events.onHeaderVerticesCountReceived(0L);
       events.onHeaderTrianglesCountReceived(0L);
       events.onHeaderTrianglesIndexSizeReceived(32L);
       events.onHeaderFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
 
-      out.putU64(3L);
+      out.putU64(0L);
       out.putU64(0L);
       out.putU32(32L);
       out.putU32(0x7f7f7f7fL);
@@ -715,7 +670,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -733,7 +688,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -749,7 +704,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(100L);
       out.putU32(4L);
       out.putU32(64L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -768,7 +723,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -784,7 +739,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(100L);
       out.putU32(64L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -803,7 +758,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -819,7 +774,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(0L);
       out.putU32(64L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test
@@ -837,7 +792,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserRandomFor(events, out -> {
+    this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -858,7 +813,7 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(4L);
       out.putU32(64L);
-    }).parseHeader();
+    }).parse();
   }
 
   @Test

@@ -20,22 +20,22 @@ import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
+import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import org.slf4j.Logger;
 
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-abstract class SMFBAbstractParser implements
-  SMFParserRandomAccessType
+abstract class SMFBAbstractParserSequential implements
+  SMFParserSequentialType
 {
   protected final SMFParserEventsType events;
   protected final AtomicReference<ParserState> state;
-  protected final SMFBDataReader reader;
+  protected final SMFBDataStreamReaderType reader;
 
-  SMFBAbstractParser(
+  SMFBAbstractParserSequential(
     final SMFParserEventsType in_events,
-    final SMFBDataReader in_reader,
+    final SMFBDataStreamReaderType in_reader,
     final AtomicReference<ParserState> in_state)
   {
     this.events = NullCheck.notNull(in_events, "Events");

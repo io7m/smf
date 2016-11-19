@@ -17,6 +17,7 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Invariants;
+import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
@@ -41,12 +42,12 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-final class SMFBV1Parser extends SMFBAbstractParser
+final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 {
   private static final Logger LOG;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFBV1Parser.class);
+    LOG = LoggerFactory.getLogger(SMFBV1ParserSequential.class);
   }
 
   private final byte[] attribute_buffer;
@@ -59,9 +60,9 @@ final class SMFBV1Parser extends SMFBAbstractParser
   private SMFHeader header;
   private SMFBV1Offsets offsets;
 
-  SMFBV1Parser(
+  SMFBV1ParserSequential(
     final SMFParserEventsType in_events,
-    final SMFBDataReader in_reader,
+    final SMFBDataStreamReaderType in_reader,
     final AtomicReference<ParserState> in_state)
   {
     super(in_events, in_reader, in_state);
@@ -77,8 +78,7 @@ final class SMFBV1Parser extends SMFBAbstractParser
     return LOG;
   }
 
-  @Override
-  public void parseHeader()
+  private void parseHeader()
   {
     LOG.debug("parsing header");
 
@@ -86,24 +86,17 @@ final class SMFBV1Parser extends SMFBAbstractParser
       super.events.onHeaderStart();
 
       this.vertices_count =
-        super.reader.readUnsigned64(
-          Optional.of("vertex count"),
-          SMFBV1Offsets.offsetHeaderVerticesCount());
-
+        super.reader.readU64(Optional.of("vertex count"));
       this.triangles_count =
-        super.reader.readUnsigned64(
-          Optional.of("triangle count"),
-          SMFBV1Offsets.offsetHeaderTrianglesCount());
+        super.reader.readU64(Optional.of("triangle count"));
 
       this.triangles_size_bits =
-        super.reader.readUnsigned32(
-          Optional.of("triangle size"),
-          SMFBV1Offsets.offsetHeaderTrianglesSize());
+        super.reader.readU32(Optional.of("triangle size"));
+      super.reader.skip(4L);
 
       this.attributes_count =
-        super.reader.readUnsigned32(
-          Optional.of("attribute count"),
-          SMFBV1Offsets.offsetHeaderAttributesCount());
+        super.reader.readU32(Optional.of("attribute count"));
+      super.reader.skip(4L);
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(
@@ -140,26 +133,27 @@ final class SMFBV1Parser extends SMFBAbstractParser
     }
   }
 
-  @Override
-  public void parseAttributeData(
-    final SMFAttributeName name)
+  private void parseAttributeData(
+    final SMFAttribute attribute)
   {
     NullCheck.notNull(this.offsets, "Offsets");
 
+    if (this.vertices_count == 0L) {
+      LOG.debug("no vertices, not parsing attribute data");
+      return;
+    }
+
+    final SMFAttributeName name = attribute.name();
     final Map<SMFAttributeName, Long> ao = this.offsets.attributeOffsets();
     final Option<Long> offset_opt = ao.get(name);
     if (offset_opt.isEmpty()) {
       throw new NoSuchElementException("No such attribute: " + name.value());
     }
 
-    long offset = offset_opt.get().longValue();
-    final SMFAttribute attribute = this.attributes_named.get(name).get();
-    final long size = Math.multiplyExact(
-      (long) attribute.componentSizeOctets(),
-      (long) attribute.componentCount());
-
     try {
       super.events.onDataAttributeStart(attribute);
+
+      this.parseSkipUntilOffset(offset_opt.get().longValue());
 
       final Optional<String> name_opt = Optional.of(name.value());
       for (long index = 0L;
@@ -168,22 +162,17 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
         switch (attribute.componentType()) {
           case ELEMENT_TYPE_INTEGER_SIGNED: {
-            this.parseAttributeDataIntegerSigned(
-              attribute, name_opt, offset);
+            this.parseAttributeDataIntegerSigned(attribute, name_opt);
             break;
           }
           case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-            this.parseAttributeDataIntegerUnsigned(
-              attribute, name_opt, offset);
+            this.parseAttributeDataIntegerUnsigned(attribute, name_opt);
             break;
           }
           case ELEMENT_TYPE_FLOATING: {
-            this.parseAttributeDataFloating(
-              attribute, name_opt, offset);
+            this.parseAttributeDataFloating(attribute, name_opt);
           }
         }
-
-        offset = Math.addExact(offset, size);
       }
 
     } catch (final IOException e) {
@@ -193,20 +182,18 @@ final class SMFBV1Parser extends SMFBAbstractParser
     }
   }
 
-  @Override
-  public void parseTriangles()
+  private void parseTriangles()
   {
+    if (this.triangles_count == 0L) {
+      LOG.debug("no triangles, not parsing triangle data");
+      return;
+    }
+
     try {
       super.events.onDataTrianglesStart();
 
       final Optional<String> name = Optional.of("triangle");
-
-      long offset =
-        this.offsets.trianglesDataOffset();
-
-      final long size =
-        Math.multiplyExact(3L, this.triangles_size_bits / 8L);
-      Invariants.checkInvariant(size != 0L, "Triangle size is nonzero");
+      this.parseSkipUntilOffset(this.offsets.trianglesDataOffset());
 
       for (long index = 0L;
            Long.compareUnsigned(index, this.triangles_count) < 0;
@@ -215,28 +202,26 @@ final class SMFBV1Parser extends SMFBAbstractParser
         switch (Math.toIntExact(this.triangles_size_bits)) {
           case 8: {
             super.events.onDataTriangle(
-              super.reader.readUnsigned8(name, offset),
-              super.reader.readUnsigned8(name, Math.addExact(offset, 1L)),
-              super.reader.readUnsigned8(name, Math.addExact(offset, 2L)));
+              super.reader.readU8(name),
+              super.reader.readU8(name),
+              super.reader.readU8(name));
             break;
           }
           case 16: {
             super.events.onDataTriangle(
-              super.reader.readUnsigned16(name, offset),
-              super.reader.readUnsigned16(name, Math.addExact(offset, 2L)),
-              super.reader.readUnsigned16(name, Math.addExact(offset, 4L)));
+              super.reader.readU16(name),
+              super.reader.readU16(name),
+              super.reader.readU16(name));
             break;
           }
           case 32: {
             super.events.onDataTriangle(
-              super.reader.readUnsigned32(name, offset),
-              super.reader.readUnsigned32(name, Math.addExact(offset, 4L)),
-              super.reader.readUnsigned32(name, Math.addExact(offset, 8L)));
+              super.reader.readU32(name),
+              super.reader.readU32(name),
+              super.reader.readU32(name));
             break;
           }
         }
-
-        offset = Math.addExact(offset, size);
       }
 
     } catch (final IOException e) {
@@ -246,27 +231,44 @@ final class SMFBV1Parser extends SMFBAbstractParser
     }
   }
 
+  private void parseSkipUntilOffset(
+    final long offset)
+    throws IOException
+  {
+    Preconditions.checkPreconditionL(
+      offset,
+      Long.compareUnsigned(super.reader.position(), offset) <= 0,
+      o -> "Stream position must be <= " + o);
+
+    final long diff = Math.subtractExact(offset, super.reader.position());
+    this.reader.skip(diff);
+
+    Preconditions.checkPreconditionL(
+      super.reader.position(),
+      super.reader.position() == offset,
+      p -> "Position " + p + " must be " + offset);
+  }
+
   private void parseAttributeDataFloating(
     final SMFAttribute attribute,
-    final Optional<String> name_opt,
-    final long offset)
+    final Optional<String> name_opt)
     throws IOException
   {
     switch (attribute.componentCount()) {
       case 1: {
-        this.parseAttributeDataFloating1(attribute, name_opt, offset);
+        this.parseAttributeDataFloating1(attribute, name_opt);
         return;
       }
       case 2: {
-        this.parseAttributeDataFloating2(attribute, name_opt, offset);
+        this.parseAttributeDataFloating2(attribute, name_opt);
         return;
       }
       case 3: {
-        this.parseAttributeDataFloating3(attribute, name_opt, offset);
+        this.parseAttributeDataFloating3(attribute, name_opt);
         return;
       }
       case 4: {
-        this.parseAttributeDataFloating4(attribute, name_opt, offset);
+        this.parseAttributeDataFloating4(attribute, name_opt);
         return;
       }
       default: {
@@ -277,24 +279,23 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataFloating1(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 16: {
         super.events.onDataAttributeValueFloat1(
-          this.reader.readFloat16(name, offset));
+          this.reader.readF16(name));
         return;
       }
       case 32: {
         super.events.onDataAttributeValueFloat1(
-          this.reader.readFloat32(name, offset));
+          this.reader.readF32(name));
         return;
       }
       case 64: {
         super.events.onDataAttributeValueFloat1(
-          this.reader.readFloat64(name, offset));
+          this.reader.readF64(name));
         return;
       }
       default: {
@@ -305,32 +306,25 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataFloating2(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 16: {
-        final double x =
-          this.reader.readFloat16(name, offset);
-        final double y =
-          this.reader.readFloat16(name, Math.addExact(offset, 2L));
+        final double x = this.reader.readF16(name);
+        final double y = this.reader.readF16(name);
         super.events.onDataAttributeValueFloat2(x, y);
         return;
       }
       case 32: {
-        final double x =
-          this.reader.readFloat32(name, offset);
-        final double y =
-          this.reader.readFloat32(name, Math.addExact(offset, 4L));
+        final double x = this.reader.readF32(name);
+        final double y = this.reader.readF32(name);
         super.events.onDataAttributeValueFloat2(x, y);
         return;
       }
       case 64: {
-        final double x =
-          this.reader.readFloat64(name, offset);
-        final double y =
-          this.reader.readFloat64(name, Math.addExact(offset, 8L));
+        final double x = this.reader.readF64(name);
+        final double y = this.reader.readF64(name);
         super.events.onDataAttributeValueFloat2(x, y);
         return;
       }
@@ -342,38 +336,28 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataFloating3(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 16: {
-        final double x =
-          this.reader.readFloat16(name, offset);
-        final double y =
-          this.reader.readFloat16(name, Math.addExact(offset, 2L));
-        final double z =
-          this.reader.readFloat16(name, Math.addExact(offset, 4L));
+        final double x = this.reader.readF16(name);
+        final double y = this.reader.readF16(name);
+        final double z = this.reader.readF16(name);
         super.events.onDataAttributeValueFloat3(x, y, z);
         return;
       }
       case 32: {
-        final double x =
-          this.reader.readFloat32(name, offset);
-        final double y =
-          this.reader.readFloat32(name, Math.addExact(offset, 4L));
-        final double z =
-          this.reader.readFloat32(name, Math.addExact(offset, 8L));
+        final double x = this.reader.readF32(name);
+        final double y = this.reader.readF32(name);
+        final double z = this.reader.readF32(name);
         super.events.onDataAttributeValueFloat3(x, y, z);
         return;
       }
       case 64: {
-        final double x =
-          this.reader.readFloat64(name, offset);
-        final double y =
-          this.reader.readFloat64(name, Math.addExact(offset, 8L));
-        final double z =
-          this.reader.readFloat64(name, Math.addExact(offset, 16L));
+        final double x = this.reader.readF64(name);
+        final double y = this.reader.readF64(name);
+        final double z = this.reader.readF64(name);
         super.events.onDataAttributeValueFloat3(x, y, z);
         return;
       }
@@ -385,44 +369,31 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataFloating4(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 16: {
-        final double x =
-          this.reader.readFloat16(name, offset);
-        final double y =
-          this.reader.readFloat16(name, Math.addExact(offset, 2L));
-        final double z =
-          this.reader.readFloat16(name, Math.addExact(offset, 4L));
-        final double w =
-          this.reader.readFloat16(name, Math.addExact(offset, 6L));
+        final double x = this.reader.readF16(name);
+        final double y = this.reader.readF16(name);
+        final double z = this.reader.readF16(name);
+        final double w = this.reader.readF16(name);
         super.events.onDataAttributeValueFloat4(x, y, z, w);
         return;
       }
       case 32: {
-        final double x =
-          this.reader.readFloat32(name, offset);
-        final double y =
-          this.reader.readFloat32(name, Math.addExact(offset, 4L));
-        final double z =
-          this.reader.readFloat32(name, Math.addExact(offset, 8L));
-        final double w =
-          this.reader.readFloat32(name, Math.addExact(offset, 12L));
+        final double x = this.reader.readF32(name);
+        final double y = this.reader.readF32(name);
+        final double z = this.reader.readF32(name);
+        final double w = this.reader.readF32(name);
         super.events.onDataAttributeValueFloat4(x, y, z, w);
         return;
       }
       case 64: {
-        final double x =
-          this.reader.readFloat64(name, offset);
-        final double y =
-          this.reader.readFloat64(name, Math.addExact(offset, 8L));
-        final double z =
-          this.reader.readFloat64(name, Math.addExact(offset, 16L));
-        final double w =
-          this.reader.readFloat64(name, Math.addExact(offset, 24L));
+        final double x = this.reader.readF64(name);
+        final double y = this.reader.readF64(name);
+        final double z = this.reader.readF64(name);
+        final double w = this.reader.readF64(name);
         super.events.onDataAttributeValueFloat4(x, y, z, w);
         return;
       }
@@ -434,25 +405,24 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerSigned(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentCount()) {
       case 1: {
-        this.parseAttributeDataIntegerSigned1(attribute, name, offset);
+        this.parseAttributeDataIntegerSigned1(attribute, name);
         return;
       }
       case 2: {
-        this.parseAttributeDataIntegerSigned2(attribute, name, offset);
+        this.parseAttributeDataIntegerSigned2(attribute, name);
         return;
       }
       case 3: {
-        this.parseAttributeDataIntegerSigned3(attribute, name, offset);
+        this.parseAttributeDataIntegerSigned3(attribute, name);
         return;
       }
       case 4: {
-        this.parseAttributeDataIntegerSigned4(attribute, name, offset);
+        this.parseAttributeDataIntegerSigned4(attribute, name);
         return;
       }
       default: {
@@ -463,56 +433,39 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerSigned4(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readSigned8(name, offset);
-        final long y =
-          this.reader.readSigned8(name, Math.addExact(offset, 1L));
-        final long z =
-          this.reader.readSigned8(name, Math.addExact(offset, 2L));
-        final long w =
-          this.reader.readSigned8(name, Math.addExact(offset, 3L));
+        final long x = this.reader.readS8(name);
+        final long y = this.reader.readS8(name);
+        final long z = this.reader.readS8(name);
+        final long w = this.reader.readS8(name);
         super.events.onDataAttributeValueIntegerSigned4(x, y, z, w);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readSigned16(name, offset);
-        final long y =
-          this.reader.readSigned16(name, Math.addExact(offset, 2L));
-        final long z =
-          this.reader.readSigned16(name, Math.addExact(offset, 4L));
-        final long w =
-          this.reader.readSigned16(name, Math.addExact(offset, 6L));
+        final long x = this.reader.readS16(name);
+        final long y = this.reader.readS16(name);
+        final long z = this.reader.readS16(name);
+        final long w = this.reader.readS16(name);
         super.events.onDataAttributeValueIntegerSigned4(x, y, z, w);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readSigned32(name, offset);
-        final long y =
-          this.reader.readSigned32(name, Math.addExact(offset, 4L));
-        final long z =
-          this.reader.readSigned32(name, Math.addExact(offset, 8L));
-        final long w =
-          this.reader.readSigned32(name, Math.addExact(offset, 12L));
+        final long x = this.reader.readS32(name);
+        final long y = this.reader.readS32(name);
+        final long z = this.reader.readS32(name);
+        final long w = this.reader.readS32(name);
         super.events.onDataAttributeValueIntegerSigned4(x, y, z, w);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readSigned64(name, offset);
-        final long y =
-          this.reader.readSigned64(name, Math.addExact(offset, 8L));
-        final long z =
-          this.reader.readSigned64(name, Math.addExact(offset, 16L));
-        final long w =
-          this.reader.readSigned64(name, Math.addExact(offset, 24L));
+        final long x = this.reader.readS64(name);
+        final long y = this.reader.readS64(name);
+        final long z = this.reader.readS64(name);
+        final long w = this.reader.readS64(name);
         super.events.onDataAttributeValueIntegerSigned4(x, y, z, w);
         return;
       }
@@ -524,48 +477,35 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerSigned3(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readSigned8(name, offset);
-        final long y =
-          this.reader.readSigned8(name, Math.addExact(offset, 1L));
-        final long z =
-          this.reader.readSigned8(name, Math.addExact(offset, 2L));
+        final long x = this.reader.readS8(name);
+        final long y = this.reader.readS8(name);
+        final long z = this.reader.readS8(name);
         super.events.onDataAttributeValueIntegerSigned3(x, y, z);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readSigned16(name, offset);
-        final long y =
-          this.reader.readSigned16(name, Math.addExact(offset, 2L));
-        final long z =
-          this.reader.readSigned16(name, Math.addExact(offset, 4L));
+        final long x = this.reader.readS16(name);
+        final long y = this.reader.readS16(name);
+        final long z = this.reader.readS16(name);
         super.events.onDataAttributeValueIntegerSigned3(x, y, z);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readSigned32(name, offset);
-        final long y =
-          this.reader.readSigned32(name, Math.addExact(offset, 4L));
-        final long z =
-          this.reader.readSigned32(name, Math.addExact(offset, 8L));
+        final long x = this.reader.readS32(name);
+        final long y = this.reader.readS32(name);
+        final long z = this.reader.readS32(name);
         super.events.onDataAttributeValueIntegerSigned3(x, y, z);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readSigned64(name, offset);
-        final long y =
-          this.reader.readSigned64(name, Math.addExact(offset, 8L));
-        final long z =
-          this.reader.readSigned64(name, Math.addExact(offset, 16L));
+        final long x = this.reader.readS64(name);
+        final long y = this.reader.readS64(name);
+        final long z = this.reader.readS64(name);
         super.events.onDataAttributeValueIntegerSigned3(x, y, z);
         return;
       }
@@ -577,40 +517,31 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerSigned2(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readSigned8(name, offset);
-        final long y =
-          this.reader.readSigned8(name, Math.addExact(offset, 1L));
+        final long x = this.reader.readS8(name);
+        final long y = this.reader.readS8(name);
         super.events.onDataAttributeValueIntegerSigned2(x, y);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readSigned16(name, offset);
-        final long y =
-          this.reader.readSigned16(name, Math.addExact(offset, 2L));
+        final long x = this.reader.readS16(name);
+        final long y = this.reader.readS16(name);
         super.events.onDataAttributeValueIntegerSigned2(x, y);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readSigned32(name, offset);
-        final long y =
-          this.reader.readSigned32(name, Math.addExact(offset, 4L));
+        final long x = this.reader.readS32(name);
+        final long y = this.reader.readS32(name);
         super.events.onDataAttributeValueIntegerSigned2(x, y);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readSigned64(name, offset);
-        final long y =
-          this.reader.readSigned64(name, Math.addExact(offset, 8L));
+        final long x = this.reader.readS64(name);
+        final long y = this.reader.readS64(name);
         super.events.onDataAttributeValueIntegerSigned2(x, y);
         return;
       }
@@ -622,29 +553,28 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerSigned1(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
         super.events.onDataAttributeValueIntegerSigned1(
-          this.reader.readSigned8(name, offset));
+          this.reader.readS8(name));
         return;
       }
       case 16: {
         super.events.onDataAttributeValueIntegerSigned1(
-          this.reader.readSigned16(name, offset));
+          this.reader.readS16(name));
         return;
       }
       case 32: {
         super.events.onDataAttributeValueIntegerSigned1(
-          this.reader.readSigned32(name, offset));
+          this.reader.readS32(name));
         return;
       }
       case 64: {
         super.events.onDataAttributeValueIntegerSigned1(
-          this.reader.readSigned64(name, offset));
+          this.reader.readS64(name));
         return;
       }
       default: {
@@ -655,25 +585,24 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerUnsigned(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentCount()) {
       case 1: {
-        this.parseAttributeDataIntegerUnsigned1(attribute, name, offset);
+        this.parseAttributeDataIntegerUnsigned1(attribute, name);
         return;
       }
       case 2: {
-        this.parseAttributeDataIntegerUnsigned2(attribute, name, offset);
+        this.parseAttributeDataIntegerUnsigned2(attribute, name);
         return;
       }
       case 3: {
-        this.parseAttributeDataIntegerUnsigned3(attribute, name, offset);
+        this.parseAttributeDataIntegerUnsigned3(attribute, name);
         return;
       }
       case 4: {
-        this.parseAttributeDataIntegerUnsigned4(attribute, name, offset);
+        this.parseAttributeDataIntegerUnsigned4(attribute, name);
         return;
       }
       default: {
@@ -684,56 +613,39 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerUnsigned4(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readUnsigned8(name, offset);
-        final long y =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 1L));
-        final long z =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 2L));
-        final long w =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 3L));
+        final long x = this.reader.readU8(name);
+        final long y = this.reader.readU8(name);
+        final long z = this.reader.readU8(name);
+        final long w = this.reader.readU8(name);
         super.events.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readUnsigned16(name, offset);
-        final long y =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 2L));
-        final long z =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 4L));
-        final long w =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 6L));
+        final long x = this.reader.readU16(name);
+        final long y = this.reader.readU16(name);
+        final long z = this.reader.readU16(name);
+        final long w = this.reader.readU16(name);
         super.events.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readUnsigned32(name, offset);
-        final long y =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 4L));
-        final long z =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 8L));
-        final long w =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 12L));
+        final long x = this.reader.readU32(name);
+        final long y = this.reader.readU32(name);
+        final long z = this.reader.readU32(name);
+        final long w = this.reader.readU32(name);
         super.events.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readUnsigned64(name, offset);
-        final long y =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 8L));
-        final long z =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 16L));
-        final long w =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 24L));
+        final long x = this.reader.readU64(name);
+        final long y = this.reader.readU64(name);
+        final long z = this.reader.readU64(name);
+        final long w = this.reader.readU64(name);
         super.events.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
         return;
       }
@@ -745,48 +657,35 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerUnsigned3(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readUnsigned8(name, offset);
-        final long y =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 1L));
-        final long z =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 2L));
+        final long x = this.reader.readU8(name);
+        final long y = this.reader.readU8(name);
+        final long z = this.reader.readU8(name);
         super.events.onDataAttributeValueIntegerUnsigned3(x, y, z);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readUnsigned16(name, offset);
-        final long y =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 2L));
-        final long z =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 4L));
+        final long x = this.reader.readU16(name);
+        final long y = this.reader.readU16(name);
+        final long z = this.reader.readU16(name);
         super.events.onDataAttributeValueIntegerUnsigned3(x, y, z);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readUnsigned32(name, offset);
-        final long y =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 4L));
-        final long z =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 8L));
+        final long x = this.reader.readU32(name);
+        final long y = this.reader.readU32(name);
+        final long z = this.reader.readU32(name);
         super.events.onDataAttributeValueIntegerUnsigned3(x, y, z);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readUnsigned64(name, offset);
-        final long y =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 8L));
-        final long z =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 16L));
+        final long x = this.reader.readU64(name);
+        final long y = this.reader.readU64(name);
+        final long z = this.reader.readU64(name);
         super.events.onDataAttributeValueIntegerUnsigned3(x, y, z);
         return;
       }
@@ -798,40 +697,31 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerUnsigned2(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
-        final long x =
-          this.reader.readUnsigned8(name, offset);
-        final long y =
-          this.reader.readUnsigned8(name, Math.addExact(offset, 1L));
+        final long x = this.reader.readU8(name);
+        final long y = this.reader.readU8(name);
         super.events.onDataAttributeValueIntegerUnsigned2(x, y);
         return;
       }
       case 16: {
-        final long x =
-          this.reader.readUnsigned16(name, offset);
-        final long y =
-          this.reader.readUnsigned16(name, Math.addExact(offset, 2L));
+        final long x = this.reader.readU16(name);
+        final long y = this.reader.readU16(name);
         super.events.onDataAttributeValueIntegerUnsigned2(x, y);
         return;
       }
       case 32: {
-        final long x =
-          this.reader.readUnsigned32(name, offset);
-        final long y =
-          this.reader.readUnsigned32(name, Math.addExact(offset, 4L));
+        final long x = this.reader.readU32(name);
+        final long y = this.reader.readU32(name);
         super.events.onDataAttributeValueIntegerUnsigned2(x, y);
         return;
       }
       case 64: {
-        final long x =
-          this.reader.readUnsigned64(name, offset);
-        final long y =
-          this.reader.readUnsigned64(name, Math.addExact(offset, 8L));
+        final long x = this.reader.readU64(name);
+        final long y = this.reader.readU64(name);
         super.events.onDataAttributeValueIntegerUnsigned2(x, y);
         return;
       }
@@ -843,29 +733,28 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
   private void parseAttributeDataIntegerUnsigned1(
     final SMFAttribute attribute,
-    final Optional<String> name,
-    final long offset)
+    final Optional<String> name)
     throws IOException
   {
     switch (attribute.componentSizeBits()) {
       case 8: {
         super.events.onDataAttributeValueIntegerUnsigned1(
-          this.reader.readUnsigned8(name, offset));
+          this.reader.readU8(name));
         return;
       }
       case 16: {
         super.events.onDataAttributeValueIntegerUnsigned1(
-          this.reader.readUnsigned16(name, offset));
+          this.reader.readU16(name));
         return;
       }
       case 32: {
         super.events.onDataAttributeValueIntegerUnsigned1(
-          this.reader.readUnsigned32(name, offset));
+          this.reader.readU32(name));
         return;
       }
       case 64: {
         super.events.onDataAttributeValueIntegerUnsigned1(
-          this.reader.readUnsigned64(name, offset));
+          this.reader.readU64(name));
         return;
       }
       default: {
@@ -907,6 +796,11 @@ final class SMFBV1Parser extends SMFBAbstractParser
         Integer.valueOf(SMFBV1AttributeByteBuffered.sizeInOctets()));
     }
 
+    Preconditions.checkPreconditionL(
+      super.reader.position(),
+      super.reader.position() == SMFBV1Offsets.offsetHeaderAttributesData(),
+      p -> "Position " + p + " must be " + SMFBV1Offsets.offsetHeaderAttributesData());
+
     final ByteBuffer buffer =
       ByteBuffer.wrap(this.attribute_buffer);
     final JPRACursor1DType<SMFBV1AttributeType> cursor =
@@ -915,7 +809,6 @@ final class SMFBV1Parser extends SMFBAbstractParser
     final SMFBV1AttributeType view =
       cursor.getElementView();
 
-    long offset = SMFBV1Offsets.offsetHeaderAttributesData();
     for (long index = 0L;
          Long.compareUnsigned(index, this.attributes_count) < 0;
          index = Math.addExact(index, 1L)) {
@@ -924,14 +817,14 @@ final class SMFBV1Parser extends SMFBAbstractParser
         LOG.debug(
           "reading attribute {} from offset {}",
           Long.valueOf(index),
-          Long.valueOf(offset));
+          Long.valueOf(super.reader.position()));
       }
 
       Invariants.checkInvariant(
-        offset % 8L == 0L, "Attribute offset must be divisible by 8");
+        super.reader.position() % 8L == 0L,
+        "Attribute offset must be divisible by 8");
 
-      super.reader.readBytes(
-        Optional.of("Attribute"), this.attribute_buffer, offset);
+      super.reader.readBytes(Optional.of("Attribute"), this.attribute_buffer);
 
       try {
         final SMFAttributeName name =
@@ -966,9 +859,6 @@ final class SMFBV1Parser extends SMFBAbstractParser
       } catch (final IllegalArgumentException e) {
         super.fail(e.getMessage());
       }
-
-      offset = Math.addExact(
-        offset, (long) SMFBV1AttributeByteBuffered.sizeInOctets());
     }
   }
 
@@ -977,5 +867,27 @@ final class SMFBV1Parser extends SMFBAbstractParser
     throws IOException
   {
 
+  }
+
+  @Override
+  public void parse()
+  {
+    this.parseHeader();
+    if (this.state.get() == ParserState.STATE_FAILED) {
+      return;
+    }
+
+    for (final SMFAttribute attribute : this.attributes) {
+      this.parseAttributeData(attribute);
+      if (this.state.get() == ParserState.STATE_FAILED) {
+        return;
+      }
+    }
+
+    if (this.state.get() == ParserState.STATE_FAILED) {
+      return;
+    }
+
+    this.parseTriangles();
   }
 }
