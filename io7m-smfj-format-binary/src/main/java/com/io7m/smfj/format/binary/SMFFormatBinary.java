@@ -229,10 +229,6 @@ public final class SMFFormatBinary implements SMFParserProviderType,
 
           } catch (final Exception e) {
             super.fail(e.getMessage());
-          } finally {
-            if (super.state.get() == ParserState.STATE_FAILED) {
-              super.events.onFinish();
-            }
           }
           break;
         }
@@ -451,10 +447,6 @@ public final class SMFFormatBinary implements SMFParserProviderType,
 
           } catch (final Exception e) {
             super.fail(e.getMessage());
-          } finally {
-            if (super.state.get() == ParserState.STATE_FAILED) {
-              super.events.onFinish();
-            }
           }
           break;
         }

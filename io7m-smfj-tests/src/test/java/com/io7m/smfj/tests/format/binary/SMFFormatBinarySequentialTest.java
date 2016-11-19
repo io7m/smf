@@ -58,6 +58,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
   @Test
   public void testEmpty(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -68,14 +69,17 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
 
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testBadMagicNumber(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -85,7 +89,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(new byte[]{
         (byte) 'N',
         (byte) 'O',
@@ -95,12 +99,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         (byte) 'O',
         (byte) 'D',
         (byte) 'X'});
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testBadVersion(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -111,16 +118,19 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(891237L);
       out.putU32(0L);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testNoData(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     final SMFHeader.Builder hb = SMFHeader.builder();
     hb.setAttributesInOrder(List.empty());
@@ -135,9 +145,10 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
       events.onHeaderParsed(h);
+      events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -148,12 +159,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0x7f7f7f7fL);
       out.putU32(0L);
       out.putU32(0x7f7f7f7fL);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testBadTriangleSize(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -164,7 +178,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -175,7 +189,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0x7f7f7f7fL);
       out.putU32(0L);
       out.putU32(0x7f7f7f7fL);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
@@ -801,6 +817,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
   @Test
   public void testHeaderAttributeBadType(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -811,7 +828,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -827,12 +844,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(100L);
       out.putU32(4L);
       out.putU32(64L);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testHeaderAttributeBadComponentCount0(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -844,7 +864,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -860,12 +880,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(100L);
       out.putU32(64L);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testHeaderAttributeBadComponentCount1(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -877,7 +900,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -893,12 +916,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(0L);
       out.putU32(64L);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testHeaderAttributeDuplicate(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
     new StrictExpectations()
     {{
@@ -909,7 +935,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -930,7 +956,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0L);
       out.putU32(4L);
       out.putU32(64L);
-    }).parse();
+    });
+    p.parse();
+    p.close();
   }
 
   @Test
