@@ -123,5 +123,27 @@ public interface SMFHeaderType
         throw new IllegalArgumentException(sb.toString());
       }
     }
+
+    {
+      switch ((int) this.triangleIndexSizeBits()) {
+        case 8:
+        case 16:
+        case 32:
+        case 64: {
+          break;
+        }
+        default: {
+          final StringBuilder sb = new StringBuilder(128);
+          sb.append("Invalid triangle index size.");
+          sb.append(System.lineSeparator());
+          sb.append("  Expected: One of {8 | 16 | 32 | 64}");
+          sb.append(System.lineSeparator());
+          sb.append("  Received: ");
+          sb.append(this.triangleIndexSizeBits());
+          sb.append(System.lineSeparator());
+          throw new IllegalArgumentException(sb.toString());
+        }
+      }
+    }
   }
 }

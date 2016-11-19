@@ -17,12 +17,14 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Invariants;
+import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -41,80 +43,21 @@ import java.util.concurrent.atomic.AtomicReference;
 
 final class SMFBV1Parser extends SMFBAbstractParser
 {
-  static final long OFFSET_HEADER;
-  static final long OFFSET_HEADER_VERTICES_COUNT;
-  static final long OFFSET_HEADER_TRIANGLES_COUNT;
-  static final long OFFSET_HEADER_TRIANGLES_SIZE;
-  static final long OFFSET_HEADER_ATTRIBUTES_COUNT;
-  static final long OFFSET_HEADER_ATTRIBUTES_DATA;
-
   private static final Logger LOG;
 
   static {
     LOG = LoggerFactory.getLogger(SMFBV1Parser.class);
-
-    OFFSET_HEADER = SMFFormatBinary.OFFSET_VERSION_MINOR + 4L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER % 8L == 0L,
-      "OFFSET_HEADER must be divisible by 8");
-
-    OFFSET_HEADER_VERTICES_COUNT = OFFSET_HEADER;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_VERTICES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_VERTICES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_TRIANGLES_COUNT = OFFSET_HEADER_VERTICES_COUNT + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_TRIANGLES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_TRIANGLES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_TRIANGLES_SIZE = OFFSET_HEADER_TRIANGLES_COUNT + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_TRIANGLES_SIZE % 4L == 0L,
-      "OFFSET_HEADER_TRIANGLES_SIZE must be divisible by 4");
-
-    OFFSET_HEADER_ATTRIBUTES_COUNT = OFFSET_HEADER_TRIANGLES_SIZE + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_ATTRIBUTES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_ATTRIBUTES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_ATTRIBUTES_DATA = OFFSET_HEADER_ATTRIBUTES_COUNT + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_ATTRIBUTES_DATA % 8L == 0L,
-      "OFFSET_HEADER_ATTRIBUTES_DATA must be divisible by 8");
-
-    if (LOG.isTraceEnabled()) {
-      LOG.trace(
-        "OFFSET_HEADER:                  {}",
-        Long.toUnsignedString(OFFSET_HEADER, 16));
-      LOG.trace(
-        "OFFSET_HEADER_VERTICES_COUNT:   {}",
-        Long.toUnsignedString(OFFSET_HEADER_VERTICES_COUNT, 16));
-      LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_COUNT:  {}",
-        Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_COUNT, 16));
-      LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_SIZE:   {}",
-        Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_SIZE, 16));
-      LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_COUNT: {}",
-        Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_COUNT, 16));
-      LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_DATA:  {}",
-        Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_DATA, 16));
-    }
   }
 
   private final byte[] attribute_buffer;
   private Map<SMFAttributeName, SMFAttribute> attributes_named;
-  private Map<SMFAttributeName, Long> attributes_offsets;
   private List<SMFAttribute> attributes;
   private long vertices_count;
-  private long vertices_data_offset;
   private long triangles_count;
   private long triangles_size_bits;
   private long attributes_count;
-  private long triangles_data_offset;
+  private SMFHeader header;
+  private SMFBV1Offsets offsets;
 
   SMFBV1Parser(
     final SMFParserEventsType in_events,
@@ -126,7 +69,6 @@ final class SMFBV1Parser extends SMFBAbstractParser
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
     this.attributes = List.empty();
     this.attributes_named = HashMap.empty();
-    this.attributes_offsets = HashMap.empty();
   }
 
   @Override
@@ -145,16 +87,23 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
       this.vertices_count =
         super.reader.readUnsigned64(
-          Optional.of("vertex count"), OFFSET_HEADER_VERTICES_COUNT);
+          Optional.of("vertex count"),
+          SMFBV1Offsets.offsetHeaderVerticesCount());
+
       this.triangles_count =
         super.reader.readUnsigned64(
-          Optional.of("triangle count"), OFFSET_HEADER_TRIANGLES_COUNT);
+          Optional.of("triangle count"),
+          SMFBV1Offsets.offsetHeaderTrianglesCount());
+
       this.triangles_size_bits =
         super.reader.readUnsigned32(
-          Optional.of("triangle size"), OFFSET_HEADER_TRIANGLES_SIZE);
+          Optional.of("triangle size"),
+          SMFBV1Offsets.offsetHeaderTrianglesSize());
+
       this.attributes_count =
         super.reader.readUnsigned32(
-          Optional.of("attribute count"), OFFSET_HEADER_ATTRIBUTES_COUNT);
+          Optional.of("attribute count"),
+          SMFBV1Offsets.offsetHeaderAttributesCount());
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(
@@ -171,8 +120,6 @@ final class SMFBV1Parser extends SMFBAbstractParser
 
       this.parseHeaderAttributes();
       this.checkHeaderAttributes();
-      this.checkTriangleSize();
-      this.calculateOffsets();
 
       if (super.state.get() != ParserState.STATE_FAILED) {
         super.events.onHeaderAttributeCountReceived(this.attributes_count);
@@ -193,83 +140,14 @@ final class SMFBV1Parser extends SMFBAbstractParser
     }
   }
 
-  private void checkTriangleSize()
-  {
-    switch ((int) this.triangles_size_bits) {
-      case 8:
-      case 16:
-      case 32:
-      case 64: {
-        break;
-      }
-      default: {
-        super.failExpectedGot(
-          "Invalid triangle index size.",
-          "One of {8 | 16 | 32 | 64}",
-          Long.toString(this.triangles_size_bits));
-      }
-    }
-  }
-
-  private void calculateOffsets()
-  {
-    final long attribute_definitions_size = Math.multiplyExact(
-      (long) SMFBV1AttributeByteBuffered.sizeInOctets(),
-      (long) this.attributes.length());
-
-    this.vertices_data_offset = Math.addExact(
-      OFFSET_HEADER_ATTRIBUTES_DATA, attribute_definitions_size);
-
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
-        "vertex data offset: {}",
-        Long.valueOf(this.vertices_data_offset));
-    }
-
-    long off = this.vertices_data_offset;
-    for (final SMFAttribute attribute : this.attributes) {
-      Invariants.checkInvariant(
-        off % 8L == 0L, "Offset must be divisible by 8");
-
-      this.attributes_offsets =
-        this.attributes_offsets.put(attribute.name(), Long.valueOf(off));
-
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(
-          "attribute data offset: {} {}",
-          attribute.name().value(),
-          Long.valueOf(off));
-      }
-
-      final long data_size = Math.multiplyExact(
-        (long) attribute.componentSizeOctets(),
-        (long) attribute.componentCount());
-
-      final long data_size_padded =
-        Math.multiplyExact(
-          Math.floorDiv(Math.addExact(data_size, 8L), 8L),
-          8L);
-
-      off = Math.addExact(off, data_size_padded);
-    }
-
-    Invariants.checkInvariant(
-      off % 8L == 0L, "Offset must be divisible by 8");
-
-    this.triangles_data_offset = off;
-
-    if (LOG.isDebugEnabled()) {
-      LOG.debug(
-        "triangles offset: {}",
-        Long.valueOf(this.triangles_data_offset));
-    }
-  }
-
   @Override
   public void parseAttributeData(
     final SMFAttributeName name)
   {
-    final Option<Long> offset_opt = this.attributes_offsets.get(name);
+    NullCheck.notNull(this.offsets, "Offsets");
+
+    final Map<SMFAttributeName, Long> ao = this.offsets.attributeOffsets();
+    final Option<Long> offset_opt = ao.get(name);
     if (offset_opt.isEmpty()) {
       throw new NoSuchElementException("No such attribute: " + name.value());
     }
@@ -324,7 +202,7 @@ final class SMFBV1Parser extends SMFBAbstractParser
       final Optional<String> name = Optional.of("triangle");
 
       long offset =
-        this.triangles_data_offset;
+        this.offsets.trianglesDataOffset();
 
       final long size =
         Math.multiplyExact(3L, this.triangles_size_bits / 8L);
@@ -1005,6 +883,19 @@ final class SMFBV1Parser extends SMFBAbstractParser
       }
       this.attributes_named = this.attributes_named.put(name, attribute);
     });
+
+    if (this.state.get() == ParserState.STATE_FAILED) {
+      return;
+    }
+
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setVertexCount(this.vertices_count);
+    hb.setTriangleCount(this.triangles_count);
+    hb.setTriangleIndexSizeBits(this.triangles_size_bits);
+    hb.setAttributesInOrder(this.attributes);
+    hb.setAttributesByName(this.attributes_named);
+    this.header = hb.build();
+    this.offsets = SMFBV1Offsets.fromHeader(this.header);
   }
 
   private void parseHeaderAttributes()
@@ -1024,7 +915,7 @@ final class SMFBV1Parser extends SMFBAbstractParser
     final SMFBV1AttributeType view =
       cursor.getElementView();
 
-    long offset = OFFSET_HEADER_ATTRIBUTES_DATA;
+    long offset = SMFBV1Offsets.offsetHeaderAttributesData();
     for (long index = 0L;
          Long.compareUnsigned(index, this.attributes_count) < 0;
          index = Math.addExact(index, 1L)) {

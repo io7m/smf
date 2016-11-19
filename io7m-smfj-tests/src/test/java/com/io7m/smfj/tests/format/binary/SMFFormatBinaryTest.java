@@ -21,16 +21,27 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNameType;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
+import com.io7m.smfj.serializer.api.SMFSerializerType;
+import javaslang.Tuple;
+import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class SMFFormatBinaryTest extends SMFBinaryTest
 {
@@ -39,6 +50,8 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
   static {
     LOG = LoggerFactory.getLogger(SMFFormatBinaryTest.class);
   }
+
+  @Rule public final ExpectedException expected = ExpectedException.none();
 
   @Test
   public void testEmpty(
@@ -801,6 +814,162 @@ public final class SMFFormatBinaryTest extends SMFBinaryTest
       out.putU32(4L);
       out.putU32(64L);
     }).parseHeader();
+  }
+
+  @Test
+  public void testSerializerUnknownAttribute()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    serializer.serializeHeader(header);
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeData(SMFAttributeName.of("unknown"));
+  }
+
+  @Test
+  public void testSerializerAttributeBeforeHeader()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    this.expected.expect(IllegalStateException.class);
+    serializer.serializeData(SMFAttributeName.of("unknown"));
+  }
+
+  @Test
+  public void testSerializerAttributeWrong()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32),
+      SMFAttribute.of(
+        SMFAttributeName.of("y"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeData(SMFAttributeName.of("x"));
+  }
+
+  @Test
+  public void testSerializerAttributeNoneExpected()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeData(SMFAttributeName.of("x"));
+  }
+
+  @Test
+  public void testSerializerAttributeNotFinishedSerializingPrevious()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32),
+      SMFAttribute.of(
+        SMFAttributeName.of("y"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalStateException.class);
+    serializer.serializeData(SMFAttributeName.of("y"));
   }
 
   private static class ParseErrorMessageStartsWith extends TypeSafeMatcher<SMFParseError>

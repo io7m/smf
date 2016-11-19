@@ -20,23 +20,29 @@ import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
+import com.io7m.smfj.serializer.api.SMFSerializerType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.channels.SeekableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicLong;
 
 public final class FMB
 {
@@ -60,6 +66,11 @@ public final class FMB
            Files.newByteChannel(path, StandardOpenOption.READ)) {
 
       final Map<SMFAttributeName, SMFAttribute> attributes = new HashMap<>(8);
+      final List<SMFAttribute> attributes_ordered = new ArrayList<>(8);
+
+      final AtomicLong vertex_count = new AtomicLong();
+      final AtomicLong triangle_count = new AtomicLong();
+      final AtomicLong triangle_size = new AtomicLong();
 
       final FileChannel file_channel = (FileChannel) channel;
       final SMFParserRandomAccessType p =
@@ -118,6 +129,7 @@ public final class FMB
             final long count)
           {
             LOG.debug("expecting {} vertices", Long.valueOf(count));
+            vertex_count.set(count);
           }
 
           @Override
@@ -126,6 +138,7 @@ public final class FMB
           {
             LOG.debug("attribute: {}", attribute);
             attributes.put(attribute.name(), attribute);
+            attributes_ordered.add(attribute);
           }
 
           @Override
@@ -133,6 +146,7 @@ public final class FMB
             final long count)
           {
             LOG.debug("triangle count: {}", Long.valueOf(count));
+            triangle_count.set(count);
           }
 
           @Override
@@ -140,6 +154,7 @@ public final class FMB
             final long bits)
           {
             LOG.debug("triangle index size: {}", Long.valueOf(bits));
+            triangle_size.set(bits);
           }
 
           @Override
@@ -345,6 +360,27 @@ public final class FMB
       }
 
       p.parseTriangles();
+
+      final Path out_path = Files.createTempFile("fmb-", ".smfb");
+      LOG.debug("output: {}", out_path);
+
+      try (final OutputStream out = Files.newOutputStream(out_path)) {
+        final SMFSerializerType serial =
+          fmt.serializerCreate(
+            SMFFormatVersion.of(1, 0),
+            out_path,
+            out);
+
+        final SMFHeader.Builder hb = SMFHeader.builder();
+        hb.setVertexCount(vertex_count.get());
+        hb.setTriangleIndexSizeBits(triangle_size.get());
+        hb.setTriangleCount(triangle_count.get());
+        hb.setAttributesByName(
+          javaslang.collection.HashMap.ofAll(attributes));
+        hb.setAttributesInOrder(
+          javaslang.collection.List.ofAll(attributes_ordered));
+        serial.serializeHeader(hb.build());
+      }
     }
   }
 }

@@ -32,6 +32,7 @@ abstract class SMFBAbstractParser implements
   protected final SMFParserEventsType events;
   protected final AtomicReference<ParserState> state;
   protected final SMFBDataReader reader;
+
   SMFBAbstractParser(
     final SMFParserEventsType in_events,
     final SMFBDataReader in_reader,

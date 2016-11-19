@@ -23,7 +23,6 @@ import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
-import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -52,9 +51,6 @@ import java.util.concurrent.atomic.AtomicReference;
 public final class SMFFormatBinary implements SMFParserProviderType,
   SMFSerializerProviderType
 {
-  static final long OFFSET_MAGIC_NUMBER;
-  static final long OFFSET_VERSION_MAJOR;
-  static final long OFFSET_VERSION_MINOR;
   private static final Logger LOG;
   private static final SMFFormatDescription FORMAT;
   private static final byte[] MAGIC_NUMBER;
@@ -87,17 +83,6 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       MAGIC_NUMBER[5] = (byte) 0x0A;
       MAGIC_NUMBER[6] = (byte) 0x1A;
       MAGIC_NUMBER[7] = (byte) 0x0A;
-    }
-
-    {
-      OFFSET_MAGIC_NUMBER = 0L;
-      OFFSET_VERSION_MAJOR = 8L;
-      OFFSET_VERSION_MINOR = OFFSET_VERSION_MAJOR + 4L;
-
-
-      Invariants.checkInvariant(
-        SMFBV1AttributeByteBuffered.sizeInOctets() % 8 == 0,
-        "Attribute size must be divisible by 8");
     }
   }
 
@@ -304,7 +289,9 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       try {
         final byte[] buffer8 = new byte[8];
         super.reader.readBytes(
-          Optional.of("magic number"), buffer8, OFFSET_MAGIC_NUMBER);
+          Optional.of("magic number"),
+          buffer8,
+          SMFBV1Offsets.offsetMagicNumber());
         if (magicNumberIsValid(buffer8)) {
           return this.parseVersion();
         }
@@ -332,9 +319,9 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       throws IOException
     {
       final long major = super.reader.readUnsigned32(
-        Optional.of("major version"), OFFSET_VERSION_MAJOR);
+        Optional.of("major version"), SMFBV1Offsets.offsetVersionMajor());
       final long minor = super.reader.readUnsigned32(
-        Optional.of("minor version"), OFFSET_VERSION_MINOR);
+        Optional.of("minor version"), SMFBV1Offsets.offsetVersionMinor());
 
       final SMFFormatVersion version =
         SMFFormatVersion.of((int) major, (int) minor);

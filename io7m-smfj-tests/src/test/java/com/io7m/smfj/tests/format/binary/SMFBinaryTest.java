@@ -256,11 +256,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
             try {
               final byte[] data = new byte[max];
               final byte[] textb = text.getBytes(StandardCharsets.UTF_8);
-
-              for (int index = 0; index < textb.length; ++index) {
-                data[index] = textb[index];
-              }
-
+              System.arraycopy(textb, 0, data, 0, textb.length);
               this.putU32((long) textb.length);
               os.write(data);
               this.position = this.position + (long) data.length;

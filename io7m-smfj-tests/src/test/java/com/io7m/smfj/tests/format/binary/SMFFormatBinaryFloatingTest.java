@@ -16,19 +16,31 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNameType;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
+import com.io7m.smfj.serializer.api.SMFSerializerType;
+import javaslang.Tuple;
+import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class SMFFormatBinaryFloatingTest extends SMFBinaryTest
 {
@@ -37,6 +49,8 @@ public final class SMFFormatBinaryFloatingTest extends SMFBinaryTest
   static {
     LOG = LoggerFactory.getLogger(SMFFormatBinaryFloatingTest.class);
   }
+
+  @Rule public final ExpectedException expected = ExpectedException.none();
 
   @Test
   public void testDataAttributesFloating64_4(
@@ -852,6 +866,510 @@ public final class SMFFormatBinaryFloatingTest extends SMFBinaryTest
 
     p.parseHeader();
     p.parseAttributeData(SMFAttributeName.of(name));
+  }
+
+  @Test
+  public void testSerializerAttributeTooFew()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        64),
+      SMFAttribute.of(
+        SMFAttributeName.of("y"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        64));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(2L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+
+    this.expected.expect(IllegalStateException.class);
+    serializer.serializeData(SMFAttributeName.of("y"));
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF64_4()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        64));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF64_3()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        3,
+        64));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF64_2()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        2,
+        64));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF64_1()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        1,
+        64));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF32_4()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF32_3()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        3,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF32_2()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        2,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF32_1()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        1,
+        32));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+
+  @Test
+  public void testSerializerAttributeWrongTypeF16_4()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        16));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat3(0.0, 1.0, 2.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF16_3()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        3,
+        16));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF16_2()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        2,
+        16));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+  @Test
+  public void testSerializerAttributeWrongTypeF16_1()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        1,
+        16));
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeData(SMFAttributeName.of("x"));
+
+    this.expected.expect(IllegalArgumentException.class);
+    serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+  }
+
+
+  @Test
+  public void testSerializerAttributeAll()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    List<SMFAttribute> attributes = List.empty();
+    for (final int size : List.of(
+      Integer.valueOf(16),
+      Integer.valueOf(32),
+      Integer.valueOf(64))) {
+      for (final int count : List.of(
+        Integer.valueOf(1),
+        Integer.valueOf(2),
+        Integer.valueOf(3),
+        Integer.valueOf(4))) {
+        attributes = attributes.append(SMFAttribute.of(
+          SMFAttributeName.of(String.format(
+            "%s-%d-%d", SMFComponentType.ELEMENT_TYPE_FLOATING.name(),
+            Integer.valueOf(size),
+            Integer.valueOf(count))),
+          SMFComponentType.ELEMENT_TYPE_FLOATING,
+          count,
+          size));
+      }
+    }
+
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    for (final SMFAttribute attribute : attributes) {
+      serializer.serializeData(attribute.name());
+      switch (attribute.componentCount()) {
+        case 1: {
+          serializer.serializeValueFloat1(0.0);
+          break;
+        }
+        case 2: {
+          serializer.serializeValueFloat2(0.0, 1.0);
+          break;
+        }
+        case 3: {
+          serializer.serializeValueFloat3(0.0, 1.0, 2.0);
+          break;
+        }
+        case 4: {
+          serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
+          break;
+        }
+        default: {
+          throw new UnreachableCodeException();
+        }
+      }
+    }
   }
 }
 

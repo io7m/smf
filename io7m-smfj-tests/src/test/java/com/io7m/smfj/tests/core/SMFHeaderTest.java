@@ -31,7 +31,8 @@ public final class SMFHeaderTest
 {
   @Rule public ExpectedException expected = ExpectedException.none();
 
-  @Test public void testAll()
+  @Test
+  public void testAll()
   {
     final SMFAttribute attr0 = SMFAttribute.of(
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
@@ -51,7 +52,8 @@ public final class SMFHeaderTest
     Assert.assertEquals(HashMap.of(attr0.name(), attr0), h.attributesByName());
   }
 
-  @Test public void testAttributeConsistency0()
+  @Test
+  public void testAttributeConsistency0()
   {
     final SMFAttribute attr0 = SMFAttribute.of(
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
@@ -66,7 +68,8 @@ public final class SMFHeaderTest
     b.build();
   }
 
-  @Test public void testAttributeConsistency1()
+  @Test
+  public void testAttributeConsistency1()
   {
     final SMFAttribute attr0 = SMFAttribute.of(
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
@@ -81,7 +84,8 @@ public final class SMFHeaderTest
     b.build();
   }
 
-  @Test public void testAttributeConsistency2()
+  @Test
+  public void testAttributeConsistency2()
   {
     final SMFAttribute attr0 = SMFAttribute.of(
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
@@ -94,7 +98,8 @@ public final class SMFHeaderTest
     b.build();
   }
 
-  @Test public void testAttributeConsistency3()
+  @Test
+  public void testAttributeConsistency3()
   {
     final SMFAttribute attr0 = SMFAttribute.of(
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);

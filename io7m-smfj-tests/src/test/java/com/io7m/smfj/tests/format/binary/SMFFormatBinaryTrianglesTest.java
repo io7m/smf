@@ -17,18 +17,26 @@
 package com.io7m.smfj.tests.format.binary;
 
 import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.core.SMFAttributeNameType;
-import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
+import com.io7m.smfj.serializer.api.SMFSerializerType;
+import javaslang.Tuple;
+import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
 {
@@ -37,6 +45,8 @@ public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
   static {
     LOG = LoggerFactory.getLogger(SMFFormatBinaryTrianglesTest.class);
   }
+
+  @Rule public final ExpectedException expected = ExpectedException.none();
 
   @Test
   public void testTriangles8(
@@ -174,5 +184,128 @@ public final class SMFFormatBinaryTrianglesTest extends SMFBinaryTest
 
     p.parseHeader();
     p.parseTriangles();
+  }
+
+  @Test
+  public void testSerializeTriangles8()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.empty();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangleCount(1L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeTriangle(0L, 1L, 2L);
+  }
+
+  @Test
+  public void testSerializeTriangles16()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.empty();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(1L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeTriangle(0L, 1L, 2L);
+  }
+
+  @Test
+  public void testSerializeTriangles32()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.empty();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangleCount(1L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeTriangle(0L, 1L, 2L);
+  }
+
+  @Test
+  public void testSerializeTriangles64()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.empty();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(64L);
+    header_b.setTriangleCount(1L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeTriangle(0L, 1L, 2L);
+  }
+
+  @Test
+  public void testSerializeTrianglesTooMany()
+    throws IOException
+  {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final Path path = Paths.get("/data");
+    final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+
+    final SMFSerializerType serializer =
+      new SMFFormatBinary().serializerCreate(version, path, out);
+
+    final List<SMFAttribute> attributes = List.empty();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangleCount(1L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    final SMFHeader header = header_b.build();
+
+    serializer.serializeHeader(header);
+    serializer.serializeTriangle(0L, 1L, 2L);
+
+    this.expected.expect(IllegalStateException.class);
+    serializer.serializeTriangle(0L, 1L, 2L);
   }
 }
