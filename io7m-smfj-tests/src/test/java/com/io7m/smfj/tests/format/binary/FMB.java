@@ -112,55 +112,9 @@ public final class FMB
           }
 
           @Override
-          public void onHeaderStart()
+          public void onHeaderParsed(final SMFHeader header)
           {
-            LOG.debug("parsing header");
-          }
-
-          @Override
-          public void onHeaderAttributeCountReceived(
-            final long count)
-          {
-            LOG.debug("expecting {} attributes", Long.valueOf(count));
-          }
-
-          @Override
-          public void onHeaderVerticesCountReceived(
-            final long count)
-          {
-            LOG.debug("expecting {} vertices", Long.valueOf(count));
-            vertex_count.set(count);
-          }
-
-          @Override
-          public void onHeaderAttributeReceived(
-            final SMFAttribute attribute)
-          {
-            LOG.debug("attribute: {}", attribute);
-            attributes.put(attribute.name(), attribute);
-            attributes_ordered.add(attribute);
-          }
-
-          @Override
-          public void onHeaderTrianglesCountReceived(
-            final long count)
-          {
-            LOG.debug("triangle count: {}", Long.valueOf(count));
-            triangle_count.set(count);
-          }
-
-          @Override
-          public void onHeaderTrianglesIndexSizeReceived(
-            final long bits)
-          {
-            LOG.debug("triangle index size: {}", Long.valueOf(bits));
-            triangle_size.set(bits);
-          }
-
-          @Override
-          public void onHeaderFinish()
-          {
-            LOG.debug("header finished");
+            LOG.debug("header parsed: {}", header);
           }
 
           @Override

@@ -83,8 +83,6 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     LOG.debug("parsing header");
 
     try {
-      super.events.onHeaderStart();
-
       this.vertices_count =
         super.reader.readUnsigned64(
           Optional.of("vertex count"),
@@ -122,21 +120,13 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
       this.checkHeaderAttributes();
 
       if (super.state.get() != ParserState.STATE_FAILED) {
-        super.events.onHeaderAttributeCountReceived(this.attributes_count);
-        for (final SMFAttribute attribute : this.attributes) {
-          super.events.onHeaderAttributeReceived(attribute);
-        }
-        super.events.onHeaderVerticesCountReceived(this.vertices_count);
-        super.events.onHeaderTrianglesCountReceived(this.triangles_count);
-        super.events.onHeaderTrianglesIndexSizeReceived(this.triangles_size_bits);
+        super.events.onHeaderParsed(this.header);
         super.state.set(ParserState.STATE_PARSED_HEADER);
       }
     } catch (final IOException e) {
       super.fail("I/O error: " + e.getMessage());
     } catch (final Exception e) {
       super.fail(e.getMessage());
-    } finally {
-      super.events.onHeaderFinish();
     }
   }
 

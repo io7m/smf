@@ -280,12 +280,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -306,12 +304,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Cannot parse number")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -332,12 +328,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -358,12 +352,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -384,12 +376,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Cannot parse number")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -410,12 +400,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Cannot parse number")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -436,12 +424,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -462,12 +448,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -492,10 +476,8 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -516,12 +498,10 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unrecognized type")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -546,13 +526,11 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
           "Attribute names must be less than 64 characters")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -814,33 +792,34 @@ public final class SMFFormatTextTest
       4,
       16);
 
+    final List<SMFAttribute> attribs = List.of(
+      attr_f1_16,
+      attr_f2_16,
+      attr_f3_16,
+      attr_f4_16,
+      attr_u1_16,
+      attr_u2_16,
+      attr_u3_16,
+      attr_u4_16,
+      attr_s1_16,
+      attr_s2_16,
+      attr_s3_16,
+      attr_s4_16
+    );
+
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(attribs);
+    hb.setAttributesByName(attribs.toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(2L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(4L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-
-      events.onHeaderAttributeCountReceived(12L);
-
-      events.onHeaderAttributeReceived(attr_f1_16);
-      events.onHeaderAttributeReceived(attr_f2_16);
-      events.onHeaderAttributeReceived(attr_f3_16);
-      events.onHeaderAttributeReceived(attr_f4_16);
-
-      events.onHeaderAttributeReceived(attr_u1_16);
-      events.onHeaderAttributeReceived(attr_u2_16);
-      events.onHeaderAttributeReceived(attr_u3_16);
-      events.onHeaderAttributeReceived(attr_u4_16);
-
-      events.onHeaderAttributeReceived(attr_s1_16);
-      events.onHeaderAttributeReceived(attr_s2_16);
-      events.onHeaderAttributeReceived(attr_s3_16);
-      events.onHeaderAttributeReceived(attr_s4_16);
-
-      events.onHeaderVerticesCountReceived(4L);
-      events.onHeaderTrianglesCountReceived(2L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
 
       events.onDataAttributeStart(attr_f1_16);
       events.onDataAttributeValueFloat1(0.0);
@@ -951,10 +930,8 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unrecognized command")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -983,10 +960,8 @@ public final class SMFFormatTextTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Duplicate attribute name: x")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -1023,17 +998,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataAttributeStart(attribute);
       events.onDataAttributeValueIntegerUnsigned4(0L, 0L, 0L, 0L);
       events.onDataAttributeValueIntegerUnsigned4(0L, 0L, 0L, 0L);
@@ -1075,17 +1052,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);
       events.onDataTrianglesFinish();
@@ -1125,17 +1104,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
@@ -1178,17 +1159,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Cannot parse number")));
@@ -1229,17 +1212,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onFinish();
@@ -1272,17 +1257,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Incorrect number of arguments")));
       events.onFinish();
@@ -1318,17 +1305,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
           "Attribute names must be less than 64 characters")));
@@ -1364,17 +1353,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);
       events.onDataTrianglesFinish();
@@ -1424,17 +1415,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);
       events.onDataTrianglesFinish();
@@ -1476,17 +1469,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(3L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unrecognized command")));
       events.onFinish();
@@ -1527,17 +1522,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1585,17 +1582,19 @@ public final class SMFFormatTextTest
       3,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1643,17 +1642,19 @@ public final class SMFFormatTextTest
       2,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1701,17 +1702,19 @@ public final class SMFFormatTextTest
       1,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1760,17 +1763,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1818,17 +1823,19 @@ public final class SMFFormatTextTest
       3,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1876,17 +1883,19 @@ public final class SMFFormatTextTest
       2,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1934,17 +1943,19 @@ public final class SMFFormatTextTest
       1,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -1993,17 +2004,19 @@ public final class SMFFormatTextTest
       4,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -2051,17 +2064,19 @@ public final class SMFFormatTextTest
       3,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -2109,17 +2124,19 @@ public final class SMFFormatTextTest
       2,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
@@ -2167,17 +2184,19 @@ public final class SMFFormatTextTest
       1,
       32);
 
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attribute));
+    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setTriangleCount(1L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(2L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
-      events.onHeaderAttributeReceived(attribute);
-      events.onHeaderVerticesCountReceived(2L);
-      events.onHeaderTrianglesCountReceived(1L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();

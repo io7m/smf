@@ -53,6 +53,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
+  private static SMFHeader header(
+    final SMFAttribute attr)
+  {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attr));
+    hb.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setVertexCount(3L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    return hb.build();
+  }
+  
   @Test
   public void testDataAttributesIntegerSigned64_4(
     final @Mocked SMFParserEventsType events)
@@ -61,30 +73,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 4L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -128,30 +135,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 3L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -195,30 +197,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 2L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -262,30 +259,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 1L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -329,30 +321,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 4L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -396,30 +383,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 3L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -463,30 +445,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 2L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -530,30 +507,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 1L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -597,30 +569,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 4L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -664,30 +631,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 3L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -731,30 +693,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 2L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -798,30 +755,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 1L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -865,30 +817,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 4L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -932,30 +879,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 3L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -999,30 +941,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 2L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -1066,30 +1003,25 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final long component_count = 1L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {

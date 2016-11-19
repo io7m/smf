@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.parser.api;
 
-import com.io7m.smfj.core.SMFAttribute;
+import com.io7m.smfj.core.SMFHeader;
 
 /**
  * Events related to the parsing of headers.
@@ -25,72 +25,10 @@ import com.io7m.smfj.core.SMFAttribute;
 public interface SMFParserEventsHeaderType extends SMFParserEventsErrorType
 {
   /**
-   * Parsing of the header information has started.
+   * Parsing of the header was successful.
    *
-   * <p>If this method is called, then {@link #onHeaderFinish()}
-   * is guaranteed to be called at some point in the
-   * future, regardless of any errors encountered in the mean time.</p>
+   * @param header The parsed header
    */
 
-  void onHeaderStart();
-
-  /**
-   * The number of vertices has been received.
-   *
-   * @param count The vertex count
-   */
-
-  void onHeaderVerticesCountReceived(
-    long count);
-
-  /**
-   * The number of triangles has been received.
-   *
-   * @param count The triangle count
-   */
-
-  void onHeaderTrianglesCountReceived(
-    long count);
-
-  /**
-   * The size of each triangle index in bits has been received.
-   *
-   * @param bits The triangle index size in bits
-   */
-
-  void onHeaderTrianglesIndexSizeReceived(
-    long bits);
-
-  /**
-   * The number of attributes present in the file has been received.
-   *
-   * @param count The number of attributes
-   */
-
-  void onHeaderAttributeCountReceived(
-    long count);
-
-  /**
-   * The definition for an attribute has been received.
-   *
-   * @param attribute The attribute definition
-   */
-
-  void onHeaderAttributeReceived(
-    SMFAttribute attribute);
-
-  /**
-   * Parsing of the header has completed.
-   *
-   * At this point, parsing will only continue beyond this method call
-   * if the following invariants hold:
-   *
-   * <ul>
-   * <li>All attributes are uniquely named; there are no duplicate names.</li>
-   * <li>The number of triangles has been specified.</li>
-   * <li>The number of vertices has been specified.</li>
-   * </ul>
-   */
-
-  void onHeaderFinish();
+  void onHeaderParsed(SMFHeader header);
 }

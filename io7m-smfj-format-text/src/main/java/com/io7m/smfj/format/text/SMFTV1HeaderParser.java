@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -76,8 +77,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     this.log().debug("parsing header");
 
     try {
-      super.events.onHeaderStart();
-
       this.parseHeaderCommands();
 
       if (super.state.get() != ParserState.STATE_FINISHED) {
@@ -85,27 +84,17 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
       }
 
       if (super.state.get() != ParserState.STATE_FINISHED) {
-        super.events.onHeaderAttributeCountReceived(
-          (long) this.attributes_list.size());
-
-        for (final SMFAttribute attribute : this.attributes_list) {
-          super.events.onHeaderAttributeReceived(attribute);
-        }
-
-        if (this.ok_vertices) {
-          super.events.onHeaderVerticesCountReceived(this.vertex_count);
-        }
-
-        if (this.ok_triangles) {
-          super.events.onHeaderTrianglesCountReceived(this.triangle_count);
-          super.events.onHeaderTrianglesIndexSizeReceived(this.triangle_size);
-        }
+        final SMFHeader.Builder hb = SMFHeader.builder();
+        hb.setAttributesInOrder(this.attributes_list);
+        hb.setAttributesByName(this.attributes);
+        hb.setTriangleIndexSizeBits(this.triangle_size);
+        hb.setTriangleCount(this.triangle_count);
+        hb.setVertexCount(this.vertex_count);
+        super.events.onHeaderParsed(hb.build());
       }
 
     } catch (final Exception e) {
       this.fail(e.getMessage());
-    } finally {
-      super.events.onHeaderFinish();
     }
   }
 

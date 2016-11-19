@@ -43,16 +43,28 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
+public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends SMFBinaryTest
 {
   private static final Logger LOG;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFFormatBinaryRandomIntegerSignedTest.class);
+    LOG = LoggerFactory.getLogger(SMFFormatBinaryRandomAccessIntegerSignedTest.class);
   }
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
+  private static SMFHeader header(
+    final SMFAttribute attr)
+  {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attr));
+    hb.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setVertexCount(3L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    return hb.build();
+  }
+  
   @Test
   public void testDataAttributesIntegerSigned64_4(
     final @Mocked SMFParserEventsType events)
@@ -61,30 +73,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -129,30 +136,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -197,30 +199,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -265,30 +262,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -333,30 +325,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -401,30 +388,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -469,30 +451,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -537,30 +514,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -605,30 +577,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -673,30 +640,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -741,30 +703,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -809,30 +766,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -877,30 +829,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
       events.onDataAttributeValueIntegerSigned4(10L, 11L, 12L, 13L);
       events.onDataAttributeValueIntegerSigned4(20L, 21L, 22L, 23L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -945,30 +892,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
       events.onDataAttributeValueIntegerSigned3(10L, 11L, 12L);
       events.onDataAttributeValueIntegerSigned3(20L, 21L, 22L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -1013,30 +955,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
       events.onDataAttributeValueIntegerSigned2(10L, 11L);
       events.onDataAttributeValueIntegerSigned2(20L, 21L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -1081,30 +1018,25 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 8L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+    
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
       events.onDataAttributeValueIntegerSigned1(10L);
       events.onDataAttributeValueIntegerSigned1(20L);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserRandomAccessType p = this.parserRandomFor(events, out -> {
@@ -1174,7 +1106,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
 
     this.expected.expect(IllegalStateException.class);
     serializer.serializeData(SMFAttributeName.of("y"));
@@ -1210,7 +1142,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1243,7 +1175,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1276,7 +1208,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1309,7 +1241,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1342,7 +1274,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1375,7 +1307,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1408,7 +1340,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1441,7 +1373,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
 
@@ -1475,7 +1407,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1508,7 +1440,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1541,7 +1473,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1574,7 +1506,7 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
 
@@ -1623,19 +1555,19 @@ public final class SMFFormatBinaryRandomIntegerSignedTest extends SMFBinaryTest
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {
         case 1: {
-          serializer.serializeValueIntegerSigned1(0);
+          serializer.serializeValueIntegerSigned1(0L);
           break;
         }
         case 2: {
-          serializer.serializeValueIntegerSigned2(0, 1);
+          serializer.serializeValueIntegerSigned2(0L, 1L);
           break;
         }
         case 3: {
-          serializer.serializeValueIntegerSigned3(0, 1, 2);
+          serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
           break;
         }
         case 4: {
-          serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+          serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
           break;
         }
         default: {

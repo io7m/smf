@@ -25,8 +25,10 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
+import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple;
+import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -120,16 +122,19 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
   public void testNoData(
     final @Mocked SMFParserEventsType events)
   {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.empty());
+    hb.setAttributesByName(HashMap.empty());
+    hb.setTriangleCount(0L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setVertexCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(0L);
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
     }};
 
     this.parserSequentialFor(events, out -> {
@@ -154,10 +159,8 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Invalid triangle index size")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -178,262 +181,306 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
   @Test
   public void testHeaderAttributesFloating(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
+    final SMFAttribute f64_4 = SMFAttribute.of(
+      SMFAttributeName.of("F64_4"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      64);
+    final SMFAttribute f64_3 = SMFAttribute.of(
+      SMFAttributeName.of("F64_3"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      64);
+    final SMFAttribute f64_2 = SMFAttribute.of(
+      SMFAttributeName.of("F64_2"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      64);
+    final SMFAttribute f64_1 = SMFAttribute.of(
+      SMFAttributeName.of("F64_1"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      64);
+
+    final SMFAttribute f32_4 = SMFAttribute.of(
+      SMFAttributeName.of("F32_4"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      32);
+    final SMFAttribute f32_3 = SMFAttribute.of(
+      SMFAttributeName.of("F32_3"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      32);
+    final SMFAttribute f32_2 = SMFAttribute.of(
+      SMFAttributeName.of("F32_2"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      32);
+    final SMFAttribute f32_1 = SMFAttribute.of(
+      SMFAttributeName.of("F32_1"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      32);
+
+    final SMFAttribute f16_4 = SMFAttribute.of(
+      SMFAttributeName.of("F16_4"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      16);
+    final SMFAttribute f16_3 = SMFAttribute.of(
+      SMFAttributeName.of("F16_3"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      16);
+    final SMFAttribute f16_2 = SMFAttribute.of(
+      SMFAttributeName.of("F16_2"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      16);
+    final SMFAttribute f16_1 = SMFAttribute.of(
+      SMFAttributeName.of("F16_1"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      16);
+
+    final List<SMFAttribute> xs = List.of(
+      f64_4,
+      f64_3,
+      f64_2,
+      f64_1,
+      f32_4,
+      f32_3,
+      f32_2,
+      f32_1,
+      f16_4,
+      f16_3,
+      f16_2,
+      f16_1
+    );
+
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(xs);
+    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    hb.setVertexCount(0L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(12L);
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_4"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_3"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_2"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_1"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        64
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_4"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_3"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_2"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_1"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        32
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_4"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_3"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_2"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_1"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        16
-      ));
-
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
+      events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
-      out.putBytes(SMFFormatBinary.magicNumber());
-      out.putU32(1L);
-      out.putU32(0L);
+    final SMFParserSequentialType p = this.parserSequentialFor(
+      events,
+      out -> {
+        out.putBytes(SMFFormatBinary.magicNumber());
+        out.putU32(1L);
+        out.putU32(0L);
 
-      out.putU64(0L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(12L);
-      out.putU32(0x7f7f7f7fL);
+        out.putU64(0L);
+        out.putU64(0L);
+        out.putU32(32L);
+        out.putU32(0x7f7f7f7fL);
+        out.putU32(xs.length());
+        out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(4L);
-      out.putU32(64L);
+        out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(4L);
+        out.putU32(64L);
 
-      out.putStringPadded("F64_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(3L);
-      out.putU32(64L);
+        out.putStringPadded("F64_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(3L);
+        out.putU32(64L);
 
-      out.putStringPadded("F64_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(2L);
-      out.putU32(64L);
+        out.putStringPadded("F64_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(2L);
+        out.putU32(64L);
 
-      out.putStringPadded("F64_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(1L);
-      out.putU32(64L);
+        out.putStringPadded("F64_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(1L);
+        out.putU32(64L);
 
-      out.putStringPadded("F32_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(4L);
-      out.putU32(32L);
+        out.putStringPadded("F32_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(4L);
+        out.putU32(32L);
 
-      out.putStringPadded("F32_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(3L);
-      out.putU32(32L);
+        out.putStringPadded("F32_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(3L);
+        out.putU32(32L);
 
-      out.putStringPadded("F32_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(2L);
-      out.putU32(32L);
+        out.putStringPadded("F32_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(2L);
+        out.putU32(32L);
 
-      out.putStringPadded("F32_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(1L);
-      out.putU32(32L);
+        out.putStringPadded("F32_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(1L);
+        out.putU32(32L);
 
-      out.putStringPadded("F16_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(4L);
-      out.putU32(16L);
+        out.putStringPadded("F16_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(4L);
+        out.putU32(16L);
 
-      out.putStringPadded("F16_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(3L);
-      out.putU32(16L);
+        out.putStringPadded("F16_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(3L);
+        out.putU32(16L);
 
-      out.putStringPadded("F16_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(2L);
-      out.putU32(16L);
+        out.putStringPadded("F16_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(2L);
+        out.putU32(16L);
 
-      out.putStringPadded("F16_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
-      out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
-      out.putU32(1L);
-      out.putU32(16L);
-    }).parse();
+        out.putStringPadded("F16_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
+        out.putU32(1L);
+        out.putU32(16L);
+      });
+
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testHeaderAttributesIntegerSigned(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
+    final SMFAttribute f64_4 = SMFAttribute.of(
+      SMFAttributeName.of("F64_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      4,
+      64);
+    final SMFAttribute f64_3 = SMFAttribute.of(
+      SMFAttributeName.of("F64_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      3,
+      64);
+    final SMFAttribute f64_2 = SMFAttribute.of(
+      SMFAttributeName.of("F64_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      2,
+      64);
+    final SMFAttribute f64_1 = SMFAttribute.of(
+      SMFAttributeName.of("F64_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      1,
+      64);
+
+    final SMFAttribute f32_4 = SMFAttribute.of(
+      SMFAttributeName.of("F32_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      4,
+      32);
+    final SMFAttribute f32_3 = SMFAttribute.of(
+      SMFAttributeName.of("F32_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      3,
+      32);
+    final SMFAttribute f32_2 = SMFAttribute.of(
+      SMFAttributeName.of("F32_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      2,
+      32);
+    final SMFAttribute f32_1 = SMFAttribute.of(
+      SMFAttributeName.of("F32_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      1,
+      32);
+
+    final SMFAttribute f16_4 = SMFAttribute.of(
+      SMFAttributeName.of("F16_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      4,
+      16);
+    final SMFAttribute f16_3 = SMFAttribute.of(
+      SMFAttributeName.of("F16_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      3,
+      16);
+    final SMFAttribute f16_2 = SMFAttribute.of(
+      SMFAttributeName.of("F16_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      2,
+      16);
+    final SMFAttribute f16_1 = SMFAttribute.of(
+      SMFAttributeName.of("F16_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      1,
+      16);
+
+    final SMFAttribute f8_4 = SMFAttribute.of(
+      SMFAttributeName.of("F8_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      4,
+      8);
+    final SMFAttribute f8_3 = SMFAttribute.of(
+      SMFAttributeName.of("F8_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      3,
+      8);
+    final SMFAttribute f8_2 = SMFAttribute.of(
+      SMFAttributeName.of("F8_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      2,
+      8);
+    final SMFAttribute f8_1 = SMFAttribute.of(
+      SMFAttributeName.of("F8_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
+      1,
+      8);
+
+    final List<SMFAttribute> xs = List.of(
+      f64_4,
+      f64_3,
+      f64_2,
+      f64_1,
+      f32_4,
+      f32_3,
+      f32_2,
+      f32_1,
+      f16_4,
+      f16_3,
+      f16_2,
+      f16_1,
+      f8_4,
+      f8_3,
+      f8_2,
+      f8_1
+    );
+
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(xs);
+    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    hb.setVertexCount(0L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(12L);
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        4,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        3,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        2,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        1,
-        64
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        4,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        3,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        2,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        1,
-        32
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        4,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        3,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        2,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED,
-        1,
-        16
-      ));
-
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
+      events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -442,7 +489,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU64(0L);
       out.putU32(32L);
       out.putU32(0x7f7f7f7fL);
-      out.putU32(12L);
+      out.putU32(xs.length());
       out.putU32(0x7f7f7f7fL);
 
       out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
@@ -504,102 +551,157 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
-    }).parse();
+
+      out.putStringPadded("F8_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putU32(4L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putU32(3L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putU32(2L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
+      out.putU32(1L);
+      out.putU32(8L);
+    });
+
+    p.parse();
+    p.close();
   }
 
   @Test
   public void testHeaderAttributesIntegerUnsigned(
     final @Mocked SMFParserEventsType events)
+    throws IOException
   {
+    final SMFAttribute f64_4 = SMFAttribute.of(
+      SMFAttributeName.of("F64_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      4,
+      64);
+    final SMFAttribute f64_3 = SMFAttribute.of(
+      SMFAttributeName.of("F64_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      3,
+      64);
+    final SMFAttribute f64_2 = SMFAttribute.of(
+      SMFAttributeName.of("F64_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      2,
+      64);
+    final SMFAttribute f64_1 = SMFAttribute.of(
+      SMFAttributeName.of("F64_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      64);
+
+    final SMFAttribute f32_4 = SMFAttribute.of(
+      SMFAttributeName.of("F32_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      4,
+      32);
+    final SMFAttribute f32_3 = SMFAttribute.of(
+      SMFAttributeName.of("F32_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      3,
+      32);
+    final SMFAttribute f32_2 = SMFAttribute.of(
+      SMFAttributeName.of("F32_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      2,
+      32);
+    final SMFAttribute f32_1 = SMFAttribute.of(
+      SMFAttributeName.of("F32_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      32);
+
+    final SMFAttribute f16_4 = SMFAttribute.of(
+      SMFAttributeName.of("F16_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      4,
+      16);
+    final SMFAttribute f16_3 = SMFAttribute.of(
+      SMFAttributeName.of("F16_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      3,
+      16);
+    final SMFAttribute f16_2 = SMFAttribute.of(
+      SMFAttributeName.of("F16_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      2,
+      16);
+    final SMFAttribute f16_1 = SMFAttribute.of(
+      SMFAttributeName.of("F16_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      16);
+
+    final SMFAttribute f8_4 = SMFAttribute.of(
+      SMFAttributeName.of("F8_4"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      4,
+      8);
+    final SMFAttribute f8_3 = SMFAttribute.of(
+      SMFAttributeName.of("F8_3"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      3,
+      8);
+    final SMFAttribute f8_2 = SMFAttribute.of(
+      SMFAttributeName.of("F8_2"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      2,
+      8);
+    final SMFAttribute f8_1 = SMFAttribute.of(
+      SMFAttributeName.of("F8_1"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      8);
+
+    final List<SMFAttribute> xs = List.of(
+      f64_4,
+      f64_3,
+      f64_2,
+      f64_1,
+      f32_4,
+      f32_3,
+      f32_2,
+      f32_1,
+      f16_4,
+      f16_3,
+      f16_2,
+      f16_1,
+      f8_4,
+      f8_3,
+      f8_2,
+      f8_1
+    );
+
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(xs);
+    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    hb.setVertexCount(0L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(12L);
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        4,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        3,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        2,
-        64
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F64_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        1,
-        64
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        4,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        3,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        2,
-        32
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F32_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        1,
-        32
-      ));
-
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_4"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        4,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_3"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        3,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_2"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        2,
-        16
-      ));
-      events.onHeaderAttributeReceived(SMFAttribute.of(
-        SMFAttributeName.of("F16_1"),
-        SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
-        1,
-        16
-      ));
-
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
+      events.onFinish();
     }};
 
-    this.parserSequentialFor(events, out -> {
+    final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
@@ -608,7 +710,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU64(0L);
       out.putU32(32L);
       out.putU32(0x7f7f7f7fL);
-      out.putU32(12L);
+      out.putU32(xs.length());
       out.putU32(0x7f7f7f7fL);
 
       out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
@@ -670,7 +772,30 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
-    }).parse();
+
+      out.putStringPadded("F8_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
+      out.putU32(4L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
+      out.putU32(3L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
+      out.putU32(2L);
+      out.putU32(8L);
+
+      out.putStringPadded("F8_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
+      out.putU32(1L);
+      out.putU32(8L);
+    });
+
+    p.parse();
+    p.close();
   }
 
   @Test
@@ -681,10 +806,8 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unrecognized type for integer index")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -715,11 +838,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
           "Component count must be in the range [1, 4]")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -750,11 +871,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
           "Component count must be in the range [1, 4]")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 
@@ -785,10 +904,8 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Duplicate attribute name: ATTRIBUTE")));
-      events.onHeaderFinish();
       events.onFinish();
     }};
 

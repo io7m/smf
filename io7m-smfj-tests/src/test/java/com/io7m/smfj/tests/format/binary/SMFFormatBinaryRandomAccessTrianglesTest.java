@@ -24,6 +24,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple;
+import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -52,16 +53,19 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
   public void testTriangles8(
     final @Mocked SMFParserEventsType events)
   {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.empty());
+    hb.setAttributesByName(HashMap.empty());
+    hb.setTriangleCount(2L);
+    hb.setTriangleIndexSizeBits(8L);
+    hb.setVertexCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(0L);
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(2L);
-      events.onHeaderTrianglesIndexSizeReceived(8L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
 
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);
@@ -98,16 +102,19 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
   public void testTriangles16(
     final @Mocked SMFParserEventsType events)
   {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.empty());
+    hb.setAttributesByName(HashMap.empty());
+    hb.setTriangleCount(2L);
+    hb.setTriangleIndexSizeBits(16L);
+    hb.setVertexCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(0L);
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(2L);
-      events.onHeaderTrianglesIndexSizeReceived(16L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
 
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);
@@ -144,16 +151,19 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
   public void testTriangles32(
     final @Mocked SMFParserEventsType events)
   {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.empty());
+    hb.setAttributesByName(HashMap.empty());
+    hb.setTriangleCount(2L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setVertexCount(0L);
+    final SMFHeader h = hb.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(0L);
-      events.onHeaderVerticesCountReceived(0L);
-      events.onHeaderTrianglesCountReceived(2L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
+      events.onHeaderParsed(h);
 
       events.onDataTrianglesStart();
       events.onDataTriangle(0L, 1L, 2L);

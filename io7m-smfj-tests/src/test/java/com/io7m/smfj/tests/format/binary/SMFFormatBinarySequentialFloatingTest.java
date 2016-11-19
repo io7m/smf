@@ -52,6 +52,17 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
+  private static SMFHeader header(final SMFAttribute attr)
+  {
+    final SMFHeader.Builder hb = SMFHeader.builder();
+    hb.setAttributesInOrder(List.of(attr));
+    hb.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
+    hb.setVertexCount(3L);
+    hb.setTriangleIndexSizeBits(32L);
+    hb.setTriangleCount(0L);
+    return hb.build();
+  }
+  
   @Test
   public void testDataAttributesFloating64_4(
     final @Mocked SMFParserEventsType events)
@@ -60,30 +71,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
       events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
       events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -127,30 +133,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
       events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
       events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -194,30 +195,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat2(0.0, 1.0);
       events.onDataAttributeValueFloat2(10.0, 11.0);
       events.onDataAttributeValueFloat2(20.0, 21.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -261,30 +257,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 64L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat1(0.0);
       events.onDataAttributeValueFloat1(10.0);
       events.onDataAttributeValueFloat1(20.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -328,30 +319,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
       events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
       events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -395,30 +381,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
       events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
       events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -462,30 +443,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat2(0.0, 1.0);
       events.onDataAttributeValueFloat2(10.0, 11.0);
       events.onDataAttributeValueFloat2(20.0, 21.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -529,30 +505,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 32L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat1(0.0);
       events.onDataAttributeValueFloat1(10.0);
       events.onDataAttributeValueFloat1(20.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -596,30 +567,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 4L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
       events.onDataAttributeValueFloat4(10.0, 11.0, 12.0, 13.0);
       events.onDataAttributeValueFloat4(20.0, 21.0, 22.0, 23.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -663,30 +629,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 3L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
       events.onDataAttributeValueFloat3(10.0, 11.0, 12.0);
       events.onDataAttributeValueFloat3(20.0, 21.0, 22.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -730,30 +691,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 2L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat2(0.0, 1.0);
       events.onDataAttributeValueFloat2(10.0, 11.0);
       events.onDataAttributeValueFloat2(20.0, 21.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
@@ -797,30 +753,25 @@ public final class SMFFormatBinarySequentialFloatingTest extends SMFBinaryTest
     final long component_count = 1L;
     final long component_size = 16L;
 
+    final SMFAttribute attr = SMFAttribute.of(
+      SMFAttributeName.of(name),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      (int) component_count,
+      (int) component_size);
+
+    final SMFHeader h = header(attr);
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderStart();
-      events.onHeaderAttributeCountReceived(1L);
+      events.onHeaderParsed(h);
 
-      final SMFAttribute attribute = SMFAttribute.of(
-        SMFAttributeName.of(name),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        (int) component_count,
-        (int) component_size);
-      events.onHeaderAttributeReceived(attribute);
-
-      events.onHeaderVerticesCountReceived(3L);
-      events.onHeaderTrianglesCountReceived(0L);
-      events.onHeaderTrianglesIndexSizeReceived(32L);
-      events.onHeaderFinish();
-
-      events.onDataAttributeStart(attribute);
+      events.onDataAttributeStart(attr);
       events.onDataAttributeValueFloat1(0.0);
       events.onDataAttributeValueFloat1(10.0);
       events.onDataAttributeValueFloat1(20.0);
-      events.onDataAttributeFinish(attribute);
+      events.onDataAttributeFinish(attr);
     }};
 
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {

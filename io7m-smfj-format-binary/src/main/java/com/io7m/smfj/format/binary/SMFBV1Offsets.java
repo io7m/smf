@@ -88,22 +88,22 @@ public final class SMFBV1Offsets
 
     if (LOG.isTraceEnabled()) {
       LOG.trace(
-        "OFFSET_HEADER:                  {}",
+        "OFFSET_HEADER:                  0x{}",
         Long.toUnsignedString(OFFSET_HEADER, 16));
       LOG.trace(
-        "OFFSET_HEADER_VERTICES_COUNT:   {}",
+        "OFFSET_HEADER_VERTICES_COUNT:   0x{}",
         Long.toUnsignedString(OFFSET_HEADER_VERTICES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_COUNT:  {}",
+        "OFFSET_HEADER_TRIANGLES_COUNT:  0x{}",
         Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_SIZE:   {}",
+        "OFFSET_HEADER_TRIANGLES_SIZE:   0x{}",
         Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_SIZE, 16));
       LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_COUNT: {}",
+        "OFFSET_HEADER_ATTRIBUTES_COUNT: 0x{}",
         Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_DATA:  {}",
+        "OFFSET_HEADER_ATTRIBUTES_DATA:  0x{}",
         Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_DATA, 16));
     }
   }

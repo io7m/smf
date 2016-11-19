@@ -3,6 +3,7 @@ package com.io7m.smfj.tests.format.text;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -40,6 +41,12 @@ public final class FMT
         fmt.parserCreateSequential(new SMFParserEventsType()
         {
           @Override
+          public void onHeaderParsed(final SMFHeader header)
+          {
+            LOG.debug("header parsed: {}", header);
+          }
+
+          @Override
           public void onStart()
           {
             LOG.debug("parser started");
@@ -72,53 +79,6 @@ public final class FMT
             final SMFFormatVersion version)
           {
             LOG.info("version: {}", version);
-          }
-
-          @Override
-          public void onHeaderStart()
-          {
-            LOG.debug("parsing header");
-          }
-
-          @Override
-          public void onHeaderAttributeCountReceived(
-            final long count)
-          {
-            LOG.debug("expecting {} attributes", Long.valueOf(count));
-          }
-
-          @Override
-          public void onHeaderVerticesCountReceived(
-            final long count)
-          {
-            LOG.debug("expecting {} vertices", Long.valueOf(count));
-          }
-
-          @Override
-          public void onHeaderAttributeReceived(
-            final SMFAttribute attribute)
-          {
-            LOG.debug("attribute: {}", attribute);
-          }
-
-          @Override
-          public void onHeaderTrianglesCountReceived(
-            final long count)
-          {
-            LOG.debug("triangle count: {}", Long.valueOf(count));
-          }
-
-          @Override
-          public void onHeaderTrianglesIndexSizeReceived(
-            final long bits)
-          {
-            LOG.debug("triangle index size: {}", Long.valueOf(bits));
-          }
-
-          @Override
-          public void onHeaderFinish()
-          {
-            LOG.debug("header finished");
           }
 
           @Override
