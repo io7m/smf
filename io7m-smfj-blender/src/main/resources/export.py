@@ -46,12 +46,17 @@ class SMFVertex:
     self.position = mathutils.Vector((0.0, 0.0, 0.0))
     self.normal   = mathutils.Vector((0.0, 0.0, 0.0))
     self.uv       = {}
+    self.groups   = {}
   #end
 #endclass
 
 SMF_LOG_MESSAGE_DEBUG = 0
 SMF_LOG_MESSAGE_INFO  = 1
 SMF_LOG_MESSAGE_ERROR = 2
+
+#
+# A logger that writes to a log file and stdout.
+#
 
 class SMFLogger:
   def __init__(self, severity, file):
@@ -107,6 +112,10 @@ class SMFLogger:
 
 #endclass
 
+#
+# A tuple of vertex indices
+#
+
 class SMFTriangle:
   def __init__(self, v0, v1, v2):
     assert type(v0) == int
@@ -115,6 +124,36 @@ class SMFTriangle:
     self.vertex0 = v0
     self.vertex1 = v1
     self.vertex2 = v2
+  #end
+#endclass
+
+#
+# The data extracted from a mesh object. To produce an SMFMesh, the following
+# items are necessary:
+#
+# 1. A copy of the original mesh data with all non-armature modifiers applied
+# 2. A BMesh constructed from the mesh data copy
+# 3. The set of vertex groups from the original object
+#
+
+class SMFTriangulatedInputMesh:
+  def __init__(self, logger, vertex_groups, mesh_data, b_mesh):
+    assert type(logger) == SMFLogger
+    assert type(vertex_groups) == bpy.types.bpy_prop_collection
+    assert type(mesh_data) == bpy.types.Mesh
+    assert type(b_mesh) == bmesh.types.BMesh
+
+    self.__logger      = logger
+    self.vertex_groups = vertex_groups
+    self.b_mesh        = b_mesh
+    self.mesh_data     = mesh_data
+  #end
+
+  def free(self):
+    self.__logger.debug("SMFTriangulatedInputMesh: freeing %s" % self.mesh_data)
+    bpy.data.meshes.remove(self.mesh_data)
+    self.__logger.debug("SMFTriangulatedInputMesh: freeing %s" % self.b_mesh)
+    self.b_mesh.free()
   #end
 #endclass
 
@@ -128,6 +167,7 @@ class SMFMesh:
     self.triangles = []
     self.triangles_index_size = 32
     self.uv_attributes = None
+    self.groups = None
     self.__logger = logger
 
     for index in range(vertex_count):
@@ -142,13 +182,21 @@ class SMFMesh:
     assert type(vertex) == SMFVertex
 
     self.__logger.debug("addVertex: %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
-    self.__logger.debug("addVertex: %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
+    self.__logger.debug("addVertex: uv %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
+    self.__logger.debug("addVertex: groups %s %s" % (self.groups, sorted(vertex.groups.keys())))
 
     # Ensure that all incoming vertices have the same UV configuration
     if self.uv_attributes != None:
       assert self.uv_attributes == sorted(vertex.uv.keys())
     else:
       self.uv_attributes = sorted(vertex.uv.keys())
+    #endif
+
+    # Ensure that all incoming vertices have the same groups
+    if self.groups != None:
+      assert self.groups == sorted(vertex.groups.keys())
+    else:
+      self.groups = sorted(vertex.groups.keys())
     #endif
 
     existing = self.vertices[index]
@@ -160,7 +208,9 @@ class SMFMesh:
 
     assert type(existing) == SMFVertex
     assert existing.uv.keys() == vertex.uv.keys()
-    if existing.uv == vertex.uv:
+    assert existing.groups.keys() == vertex.groups.keys()
+
+    if existing.uv == vertex.uv and existing.groups == vertex.groups:
       self.__logger.debug("addVertex: [%d] vertices are compatible, reusing" % index)
       return index
     #endif
@@ -223,9 +273,11 @@ class SMFExporter:
   # modifiers (that aren't armature modifiers) applied.
   #
 
-  def __buildMeshCopyWithModifiersApplied(self, mesh):
+  def __buildMeshCopyWithModifiersAppliedAndTriangulated(self, mesh):
     assert type(mesh) == bpy_types.Object
     assert mesh.type == 'MESH'
+
+    self.__logger.debug("__buildMeshCopyWithModifiersAppliedAndTriangulated: %s" % mesh.name)
 
     deactivated = []
     for modifier in mesh.modifiers:
@@ -244,31 +296,24 @@ class SMFExporter:
       modifier.show_viewport = true
     #endfor
 
-    return mesh_copy
-  #end
-
-  #
-  # Meshes must be triangulated for export.
-  #
-
-  def __buildMeshTriangulate(self, mesh):
-    assert type(mesh) == bpy_types.Mesh
-
-    self.__logger.debug("__buildMeshTriangulate: triangulating %s (%s)" % (mesh.name, mesh))
+    self.__logger.debug("__buildMeshCopyWithModifiersAppliedAndTriangulated: triangulating %s (%s)" % (mesh.name, mesh_copy))
 
     bm = bmesh.new()
-    bm.from_mesh(mesh)
+    bm.from_mesh(mesh_copy)
     bmesh.ops.triangulate(bm, faces=bm.faces)
-    return bm
+
+    return SMFTriangulatedInputMesh(self.__logger, mesh.vertex_groups, mesh_copy, bm)
   #end
 
   #
   # Build an SMF mesh from a triangulated mesh.
   #
 
-  def __buildSMFMeshFromTriangulated(self, mesh):
-    assert type(mesh) == bmesh.types.BMesh
+  def __buildSMFMeshFromTriangulated(self, input_mesh):
+    assert type(input_mesh) == SMFTriangulatedInputMesh
 
+    mesh = input_mesh.b_mesh
+    assert type(mesh) == bmesh.types.BMesh
     smf_mesh = SMFMesh(self.__logger, len(mesh.verts))
 
     for face in mesh.faces:
@@ -331,6 +376,39 @@ class SMFExporter:
         v2.uv[uv_name] = uv2
       #endif
 
+      #
+      # Insert weights for all vertex groups to which the vertices belong.
+      # If a vertex is not in a particular group, then it gets a weight of 0.0.
+      #
+
+      for group_name in input_mesh.vertex_groups.keys():
+        group = input_mesh.vertex_groups[group_name]
+        assert type(group) == bpy.types.VertexGroup
+
+        #
+        # The Blender weight() function raises RuntimeError if the given vertex
+        # is not in the group.
+        #
+
+        try:
+          v0.groups[group_name] = group.weight(face_vertex_0.index)
+        except RuntimeError:
+          v0.groups[group_name] = 0.0
+        #endtry
+
+        try:
+          v1.groups[group_name] = group.weight(face_vertex_1.index)
+        except RuntimeError:
+          v1.groups[group_name] = 0.0
+        #endtry
+
+        try:
+          v2.groups[group_name] = group.weight(face_vertex_2.index)
+        except RuntimeError:
+          v2.groups[group_name] = 0.0
+        #endtry
+      #endfor
+
       new_index0 = smf_mesh.addVertex(face_vertex_0.index, v0)
       assert type(new_index0) == int
       new_index1 = smf_mesh.addVertex(face_vertex_1.index, v1)
@@ -348,34 +426,40 @@ class SMFExporter:
     return smf_mesh
   #end
 
+  #
+  # Produce an SMFMesh from a mesh object.
+  #
+
   def __buildMesh(self, mesh):
     assert type(mesh) == bpy_types.Object
     assert mesh.type == 'MESH'
 
-    mesh_copy = self.__buildMeshCopyWithModifiersApplied(mesh)
-    assert type(mesh_copy) == bpy_types.Mesh
+    input_mesh = self.__buildMeshCopyWithModifiersAppliedAndTriangulated(mesh)
+    assert type(input_mesh) == SMFTriangulatedInputMesh
 
-    bm = self.__buildMeshTriangulate(mesh_copy)
-    assert type(bm) == bmesh.types.BMesh
-
-    smf = self.__buildSMFMeshFromTriangulated(bm)
-    self.__logger.debug("__buildMesh: freeing %s" % mesh_copy.name)
-
-    bpy.data.meshes.remove(mesh_copy)
-    bm.free()
+    smf = self.__buildSMFMeshFromTriangulated(input_mesh)
+    input_mesh.free()
     return smf
   #end
+
+  #
+  # Serialize the SMFMesh to the SMF text format.
+  #
 
   def __writeMesh(self, out_file, smf_mesh):
     assert type(out_file) == io.TextIOWrapper
     assert type(smf_mesh) == SMFMesh
 
-    out_file.write("attribute \"POSITION\" 3 32\n")
-    out_file.write("attribute \"NORMAL\" 3 32\n")
+    out_file.write("attribute \"POSITION\" float 3 32\n")
+    out_file.write("attribute \"NORMAL\" float 3 32\n")
 
     for uv in smf_mesh.uv_attributes:
-      out_file.write("attribute \"UV:%s\" 2 32\n" % uv)
-    #endif
+      out_file.write("attribute \"UV:%s\" float 2 32\n" % uv)
+    #endfor
+
+    for group in smf_mesh.groups:
+      out_file.write("attribute \"GROUP:%s\" float 1 32\n" % group)
+    #endfor
 
     triangle_count = len(smf_mesh.triangles)
     vertex_count = len(smf_mesh.vertices)
@@ -404,12 +488,24 @@ class SMFExporter:
       #endfor
     #endfor
 
+    for group in smf_mesh.groups:
+      out_file.write("attribute \"GROUP:%s\"\n" % group)
+      for vertex in smf_mesh.vertices:
+        assert type(vertex) == SMFVertex
+        out_file.write("%.15f\n" % vertex.groups[group])
+      #endfor
+    #endfor
+
     out_file.write("triangles\n")
     for triangle in smf_mesh.triangles:
       assert type(triangle) == SMFTriangle
       out_file.write("%d %d %d\n" % (triangle.vertex0, triangle.vertex1, triangle.vertex2))
     #endfor
   #end
+
+  #
+  # Produce an SMFMesh and serialize it.
+  #
 
   def __writeFile(self, out_file, mesh):
     assert type(out_file) == io.TextIOWrapper
@@ -424,6 +520,13 @@ class SMFExporter:
     self.__logger.debug("__writeFile: type %s" % type(mesh))
     self.__writeMesh(out_file, out)
   #end
+
+  #
+  # The main entry point. Serialize the selected mesh object to a temporary
+  # file. Maintain a log file, fail if any error messages have been logged,
+  # and then atomically rename the temporary file to the given output path
+  # if no errors have occurred.
+  #
 
   def write(self, path):
     assert type(path) == str
