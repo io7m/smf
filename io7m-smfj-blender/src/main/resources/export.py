@@ -20,6 +20,7 @@ import bpy_types
 import datetime
 import io
 import mathutils
+import os
 
 class SMFNoMeshSelected(Exception):
   def __init__(self, value):
@@ -40,12 +41,10 @@ class SMFExportFailed(Exception):
 #endclass
 
 class SMFVertex:
-  position = mathutils.Vector((0.0, 0.0, 0.0))
-  normal   = mathutils.Vector((0.0, 0.0, 0.0))
-
   def __init__(self):
     self.position = mathutils.Vector((0.0, 0.0, 0.0))
     self.normal   = mathutils.Vector((0.0, 0.0, 0.0))
+    self.uv       = {}
   #end
 #endclass
 
@@ -54,10 +53,6 @@ SMF_LOG_MESSAGE_INFO  = 1
 SMF_LOG_MESSAGE_ERROR = 2
 
 class SMFLogger:
-  severity = SMF_LOG_MESSAGE_DEBUG
-  counts   = {}
-  __file   = None
-
   def __init__(self, severity, file):
     assert type(severity) == int
     assert type(file) == io.TextIOWrapper
@@ -112,57 +107,85 @@ class SMFLogger:
 #endclass
 
 class SMFTriangle:
-  __v0 = 0
-  __v1 = 0
-  __v2 = 0
-
   def __init__(self, v0, v1, v2):
     assert type(v0) == int
     assert type(v1) == int
     assert type(v2) == int
-    self.__v0 = v0
-    self.__v1 = v1
-    self.__v2 = v2
+    self.vertex0 = v0
+    self.vertex1 = v1
+    self.vertex2 = v2
   #end
 #endclass
 
 class SMFMesh:
-  __vertices  = []
-  __triangles = []
-  __logger    = None
 
   def __init__(self, logger, vertex_count):
     assert type(logger) == SMFLogger
     assert type(vertex_count) == int
 
+    self.vertices = []
+    self.triangles = []
+    self.triangles_index_size = 32
+    self.uv_attributes = None
     self.__logger = logger
+
     for index in range(vertex_count):
-      self.__vertices.append(SMFVertex())
+      self.vertices.append(None)
     #endfor
 
-    self.__logger.debug("Created mesh with %d vertices" % vertex_count)
+    self.__logger.debug("SMFMesh: created mesh with %d vertices" % vertex_count)
   #end
 
   def addVertex(self, index, vertex):
     assert type(index) == int
     assert type(vertex) == SMFVertex
 
-    return 0
+    self.__logger.debug("addVertex: %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
+    self.__logger.debug("addVertex: %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
+
+    # Ensure that all incoming vertices have the same UV configuration
+    if self.uv_attributes != None:
+      assert self.uv_attributes == sorted(vertex.uv.keys())
+    else:
+      self.uv_attributes = sorted(vertex.uv.keys())
+    #endif
+
+    existing = self.vertices[index]
+    if existing == None:
+      self.__logger.debug("addVertex: [%d] assigned %s" % (index, vertex))
+      self.vertices[index] = vertex
+      return index
+    #endif
+
+    assert type(existing) == SMFVertex
+    assert existing.uv.keys() == vertex.uv.keys()
+    if existing.uv == vertex.uv:
+      self.__logger.debug("addVertex: [%d] vertices are compatible, reusing" % index)
+      return index
+    #endif
+
+    new_index = len(self.vertices) + 1
+    self.__logger.debug("addVertex: [%d] vertices are incompatible, assigning to %d" % (index, new_index))
+    self.vertices.append(vertex)
+    return new_index
   #end
 
   def addTriangle(self, triangle):
     assert type(triangle) == SMFTriangle
+    self.__logger.debug("addTriangle: %d %d %d %s" % (triangle.vertex0, triangle.vertex1, triangle.vertex2, triangle))
+    self.triangles.append(triangle)
   #end
 
 #endclass
 
 class SMFExporter:
-  __axis_matrix     = bpy_extras.io_utils.axis_conversion(to_forward='-Z', to_up='Y').to_4x4()
-  __logger          = None
-  __logger_severity = SMF_LOG_MESSAGE_DEBUG
 
   def __init__(self, options):
     assert type(options) == type({})
+
+    self.__axis_matrix     = bpy_extras.io_utils.axis_conversion(to_forward='-Z', to_up='Y').to_4x4()
+    self.__logger          = None
+    self.__logger_severity = SMF_LOG_MESSAGE_DEBUG
 
     v = options['verbose']
     assert type(v) == bool
@@ -230,7 +253,7 @@ class SMFExporter:
   def __buildMeshTriangulate(self, mesh):
     assert type(mesh) == bpy_types.Mesh
 
-    self.__logger.debug("__buildMeshTriangulate: triangulating %s" % mesh.name)
+    self.__logger.debug("__buildMeshTriangulate: triangulating %s (%s)" % (mesh.name, mesh))
 
     import bmesh
     bm = bmesh.new()
@@ -248,6 +271,11 @@ class SMFExporter:
     assert type(mesh) == bpy_types.Mesh
 
     smf_mesh = SMFMesh(self.__logger, len(mesh.vertices))
+    assert len(smf_mesh.vertices) == len(mesh.vertices)
+
+    for none in smf_mesh.vertices:
+      assert none == None
+    #endfor
 
     for poly in mesh.polygons:
       assert len (poly.vertices) == 3
@@ -272,6 +300,16 @@ class SMFExporter:
       v2.position = self.__transformTranslationToExport(mesh.vertices[vi2].co)
       v2.normal   = self.__transformTranslationToExport(mesh.vertices[vi2].normal)
 
+      if len(mesh.uv_layers) > 0:
+        for uv_map in mesh.uv_layers:
+          name = uv_map.name
+          data = uv_map.data
+          v0.uv[name] = data[vi0].uv
+          v1.uv[name] = data[vi1].uv
+          v2.uv[name] = data[vi2].uv
+        #endfor
+      #endif
+
       new_vi0 = smf_mesh.addVertex(vi0, v0)
       new_vi1 = smf_mesh.addVertex(vi1, v1)
       new_vi2 = smf_mesh.addVertex(vi2, v2)
@@ -287,6 +325,7 @@ class SMFExporter:
     assert mesh.type == 'MESH'
 
     mesh_copy = self.__buildMeshCopyWithModifiersApplied(mesh)
+
     self.__buildMeshTriangulate(mesh_copy)
     self.__logger.debug("__buildMesh: %s" % type(mesh_copy))
 
@@ -302,7 +341,44 @@ class SMFExporter:
     assert type(smf_mesh) == SMFMesh
 
     out_file.write("attribute \"POSITION\" 3 32\n")
-    out_file.write("attribute \"NORMAL\"   3 32\n")
+    out_file.write("attribute \"NORMAL\" 3 32\n")
+
+    for uv in smf_mesh.uv_attributes:
+      out_file.write("attribute \"UV:%s\" 2 32\n" % uv)
+    #endif
+
+    triangle_count = len(smf_mesh.triangles)
+    vertex_count = len(smf_mesh.vertices)
+
+    out_file.write("vertices %d\n" % vertex_count)
+    out_file.write("triangles %d %d\n" % (triangle_count, smf_mesh.triangles_index_size))
+    out_file.write("data\n")
+
+    out_file.write("attribute \"POSITION\"\n")
+    for vertex in smf_mesh.vertices:
+      assert type(vertex) == SMFVertex
+      out_file.write("%.15f %.15f %.15f\n" % (vertex.position.x, vertex.position.y, vertex.position.z))
+    #endfor
+
+    out_file.write("attribute \"NORMAL\"\n")
+    for vertex in smf_mesh.vertices:
+      assert type(vertex) == SMFVertex
+      out_file.write("%.15f %.15f %.15f\n" % (vertex.normal.x, vertex.normal.y, vertex.normal.z))
+    #endfor
+
+    for uv in smf_mesh.uv_attributes:
+      out_file.write("attribute \"UV:%s\"\n" % uv)
+      for vertex in smf_mesh.vertices:
+        assert type(vertex) == SMFVertex
+        out_file.write("%.15f %.15f\n" % (vertex.uv[uv].x, vertex.uv[uv].y))
+      #endfor
+    #endfor
+
+    out_file.write("triangles\n")
+    for triangle in smf_mesh.triangles:
+      assert type(triangle) == SMFTriangle
+      out_file.write("%d %d %d\n" % (triangle.vertex0, triangle.vertex1, triangle.vertex2))
+    #endfor
   #end
 
   def __writeFile(self, out_file, mesh):
@@ -313,6 +389,8 @@ class SMFExporter:
     out_file.write("smf 1 0\n")
 
     out = self.__buildMesh(mesh)
+    assert type(out) == SMFMesh
+
     self.__logger.debug("__writeFile: type %s" % type(mesh))
     self.__writeMesh(out_file, out)
   #end
@@ -320,6 +398,7 @@ class SMFExporter:
   def write(self, path):
     assert type(path) == str
     error_path = path + ".log"
+    tmp_path = path + ".tmp"
 
     with open(error_path, "wt") as error_file:
       self.__logger = SMFLogger(self.__logger_severity, error_file)
@@ -351,8 +430,8 @@ class SMFExporter:
       assert type(mesh) == bpy_types.Object
       assert mesh.type == 'MESH'
 
-      self.__logger.debug("opening: %s" % path)
-      with open(path, "wt") as out_file:
+      self.__logger.debug("opening: %s" % tmp_path)
+      with open(tmp_path, "wt") as out_file:
         self.__writeFile(out_file, mesh)
 
         errors = self.__logger.counts[SMF_LOG_MESSAGE_ERROR]
@@ -361,6 +440,7 @@ class SMFExporter:
           raise SMFExportFailed("Exporting failed due to errors.\nSee the log file at: %s" % error_path)
         else:
           self.__logger.info("Exported successfully")
+          os.rename(tmp_path, path)
         #endif
       #endwith
     #endwith
