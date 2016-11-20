@@ -14,6 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+import bmesh
 import bpy
 import bpy_extras.io_utils
 import bpy_types
@@ -255,12 +256,10 @@ class SMFExporter:
 
     self.__logger.debug("__buildMeshTriangulate: triangulating %s (%s)" % (mesh.name, mesh))
 
-    import bmesh
     bm = bmesh.new()
     bm.from_mesh(mesh)
     bmesh.ops.triangulate(bm, faces=bm.faces)
-    bm.to_mesh(mesh)
-    bm.free()
+    return bm
   #end
 
   #
@@ -268,53 +267,78 @@ class SMFExporter:
   #
 
   def __buildSMFMeshFromTriangulated(self, mesh):
-    assert type(mesh) == bpy_types.Mesh
+    assert type(mesh) == bmesh.types.BMesh
 
-    smf_mesh = SMFMesh(self.__logger, len(mesh.vertices))
-    assert len(smf_mesh.vertices) == len(mesh.vertices)
+    smf_mesh = SMFMesh(self.__logger, len(mesh.verts))
 
-    for none in smf_mesh.vertices:
-      assert none == None
-    #endfor
+    for face in mesh.faces:
+      assert type(face) == bmesh.types.BMFace
 
-    for poly in mesh.polygons:
-      assert len (poly.vertices) == 3
-
-      lo0 = poly.loop_start + 0
-      lo1 = poly.loop_start + 1
-      lo2 = poly.loop_start + 2
-
-      vi0 = mesh.loops[lo0].vertex_index
-      vi1 = mesh.loops[lo1].vertex_index
-      vi2 = mesh.loops[lo2].vertex_index
+      assert len (face.verts) == 3
+      face_vertex_0 = face.verts[0]
+      assert type(face_vertex_0) == bmesh.types.BMVert
+      face_vertex_1 = face.verts[1]
+      assert type(face_vertex_1) == bmesh.types.BMVert
+      face_vertex_2 = face.verts[2]
+      assert type(face_vertex_2) == bmesh.types.BMVert
 
       v0 = SMFVertex()
-      v0.position = self.__transformTranslationToExport(mesh.vertices[vi0].co)
-      v0.normal   = self.__transformTranslationToExport(mesh.vertices[vi0].normal)
+      v0.position = self.__transformTranslationToExport(face_vertex_0.co)
+      v0.normal   = self.__transformTranslationToExport(face_vertex_0.normal)
 
       v1 = SMFVertex()
-      v1.position = self.__transformTranslationToExport(mesh.vertices[vi1].co)
-      v1.normal   = self.__transformTranslationToExport(mesh.vertices[vi1].normal)
+      v1.position = self.__transformTranslationToExport(face_vertex_1.co)
+      v1.normal   = self.__transformTranslationToExport(face_vertex_1.normal)
 
       v2 = SMFVertex()
-      v2.position = self.__transformTranslationToExport(mesh.vertices[vi2].co)
-      v2.normal   = self.__transformTranslationToExport(mesh.vertices[vi2].normal)
+      v2.position = self.__transformTranslationToExport(face_vertex_2.co)
+      v2.normal   = self.__transformTranslationToExport(face_vertex_2.normal)
 
-      if len(mesh.uv_layers) > 0:
-        for uv_map in mesh.uv_layers:
-          name = uv_map.name
-          data = uv_map.data
-          v0.uv[name] = data[vi0].uv
-          v1.uv[name] = data[vi1].uv
-          v2.uv[name] = data[vi2].uv
-        #endfor
+      #
+      # UV coordinate information is stored "per-loop". The Blender documentation
+      # states that a "loop" stores per-face-vertex information: Information
+      # that is specific to a vertex when it appears in a specific face. In
+      # Blender, a vertex may have one set of UV coordinates in one face,
+      # and a completely different set of UV coordinates in another. Because
+      # OpenGL wants one set of UV coordinates per vertex, it's necessary to
+      # duplicate vertices. The duplication is handled when the vertex is
+      # added to the SMFMesh structure.
+      #
+
+      for uv_name in mesh.loops.layers.uv.keys():
+        uv_layer = mesh.loops.layers.uv[uv_name]
+
+        assert (len(face.loops) == 3)
+        face_loop_0 = face.loops[0]
+        assert type(face_loop_0) == bmesh.types.BMLoop
+        face_loop_1 = face.loops[1]
+        assert type(face_loop_1) == bmesh.types.BMLoop
+        face_loop_2 = face.loops[2]
+        assert type(face_loop_2) == bmesh.types.BMLoop
+
+        # Failing to make copies of the UV coordinates here will result
+        # in accessing freed memory when the BMesh is later freed.
+        uv0 = mathutils.Vector(face_loop_0[uv_layer].uv)
+        uv1 = mathutils.Vector(face_loop_1[uv_layer].uv)
+        uv2 = mathutils.Vector(face_loop_2[uv_layer].uv)
+
+        self.__logger.debug("uv[%d]: %s" % (face_vertex_0.index, uv0))
+        self.__logger.debug("uv[%d]: %s" % (face_vertex_1.index, uv1))
+        self.__logger.debug("uv[%d]: %s" % (face_vertex_2.index, uv2))
+
+        v0.uv[uv_name] = uv0
+        v1.uv[uv_name] = uv1
+        v2.uv[uv_name] = uv2
       #endif
 
-      new_vi0 = smf_mesh.addVertex(vi0, v0)
-      new_vi1 = smf_mesh.addVertex(vi1, v1)
-      new_vi2 = smf_mesh.addVertex(vi2, v2)
+      new_index0 = smf_mesh.addVertex(face_vertex_0.index, v0)
+      assert type(new_index0) == int
+      new_index1 = smf_mesh.addVertex(face_vertex_1.index, v1)
+      assert type(new_index1) == int
+      new_index2 = smf_mesh.addVertex(face_vertex_2.index, v2)
+      assert type(new_index2) == int
 
-      smf_mesh.addTriangle(SMFTriangle(new_vi0, new_vi1, new_vi2))
+      smf_mesh.addTriangle(SMFTriangle(new_index0, new_index1, new_index2))
     #endfor
 
     return smf_mesh
@@ -325,14 +349,16 @@ class SMFExporter:
     assert mesh.type == 'MESH'
 
     mesh_copy = self.__buildMeshCopyWithModifiersApplied(mesh)
+    assert type(mesh_copy) == bpy_types.Mesh
 
-    self.__buildMeshTriangulate(mesh_copy)
-    self.__logger.debug("__buildMesh: %s" % type(mesh_copy))
+    bm = self.__buildMeshTriangulate(mesh_copy)
+    assert type(bm) == bmesh.types.BMesh
 
-    smf = self.__buildSMFMeshFromTriangulated(mesh_copy)
+    smf = self.__buildSMFMeshFromTriangulated(bm)
     self.__logger.debug("__buildMesh: freeing %s" % mesh_copy.name)
-    bpy.data.meshes.remove(mesh_copy)
 
+    bpy.data.meshes.remove(mesh_copy)
+    bm.free()
     return smf
   #end
 
