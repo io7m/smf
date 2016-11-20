@@ -165,7 +165,7 @@ class SMFMesh:
       return index
     #endif
 
-    new_index = len(self.vertices) + 1
+    new_index = len(self.vertices)
     self.__logger.debug("addVertex: [%d] vertices are incompatible, assigning to %d" % (index, new_index))
     self.vertices.append(vertex)
     return new_index
@@ -337,6 +337,10 @@ class SMFExporter:
       assert type(new_index1) == int
       new_index2 = smf_mesh.addVertex(face_vertex_2.index, v2)
       assert type(new_index2) == int
+
+      assert new_index0 < len(smf_mesh.vertices)
+      assert new_index1 < len(smf_mesh.vertices)
+      assert new_index2 < len(smf_mesh.vertices)
 
       smf_mesh.addTriangle(SMFTriangle(new_index0, new_index1, new_index2))
     #endfor
