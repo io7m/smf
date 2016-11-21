@@ -197,6 +197,12 @@ final class SMFTV1Serializer implements SMFSerializerType
             this.attribute_queue = this.attribute_queue.tail();
             this.attribute_values_remaining = this.header.vertexCount();
             this.attribute_current = next;
+
+            this.writer.append(
+              String.format(
+                "attribute \"%s\"",
+                this.attribute_current.name().value()));
+            this.writer.newLine();
             return;
           }
         }
