@@ -181,9 +181,9 @@ class SMFMesh:
     assert type(index) == int
     assert type(vertex) == SMFVertex
 
-    self.__logger.debug("addVertex: %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
-    self.__logger.debug("addVertex: uv %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
-    self.__logger.debug("addVertex: groups %s %s" % (self.groups, sorted(vertex.groups.keys())))
+    self.__logger.debug("SMFMesh: addVertex: %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
+    self.__logger.debug("SMFMesh: addVertex: uv %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
+    self.__logger.debug("SMFMesh: addVertex: groups %s %s" % (self.groups, sorted(vertex.groups.keys())))
 
     # Ensure that all incoming vertices have the same UV configuration
     if self.uv_attributes != None:
@@ -201,7 +201,7 @@ class SMFMesh:
 
     existing = self.vertices[index]
     if existing == None:
-      self.__logger.debug("addVertex: [%d] assigned %s" % (index, vertex))
+      self.__logger.debug("SMFMesh: addVertex: [%d] assigned %s" % (index, vertex))
       self.vertices[index] = vertex
       return index
     #endif
@@ -211,19 +211,19 @@ class SMFMesh:
     assert existing.groups.keys() == vertex.groups.keys()
 
     if existing.uv == vertex.uv and existing.groups == vertex.groups:
-      self.__logger.debug("addVertex: [%d] vertices are compatible, reusing" % index)
+      self.__logger.debug("SMFMesh: addVertex: [%d] vertices are compatible, reusing" % index)
       return index
     #endif
 
     new_index = len(self.vertices)
-    self.__logger.debug("addVertex: [%d] vertices are incompatible, assigning to %d" % (index, new_index))
+    self.__logger.debug("SMFMesh: addVertex: [%d] vertices are incompatible, assigning to %d" % (index, new_index))
     self.vertices.append(vertex)
     return new_index
   #end
 
   def addTriangle(self, triangle):
     assert type(triangle) == SMFTriangle
-    self.__logger.debug("addTriangle: %d %d %d %s" % (triangle.vertex0, triangle.vertex1, triangle.vertex2, triangle))
+    self.__logger.debug("SMFMesh: addTriangle: %d %d %d %s" % (triangle.vertex0, triangle.vertex1, triangle.vertex2, triangle))
     self.triangles.append(triangle)
   #end
 
@@ -367,9 +367,9 @@ class SMFExporter:
         uv1 = mathutils.Vector(face_loop_1[uv_layer].uv)
         uv2 = mathutils.Vector(face_loop_2[uv_layer].uv)
 
-        self.__logger.debug("uv[%d]: %s" % (face_vertex_0.index, uv0))
-        self.__logger.debug("uv[%d]: %s" % (face_vertex_1.index, uv1))
-        self.__logger.debug("uv[%d]: %s" % (face_vertex_2.index, uv2))
+        self.__logger.debug("__buildSMFMeshFromTriangulated: uv[%d]: %s" % (face_vertex_0.index, uv0))
+        self.__logger.debug("__buildSMFMeshFromTriangulated: uv[%d]: %s" % (face_vertex_1.index, uv1))
+        self.__logger.debug("__buildSMFMeshFromTriangulated: uv[%d]: %s" % (face_vertex_2.index, uv2))
 
         v0.uv[uv_name] = uv0
         v1.uv[uv_name] = uv1
@@ -563,7 +563,7 @@ class SMFExporter:
       assert type(mesh) == bpy_types.Object
       assert mesh.type == 'MESH'
 
-      self.__logger.debug("opening: %s" % tmp_path)
+      self.__logger.debug("write: opening: %s" % tmp_path)
       with open(tmp_path, "wt") as out_file:
         self.__writeFile(out_file, mesh)
 
