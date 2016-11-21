@@ -15,8 +15,8 @@
  */
 
 /**
- * Documentation.
+ * Specification.
  */
 
-@com.io7m.jnull.NonNullByDefault package com.io7m.jguard.documentation;
+@com.io7m.jnull.NonNullByDefault package com.io7m.smfj.specification;
 

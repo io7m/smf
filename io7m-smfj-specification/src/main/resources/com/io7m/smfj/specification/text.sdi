@@ -1,0 +1,210 @@
+[section [title SMFT - Text Encoding] [id smft]]
+
+[subsection [title Overview] [id smft.overview]]
+[paragraph]
+The [term [type type] SMFT] format is a text encoding for the
+[link [target smf_model.model] SMF model]. The format is separated
+into a [link [target smft.header] header] and [link [target smft.data] data]
+section.
+
+[paragraph]
+The format is line-based, with one [term [type term] command] per line. Lines
+"(excluding" the very first line in the "file)" containing only whitespace, or
+lines beginning with [term [type constant] U+0023] [term [type constant] #] are
+ignored.
+
+[subsection [title Header] [id smft.header]]
+[paragraph]
+The first line of an [term [type type] SMFT] file MUST consist of an
+[link [target smft.header.smf] smf] command. After the initial command, the
+header consists of any number of [term [type term] header commands]
+and is terminated by the [link [target smft.data.commands.data] data] command.
+
+[paragraph]
+A [term [type term] header command] is one of the following:
+
+[formal-item [title "Header Commands"] [id smft.header.commands.list]]
+[list-unordered
+  [item [link [target smft.header.commands.attribute] attribute]]
+  [item [link [target smft.header.commands.schema] schema]]
+  [item [link [target smft.header.commands.triangles] triangles]]
+  [item [link [target smft.header.commands.vertices] vertices]]]
+
+[subsection [title Header - smf] [id smft.header.smf]]
+[paragraph]
+The [term [type command] smf] command specifies the major and minor version of
+the specification to which the rest of the file is expected to conform. The
+first argument specifies the major version, and the second argument specifies
+the minor version. Implementations are required to immediately reject files
+that are not of supported versions, and are required to halt processing of
+the rest of the file in the case of syntax errors.
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "smf Arguments"] [id smft.header.smf.args]]
+[list-ordered
+  [item The non-negative SMF major version]
+  [item The non-negative SMF minor version]]
+
+[formal-item [title "smf"] [id smft.header.smf.def]]
+[verbatim [include "smft-header-smf.ebnf"]]
+
+[subsection [title Header - vertices] [id smft.header.commands.vertices]]
+[paragraph]
+The [term [type command] vertices] command specifies the number of
+[link [target smf_model.vertex] vertices] that will appear in the
+[link [target smft.data] data] section for each attribute.
+
+[formal-item [title "vertices"] [id smft.header.vertices.def]]
+[verbatim [include "smft-header-vertices.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "vertices Arguments"] [id smft.header.vertices.args]]
+[list-ordered
+  [item The non-negative number of vertices that will appear in the file]]
+
+[paragraph]
+The command is required to appear exactly once in the header.
+
+[subsection [title Header - schema] [id smft.header.commands.schema]]
+[paragraph]
+The [term [type command] schema] command specifies the
+[link [target smf_model.schema_id] schema identifier] for the file.
+
+[formal-item [title "schema"] [id smft.header.schema.def]]
+[verbatim [include "smft-header-schema.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "schema Arguments"] [id smft.header.schema.args]]
+[list-ordered
+  [item The vendor ID as a hexadecimal integer]
+  [item The schema ID as a hexadecimal integer]
+  [item The non-negative schema major version]
+  [item The non-negative schema minor version]]
+
+[paragraph]
+The command is allowed to appear at most once in the header. If the command
+is not specified, a default schema identifier consisting of all zeroes is
+implicitly defined.
+
+[subsection [title Header - triangles] [id smft.header.commands.triangles]]
+[paragraph]
+The [term [type command] triangles] command specifies the number of
+[link [target smf_model.triangle] triangles] that will appear in the
+[link [target smft.data] data] section of the file, and the size of the
+vertex indices in bits.
+
+[formal-item [title "triangles"] [id smft.header.triangles.def]]
+[verbatim [include "smft-header-triangles.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "triangles Arguments"] [id smft.header.triangles.args]]
+[list-ordered
+  [item The non-negative triangle count]
+  [item The non-negative size in bits of a triangle vertex index]]
+
+[paragraph]
+The command is required to appear exactly once in the header.
+
+[subsection [title Header - attribute] [id smft.header.commands.attribute]]
+[paragraph]
+The [term [type command] attribute] command specifies an
+[link [target smf_model.attribute] attribute] that will appear in the
+[link [target smft.data] data] section of the file.
+
+[formal-item [title "attribute"] [id smft.header.attribute.def]]
+[verbatim [include "smft-header-attribute.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "attributes Arguments"] [id smft.header.attributes.args]]
+[list-ordered
+  [item The name of the attribute]
+  [item The type of the components in the attribute]
+  [item The non-negative number of components in the attribute]
+  [item The non-negative size in bits of an individual component]]
+
+[paragraph]
+The command is allowed to appear any number of times in the header, but
+all specified attribute names must be unique.
+
+[subsection [title Data] [id smft.data]]
+[paragraph]
+The data section of the file specifies the data for attributes and triangles.
+The section begins with the [link [target smft.data.commands.data] data] command
+and consists of both data and [term [type term] data commands].
+
+[paragraph]
+A [term [type term] data command] is one of the following:
+
+[formal-item [title "Data Commands"] [id smft.data.commands.list]]
+[list-unordered
+  [item [link [target smft.data.commands.attribute] attribute]]
+  [item [link [target smft.data.commands.triangles] triangles]]]
+
+[subsection [title Data - data] [id smft.data.commands.data]]
+[paragraph]
+The [term [type command] data] command indicates the start of the data
+section.
+
+[formal-item [title "data"] [id smft.data.data.def]]
+[verbatim [include "smft-data-data.ebnf"]]
+
+[paragraph]
+The command takes no arguments.
+
+[subsection [title Data - attribute] [id smft.data.commands.attribute]]
+[paragraph]
+The [term [type command] attribute] command indicates the start of data
+for an attribute.
+
+[formal-item [title "attribute"] [id smft.data.attribute.def]]
+[verbatim [include "smft-data-attribute.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "attribute Arguments"] [id smft.data.attribute.args]]
+[list-ordered
+  [item The name of the attribute]]
+
+[paragraph]
+The named attribute must have been declared in the header. For an attribute
+[term [type variable] a] that specifies [term [type variable] c] components
+of type [term [type variable] t], in a file that is specified to contain
+[term [type variable] v] vertices, the next [term [type variable] v] non-empty,
+non-commented lines will contain exactly [term [type variable] c]
+whitespace-separated values of type [term [type variable] t].
+
+[subsection [title Data - triangles] [id smft.data.commands.triangles]]
+[paragraph]
+The [term [type command] triangles] command indicates the start of triangle
+data.
+
+[formal-item [title "triangles"] [id smft.data.triangles.def]]
+[verbatim [include "smft-data-triangles.ebnf"]]
+
+[paragraph]
+The command takes no arguments:
+
+[paragraph]
+In a file that is specified to contain [term [type variable] k] triangles,
+the next [term [type variable] k] non-empty, non-commented lines will contain
+exactly [term [type constant] 3] whitespace-separated unsigned integer values
+each representing the index of a vertex.
+
+[subsection [title Example] [id smft.example]]
+
+[paragraph]
+The following is a complete example of an [term [type type] SMFT] file:
+
+[formal-item [title "smf"] [id smft.example.def]]
+[verbatim [include "example.smft"]]

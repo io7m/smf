@@ -1,0 +1,6 @@
+[document
+  [title ${project.parent.name} ${project.version} Specification]
+  [import "notational.sdi"]
+  [import "model.sdi"]
+  [import "text.sdi"]
+  [import "binary.sdi"]]

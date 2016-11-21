@@ -131,8 +131,8 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           return;
         }
 
-        case "vendor": {
-          this.parseHeaderCommandVendor(line);
+        case "schema": {
+          this.parseHeaderCommandSchema(line);
           break;
         }
 
@@ -162,7 +162,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     }
   }
 
-  private void parseHeaderCommandVendor(final List<String> line)
+  private void parseHeaderCommandSchema(final List<String> line)
   {
     if (line.size() == 5) {
       try {
@@ -183,13 +183,13 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
       } catch (final NumberFormatException e) {
         super.failExpectedGot(
           "Could not parse number: " + e.getMessage(),
-          "vendor <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
+          "schema <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
           line.toJavaStream().collect(Collectors.joining(" ")));
       }
     } else {
       super.failExpectedGot(
         "Incorrect number of arguments",
-        "vendor <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
+        "schema <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
         line.toJavaStream().collect(Collectors.joining(" ")));
     }
   }

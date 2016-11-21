@@ -97,7 +97,7 @@ final class SMFTV1Serializer implements SMFSerializerType
           if (schema_id.vendorID() != 0) {
             this.writer.append(
               String.format(
-                "vendor %8x %8x %d %d",
+                "schema %8x %8x %d %d",
                 Integer.valueOf(schema_id.vendorID()),
                 Integer.valueOf(schema_id.schemaID()),
                 Integer.valueOf(schema_id.schemaMajorVersion()),

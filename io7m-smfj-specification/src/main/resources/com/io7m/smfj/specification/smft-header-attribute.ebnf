@@ -1,0 +1,8 @@
+attribute_name =
+  ? 1-64 (\p{Separator} | "_" | "-" | ".") ? ;
+
+attribute_type =
+  "integer-signed" | "integer-unsigned" | "float" ;
+
+header_command_attribute =
+  "attribute" , attribute_name , attribute_type , integer-unsigned , integer-unsigned ;

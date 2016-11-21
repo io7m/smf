@@ -14,15 +14,15 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.jguard.documentation;
+package com.io7m.smfj.specification;
 
 /**
  * Marker class for looking up files by resource.
  */
 
-public final class Documentation
+public final class Specification
 {
-  private Documentation()
+  private Specification()
   {
     throw new AssertionError("Unreachable code");
   }

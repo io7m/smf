@@ -1,0 +1,79 @@
+[section [title Model] [id smf_model.model]]
+
+[subsection [title Overview] [id smf_model.overview]]
+[paragraph]
+The SMF model is a minimalist, portable storage model for
+[term [type term] triangle mesh data]. SMF files are intended to be consumed by
+3D rendering engines directly and therefore do not contain any complex
+interchange features common to formats such as COLLADA [footnote-ref smf_model.collada].
+The [link [target smft] text] and [link [target smfb] binary] encodings
+of the model are designed to be trivial to parse and to permit the easy
+construction of extremely fast event-based parsers that do not require loading
+the entire file into memory for processing.
+
+[footnote [id smf_model.collada]]
+[link-ext [target "https://en.wikipedia.org/wiki/COLLADA"] "https://en.wikipedia.org/wiki/COLLADA"]
+
+[subsection [title Mesh] [id smf_model.mesh]]
+[paragraph]
+A [term [type term] mesh] in the SMF model is a set of
+[link [target smf_model.triangle] triangles].
+
+[subsection [title Attributes] [id smf_model.attribute]]
+[paragraph]
+An [term [type term] attribute] in the SMF model is an array of elements of
+a given type.
+
+[paragraph]
+Implementations are required to support attributes of at least the following
+types:
+
+[formal-item [title "Types"] [id smf_model.attribute.types]]
+[list-unordered
+  [item 8/16/32/64-bit signed integer vectors of 1-4 components]
+  [item 8/16/32/64-bit unsigned integer vectors of 1-4 components]
+  [item 16/32/64-bit floating point vectors of 1-4 components]]
+
+[subsection [title Vertices] [id smf_model.vertex]]
+[paragraph]
+A [term [type term] vertex] is an abstract object consisting of exactly one
+element taken from each of the defined [link [target smf_model.attribute] attributes].
+A vertex can essentially be considered to be an array index; The vertex at
+index [term [type expression] "n"] can be considered to be the aggregation
+of the [term [type expression] "nth"] elements of all of the defined attributes.
+Vertices are numbered starting at [term [type expression] "0"].
+
+[subsection [title Triangles] [id smf_model.triangle]]
+[paragraph]
+A triangle is a 3-tuple of [link [target smf_model.vertex] vertices]. In the
+SMF model, a triangle references vertices by their numeric index.
+
+[subsection [title Schema ID] [id smf_model.schema_id]]
+[paragraph]
+A [term [type term] schema identifier] is an optional identifier that can be
+inserted into SMF files. Because the SMF model does not predefine any particular
+[link [target smf_model.attribute] attributes], tools that consume SMF
+files cannot know ahead of time if the file they have just loaded will actually
+contain the attributes that they are expecting. A
+[term [type term] schema identifier] effectively provides a concrete name
+for a set of attributes so that tools that process SMF files can perform
+validation of attributes based on the identifier. It is somewhat analogous
+to XML namespace [footnote-ref smf_model.xmlns] declarations; The author of
+a particular document inserts an XML namespace identifier into their document,
+and validation tools use this identifier to locate schema definitions against
+which the document is then validated.
+
+[paragraph]
+A schema identifier consists of four integer values:
+
+[formal-item [title "Schema Identifier"] [id smf_model.schema_id.def]]
+[verbatim [include "schema-id.hs"]]
+
+[paragraph]
+The [term [type term] vendor_id] uniquely identifiers the vendor, the
+[term [type term] schema_id] uniquely identifies the file type, and the
+[term [type term] schema_version_major] and [term [type term] schema_version_minor]
+values identify the version of the schema.
+
+[footnote [id smf_model.xmlns]]
+[link-ext [target "https://en.wikipedia.org/wiki/XML_Namespace"] "https://en.wikipedia.org/wiki/XML_Namespace"]

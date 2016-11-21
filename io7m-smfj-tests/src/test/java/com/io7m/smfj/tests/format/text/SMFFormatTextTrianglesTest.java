@@ -78,7 +78,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 0");
       out.put("triangles 2 8");
       out.put("data");
@@ -119,7 +119,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 0");
       out.put("triangles 2 16");
       out.put("data");
@@ -160,7 +160,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 0");
       out.put("triangles 2 32");
       out.put("data");

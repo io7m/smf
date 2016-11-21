@@ -545,7 +545,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute \"float-1-16\" float 1 16");
     s.append(System.lineSeparator());
@@ -980,7 +980,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1042,7 +1042,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1098,7 +1098,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1157,7 +1157,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1216,7 +1216,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1265,7 +1265,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1314,7 +1314,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1367,7 +1367,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1423,7 +1423,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1493,7 +1493,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1542,7 +1542,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a float 4 32");
     s.append(System.lineSeparator());
@@ -1606,7 +1606,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a float 3 32");
     s.append(System.lineSeparator());
@@ -1670,7 +1670,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a float 2 32");
     s.append(System.lineSeparator());
@@ -1734,7 +1734,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a float 1 32");
     s.append(System.lineSeparator());
@@ -1799,7 +1799,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 4 32");
     s.append(System.lineSeparator());
@@ -1863,7 +1863,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 3 32");
     s.append(System.lineSeparator());
@@ -1927,7 +1927,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 2 32");
     s.append(System.lineSeparator());
@@ -1991,7 +1991,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 1 32");
     s.append(System.lineSeparator());
@@ -2056,7 +2056,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -2120,7 +2120,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 3 32");
     s.append(System.lineSeparator());
@@ -2184,7 +2184,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 2 32");
     s.append(System.lineSeparator());
@@ -2248,7 +2248,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 696F376D A0B0C0D0 1 2");
+    s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 1 32");
     s.append(System.lineSeparator());
@@ -2312,7 +2312,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor");
+    s.append("schema");
     s.append(System.lineSeparator());
 
     new StrictExpectations()
@@ -2336,7 +2336,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor x 0 0 0");
+    s.append("schema x 0 0 0");
     s.append(System.lineSeparator());
 
     new StrictExpectations()
@@ -2360,7 +2360,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 0 x 0 0");
+    s.append("schema 0 x 0 0");
     s.append(System.lineSeparator());
 
     new StrictExpectations()
@@ -2384,7 +2384,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 0 0 x 0");
+    s.append("schema 0 0 x 0");
     s.append(System.lineSeparator());
 
     new StrictExpectations()
@@ -2408,7 +2408,7 @@ public final class SMFFormatTextTest
     final StringBuilder s = new StringBuilder(128);
     s.append("smf 1 0");
     s.append(System.lineSeparator());
-    s.append("vendor 0 0 0 x");
+    s.append("schema 0 0 0 x");
     s.append(System.lineSeparator());
 
     new StrictExpectations()

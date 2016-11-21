@@ -98,7 +98,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -155,7 +155,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -212,7 +212,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -269,7 +269,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -326,7 +326,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -383,7 +383,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -440,7 +440,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -497,7 +497,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -554,7 +554,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -611,7 +611,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -668,7 +668,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -725,7 +725,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -782,7 +782,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -839,7 +839,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -896,7 +896,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -953,7 +953,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
-      out.put("vendor 696F376D A0B0C0D0 1 2");
+      out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
