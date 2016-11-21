@@ -563,10 +563,7 @@ final class SMFTV1Serializer implements SMFSerializerType
     this.checkType(SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED, 1);
 
     try {
-      this.writer.append(
-        String.format(
-          "%s",
-          Long.toUnsignedString(x)));
+      this.writer.append(String.format("%s", Long.toUnsignedString(x)));
       this.writer.newLine();
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
@@ -654,6 +651,8 @@ final class SMFTV1Serializer implements SMFSerializerType
   public void close()
     throws IOException
   {
+    LOG.debug("closing serializer");
+
     switch (this.state) {
       case STATE_INITIAL:
       case STATE_HEADER_SERIALIZED:
@@ -665,6 +664,7 @@ final class SMFTV1Serializer implements SMFSerializerType
         break;
       }
       case STATE_FINISHED: {
+        this.writer.flush();
         break;
       }
     }
