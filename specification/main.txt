@@ -1,0 +1,527 @@
+io7m-smfj 0.1.0 Specification
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1 Notational Conventions [id: conventions]
+
+1.1 Unicode [id: conventions.unicode]
+
+1     The specification makes reference to the Unicode character set which, at
+      the time of writing, is at version 8.0.0. The specification often
+      references specific Unicode characters, and does so using the standard
+      notation U+NNNN, where N represents a hexadecimal digit. For example,
+      U+03BB corresponds to the lowercase lambda symbol λ.
+
+1.2 EBNF [id: conventions.ebnf]
+
+1     The specification gives grammar definitions in ISO/IEC 14977:1996
+      Extended Backus-Naur form.
+
+1.3 Haskell [id: conventions.haskell]
+
+1     Rather than rely on untyped and ambiguous mathematical notation, this
+      documentation expresses all mathematics and type definitions in strict
+      Haskell 2010 [url: http://www.haskell.org/onlinereport/haskell2010/] with
+      no extensions. All Haskell sources are included along with the
+      documentation and can therefore be executed from the command line GHCi
+      [url: http://www.haskell.org/haskellwiki/GHC/GHCi] tool in order to
+      interactively check results and experiment with functions.
+
+2     When used within prose, functions are referred to using fully qualified
+      notation, such as (Vector3f.cross n t). This is the application of the
+      cross function defined in the Vector3f module, to the arguments n and t.
+
+1.4 JPRA [id: conventions.jpra]
+
+1     Definitions of binary structures are given as jpra [url:
+      http://io7m.github.io/jpra/] language definitions. All values are
+      considered to be in big-endian byte order unless otherwise specified.
+
+2 Model [id: smf_model.model]
+
+2.1 Overview [id: smf_model.overview]
+
+1     The SMF model is a minimalist, portable storage model for triangle mesh
+      data. SMF files are intended to be consumed by 3D rendering engines
+      directly and therefore do not contain any complex interchange features
+      common to formats such as COLLADA [0]. The text [ref: smft] and binary
+      [ref: smfb] encodings of the model are designed to be trivial to parse
+      and to permit the easy construction of extremely fast event-based parsers
+      that do not require loading the entire file into memory for processing.
+
+2.2 Mesh [id: smf_model.mesh]
+
+1     A mesh in the SMF model is a set of triangles [ref: smf_model.triangle].
+
+2.3 Attributes [id: smf_model.attribute]
+
+1     An attribute in the SMF model is an array of elements of a given type.
+
+2     Implementations are required to support attributes of at least the
+      following types:
+
+      2.3.3 Types
+      ───────────
+
+      • 8/16/32/64-bit signed integer vectors of 1-4 components
+      • 8/16/32/64-bit unsigned integer vectors of 1-4 components
+      • 16/32/64-bit floating point vectors of 1-4 components
+
+
+2.4 Vertices [id: smf_model.vertex]
+
+1     A vertex is an abstract object consisting of exactly one element taken
+      from each of the defined attributes [ref: smf_model.attribute]. A vertex
+      can essentially be considered to be an array index; The vertex at index n
+      can be considered to be the aggregation of the nth elements of all of the
+      defined attributes. Vertices are numbered starting at 0.
+
+2.5 Triangles [id: smf_model.triangle]
+
+1     A triangle is a 3-tuple of vertices [ref: smf_model.vertex]. In the SMF
+      model, a triangle references vertices by their numeric index.
+
+2.6 Schema ID [id: smf_model.schema_id]
+
+1     A schema identifier is an optional identifier that can be inserted into
+      SMF files. Because the SMF model does not predefine any particular
+      attributes [ref: smf_model.attribute], tools that consume SMF files
+      cannot know ahead of time if the file they have just loaded will actually
+      contain the attributes that they are expecting. A schema identifier
+      effectively provides a concrete name for a set of attributes so that
+      tools that process SMF files can perform validation of attributes based
+      on the identifier. It is somewhat analogous to XML namespace [1]
+      declarations; The author of a particular document inserts an XML
+      namespace identifier into their document, and validation tools use this
+      identifier to locate schema definitions against which the document is
+      then validated.
+
+2     A schema identifier consists of four integer values:
+
+      2.6.3 Schema Identifier
+      ───────────────────────
+
+      data SchemaIdentifier = SchemaIdentifier {
+        vendor_id            :: Word32,
+        schema_id            :: Word32,
+        schema_version_major :: Word32,
+        schema_version_minor :: Word32
+      }
+
+
+4     The vendor_id uniquely identifiers the vendor, the schema_id uniquely
+      identifies the file type, and the schema_version_major and
+      schema_version_minor values identify the version of the schema.
+
+3 SMFT - Text Encoding [id: smft]
+
+3.1 Overview [id: smft.overview]
+
+1     The SMFT format is a text encoding for the SMF model [ref:
+      smf_model.model]. The format is separated into a header [ref:
+      smft.header] and data [ref: smft.data] section.
+
+2     The format is line-based, with one command per line. Lines (excluding the
+      very first line in the file) containing only whitespace, or lines
+      beginning with U+0023 # are ignored.
+
+3.2 Header [id: smft.header]
+
+1     The first line of an SMFT file MUST consist of an smf [ref:
+      smft.header.smf] command. After the initial command, the header consists
+      of any number of header commands and is terminated by the data [ref:
+      smft.data.commands.data] command.
+
+2     A header command is one of the following:
+
+      3.2.3 Header Commands
+      ─────────────────────
+
+      • attribute [ref: smft.header.commands.attribute]
+      • schema [ref: smft.header.commands.schema]
+      • triangles [ref: smft.header.commands.triangles]
+      • vertices [ref: smft.header.commands.vertices]
+
+
+3.3 Header - smf [id: smft.header.smf]
+
+1     The smf command specifies the major and minor version of the
+      specification to which the rest of the file is expected to conform. The
+      first argument specifies the major version, and the second argument
+      specifies the minor version. Implementations are required to immediately
+      reject files that are not of supported versions, and are required to halt
+      processing of the rest of the file in the case of syntax errors.
+
+2     The command takes the following arguments:
+
+      3.3.3 smf Arguments
+      ───────────────────
+
+      0.  The non-negative SMF major version
+      1.  The non-negative SMF minor version
+
+
+      3.3.4 smf
+      ─────────
+
+      header_command_smf =
+        "smf" , integer-unsigned , integer-unsigned ;
+
+3.4 Header - vertices [id: smft.header.commands.vertices]
+
+1     The vertices command specifies the number of vertices [ref:
+      smf_model.vertex] that will appear in the data [ref: smft.data] section
+      for each attribute.
+
+      3.4.2 vertices
+      ──────────────
+
+      header_command_vertices =
+        "vertices" , integer-unsigned ;
+
+3     The command takes the following arguments:
+
+      3.4.4 vertices Arguments
+      ────────────────────────
+
+      0.  The non-negative number of vertices that will appear in the file
+
+
+5     The command is required to appear exactly once in the header.
+
+3.5 Header - schema [id: smft.header.commands.schema]
+
+1     The schema command specifies the schema identifier [ref:
+      smf_model.schema_id] for the file.
+
+      3.5.2 schema
+      ────────────
+
+      header_command_schema =
+        "schema" , integer-unsigned-base16 , integer-unsigned-base16 , integer-unsigned , integer-unsigned ;
+
+3     The command takes the following arguments:
+
+      3.5.4 schema Arguments
+      ──────────────────────
+
+      0.  The vendor ID as a hexadecimal integer
+      1.  The schema ID as a hexadecimal integer
+      2.  The non-negative schema major version
+      3.  The non-negative schema minor version
+
+
+5     The command is allowed to appear at most once in the header. If the
+      command is not specified, a default schema identifier consisting of all
+      zeroes is implicitly defined.
+
+3.6 Header - triangles [id: smft.header.commands.triangles]
+
+1     The triangles command specifies the number of triangles [ref:
+      smf_model.triangle] that will appear in the data [ref: smft.data] section
+      of the file, and the size of the vertex indices in bits.
+
+      3.6.2 triangles
+      ───────────────
+
+      header_command_triangles =
+        "triangles" , integer-unsigned , integer-unsigned ;
+
+3     The command takes the following arguments:
+
+      3.6.4 triangles Arguments
+      ─────────────────────────
+
+      0.  The non-negative triangle count
+      1.  The non-negative size in bits of a triangle vertex index
+
+
+5     The command is required to appear exactly once in the header.
+
+3.7 Header - attribute [id: smft.header.commands.attribute]
+
+1     The attribute command specifies an attribute [ref: smf_model.attribute]
+      that will appear in the data [ref: smft.data] section of the file.
+
+      3.7.2 attribute
+      ───────────────
+
+      attribute_name =
+        ? 1-64 (\p{Separator} | "_" | "-" | ".") ? ;
+
+      attribute_type =
+        "integer-signed" | "integer-unsigned" | "float" ;
+
+      header_command_attribute =
+        "attribute" , attribute_name , attribute_type , integer-unsigned , integer-unsigned ;
+
+
+3     The command takes the following arguments:
+
+      3.7.4 attributes Arguments
+      ──────────────────────────
+
+      0.  The name of the attribute
+      1.  The type of the components in the attribute
+      2.  The non-negative number of components in the attribute
+      3.  The non-negative size in bits of an individual component
+
+
+5     The command is allowed to appear any number of times in the header, but
+      all specified attribute names must be unique.
+
+3.8 Data [id: smft.data]
+
+1     The data section of the file specifies the data for attributes and
+      triangles. The section begins with the data [ref:
+      smft.data.commands.data] command and consists of both data and data
+      commands.
+
+2     A data command is one of the following:
+
+      3.8.3 Data Commands
+      ───────────────────
+
+      • attribute [ref: smft.data.commands.attribute]
+      • triangles [ref: smft.data.commands.triangles]
+
+
+3.9 Data - data [id: smft.data.commands.data]
+
+1     The data command indicates the start of the data section.
+
+      3.9.2 data
+      ──────────
+
+      data_command_data =
+        "data" ;
+
+3     The command takes no arguments.
+
+3.10 Data - attribute [id: smft.data.commands.attribute]
+
+1     The attribute command indicates the start of data for an attribute.
+
+      3.10.2 attribute
+      ────────────────
+
+      data_command_attribute =
+        "attribute" , attribute_name ;
+
+3     The command takes the following arguments:
+
+      3.10.4 attribute Arguments
+      ──────────────────────────
+
+      0.  The name of the attribute
+
+
+5     The named attribute must have been declared in the header. For an
+      attribute a that specifies c components of type t, in a file that is
+      specified to contain v vertices, the next v non-empty, non-commented
+      lines will contain exactly c whitespace-separated values of type t.
+
+3.11 Data - triangles [id: smft.data.commands.triangles]
+
+1     The triangles command indicates the start of triangle data.
+
+      3.11.2 triangles
+      ────────────────
+
+      data_command_triangles =
+        "triangles" ;
+
+3     The command takes no arguments:
+
+4     In a file that is specified to contain k triangles, the next k non-empty,
+      non-commented lines will contain exactly 3 whitespace-separated unsigned
+      integer values each representing the index of a vertex.
+
+3.12 Example [id: smft.example]
+
+1     The following is a complete example of an SMFT file:
+
+      3.12.2 smf
+      ──────────
+
+      smf 1 0
+      vendor 696f376d a0b0c0d0 1 0
+      attribute "POSITION" float 3 32
+      attribute "NORMAL" float 3 32
+      attribute "UV:UVMap" float 2 32
+      attribute "GROUP:group0" float 1 32
+      vertices 9
+      triangles 4 32
+      data
+      attribute "POSITION"
+      0.000000000000000 0.000000000000000 0.000000000000000
+      1.000000000000000 0.000000000000000 0.000000000000000
+      0.000000000000000 0.000000000000000 -2.000000000000000
+      1.000000000000000 0.000000000000000 -2.000000000000000
+      2.000000000000000 0.000000000000000 0.000000000000000
+      2.000000000000000 0.000000000000000 -2.000000000000000
+      1.000000000000000 0.000000000000000 0.000000000000000
+      1.000000000000000 0.000000000000000 -2.000000000000000
+      1.000000000000000 0.000000000000000 0.000000000000000
+      attribute "NORMAL"
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 0.999999940395355 0.000000000000000
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 0.999999940395355 0.000000000000000
+      0.000000000000000 1.000000000000000 0.000000000000000
+      0.000000000000000 0.999999940395355 0.000000000000000
+      attribute "UV:UVMap"
+      0.112528264522552 0.912521243095398
+      0.112528264522552 0.712549567222595
+      0.512471735477448 0.912521243095398
+      0.696853816509247 0.614087224006653
+      0.396896183490753 0.464108407497406
+      0.696853816509247 0.464108407497406
+      0.396896213293076 0.614087224006653
+      0.512471735477448 0.712549448013306
+      0.396896213293076 0.614087224006653
+      attribute "GROUP:group0"
+      0.000000000000000
+      0.300000011920929
+      0.200000002980232
+      0.400000005960464
+      0.600000023841858
+      0.699999988079071
+      0.300000011920929
+      0.400000005960464
+      0.300000011920929
+      triangles
+      1 2 0
+      6 5 3
+      1 7 2
+      8 4 5
+
+
+4 SMFB - Binary Encoding [id: smfb]
+
+4.1 Header [id: smfb.header]
+
+1     The SMFB format is a binary encoding for the SMF model [ref:
+      smf_model.model]. The format is separated into a header [ref:
+      smfb.header.initial] and data [ref: smfb.data.initial] section.
+
+2     All SMFB files begin with a fixed header. The start of the header uses a
+      fixed magic number and a major/minor version number pair indicating the
+      major and minor versions of the specification that defines the file
+      structure.
+
+      4.1.3 Header (Start)
+      ────────────────────
+
+      [record SMFBHeaderStart
+        ([field magic           [integer unsigned 64]]
+         [field version_major   [integer unsigned 32]]
+         [field version_minor   [integer unsigned 32]])]
+
+
+4     The magic number MUST always be 0x89534d460d0a1a0a; implementations are
+      required to immediately reject any files that do not begin with this
+      magic number. The derivation of this constant is taken almost verbatim
+      from the PNG [2] file format with the characters PNG changed to SMF .
+
+5     The header continues with an encoding of the schema ID [ref:
+      smf_model.schema_id].
+
+      4.1.6 Header (schema ID)
+      ────────────────────────
+
+      [record SMFBV1VendorSchemaID
+        ([field vendor_id                   [integer unsigned 32]]
+         [field vendor_schema_id            [integer unsigned 32]]
+         [field vendor_schema_version_major [integer unsigned 32]]
+         [field vendor_schema_version_minor [integer unsigned 32]])]
+
+
+7     The header continues by specifying the number of vertices [ref:
+      smf_model.vertex] present in the file, the number of triangles [ref:
+      smf_model.triangle] present in the file, the size in bits of the
+      individual triangle indices, and the number of attributes [ref:
+      smf_model.attribute] present in the file. Two fields are reserved for
+      future use.
+
+      4.1.8 Header (Counts)
+      ─────────────────────
+
+      [record SMFBV1VendorSchemaID
+        ([field vendor_id                   [integer unsigned 32]]
+         [field vendor_schema_id            [integer unsigned 32]]
+         [field vendor_schema_version_major [integer unsigned 32]]
+         [field vendor_schema_version_minor [integer unsigned 32]])]
+
+      [record SMFBV1Counts
+        ([field vertex_count             [integer unsigned 64]]
+         [field triangle_count           [integer unsigned 64]]
+         [field triangle_index_size_bits [integer unsigned 32]]
+         [field reserved_0               [integer unsigned 32]]
+         [field attribute_count          [integer unsigned 32]]
+         [field reserved_1               [integer unsigned 32]])]
+
+
+9     The header concludes by giving definitions for exactly n attributes,
+      where n is the attribute count specified in the previous section of the
+      header.
+
+      4.1.10 Header (Attributes)
+      ──────────────────────────
+
+      [record SMFBV1Attribute
+        ([field name            [string 64 "UTF-8"]]
+         [field component_kind  [integer unsigned 32]]
+         [field component_count [integer unsigned 32]]
+         [field component_size  [integer unsigned 32]])]
+
+
+11    The header is constructed with no implicit padding and no particular
+      alignment. However, the individual header structures are constructed such
+      that their sizes are always a multiple of 8. This ensures that the data
+      [ref: smfb.data.initial] that immediately follows the header also starts
+      on an 8 octet boundary.
+
+4.2 Data [id: smfb.data]
+
+1     After the header [ref: smfb.header.initial], the data for each attribute
+      [ref: smf_model.attribute] is given in full in the order in which the
+      attributes were declared in the header. Specifically, in a file
+      containing v vertices and a list of n attributes a, the file will contain
+      v values of the type specified in a !! 0, followed by v values of the
+      type specified by a !! 1, and so on up to a !! n - 1.
+
+2     The start of the data for each attribute is aligned to the next 8 octet
+      boundary regardless of type. The alignment is achieved by inserting
+      padding octets at the end of the previous attribute. For example, the
+      following diagram shows how the data is aligned for a file containing
+      three vertices with two attributes A and B. Attribute A consists of three
+      16-bit floating-point components, and attribute B consists for four
+      32-bit floating-point components. As the file has three vertices,
+      3 * 3 = 9 values are placed into the file first, consuming 3 * 3 * 2 = 18
+      octets. Because the next octet, 18, is not divisible by 8, it's necessary
+      to insert 6 octets of padding so that the data for B will start on the
+      next 8 octet boundary.
+
+      4.2.3 Padding
+      ─────────────
+
+      [image: alignment.svg.png] (Padding for alignment)
+
+4     All values are stored in big-endian form.
+
+
+Footnotes
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[0]   https://en.wikipedia.org/wiki/COLLADA [url:
+      https://en.wikipedia.org/wiki/COLLADA]
+
+[1]   https://en.wikipedia.org/wiki/XML_Namespace [url:
+      https://en.wikipedia.org/wiki/XML_Namespace]
+
+[2]   https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header [url:
+      https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header]
+

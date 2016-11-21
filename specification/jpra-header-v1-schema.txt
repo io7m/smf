@@ -1,0 +1,5 @@
+[record SMFBV1VendorSchemaID
+  ([field vendor_id                   [integer unsigned 32]]
+   [field vendor_schema_id            [integer unsigned 32]]
+   [field vendor_schema_version_major [integer unsigned 32]]
+   [field vendor_schema_version_minor [integer unsigned 32]])]

@@ -1,0 +1,43 @@
+[section [title Notational Conventions] [id conventions]]
+
+[subsection [title Unicode] [id conventions.unicode]]
+
+[paragraph]
+The specification makes reference to the Unicode character set which, at the
+time of writing, is at version [term [type constant] 8.0.0]. The specification
+often references specific Unicode characters, and does so using the standard
+notation [term [type constant] U+NNNN], where [term [type variable] N]
+represents a hexadecimal digit. For example, [term [type constant]  U+03BB]
+corresponds to the lowercase lambda symbol [term [type constant] λ].
+
+[subsection [title EBNF] [id conventions.ebnf]]
+
+[paragraph]
+The specification gives grammar definitions in
+[term [type package] ISO/IEC 14977:1996] Extended Backus-Naur form.
+
+[subsection [title Haskell] [id conventions.haskell]]
+
+[paragraph]
+Rather than rely on untyped and ambiguous mathematical notation, this
+documentation expresses all mathematics and type definitions in strict
+[link-ext [target "http://www.haskell.org/onlinereport/haskell2010/"] Haskell 2010]
+with no extensions. All Haskell sources are included along with the
+documentation and can therefore be executed from the command line
+[link-ext [target "http://www.haskell.org/haskellwiki/GHC/GHCi"] GHCi] tool
+in order to interactively check results and experiment with functions.
+
+[paragraph]
+When used within prose, functions are referred to using fully qualified notation,
+such as [term [type expression] "(Vector3f.cross n t)"]. This is the application
+of the [term [type function] cross] function defined in the
+[term [type package] Vector3f] module, to the arguments [term [type variable] n]
+and [term [type variable] t].
+
+[subsection [title JPRA] [id conventions.jpra]]
+
+[paragraph]
+Definitions of binary structures are given as
+[link-ext [target "http://io7m.github.io/jpra/"] jpra] language definitions.
+All values are considered to be in big-endian byte order unless otherwise
+specified.
