@@ -18,9 +18,11 @@
     <module>io7m-smfj-blender</module>
     <module>io7m-smfj-checkstyle</module>
     <module>io7m-smfj-core</module>
+    <module>io7m-smfj-cmdline</module>
     <module>io7m-smfj-documentation</module>
     <module>io7m-smfj-format-binary</module>
     <module>io7m-smfj-format-text</module>
+    <module>io7m-smfj-frontend</module>
     <module>io7m-smfj-parser-api</module>
     <module>io7m-smfj-serializer-api</module>
     <module>io7m-smfj-tests</module>
@@ -308,6 +310,11 @@
           <groupId>com.io7m.jpra</groupId>
           <artifactId>io7m-jpra-maven-plugin</artifactId>
           <version>0.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.4.3</version>
         </plugin>
 
         <!-- Require JDK >= 1.8 -->
