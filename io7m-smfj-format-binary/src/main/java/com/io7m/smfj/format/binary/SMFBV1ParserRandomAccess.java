@@ -158,13 +158,15 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
   {
     NullCheck.notNull(this.offsets, "Offsets");
 
-    final Map<SMFAttributeName, Long> ao = this.offsets.attributeOffsets();
-    final Option<Long> offset_opt = ao.get(name);
-    if (offset_opt.isEmpty()) {
+    final Map<SMFAttributeName, SMFBOctetRange> ao = this.offsets.attributeOffsets();
+    final Option<SMFBOctetRange> range_opt = ao.get(name);
+    if (range_opt.isEmpty()) {
       throw new NoSuchElementException("No such attribute: " + name.value());
     }
 
-    long offset = offset_opt.get().longValue();
+    final SMFBOctetRange range = range_opt.get();
+    long offset = range.octetStart();
+
     final SMFAttribute attribute = this.attributes_named.get(name).get();
     final long size = Math.multiplyExact(
       (long) attribute.componentSizeOctets(),
@@ -180,18 +182,15 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
 
         switch (attribute.componentType()) {
           case ELEMENT_TYPE_INTEGER_SIGNED: {
-            this.parseAttributeDataIntegerSigned(
-              attribute, name_opt, offset);
+            this.parseAttributeDataIntegerSigned(attribute, name_opt, offset);
             break;
           }
           case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-            this.parseAttributeDataIntegerUnsigned(
-              attribute, name_opt, offset);
+            this.parseAttributeDataIntegerUnsigned(attribute, name_opt, offset);
             break;
           }
           case ELEMENT_TYPE_FLOATING: {
-            this.parseAttributeDataFloating(
-              attribute, name_opt, offset);
+            this.parseAttributeDataFloating(attribute, name_opt, offset);
           }
         }
 

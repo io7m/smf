@@ -147,12 +147,12 @@ public final class SMFBV1Offsets
 
   private final long vertices_data_offset;
   private final long triangles_data_offset;
-  private final Map<SMFAttributeName, Long> attributes_offsets;
+  private final Map<SMFAttributeName, SMFBOctetRange> attributes_offsets;
 
   private SMFBV1Offsets(
     final long in_vertices_data_offset,
     final long in_triangles_data_offset,
-    final Map<SMFAttributeName, Long> in_attributes_offsets)
+    final Map<SMFAttributeName, SMFBOctetRange> in_attributes_offsets)
   {
     this.vertices_data_offset =
       in_vertices_data_offset;
@@ -293,11 +293,8 @@ public final class SMFBV1Offsets
   {
     NullCheck.notNull(header, "Header");
 
-    final List<SMFAttribute> attributes =
-      header.attributesInOrder();
-
-    Map<SMFAttributeName, Long> attributes_offsets =
-      HashMap.empty();
+    final List<SMFAttribute> attributes = header.attributesInOrder();
+    Map<SMFAttributeName, SMFBOctetRange> attributes_offsets = HashMap.empty();
 
     final long attribute_definitions_size = Math.multiplyExact(
       (long) SMFBV1AttributeByteBuffered.sizeInOctets(),
@@ -319,25 +316,36 @@ public final class SMFBV1Offsets
         off % 8L == 0L,
         off_now -> "Offset " + off_now + " must be divisible by 8");
 
-      attributes_offsets =
-        attributes_offsets.put(attribute.name(), Long.valueOf(off));
+      final long data_element_size =
+        Math.multiplyExact(
+          (long) attribute.componentSizeOctets(),
+          (long) attribute.componentCount());
 
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(
-          "attribute data offset: {} {}",
-          attribute.name().value(),
-          Long.valueOf(off));
-      }
-
-      final long data_size = Math.multiplyExact(
-        (long) attribute.componentSizeOctets(),
-        (long) attribute.componentCount());
+      final long data_size =
+        Math.multiplyExact(header.vertexCount(), data_element_size);
 
       final long data_size_padded =
         Math.multiplyExact(
           Math.floorDiv(Math.addExact(data_size, 8L), 8L),
           8L);
 
+      final SMFBOctetRange.Builder range_builder = SMFBOctetRange.builder();
+      range_builder.setOctetStart(off);
+      range_builder.setOctetSize(data_size_padded);
+      final SMFBOctetRange range = range_builder.build();
+
+      if (LOG.isDebugEnabled()) {
+        final String text = String.format(
+          "attribute %-16s start %-8s exclusive-upper %-8s size-unpadded %-8s size-final %-8s",
+          attribute.name().value(),
+          Long.toUnsignedString(range.octetStart()),
+          Long.toUnsignedString(range.octetLast()),
+          Long.toUnsignedString(data_size),
+          Long.toUnsignedString(range.octetSize()));
+        LOG.debug("{}", text);
+      }
+
+      attributes_offsets = attributes_offsets.put(attribute.name(), range);
       off = Math.addExact(off, data_size_padded);
     }
 
@@ -382,7 +390,7 @@ public final class SMFBV1Offsets
    * each named attribute
    */
 
-  public Map<SMFAttributeName, Long> attributeOffsets()
+  public Map<SMFAttributeName, SMFBOctetRange> attributeOffsets()
   {
     return this.attributes_offsets;
   }

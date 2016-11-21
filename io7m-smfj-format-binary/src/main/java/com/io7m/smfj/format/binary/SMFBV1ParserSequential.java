@@ -148,16 +148,17 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     }
 
     final SMFAttributeName name = attribute.name();
-    final Map<SMFAttributeName, Long> ao = this.offsets.attributeOffsets();
-    final Option<Long> offset_opt = ao.get(name);
-    if (offset_opt.isEmpty()) {
+    final Map<SMFAttributeName, SMFBOctetRange> ao = this.offsets.attributeOffsets();
+    final Option<SMFBOctetRange> range_opt = ao.get(name);
+    if (range_opt.isEmpty()) {
       throw new NoSuchElementException("No such attribute: " + name.value());
     }
 
     try {
       super.events.onDataAttributeStart(attribute);
 
-      this.parseSkipUntilOffset(offset_opt.get().longValue());
+      final SMFBOctetRange range = range_opt.get();
+      this.parseSkipUntilOffset(range.octetStart());
 
       final Optional<String> name_opt = Optional.of(name.value());
       for (long index = 0L;

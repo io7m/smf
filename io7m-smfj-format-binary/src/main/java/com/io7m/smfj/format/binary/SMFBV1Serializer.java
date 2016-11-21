@@ -250,10 +250,10 @@ final class SMFBV1Serializer implements SMFSerializerType
     final SMFAttributeName name)
     throws IOException
   {
-    final Option<Long> opt = this.offsets.attributeOffsets().get(name);
+    final Option<SMFBOctetRange> opt =
+      this.offsets.attributeOffsets().get(name);
     Invariants.checkInvariant(opt.isDefined(), "Offset is defined");
-    final long off = opt.get().longValue();
-    this.insertAlignmentPadding(off);
+    this.insertAlignmentPadding(opt.get().octetStart());
   }
 
   /**
