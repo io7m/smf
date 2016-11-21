@@ -20,6 +20,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import org.junit.Assert;
@@ -41,6 +42,7 @@ public final class SMFHeaderTest
     b.setTriangleCount(128L);
     b.setTriangleIndexSizeBits(16L);
     b.setVertexCount(256L);
+    b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.of(attr0.name(), attr0));
     final SMFHeader h = b.build();
@@ -61,6 +63,7 @@ public final class SMFHeaderTest
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 3, 32);
 
     final SMFHeader.Builder b = SMFHeader.builder();
+    b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.of(attr1.name(), attr1));
 
@@ -77,6 +80,7 @@ public final class SMFHeaderTest
       SMFAttributeName.of("y"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
 
     final SMFHeader.Builder b = SMFHeader.builder();
+    b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.of(attr1.name(), attr1));
 
@@ -91,6 +95,7 @@ public final class SMFHeaderTest
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
 
     final SMFHeader.Builder b = SMFHeader.builder();
+    b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.empty());
     b.setAttributesByName(HashMap.of(attr0.name(), attr0));
 
@@ -105,6 +110,7 @@ public final class SMFHeaderTest
       SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
 
     final SMFHeader.Builder b = SMFHeader.builder();
+    b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.empty());
 

@@ -29,6 +29,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
@@ -98,6 +99,14 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putBytes(SMFFormatBinary.magicNumber());
           this.writer.putU32((long) this.version.major());
           this.writer.putU32((long) this.version.minor());
+
+          final SMFVendorSchemaIdentifier schema_id =
+            in_header.schemaIdentifier();
+          this.writer.putU32((long) schema_id.vendorID());
+          this.writer.putU32((long) schema_id.schemaID());
+          this.writer.putU32((long) schema_id.schemaMajorVersion());
+          this.writer.putU32((long) schema_id.schemaMinorVersion());
+
           this.writer.putU64(in_header.vertexCount());
           this.writer.putU64(in_header.triangleCount());
           this.writer.putU32(in_header.triangleIndexSizeBits());
@@ -805,7 +814,7 @@ final class SMFBV1Serializer implements SMFSerializerType
           "Attribute data has not yet been serialized");
       }
       case STATE_ATTRIBUTE_DATA_SERIALIZED: {
-        if (this.triangle_values_remaining != 0) {
+        if (this.triangle_values_remaining != 0L) {
           this.serializeTriangleWrite(v0, v1, v2);
           return;
         }

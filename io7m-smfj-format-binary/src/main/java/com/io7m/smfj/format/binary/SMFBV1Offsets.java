@@ -45,6 +45,12 @@ public final class SMFBV1Offsets
   private static final long OFFSET_HEADER_ATTRIBUTES_DATA;
   private static final Logger LOG;
 
+  private static final long OFFSET_SCHEMA_ID;
+  private static final long OFFSET_SCHEMA_VENDOR_ID;
+  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_ID;
+  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR;
+  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR;
+
   static {
     LOG = LoggerFactory.getLogger(SMFBV1Offsets.class);
 
@@ -61,7 +67,24 @@ public final class SMFBV1Offsets
       OFFSET_HEADER % 8L == 0L,
       "OFFSET_HEADER must be divisible by 8");
 
-    OFFSET_HEADER_VERTICES_COUNT = OFFSET_HEADER;
+    OFFSET_SCHEMA_ID = OFFSET_HEADER;
+    Invariants.checkInvariant(
+      OFFSET_SCHEMA_ID % 8L == 0L,
+      "OFFSET_SCHEMA_ID must be divisible by 8");
+
+    OFFSET_SCHEMA_VENDOR_ID = OFFSET_SCHEMA_ID;
+    Invariants.checkInvariant(
+      OFFSET_SCHEMA_VENDOR_ID % 8L == 0L,
+      "OFFSET_SCHEMA_VENDOR_ID must be divisible by 8");
+    OFFSET_SCHEMA_VENDOR_SCHEMA_ID =
+      OFFSET_SCHEMA_VENDOR_ID + 4L;
+    OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR =
+      OFFSET_SCHEMA_VENDOR_SCHEMA_ID + 4L;
+    OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR =
+      OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR + 4L;
+
+    OFFSET_HEADER_VERTICES_COUNT =
+      OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR + 4L;
     Invariants.checkInvariant(
       OFFSET_HEADER_VERTICES_COUNT % 8L == 0L,
       "OFFSET_HEADER_VERTICES_COUNT must be divisible by 8");
@@ -88,22 +111,36 @@ public final class SMFBV1Offsets
 
     if (LOG.isTraceEnabled()) {
       LOG.trace(
-        "OFFSET_HEADER:                  0x{}",
+        "OFFSET_HEADER:                             0x{}",
         Long.toUnsignedString(OFFSET_HEADER, 16));
+
       LOG.trace(
-        "OFFSET_HEADER_VERTICES_COUNT:   0x{}",
+        "OFFSET_SCHEMA_VENDOR_ID:                   0x{}",
+        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_ID, 16));
+      LOG.trace(
+        "OFFSET_SCHEMA_VENDOR_SCHEMA_ID:            0x{}",
+        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_ID, 16));
+      LOG.trace(
+        "OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR: 0x{}",
+        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR, 16));
+      LOG.trace(
+        "OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR: 0x{}",
+        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR, 16));
+
+      LOG.trace(
+        "OFFSET_HEADER_VERTICES_COUNT:              0x{}",
         Long.toUnsignedString(OFFSET_HEADER_VERTICES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_COUNT:  0x{}",
+        "OFFSET_HEADER_TRIANGLES_COUNT:             0x{}",
         Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_SIZE:   0x{}",
+        "OFFSET_HEADER_TRIANGLES_SIZE:              0x{}",
         Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_SIZE, 16));
       LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_COUNT: 0x{}",
+        "OFFSET_HEADER_ATTRIBUTES_COUNT:            0x{}",
         Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_COUNT, 16));
       LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_DATA:  0x{}",
+        "OFFSET_HEADER_ATTRIBUTES_DATA:             0x{}",
         Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_DATA, 16));
     }
   }
@@ -123,6 +160,42 @@ public final class SMFBV1Offsets
       in_triangles_data_offset;
     this.attributes_offsets =
       NullCheck.notNull(in_attributes_offsets, "Offsets");
+  }
+
+  /**
+   * @return The offset in octets of the file's vendor ID
+   */
+
+  public static long offsetSchemaVendorId()
+  {
+    return OFFSET_SCHEMA_VENDOR_ID;
+  }
+
+  /**
+   * @return The offset in octets of the file's vendor schema ID
+   */
+
+  public static long offsetSchemaVendorSchemaId()
+  {
+    return OFFSET_SCHEMA_VENDOR_SCHEMA_ID;
+  }
+
+  /**
+   * @return The offset in octets of the file's vendor schema major version
+   */
+
+  public static long offsetSchemaVendorSchemaVersionMajor()
+  {
+    return OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR;
+  }
+
+  /**
+   * @return The offset in octets of the file's vendor schema minor version
+   */
+
+  public static long offsetSchemaVendorSchemaVersionMinor()
+  {
+    return OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR;
   }
 
   /**

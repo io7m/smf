@@ -19,6 +19,7 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -59,6 +60,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     hb.setTriangleCount(2L);
     hb.setTriangleIndexSizeBits(8L);
     hb.setVertexCount(0L);
+    hb.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader h = hb.build();
 
     new StrictExpectations()
@@ -77,6 +80,11 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
+
+      out.putU32(0x696F376DL);
+      out.putU32(0xA0B0C0D0L);
+      out.putU32(1L);
+      out.putU32(2L);
 
       out.putU64(0L);
       out.putU64(2L);
@@ -108,6 +116,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     hb.setTriangleCount(2L);
     hb.setTriangleIndexSizeBits(16L);
     hb.setVertexCount(0L);
+    hb.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader h = hb.build();
 
     new StrictExpectations()
@@ -126,6 +136,11 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
+
+      out.putU32(0x696F376DL);
+      out.putU32(0xA0B0C0D0L);
+      out.putU32(1L);
+      out.putU32(2L);
 
       out.putU64(0L);
       out.putU64(2L);
@@ -157,6 +172,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     hb.setTriangleCount(2L);
     hb.setTriangleIndexSizeBits(32L);
     hb.setVertexCount(0L);
+    hb.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader h = hb.build();
 
     new StrictExpectations()
@@ -175,6 +192,11 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
+
+      out.putU32(0x696F376DL);
+      out.putU32(0xA0B0C0D0L);
+      out.putU32(1L);
+      out.putU32(2L);
 
       out.putU64(0L);
       out.putU64(2L);
@@ -214,6 +236,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -238,6 +262,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -262,6 +288,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -286,6 +314,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -310,6 +340,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTes
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

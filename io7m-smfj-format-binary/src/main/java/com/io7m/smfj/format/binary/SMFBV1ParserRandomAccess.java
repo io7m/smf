@@ -25,6 +25,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -58,6 +59,10 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
   private long attributes_count;
   private SMFHeader header;
   private SMFBV1Offsets offsets;
+  private long vendor_id;
+  private long vendor_schema_id;
+  private long vendor_schema_version_major;
+  private long vendor_schema_version_minor;
 
   SMFBV1ParserRandomAccess(
     final SMFParserEventsType in_events,
@@ -83,6 +88,23 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     LOG.debug("parsing header");
 
     try {
+      this.vendor_id =
+        super.reader.readUnsigned32(
+          Optional.of("vendor id"),
+          SMFBV1Offsets.offsetSchemaVendorId());
+      this.vendor_schema_id =
+        super.reader.readUnsigned32(
+          Optional.of("vendor schema id"),
+          SMFBV1Offsets.offsetSchemaVendorSchemaId());
+      this.vendor_schema_version_major =
+        super.reader.readUnsigned32(
+          Optional.of("vendor schema version major"),
+          SMFBV1Offsets.offsetSchemaVendorSchemaVersionMajor());
+      this.vendor_schema_version_minor =
+        super.reader.readUnsigned32(
+          Optional.of("vendor schema version minor"),
+          SMFBV1Offsets.offsetSchemaVendorSchemaVersionMinor());
+
       this.vertices_count =
         super.reader.readUnsigned64(
           Optional.of("vertex count"),
@@ -878,12 +900,20 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
       return;
     }
 
+    final SMFVendorSchemaIdentifier.Builder vb =
+      SMFVendorSchemaIdentifier.builder();
+    vb.setVendorID((int) this.vendor_id);
+    vb.setSchemaID((int) this.vendor_schema_id);
+    vb.setSchemaMajorVersion((int) this.vendor_schema_version_major);
+    vb.setSchemaMinorVersion((int) this.vendor_schema_version_minor);
+
     final SMFHeader.Builder hb = SMFHeader.builder();
     hb.setVertexCount(this.vertices_count);
     hb.setTriangleCount(this.triangles_count);
     hb.setTriangleIndexSizeBits(this.triangles_size_bits);
     hb.setAttributesInOrder(this.attributes);
     hb.setAttributesByName(this.attributes_named);
+    hb.setSchemaIdentifier(vb.build());
     this.header = hb.build();
     this.offsets = SMFBV1Offsets.fromHeader(this.header);
   }

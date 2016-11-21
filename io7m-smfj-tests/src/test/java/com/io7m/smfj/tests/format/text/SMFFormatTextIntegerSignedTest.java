@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -61,6 +62,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     hb.setVertexCount(3L);
     hb.setTriangleIndexSizeBits(32L);
     hb.setTriangleCount(0L);
+    hb.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     return hb.build();
   }
   
@@ -95,6 +98,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -151,6 +155,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -207,6 +212,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -263,6 +269,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -319,6 +326,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -375,6 +383,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -431,6 +440,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -487,6 +497,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -543,6 +554,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -599,6 +611,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -655,6 +668,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -711,6 +725,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -767,6 +782,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -823,6 +839,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -879,6 +896,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -935,6 +953,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
 
     final SMFParserSequentialType p = this.parserFor(events, out -> {
       out.put("smf 1 0");
+      out.put("vendor 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
       out.put(String.format(
@@ -989,6 +1008,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1023,6 +1044,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1056,6 +1079,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1089,6 +1114,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1122,6 +1149,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1155,6 +1184,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1188,6 +1219,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1221,6 +1254,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1254,6 +1289,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1288,6 +1325,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1321,6 +1360,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1354,6 +1395,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1387,6 +1430,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1435,6 +1480,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

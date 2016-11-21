@@ -65,6 +65,13 @@ public interface SMFHeaderType
   }
 
   /**
+   * @return The vendor schema ID in the file
+   */
+
+  @Value.Parameter
+  SMFVendorSchemaIdentifier schemaIdentifier();
+
+  /**
    * @return The attributes in the order that they appeared in the file
    */
 

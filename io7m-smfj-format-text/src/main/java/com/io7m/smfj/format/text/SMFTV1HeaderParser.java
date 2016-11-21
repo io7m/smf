@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -54,6 +55,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   protected long triangle_size;
   private boolean ok_vertices;
   private boolean ok_triangles;
+  private SMFVendorSchemaIdentifier schema_id;
 
   SMFTV1HeaderParser(
     final SMFTAbstractParser in_parent,
@@ -69,6 +71,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     this.attributes = HashMap.empty();
     this.ok_vertices = false;
     this.ok_triangles = false;
+    this.schema_id = SMFVendorSchemaIdentifier.of(0, 0, 0, 0);
   }
 
   @Override
@@ -90,6 +93,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         hb.setTriangleIndexSizeBits(this.triangle_size);
         hb.setTriangleCount(this.triangle_count);
         hb.setVertexCount(this.vertex_count);
+        hb.setSchemaIdentifier(this.schema_id);
         super.events.onHeaderParsed(hb.build());
       }
 
@@ -127,6 +131,11 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           return;
         }
 
+        case "vendor": {
+          this.parseHeaderCommandVendor(line);
+          break;
+        }
+
         case "vertices": {
           this.parseHeaderCommandVertices(line);
           break;
@@ -145,11 +154,43 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         default: {
           super.failExpectedGot(
             "Unrecognized command.",
-            "attribute | triangles | vertices | data",
+            "attribute | triangles | vertices | data | vendor",
             line.toJavaStream().collect(Collectors.joining(" ")));
           return;
         }
       }
+    }
+  }
+
+  private void parseHeaderCommandVendor(final List<String> line)
+  {
+    if (line.size() == 5) {
+      try {
+        final int vendor_id =
+          Integer.parseUnsignedInt(line.get(1), 16);
+        final int vendor_schema =
+          Integer.parseUnsignedInt(line.get(2), 16);
+        final int vendor_schema_version_major =
+          Integer.parseUnsignedInt(line.get(3));
+        final int vendor_schema_version_minor =
+          Integer.parseUnsignedInt(line.get(4));
+
+        this.schema_id = SMFVendorSchemaIdentifier.of(
+          vendor_id,
+          vendor_schema,
+          vendor_schema_version_major,
+          vendor_schema_version_minor);
+      } catch (final NumberFormatException e) {
+        super.failExpectedGot(
+          "Could not parse number: " + e.getMessage(),
+          "vendor <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
+          line.toJavaStream().collect(Collectors.joining(" ")));
+      }
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "vendor <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
     }
   }
 
