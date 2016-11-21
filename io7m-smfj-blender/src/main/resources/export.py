@@ -284,7 +284,7 @@ class SMFExporter:
       if modifier.type == 'ARMATURE' and modifier.show_viewport:
         self.__logger.debug("__buildMesh: deactivating preview for %s" % mesh.name)
         deactivated.append(modifier)
-        modifier.show_viewport = false
+        modifier.show_viewport = False
       #endif
     #endfor
 
@@ -292,8 +292,7 @@ class SMFExporter:
 
     for modifier in deactivated:
       self.__logger.debug("__buildMesh: reactivating preview for %s" % mesh.name)
-      deactivated.append(modifier)
-      modifier.show_viewport = true
+      modifier.show_viewport = True
     #endfor
 
     self.__logger.debug("__buildMeshCopyWithModifiersAppliedAndTriangulated: triangulating %s (%s)" % (mesh.name, mesh_copy))
