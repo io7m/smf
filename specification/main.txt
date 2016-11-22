@@ -54,7 +54,9 @@ io7m-smfj 0.1.0 Specification
 
 2.3 Attributes [id: smf_model.attribute]
 
-1     An attribute in the SMF model is an array of elements of a given type.
+1     An attribute in the SMF model is a uniquely-named array of elements of a
+      given type. All attributes within a particular SMF file have the same
+      number of elements.
 
 2     Implementations are required to support attributes of at least the
       following types:
@@ -246,7 +248,7 @@ io7m-smfj 0.1.0 Specification
       ───────────────
 
       attribute_name =
-        ? 1-64 (\p{Separator} | "_" | "-" | ".") ? ;
+        ? [\p{IsAlphabetic}\p{IsDigit}_\-\.]{1,64} ? ;
 
       attribute_type =
         "integer-signed" | "integer-unsigned" | "float" ;

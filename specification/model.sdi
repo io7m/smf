@@ -21,8 +21,9 @@ A [term [type term] mesh] in the SMF model is a set of
 
 [subsection [title Attributes] [id smf_model.attribute]]
 [paragraph]
-An [term [type term] attribute] in the SMF model is an array of elements of
-a given type.
+An [term [type term] attribute] in the SMF model is a uniquely-named array of
+elements of a given type. All attributes within a particular SMF file have the
+same number of elements.
 
 [paragraph]
 Implementations are required to support attributes of at least the following
