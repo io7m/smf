@@ -21,6 +21,7 @@
     <module>io7m-smfj-core</module>
     <module>io7m-smfj-documentation</module>
     <module>io7m-smfj-format-binary</module>
+    <module>io7m-smfj-format-obj</module>
     <module>io7m-smfj-format-text</module>
     <module>io7m-smfj-frontend</module>
     <module>io7m-smfj-parser-api</module>
@@ -105,6 +106,11 @@
         <groupId>com.io7m.ieee754b16</groupId>
         <artifactId>io7m-ieee754b16-core</artifactId>
         <version>[1.0.2, 2.0.0)</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jobj</groupId>
+        <artifactId>io7m-jobj-core</artifactId>
+        <version>0.2.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jtensors</groupId>

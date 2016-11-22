@@ -44,6 +44,7 @@ public final class SMFAttributeNameTest
       "_",
       "-",
       ".",
+      ":",
       "Ямогуестьстекло",
       "Μπορώ"
     };

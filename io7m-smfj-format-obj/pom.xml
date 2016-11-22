@@ -10,11 +10,11 @@
     <artifactId>io7m-smfj</artifactId>
     <version>0.1.0</version>
   </parent>
-  <artifactId>io7m-smfj-tests</artifactId>
+  <artifactId>io7m-smfj-format-obj</artifactId>
 
-  <packaging>jar</packaging>
-  <name>io7m-smfj-tests</name>
-  <description>Sequential mesh format (Tests)</description>
+  <packaging>bundle</packaging>
+  <name>io7m-smfj-format-obj</name>
+  <description>Sequential mesh format (Wavefront OBJ importer)</description>
   <url>http://io7m.github.io/smfj/</url>
 
   <scm>
@@ -34,41 +34,41 @@
       <artifactId>io7m-smfj-parser-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-text</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.io7m.jaffirm</groupId>
+      <artifactId>io7m-jaffirm-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-binary</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.io7m.jnull</groupId>
+      <artifactId>io7m-jnull-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-obj</artifactId>
-      <version>${project.version}</version>
+      <groupId>com.io7m.junreachable</groupId>
+      <artifactId>io7m-junreachable-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jobj</groupId>
+      <artifactId>io7m-jobj-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jtensors</groupId>
+      <artifactId>io7m-jtensors-core</artifactId>
     </dependency>
 
-    <!-- JMockit MUST appear before junit, until junit 5 is released -->
     <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <scope>test</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <scope>provided</scope>
+    </dependency>
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.marschall</groupId>
-      <artifactId>memoryfilesystem</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -79,6 +79,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <!-- Produce OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              com.io7m.smfj.obj
+            </Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

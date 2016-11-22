@@ -36,6 +36,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>io7m-smfj-format-obj</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>io7m-smfj-frontend</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -133,7 +138,19 @@
                   </includes>
                 </filter>
                 <filter>
+                  <artifact>com.io7m.jobj:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+                <filter>
                   <artifact>com.io7m.jpra:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+                <filter>
+                  <artifact>com.io7m.jtensors:*</artifact>
                   <includes>
                     <include>**</include>
                   </includes>
