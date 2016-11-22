@@ -529,7 +529,7 @@ public final class SMFFormatTextTest
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
-          "Attribute names must be less than 64 characters")));
+          "Attribute names must match the pattern")));
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith("Unexpected EOF")));
       events.onFinish();
@@ -1353,7 +1353,7 @@ public final class SMFFormatTextTest
       events.onHeaderParsed(h);
       events.onError(this.withArgThat(
         new ParseErrorMessageStartsWith(
-          "Attribute names must be less than 64 characters")));
+          "Attribute names must match the pattern")));
       events.onFinish();
     }};
 

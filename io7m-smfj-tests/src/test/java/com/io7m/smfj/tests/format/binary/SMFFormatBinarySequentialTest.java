@@ -19,6 +19,7 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNameType;
+import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
@@ -327,62 +328,62 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         out.putU32(xs.length());
         out.putU32(0x7f7f7f7fL);
 
-        out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(4L);
         out.putU32(64L);
 
-        out.putStringPadded("F64_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F64_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(3L);
         out.putU32(64L);
 
-        out.putStringPadded("F64_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F64_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(2L);
         out.putU32(64L);
 
-        out.putStringPadded("F64_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F64_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(1L);
         out.putU32(64L);
 
-        out.putStringPadded("F32_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F32_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(4L);
         out.putU32(32L);
 
-        out.putStringPadded("F32_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F32_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(3L);
         out.putU32(32L);
 
-        out.putStringPadded("F32_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F32_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(2L);
         out.putU32(32L);
 
-        out.putStringPadded("F32_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F32_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(1L);
         out.putU32(32L);
 
-        out.putStringPadded("F16_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F16_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(4L);
         out.putU32(16L);
 
-        out.putStringPadded("F16_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F16_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(3L);
         out.putU32(16L);
 
-        out.putStringPadded("F16_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F16_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(2L);
         out.putU32(16L);
 
-        out.putStringPadded("F16_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+        out.putStringPadded("F16_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
         out.putU32(1L);
         out.putU32(16L);
@@ -535,82 +536,82 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(xs.length());
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(4L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(3L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(2L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(64L);
 
-      out.putStringPadded("F32_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(4L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(3L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(2L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(32L);
 
-      out.putStringPadded("F16_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(4L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(3L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(2L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
 
-      out.putStringPadded("F8_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(4L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(3L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(2L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(1L);
       out.putU32(8L);
@@ -763,82 +764,82 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(xs.length());
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(4L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(3L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(2L);
       out.putU32(64L);
 
-      out.putStringPadded("F64_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(64L);
 
-      out.putStringPadded("F32_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(4L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(3L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(2L);
       out.putU32(32L);
 
-      out.putStringPadded("F32_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F32_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(32L);
 
-      out.putStringPadded("F16_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(4L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(3L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(2L);
       out.putU32(16L);
 
-      out.putStringPadded("F16_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F16_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(16L);
 
-      out.putStringPadded("F8_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(4L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_3", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_3", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(3L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_2", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_2", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(2L);
       out.putU32(8L);
 
-      out.putStringPadded("F8_1", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F8_1", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(1L);
       out.putU32(8L);
@@ -879,7 +880,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32(100L);
       out.putU32(4L);
       out.putU32(64L);
@@ -920,7 +921,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32(0L);
       out.putU32(100L);
       out.putU32(64L);
@@ -961,7 +962,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("F64_4", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32(0L);
       out.putU32(0L);
       out.putU32(64L);
@@ -1001,12 +1002,12 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(2L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded("ATTRIBUTE", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("ATTRIBUTE", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32(0L);
       out.putU32(4L);
       out.putU32(64L);
 
-      out.putStringPadded("ATTRIBUTE", SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded("ATTRIBUTE", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32(0L);
       out.putU32(4L);
       out.putU32(64L);

@@ -27,12 +27,6 @@ import org.immutables.value.Value;
 public interface SMFAttributeNameType
 {
   /**
-   * The maximum number of characters allowed in an attribute name.
-   */
-
-  int MAXIMUM_CHARACTERS = 64;
-
-  /**
    * @return The actual name value
    */
 
@@ -46,14 +40,9 @@ public interface SMFAttributeNameType
   @Value.Check
   default void checkPreconditions()
   {
-    final int length = this.value().length();
-    if (length == 0) {
+    if (!SMFAttributeNames.isValid(this.value())) {
       throw new IllegalArgumentException(
-        "Attribute names cannot be empty");
-    }
-    if (length > MAXIMUM_CHARACTERS) {
-      throw new IllegalArgumentException(
-        "Attribute names must be less than " + MAXIMUM_CHARACTERS + " characters");
+        "Attribute names must match the pattern: " + SMFAttributeNames.PATTERN.pattern());
     }
   }
 }

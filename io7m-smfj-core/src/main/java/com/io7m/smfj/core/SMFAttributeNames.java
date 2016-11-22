@@ -14,40 +14,53 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.format.text;
+package com.io7m.smfj.core;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
-import com.io7m.smfj.core.SMFAttributeName;
+
+import java.util.regex.Pattern;
 
 /**
- * Functions to escape names for serialization.
+ * Validity checks for attribute names.
  */
 
-public final class SMFTNameEscape
+public final class SMFAttributeNames
 {
-  private SMFTNameEscape()
-  {
-    throw new UnreachableCodeException();
+  /**
+   * The maximum length of a name.
+   */
+
+  public static final int MAXIMUM_CHARACTERS = 64;
+
+  /**
+   * The pattern that defines a valid attribute name.
+   */
+
+  public static final Pattern PATTERN;
+
+  private static final String PATTERN_TEXT;
+
+  static {
+    PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.]{1," + MAXIMUM_CHARACTERS + "}";
+    PATTERN = NullCheck.notNull(
+      Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS));
   }
 
   /**
-   * Escape any characters in the given name that should not appear in the
-   * output.
+   * @param text The text
    *
-   * @param name The name
-   *
-   * @return An escaped name
+   * @return {@code true} iff the given text is a valid attribute name
    */
 
-  public static String escaped(
-    final SMFAttributeName name)
+  public static boolean isValid(
+    final CharSequence text)
   {
-    NullCheck.notNull(name, "Name");
+    return PATTERN.matcher(text).matches();
+  }
 
-    String e = name.value();
-    e = e.replace("\\", "\\\\");
-    e = e.replace("\"", "\\\"");
-    return e;
+  private SMFAttributeNames()
+  {
+    throw new UnreachableCodeException();
   }
 }

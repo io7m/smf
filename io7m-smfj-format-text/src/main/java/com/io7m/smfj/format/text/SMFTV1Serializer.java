@@ -122,7 +122,7 @@ final class SMFTV1Serializer implements SMFSerializerType
             this.writer.append(
               String.format(
                 "attribute \"%s\" %s %s %s",
-                SMFTNameEscape.escaped(attribute.name()),
+                attribute.name().value(),
                 attribute.componentType().getName(),
                 Long.toUnsignedString((long) attribute.componentCount()),
                 Long.toUnsignedString((long) attribute.componentSizeBits())));

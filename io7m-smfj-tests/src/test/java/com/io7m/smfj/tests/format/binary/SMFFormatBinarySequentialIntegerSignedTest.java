@@ -21,6 +21,7 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNameType;
+import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
@@ -114,7 +115,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -181,7 +182,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -248,7 +249,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -315,7 +316,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -382,7 +383,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -449,7 +450,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -516,7 +517,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -583,7 +584,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -650,7 +651,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -717,7 +718,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -784,7 +785,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -851,7 +852,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -918,7 +919,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -985,7 +986,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -1052,7 +1053,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
@@ -1119,7 +1120,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putU32(1L);
       out.putU32(0x7f7f7f7fL);
 
-      out.putStringPadded(name, SMFAttributeNameType.MAXIMUM_CHARACTERS);
+      out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
