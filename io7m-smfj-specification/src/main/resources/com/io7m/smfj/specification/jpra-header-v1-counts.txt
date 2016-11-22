@@ -1,0 +1,13 @@
+[record SMFBV1VendorSchemaID
+  ([field vendor_id                   [integer unsigned 32]]
+   [field vendor_schema_id            [integer unsigned 32]]
+   [field vendor_schema_version_major [integer unsigned 32]]
+   [field vendor_schema_version_minor [integer unsigned 32]])]
+
+[record SMFBV1Counts
+  ([field vertex_count             [integer unsigned 64]]
+   [field triangle_count           [integer unsigned 64]]
+   [field triangle_index_size_bits [integer unsigned 32]]
+   [field reserved_0               [integer unsigned 32]]
+   [field attribute_count          [integer unsigned 32]]
+   [field reserved_1               [integer unsigned 32]])]

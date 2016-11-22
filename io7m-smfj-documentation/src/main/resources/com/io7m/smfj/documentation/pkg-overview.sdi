@@ -1,0 +1,5 @@
+[section [title Orientation] [id pkg.orientation]]
+[subsection [title Overview] [id pkg.orientation.overview]]
+[paragraph]
+The [term [type package] smfj] package implements a sequential and
+ultra minimalist format for storing 3D mesh data.
