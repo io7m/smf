@@ -30,7 +30,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.Tuple;
@@ -245,7 +245,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final LexicalPositionType<Path> p)
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setSchemaIdentifier(SMFVendorSchemaIdentifier.of(0, 0, 0, 0));
+    header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(0, 0, 0, 0));
 
     javaslang.collection.List<SMFAttribute> attributes =
       javaslang.collection.List.empty();

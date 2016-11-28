@@ -26,9 +26,12 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
+import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -52,18 +55,14 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
   }
 
   private final byte[] attribute_buffer;
+  private final byte[] header_buffer;
+  private final ByteBuffer header_buffer_wrap;
   private Map<SMFAttributeName, SMFAttribute> attributes_named;
   private List<SMFAttribute> attributes;
-  private long vertices_count;
-  private long triangles_count;
-  private long triangles_size_bits;
-  private long attributes_count;
-  private SMFHeader header;
   private SMFBV1Offsets offsets;
-  private long vendor_id;
-  private long vendor_schema_id;
-  private long vendor_schema_version_major;
-  private long vendor_schema_version_minor;
+  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
+  private SMFBV1HeaderType header_view;
+  private SMFHeader header;
 
   SMFBV1ParserSequential(
     final SMFParserEventsType in_events,
@@ -71,8 +70,22 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     final AtomicReference<ParserState> in_state)
   {
     super(in_events, in_reader, in_state);
+    this.header_buffer =
+      new byte[SMFBV1HeaderByteBuffered.sizeInOctets()];
+    this.header_buffer_wrap =
+      ByteBuffer.wrap(this.header_buffer);
+
+    Invariants.checkInvariant(
+      this.header_buffer.length % 8 == 0,
+      "Header size must be a multiple of 8");
+
     this.attribute_buffer =
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
+
+    Invariants.checkInvariant(
+      this.attribute_buffer.length % 8 == 0,
+      "Attribute size must be a multiple of 8");
+
     this.attributes = List.empty();
     this.attributes_named = HashMap.empty();
   }
@@ -88,39 +101,25 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     LOG.debug("parsing header");
 
     try {
-      this.vendor_id =
-        super.reader.readU32(Optional.of("vendor id"));
-      this.vendor_schema_id =
-        super.reader.readU32(Optional.of("vendor schema id"));
-      this.vendor_schema_version_major =
-        super.reader.readU32(Optional.of("vendor schema version major"));
-      this.vendor_schema_version_minor =
-        super.reader.readU32(Optional.of("vendor schema version minor"));
-
-      this.vertices_count =
-        super.reader.readU64(Optional.of("vertex count"));
-      this.triangles_count =
-        super.reader.readU64(Optional.of("triangle count"));
-
-      this.triangles_size_bits =
-        super.reader.readU32(Optional.of("triangle size"));
-      super.reader.skip(4L);
-
-      this.attributes_count =
-        super.reader.readU32(Optional.of("attribute count"));
-      super.reader.skip(4L);
+      super.reader.readBytes(Optional.of("header"), this.header_buffer);
+      this.header_cursor =
+        JPRACursor1DByteBufferedChecked.newCursor(
+        this.header_buffer_wrap,
+        SMFBV1HeaderByteBuffered::newValueWithOffset);
+      this.header_view =
+        this.header_cursor.getElementView();
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(
           "expecting {} vertices",
-          Long.valueOf(this.vertices_count));
+          Long.toUnsignedString(this.header_view.getVertexCount()));
         LOG.debug(
           "expecting {} triangles of size {}",
-          Long.valueOf(this.triangles_count),
-          Long.valueOf(this.triangles_size_bits));
+          Long.toUnsignedString(this.header_view.getTriangleCount()),
+          Long.toUnsignedString((long) this.header_view.getTriangleIndexSizeBits()));
         LOG.debug(
           "expecting {} attributes",
-          Long.valueOf(this.attributes_count));
+          Long.toUnsignedString((long) this.header_view.getAttributeCount()));
       }
 
       this.parseHeaderAttributes();
@@ -142,7 +141,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
   {
     NullCheck.notNull(this.offsets, "Offsets");
 
-    if (this.vertices_count == 0L) {
+    if (this.header_view.getVertexCount() == 0L) {
       LOG.debug("no vertices, not parsing attribute data");
       return;
     }
@@ -162,7 +161,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 
       final Optional<String> name_opt = Optional.of(name.value());
       for (long index = 0L;
-           Long.compareUnsigned(index, this.vertices_count) < 0;
+           Long.compareUnsigned(index, this.header_view.getVertexCount()) < 0;
            index = Math.addExact(index, 1L)) {
 
         switch (attribute.componentType()) {
@@ -189,7 +188,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 
   private void parseTriangles()
   {
-    if (this.triangles_count == 0L) {
+    if (this.header_view.getTriangleCount() == 0L) {
       LOG.debug("no triangles, not parsing triangle data");
       return;
     }
@@ -201,10 +200,10 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       this.parseSkipUntilOffset(this.offsets.trianglesDataOffset());
 
       for (long index = 0L;
-           Long.compareUnsigned(index, this.triangles_count) < 0;
+           Long.compareUnsigned(index, this.header_view.getTriangleCount()) < 0;
            index = Math.addExact(index, 1L)) {
 
-        switch (Math.toIntExact(this.triangles_size_bits)) {
+        switch (Math.toIntExact((long) this.header_view.getTriangleIndexSizeBits())) {
           case 8: {
             super.events.onDataTriangle(
               super.reader.readU8(name),
@@ -782,20 +781,26 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       return;
     }
 
-    final SMFVendorSchemaIdentifier.Builder vb =
-      SMFVendorSchemaIdentifier.builder();
-    vb.setVendorID((int) this.vendor_id);
-    vb.setSchemaID((int) this.vendor_schema_id);
-    vb.setSchemaMajorVersion((int) this.vendor_schema_version_major);
-    vb.setSchemaMinorVersion((int) this.vendor_schema_version_minor);
+    final SMFBV1SchemaIDReadableType schema_id_view =
+      this.header_view.getSchemaReadable();
+
+    final SMFSchemaIdentifier.Builder vb =
+      SMFSchemaIdentifier.builder();
+    vb.setVendorID(schema_id_view.getVendorId());
+    vb.setSchemaID(schema_id_view.getSchemaId());
+    vb.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
+    vb.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
 
     final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setVertexCount(this.vertices_count);
-    hb.setTriangleCount(this.triangles_count);
-    hb.setTriangleIndexSizeBits(this.triangles_size_bits);
+    hb.setVertexCount(this.header_view.getVertexCount());
+    hb.setTriangleCount(this.header_view.getTriangleCount());
+    hb.setTriangleIndexSizeBits((long) this.header_view.getTriangleIndexSizeBits());
     hb.setAttributesInOrder(this.attributes);
     hb.setAttributesByName(this.attributes_named);
     hb.setSchemaIdentifier(vb.build());
+    hb.setCoordinateSystem(
+      SMFBCoordinateSystems.unpack(
+        this.header_view.getCoordinateSystemReadable()));
 
     this.header = hb.build();
     this.offsets = SMFBV1Offsets.fromHeader(this.header);
@@ -824,7 +829,8 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       cursor.getElementView();
 
     for (long index = 0L;
-         Long.compareUnsigned(index, this.attributes_count) < 0;
+         Long.compareUnsigned(
+           index, (long) this.header_view.getAttributeCount()) < 0;
          index = Math.addExact(index, 1L)) {
 
       if (LOG.isDebugEnabled()) {

@@ -17,15 +17,18 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.core.SMFAttributeNameType;
 import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -62,6 +65,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned64_4";
     final long component_count = 4L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -69,13 +73,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned4(0L, 1L, 2L, 3L);
@@ -88,25 +97,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -130,6 +128,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned64_3";
     final long component_count = 3L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -137,13 +136,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned3(0L, 1L, 2L);
@@ -156,25 +160,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -200,7 +193,13 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     hb.setTriangleIndexSizeBits(32L);
     hb.setTriangleCount(0L);
     hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    hb.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     return hb.build();
   }
 
@@ -211,6 +210,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned64_2";
     final long component_count = 2L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -218,13 +218,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned2(0L, 1L);
@@ -237,25 +242,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -279,6 +273,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned64_1";
     final long component_count = 1L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -286,13 +281,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned1(0L);
@@ -305,25 +305,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -347,6 +336,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned32_4";
     final long component_count = 4L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -354,13 +344,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned4(0L, 1L, 2L, 3L);
@@ -373,25 +368,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -415,6 +399,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned32_3";
     final long component_count = 3L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -422,13 +407,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned3(0L, 1L, 2L);
@@ -441,25 +431,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -483,6 +462,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned32_2";
     final long component_count = 2L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -490,13 +470,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned2(0L, 1L);
@@ -509,25 +494,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -551,6 +525,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned32_1";
     final long component_count = 1L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -558,13 +533,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned1(0L);
@@ -577,25 +557,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -619,6 +588,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned16_4";
     final long component_count = 4L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -626,13 +596,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned4(0L, 1L, 2L, 3L);
@@ -645,25 +620,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -687,6 +651,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned16_3";
     final long component_count = 3L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -694,13 +659,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned3(0L, 1L, 2L);
@@ -713,25 +683,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -755,6 +714,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned16_2";
     final long component_count = 2L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -762,13 +722,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned2(0L, 1L);
@@ -781,25 +746,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -823,6 +777,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned16_1";
     final long component_count = 1L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -830,13 +785,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned1(0L);
@@ -849,25 +809,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -892,6 +841,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned8_4";
     final long component_count = 4L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -899,13 +849,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned4(0L, 1L, 2L, 3L);
@@ -918,25 +873,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -960,6 +904,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned8_3";
     final long component_count = 3L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -967,13 +912,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned3(0L, 1L, 2L);
@@ -986,25 +936,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -1028,6 +967,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned8_2";
     final long component_count = 2L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -1035,13 +975,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned2(0L, 1L);
@@ -1054,25 +999,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -1096,6 +1030,7 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     final String name = "Unsigned8_1";
     final long component_count = 1L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -1103,13 +1038,18 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerUnsigned1(0L);
@@ -1122,25 +1062,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
       out.putU32(component_count);
       out.putU32(component_size);
 
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         for (int component = 0; (long) component < component_count; ++component) {
           final long value = (long) ((vertex * 10) + component);
           LOG.debug(
@@ -1188,7 +1117,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1217,14 +1153,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         4,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1252,14 +1185,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         3,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1287,14 +1217,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         2,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1322,14 +1249,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         1,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1357,14 +1281,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1392,14 +1313,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         3,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1427,14 +1345,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         2,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1462,14 +1377,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         1,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1498,14 +1410,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         4,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1533,14 +1442,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         3,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1568,14 +1474,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         2,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1603,14 +1506,11 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
         1,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1660,7 +1560,14 @@ public final class SMFFormatBinaryRandomAccessIntegerUnsignedTest extends SMFBin
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

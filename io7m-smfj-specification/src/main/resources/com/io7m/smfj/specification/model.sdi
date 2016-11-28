@@ -49,6 +49,18 @@ Vertices are numbered starting at [term [type expression] "0"].
 A triangle is a 3-tuple of [link [target smf_model.vertex] vertices]. In the
 SMF model, a triangle references vertices by their numeric index.
 
+[subsection [title Coordinate System] [id smf_model.coords]]
+[paragraph]
+A [term [type term] coordinate system] in the SMF model is a set of three
+axis names and a triangle [term [type term] winding order]. The axis names
+specify which Cartesian coordinate system axes correspond to the
+[term [type term] right], [term [type term] up], and [term [type term] forward]
+directions. The winding order specifies whether vertices for triangles are
+given in clockwise or counter-clockwise order.
+
+[formal-item [title "Axis"] [id smf_model.coords.axis_def]]
+[verbatim [include "axis.hs"]]
+
 [subsection [title Schema ID] [id smf_model.schema_id]]
 [paragraph]
 A [term [type term] schema identifier] is an optional identifier that can be

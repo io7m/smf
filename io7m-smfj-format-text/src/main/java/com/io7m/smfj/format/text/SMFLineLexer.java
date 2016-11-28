@@ -42,7 +42,9 @@ public final class SMFLineLexer
 
   /**
    * Lex the given line into tokens.
+   *
    * @param line The line
+   *
    * @return A list of tokens
    */
 

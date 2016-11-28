@@ -26,23 +26,31 @@ with the characters "PNG" changed to "SMF".
 [footnote [id smfb.header.footnotes.png]]
 [link-ext [target "https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header"] "https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header"]
 
+[paragraph]
+The rest of the header is given by the [term [type type] SMFBV1Header] type:
+
+[formal-item [title "Header (Main)"] [id smfb.header.main.formal]]
+[verbatim [include "jpra-header-v1-header.txt"]]
+
 [paragraph [id smfb.header.schema_id]]
-The header continues with an encoding of the
-[link [target smf_model.schema_id] schema ID].
+The [term [type type] SMFBV1SchemaID] type encodes the
+[link [target smf_model.schema_id] schema ID]:
 
 [formal-item [title "Header (schema ID)"] [id smfb.header.schema_id.formal]]
 [verbatim [include "jpra-header-v1-schema.txt"]]
 
-[paragraph [id smfb.header.counts]]
-The header continues by specifying the number of
+[paragraph [id smfb.header.coords]]
+The [term [type type] SMFBV1CoordinateSystems] type encodes the
+[link [target smf_model.coords] coordinate system]:
+
+[formal-item [title "Header (Coordinate system)"] [id smfb.header.coords.formal]]
+[verbatim [include "jpra-header-v1-coords.txt"]]
+
+The header specifies the number of
 [link [target smf_model.vertex] vertices] present in the file,
 the number of [link [target smf_model.triangle] triangles] present in the file,
 the size in bits of the individual triangle indices, and the number of
-[link [target smf_model.attribute] attributes] present in the file. Two fields
-are reserved for future use.
-
-[formal-item [title "Header (Counts)"] [id smfb.header.counts.formal]]
-[verbatim [include "jpra-header-v1-counts.txt"]]
+[link [target smf_model.attribute] attributes] present in the file.
 
 [paragraph [id smfb.header.attributes]]
 The header concludes by giving definitions for exactly [term [type variable] n]

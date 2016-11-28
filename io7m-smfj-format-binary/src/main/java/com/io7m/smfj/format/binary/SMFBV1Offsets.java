@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import javaslang.collection.Map;
@@ -38,18 +39,8 @@ public final class SMFBV1Offsets
   private static final long OFFSET_VERSION_MAJOR;
   private static final long OFFSET_VERSION_MINOR;
   private static final long OFFSET_HEADER;
-  private static final long OFFSET_HEADER_VERTICES_COUNT;
-  private static final long OFFSET_HEADER_TRIANGLES_COUNT;
-  private static final long OFFSET_HEADER_TRIANGLES_SIZE;
-  private static final long OFFSET_HEADER_ATTRIBUTES_COUNT;
   private static final long OFFSET_HEADER_ATTRIBUTES_DATA;
   private static final Logger LOG;
-
-  private static final long OFFSET_SCHEMA_ID;
-  private static final long OFFSET_SCHEMA_VENDOR_ID;
-  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_ID;
-  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR;
-  private static final long OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR;
 
   static {
     LOG = LoggerFactory.getLogger(SMFBV1Offsets.class);
@@ -67,44 +58,9 @@ public final class SMFBV1Offsets
       OFFSET_HEADER % 8L == 0L,
       "OFFSET_HEADER must be divisible by 8");
 
-    OFFSET_SCHEMA_ID = OFFSET_HEADER;
-    Invariants.checkInvariant(
-      OFFSET_SCHEMA_ID % 8L == 0L,
-      "OFFSET_SCHEMA_ID must be divisible by 8");
 
-    OFFSET_SCHEMA_VENDOR_ID = OFFSET_SCHEMA_ID;
-    Invariants.checkInvariant(
-      OFFSET_SCHEMA_VENDOR_ID % 8L == 0L,
-      "OFFSET_SCHEMA_VENDOR_ID must be divisible by 8");
-    OFFSET_SCHEMA_VENDOR_SCHEMA_ID =
-      OFFSET_SCHEMA_VENDOR_ID + 4L;
-    OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR =
-      OFFSET_SCHEMA_VENDOR_SCHEMA_ID + 4L;
-    OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR =
-      OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR + 4L;
-
-    OFFSET_HEADER_VERTICES_COUNT =
-      OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR + 4L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_VERTICES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_VERTICES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_TRIANGLES_COUNT = OFFSET_HEADER_VERTICES_COUNT + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_TRIANGLES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_TRIANGLES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_TRIANGLES_SIZE = OFFSET_HEADER_TRIANGLES_COUNT + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_TRIANGLES_SIZE % 4L == 0L,
-      "OFFSET_HEADER_TRIANGLES_SIZE must be divisible by 4");
-
-    OFFSET_HEADER_ATTRIBUTES_COUNT = OFFSET_HEADER_TRIANGLES_SIZE + 8L;
-    Invariants.checkInvariant(
-      OFFSET_HEADER_ATTRIBUTES_COUNT % 8L == 0L,
-      "OFFSET_HEADER_ATTRIBUTES_COUNT must be divisible by 8");
-
-    OFFSET_HEADER_ATTRIBUTES_DATA = OFFSET_HEADER_ATTRIBUTES_COUNT + 8L;
+    OFFSET_HEADER_ATTRIBUTES_DATA =
+      OFFSET_HEADER + (long) SMFBV1HeaderByteBuffered.sizeInOctets();
     Invariants.checkInvariant(
       OFFSET_HEADER_ATTRIBUTES_DATA % 8L == 0L,
       "OFFSET_HEADER_ATTRIBUTES_DATA must be divisible by 8");
@@ -113,32 +69,6 @@ public final class SMFBV1Offsets
       LOG.trace(
         "OFFSET_HEADER:                             0x{}",
         Long.toUnsignedString(OFFSET_HEADER, 16));
-
-      LOG.trace(
-        "OFFSET_SCHEMA_VENDOR_ID:                   0x{}",
-        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_ID, 16));
-      LOG.trace(
-        "OFFSET_SCHEMA_VENDOR_SCHEMA_ID:            0x{}",
-        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_ID, 16));
-      LOG.trace(
-        "OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR: 0x{}",
-        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR, 16));
-      LOG.trace(
-        "OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR: 0x{}",
-        Long.toUnsignedString(OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR, 16));
-
-      LOG.trace(
-        "OFFSET_HEADER_VERTICES_COUNT:              0x{}",
-        Long.toUnsignedString(OFFSET_HEADER_VERTICES_COUNT, 16));
-      LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_COUNT:             0x{}",
-        Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_COUNT, 16));
-      LOG.trace(
-        "OFFSET_HEADER_TRIANGLES_SIZE:              0x{}",
-        Long.toUnsignedString(OFFSET_HEADER_TRIANGLES_SIZE, 16));
-      LOG.trace(
-        "OFFSET_HEADER_ATTRIBUTES_COUNT:            0x{}",
-        Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_COUNT, 16));
       LOG.trace(
         "OFFSET_HEADER_ATTRIBUTES_DATA:             0x{}",
         Long.toUnsignedString(OFFSET_HEADER_ATTRIBUTES_DATA, 16));
@@ -160,42 +90,6 @@ public final class SMFBV1Offsets
       in_triangles_data_offset;
     this.attributes_offsets =
       NullCheck.notNull(in_attributes_offsets, "Offsets");
-  }
-
-  /**
-   * @return The offset in octets of the file's vendor ID
-   */
-
-  public static long offsetSchemaVendorId()
-  {
-    return OFFSET_SCHEMA_VENDOR_ID;
-  }
-
-  /**
-   * @return The offset in octets of the file's vendor schema ID
-   */
-
-  public static long offsetSchemaVendorSchemaId()
-  {
-    return OFFSET_SCHEMA_VENDOR_SCHEMA_ID;
-  }
-
-  /**
-   * @return The offset in octets of the file's vendor schema major version
-   */
-
-  public static long offsetSchemaVendorSchemaVersionMajor()
-  {
-    return OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MAJOR;
-  }
-
-  /**
-   * @return The offset in octets of the file's vendor schema minor version
-   */
-
-  public static long offsetSchemaVendorSchemaVersionMinor()
-  {
-    return OFFSET_SCHEMA_VENDOR_SCHEMA_VERSION_MINOR;
   }
 
   /**
@@ -232,42 +126,6 @@ public final class SMFBV1Offsets
   public static long offsetHeader()
   {
     return OFFSET_HEADER;
-  }
-
-  /**
-   * @return The offset in octets of the number of vertices in the file
-   */
-
-  public static long offsetHeaderVerticesCount()
-  {
-    return OFFSET_HEADER_VERTICES_COUNT;
-  }
-
-  /**
-   * @return The offset in octets of the number of triangles in the file
-   */
-
-  public static long offsetHeaderTrianglesCount()
-  {
-    return OFFSET_HEADER_TRIANGLES_COUNT;
-  }
-
-  /**
-   * @return The offset in octets of the size of triangle indices in the file
-   */
-
-  public static long offsetHeaderTrianglesSize()
-  {
-    return OFFSET_HEADER_TRIANGLES_SIZE;
-  }
-
-  /**
-   * @return The offset in octets of the number of attributes in the file
-   */
-
-  public static long offsetHeaderAttributesCount()
-  {
-    return OFFSET_HEADER_ATTRIBUTES_COUNT;
   }
 
   /**

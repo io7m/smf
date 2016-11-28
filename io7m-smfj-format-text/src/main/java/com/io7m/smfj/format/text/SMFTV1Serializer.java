@@ -24,7 +24,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 import javaslang.collection.Queue;
@@ -92,7 +92,7 @@ final class SMFTV1Serializer implements SMFSerializerType
               Integer.valueOf(this.version.minor())));
           this.writer.newLine();
 
-          final SMFVendorSchemaIdentifier schema_id =
+          final SMFSchemaIdentifier schema_id =
             this.header.schemaIdentifier();
           if (schema_id.vendorID() != 0) {
             this.writer.append(

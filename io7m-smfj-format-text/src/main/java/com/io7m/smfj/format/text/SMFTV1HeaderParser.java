@@ -17,13 +17,18 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Invariants;
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jnull.NullCheck;
+import com.io7m.jnull.Nullable;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -53,9 +58,10 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   protected long vertex_count;
   protected long triangle_count;
   protected long triangle_size;
-  private boolean ok_vertices;
   private boolean ok_triangles;
-  private SMFVendorSchemaIdentifier schema_id;
+  private boolean ok_vertices;
+  private SMFSchemaIdentifier schema_id;
+  private @Nullable SMFCoordinateSystem coords;
 
   SMFTV1HeaderParser(
     final SMFTAbstractParser in_parent,
@@ -69,9 +75,45 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
     this.attributes = HashMap.empty();
-    this.ok_vertices = false;
     this.ok_triangles = false;
-    this.schema_id = SMFVendorSchemaIdentifier.of(0, 0, 0, 0);
+    this.ok_vertices = false;
+    this.schema_id = SMFSchemaIdentifier.of(0, 0, 0, 0);
+  }
+
+  private static SMFFaceWindingOrder parseWindingOrder(
+    final String name)
+  {
+    switch (name) {
+      case "clockwise":
+        return SMFFaceWindingOrder.FACE_WINDING_ORDER_CLOCKWISE;
+      case "counter-clockwise":
+        return SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
+      default: {
+        throw new IllegalArgumentException("Unrecognized winding order: " + name);
+      }
+    }
+  }
+
+  private static CAxis parseAxis(
+    final String name)
+  {
+    switch (name) {
+      case "+x":
+        return CAxis.AXIS_POSITIVE_X;
+      case "+y":
+        return CAxis.AXIS_POSITIVE_Y;
+      case "+z":
+        return CAxis.AXIS_POSITIVE_Z;
+      case "-x":
+        return CAxis.AXIS_NEGATIVE_X;
+      case "-y":
+        return CAxis.AXIS_NEGATIVE_Y;
+      case "-z":
+        return CAxis.AXIS_NEGATIVE_Z;
+      default: {
+        throw new IllegalArgumentException("Unrecognized axis name: " + name);
+      }
+    }
   }
 
   @Override
@@ -83,7 +125,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
       this.parseHeaderCommands();
 
       if (super.state.get() != ParserState.STATE_FINISHED) {
-        this.parseHeaderCheckUniqueAttributeNames();
+        this.parseHeaderCheckAll();
       }
 
       if (super.state.get() != ParserState.STATE_FINISHED) {
@@ -94,11 +136,34 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         hb.setTriangleCount(this.triangle_count);
         hb.setVertexCount(this.vertex_count);
         hb.setSchemaIdentifier(this.schema_id);
+        hb.setCoordinateSystem(this.coords);
         super.events.onHeaderParsed(hb.build());
       }
 
     } catch (final Exception e) {
       this.fail(e.getMessage());
+    }
+  }
+
+  private void parseHeaderCheckAll()
+  {
+    this.parseHeaderCheckUniqueAttributeNames();
+    this.parseHeaderCheckRequired();
+  }
+
+  private void parseHeaderCheckRequired()
+  {
+    if (!this.ok_triangles) {
+      this.fail("No triangle count was specified");
+      return;
+    }
+    if (!this.ok_vertices) {
+      this.fail("No vertex count was specified");
+      return;
+    }
+    if (this.coords == null) {
+      this.fail("No coordinate system was specified");
+      return;
     }
   }
 
@@ -131,6 +196,11 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           return;
         }
 
+        case "coordinates": {
+          this.parseHeaderCommandCoordinates(line);
+          break;
+        }
+
         case "schema": {
           this.parseHeaderCommandSchema(line);
           break;
@@ -154,11 +224,47 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         default: {
           super.failExpectedGot(
             "Unrecognized command.",
-            "attribute | triangles | vertices | data | vendor",
+            "attribute | coordinates | data | triangles | vertices | schema",
             line.toJavaStream().collect(Collectors.joining(" ")));
           return;
         }
       }
+    }
+  }
+
+  private void parseHeaderCommandCoordinates(
+    final List<String> line)
+  {
+    if (line.size() == 5) {
+      try {
+        final CAxis axis_right = parseAxis(line.get(1));
+        final CAxis axis_up = parseAxis(line.get(2));
+        final CAxis axis_forward = parseAxis(line.get(3));
+        final SMFFaceWindingOrder order = parseWindingOrder(line.get(4));
+
+        boolean bad = false;
+        bad = bad || axis_right.axis() == axis_up.axis();
+        bad = bad || axis_up.axis() == axis_forward.axis();
+        bad = bad || axis_forward.axis() == axis_right.axis();
+
+        if (bad) {
+          throw new IllegalArgumentException("Axes must be perpendicular");
+        }
+
+        this.coords = SMFCoordinateSystem.of(
+          CAxisSystem.of(axis_right, axis_up, axis_forward),
+          order);
+      } catch (final IllegalArgumentException e) {
+        super.failExpectedGot(
+          e.getMessage(),
+          "coordinates <axis> <axis> <axis> <winding-order>",
+          line.toJavaStream().collect(Collectors.joining(" ")));
+      }
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "coordinates <axis> <axis> <axis> <winding-order>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
     }
   }
 
@@ -175,7 +281,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         final int vendor_schema_version_minor =
           Integer.parseUnsignedInt(line.get(4));
 
-        this.schema_id = SMFVendorSchemaIdentifier.of(
+        this.schema_id = SMFSchemaIdentifier.of(
           vendor_id,
           vendor_schema,
           vendor_schema_version_major,

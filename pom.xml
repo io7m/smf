@@ -132,6 +132,11 @@
         <artifactId>io7m-jpra-runtime-java</artifactId>
         <version>0.5.0</version>
       </dependency>
+      <dependency>
+        <groupId>com.io7m.jcoords</groupId>
+        <artifactId>io7m-jcoords-core</artifactId>
+        <version>0.1.0</version>
+      </dependency>
 
       <dependency>
         <groupId>io.javaslang</groupId>

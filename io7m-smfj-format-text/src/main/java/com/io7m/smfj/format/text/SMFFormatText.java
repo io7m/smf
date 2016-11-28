@@ -187,7 +187,11 @@ public final class SMFFormatText implements SMFParserProviderType,
             switch (version.major()) {
               case 1: {
                 LOG.debug("instantiating 1.* parser");
-                new SMFTV1Parser(this, super.events, super.reader, version).parse();
+                new SMFTV1Parser(
+                  this,
+                  super.events,
+                  super.reader,
+                  version).parse();
                 return;
               }
               default: {

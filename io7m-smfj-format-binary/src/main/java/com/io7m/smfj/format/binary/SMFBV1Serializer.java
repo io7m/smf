@@ -29,9 +29,13 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
+import com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
+import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 import javaslang.collection.Queue;
@@ -58,6 +62,8 @@ final class SMFBV1Serializer implements SMFSerializerType
   private final SMFBDataStreamWriterType writer;
   private final byte[] attribute_bytes;
   private final ByteBuffer attribute_buffer;
+  private final byte[] header_buffer;
+  private final ByteBuffer header_buffer_wrap;
   private SerializerState state;
   private SMFHeader header;
   private Queue<SMFAttribute> attribute_queue;
@@ -65,6 +71,8 @@ final class SMFBV1Serializer implements SMFSerializerType
   private SMFAttribute attribute_current;
   private long triangle_values_remaining;
   private SMFBV1Offsets offsets;
+  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
+  private SMFBV1HeaderType header_view;
 
   SMFBV1Serializer(
     final SMFFormatVersion in_version,
@@ -76,6 +84,11 @@ final class SMFBV1Serializer implements SMFSerializerType
       in_version.major(),
       in_version.major() == 1,
       v -> "Major version " + v + " must be 1");
+
+    this.header_buffer =
+      new byte[SMFBV1HeaderByteBuffered.sizeInOctets()];
+    this.header_buffer_wrap =
+      ByteBuffer.wrap(this.header_buffer);
 
     this.writer = SMFBDataStreamWriter.create(in_path, in_stream);
     this.attribute_bytes = new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
@@ -100,19 +113,41 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putU32((long) this.version.major());
           this.writer.putU32((long) this.version.minor());
 
-          final SMFVendorSchemaIdentifier schema_id =
-            in_header.schemaIdentifier();
-          this.writer.putU32((long) schema_id.vendorID());
-          this.writer.putU32((long) schema_id.schemaID());
-          this.writer.putU32((long) schema_id.schemaMajorVersion());
-          this.writer.putU32((long) schema_id.schemaMinorVersion());
+          this.header_cursor =
+            JPRACursor1DByteBufferedChecked.newCursor(
+              this.header_buffer_wrap,
+              SMFBV1HeaderByteBuffered::newValueWithOffset);
+          this.header_view =
+            this.header_cursor.getElementView();
 
-          this.writer.putU64(in_header.vertexCount());
-          this.writer.putU64(in_header.triangleCount());
-          this.writer.putU32(in_header.triangleIndexSizeBits());
-          this.writer.putU32(0x78787878L);
-          this.writer.putU32(attribute_count);
-          this.writer.putU32(0x78787878L);
+          final SMFBV1SchemaIDWritableType header_schema_id =
+            this.header_view.getSchemaWritable();
+
+          final SMFSchemaIdentifier schema_id = in_header.schemaIdentifier();
+          header_schema_id.setVendorId(
+            schema_id.vendorID());
+          header_schema_id.setSchemaId(
+            schema_id.schemaID());
+          header_schema_id.setSchemaVersionMajor(
+            schema_id.schemaMajorVersion());
+          header_schema_id.setSchemaVersionMinor(
+            schema_id.schemaMinorVersion());
+
+          this.header_view.setVertexCount(
+            in_header.vertexCount());
+          this.header_view.setTriangleCount(
+            in_header.triangleCount());
+          this.header_view.setTriangleIndexSizeBits(
+            (int) in_header.triangleIndexSizeBits());
+          this.header_view.setAttributeCount(
+            (int) attribute_count);
+          this.header_view.setMetaCount(0);
+
+          final SMFBV1CoordinateSystemsWritableType coords =
+            this.header_view.getCoordinateSystemWritable();
+          SMFBCoordinateSystems.pack(in_header.coordinateSystem(), coords);
+
+          this.writer.putBytes(this.header_buffer);
 
           final JPRACursor1DType<SMFBV1AttributeType> cursor =
             JPRACursor1DByteBufferedChecked.newCursor(

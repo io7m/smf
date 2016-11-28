@@ -42,7 +42,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   static {
     LOG = LoggerFactory.getLogger(SMFTV1BodyParser.class);
   }
-  
+
   protected final Map<SMFAttributeName, SMFAttribute> attributes;
   private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
@@ -649,7 +649,9 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
 
     this.log().trace("triangles done: {}", Boolean.valueOf(ok_triangles));
     this.log().trace("attributes size: {}", Boolean.valueOf(attribute_size_ok));
-    this.log().trace("attributes done: {}", Boolean.valueOf(attribute_all_done));
+    this.log().trace(
+      "attributes done: {}",
+      Boolean.valueOf(attribute_all_done));
     return ok_triangles && attribute_size_ok && attribute_all_done;
   }
 

@@ -32,6 +32,10 @@
       <groupId>com.io7m.junreachable</groupId>
       <artifactId>io7m-junreachable-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jcoords</groupId>
+      <artifactId>io7m-jcoords-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.javaslang</groupId>

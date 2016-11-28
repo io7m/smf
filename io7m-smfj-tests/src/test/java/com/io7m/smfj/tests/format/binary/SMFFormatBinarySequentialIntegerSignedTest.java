@@ -17,15 +17,18 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.core.SMFAttributeNameType;
 import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -55,20 +58,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
-  private static SMFHeader header(
-    final SMFAttribute attr)
-  {
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attr));
-    hb.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setVertexCount(3L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    return hb.build();
-  }
-  
   @Test
   public void testDataAttributesIntegerSigned64_4(
     final @Mocked SMFParserEventsType events)
@@ -76,6 +65,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed64_4";
     final long component_count = 4L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -83,13 +73,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
@@ -102,18 +97,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -143,6 +127,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed64_3";
     final long component_count = 3L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -150,13 +135,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
@@ -169,18 +159,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -210,6 +189,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed64_2";
     final long component_count = 2L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -217,13 +197,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
@@ -236,18 +221,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -277,6 +251,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed64_1";
     final long component_count = 1L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -284,13 +259,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
@@ -303,18 +283,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -344,6 +313,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed32_4";
     final long component_count = 4L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -351,13 +321,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
@@ -370,18 +345,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -411,6 +375,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed32_3";
     final long component_count = 3L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -418,13 +383,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
@@ -437,18 +407,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -478,6 +437,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed32_2";
     final long component_count = 2L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -485,13 +445,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
@@ -504,18 +469,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -545,6 +499,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed32_1";
     final long component_count = 1L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -552,13 +507,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
@@ -571,18 +531,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -612,6 +561,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed16_4";
     final long component_count = 4L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -619,13 +569,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
@@ -638,18 +593,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -679,6 +623,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed16_3";
     final long component_count = 3L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -686,13 +631,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
@@ -705,18 +655,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -746,6 +685,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed16_2";
     final long component_count = 2L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -753,13 +693,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
@@ -772,18 +717,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -813,6 +747,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed16_1";
     final long component_count = 1L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -820,13 +755,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
@@ -839,18 +779,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -880,6 +809,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed8_4";
     final long component_count = 4L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -887,13 +817,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned4(0L, 1L, 2L, 3L);
@@ -906,18 +841,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -947,6 +871,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed8_3";
     final long component_count = 3L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -954,13 +879,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned3(0L, 1L, 2L);
@@ -973,18 +903,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -1014,6 +933,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed8_2";
     final long component_count = 2L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -1021,13 +941,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned2(0L, 1L);
@@ -1040,18 +965,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -1081,6 +995,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
     final String name = "Signed8_1";
     final long component_count = 1L;
     final long component_size = 8L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -1088,13 +1003,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       (int) component_count,
       (int) component_size);
 
-    final SMFHeader h = header(attr);
-    
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setVertexCount(vertex_count);
+    final SMFHeader header = header_b.build();
+
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
 
       events.onDataAttributeStart(attr);
       events.onDataAttributeValueIntegerSigned1(0L);
@@ -1107,18 +1027,7 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded(name, SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -1164,19 +1073,16 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         4,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(2L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
 
     this.expected.expect(IllegalStateException.class);
     serializer.serializeData(SMFAttributeName.of("y"));
@@ -1200,21 +1106,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         4,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1235,21 +1138,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         3,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1270,21 +1170,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         2,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1305,21 +1202,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         1,
         64));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1340,21 +1234,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1375,21 +1266,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         3,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1410,21 +1298,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         2,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1445,21 +1330,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         1,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
 
@@ -1481,21 +1363,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         4,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned3(0, 1, 2);
+    serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
   }
 
   @Test
@@ -1516,21 +1395,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         3,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1551,21 +1427,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         2,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
   @Test
@@ -1586,21 +1459,18 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
         1,
         16));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
-    serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+    serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
   }
 
 
@@ -1636,14 +1506,11 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       }
     }
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1651,19 +1518,19 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends SMFBinaryT
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {
         case 1: {
-          serializer.serializeValueIntegerSigned1(0);
+          serializer.serializeValueIntegerSigned1(0L);
           break;
         }
         case 2: {
-          serializer.serializeValueIntegerSigned2(0, 1);
+          serializer.serializeValueIntegerSigned2(0L, 1L);
           break;
         }
         case 3: {
-          serializer.serializeValueIntegerSigned3(0, 1, 2);
+          serializer.serializeValueIntegerSigned3(0L, 1L, 2L);
           break;
         }
         case 4: {
-          serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
+          serializer.serializeValueIntegerSigned4(0L, 1L, 2L, 3L);
           break;
         }
         default: {

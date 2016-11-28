@@ -16,13 +16,17 @@
 
 package com.io7m.smfj.tests.format.text;
 
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -55,17 +59,25 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
   private static SMFHeader header(
     final SMFAttribute attr)
   {
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attr));
-    hb.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setVertexCount(3L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    return hb.build();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setAttributesInOrder(List.of(attr));
+    header_b.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(
+      a.name(),
+      a)));
+    header_b.setVertexCount(3L);
+    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangleCount(0L);
+    header_b.setSchemaIdentifier(
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+    return header_b.build();
   }
-  
+
   @Test
   public void testDataAttributesFloating64_4(
     final @Mocked SMFParserEventsType events)
@@ -73,6 +85,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F64_4";
     final long component_count = 4L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -81,7 +94,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -100,6 +113,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -109,7 +123,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -130,7 +144,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F64_3";
     final long component_count = 3L;
     final long component_size = 64L;
-    
+    final long vertex_count = 3L;
+
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
       SMFComponentType.ELEMENT_TYPE_FLOATING,
@@ -138,7 +153,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -157,6 +172,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -166,7 +182,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -187,6 +203,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F64_2";
     final long component_count = 2L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -195,7 +212,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -214,6 +231,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -223,7 +241,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -244,6 +262,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F64_1";
     final long component_count = 1L;
     final long component_size = 64L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -252,7 +271,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -271,6 +290,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -280,7 +300,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -301,6 +321,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F32_4";
     final long component_count = 4L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -309,7 +330,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -328,6 +349,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -337,7 +359,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -358,6 +380,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F32_3";
     final long component_count = 3L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -366,7 +389,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -385,6 +408,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -394,7 +418,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -415,6 +439,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F32_2";
     final long component_count = 2L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -423,7 +448,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -442,6 +467,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -451,7 +477,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -472,6 +498,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F32_1";
     final long component_count = 1L;
     final long component_size = 32L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -480,7 +507,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -499,6 +526,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -508,7 +536,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -529,6 +557,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F16_4";
     final long component_count = 4L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -537,7 +566,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -556,6 +585,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -565,7 +595,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -586,6 +616,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F16_3";
     final long component_count = 3L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -594,7 +625,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -613,6 +644,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -622,7 +654,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -643,6 +675,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F16_2";
     final long component_count = 2L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -651,7 +684,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -670,6 +703,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -679,7 +713,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -700,6 +734,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final String name = "F16_1";
     final long component_count = 1L;
     final long component_size = 16L;
+    final long vertex_count = 3L;
 
     final SMFAttribute attr = SMFAttribute.of(
       SMFAttributeName.of(name),
@@ -708,7 +743,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -727,6 +762,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("schema 696F376D A0B0C0D0 1 2");
       out.put("vertices 3");
       out.put("triangles 0 32");
+      out.put("coordinates +x +y -z counter-clockwise");
       out.put(String.format(
         "attribute \"%s\" %s %d %d",
         name,
@@ -736,7 +772,7 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       out.put("data");
 
       out.put(String.format("attribute \"%s\"", name));
-      for (int vertex = 0; vertex < 3; ++vertex) {
+      for (int vertex = 0; vertex < vertex_count; ++vertex) {
         final StringBuilder sb = new StringBuilder(128);
         for (int component = 0; (long) component < component_count; ++component) {
           final double value = (double) ((vertex * 10) + component);
@@ -780,7 +816,13 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -802,22 +844,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        64));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      64));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -837,22 +868,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        64));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      64));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -872,22 +892,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        64));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      64));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -907,22 +916,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        64));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      64));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -942,22 +940,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        32));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      32));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -977,22 +964,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        32));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      32));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1012,22 +988,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        32));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      32));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1047,22 +1012,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        32));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      32));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1083,22 +1037,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        4,
-        16));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      4,
+      16));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1118,22 +1061,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        3,
-        16));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      3,
+      16));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1153,22 +1085,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        2,
-        16));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      2,
+      16));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1188,22 +1109,11 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    final List<SMFAttribute> attributes = List.of(
-      SMFAttribute.of(
-        SMFAttributeName.of("x"),
-        SMFComponentType.ELEMENT_TYPE_FLOATING,
-        1,
-        16));
-
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader header = header_b.build();
+    final SMFHeader header = header(SMFAttribute.of(
+      SMFAttributeName.of("x"),
+      SMFComponentType.ELEMENT_TYPE_FLOATING,
+      1,
+      16));
 
     serializer.serializeHeader(header);
     serializer.serializeData(SMFAttributeName.of("x"));
@@ -1211,7 +1121,6 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     this.expected.expect(IllegalArgumentException.class);
     serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
   }
-
 
   @Test
   public void testSerializerAttributeAll()
@@ -1246,13 +1155,19 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
     }
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setVertexCount(1L);
+    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangleCount(0L);
     header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

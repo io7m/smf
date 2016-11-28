@@ -65,11 +65,18 @@ public interface SMFHeaderType
   }
 
   /**
-   * @return The vendor schema ID in the file
+   * @return The schema ID in the file
    */
 
   @Value.Parameter
-  SMFVendorSchemaIdentifier schemaIdentifier();
+  SMFSchemaIdentifier schemaIdentifier();
+
+  /**
+   * @return The coordinate system of the mesh data
+   */
+
+  @Value.Parameter
+  SMFCoordinateSystem coordinateSystem();
 
   /**
    * @return The attributes in the order that they appeared in the file
