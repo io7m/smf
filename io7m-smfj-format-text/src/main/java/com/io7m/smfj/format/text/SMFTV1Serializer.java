@@ -17,11 +17,15 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
@@ -71,6 +75,50 @@ final class SMFTV1Serializer implements SMFSerializerType
     this.state = SerializerState.STATE_INITIAL;
   }
 
+  private static String serializeAxis(
+    final CAxis axis)
+  {
+    switch (axis) {
+      case AXIS_POSITIVE_X:
+        return "+x";
+      case AXIS_POSITIVE_Y:
+        return "+y";
+      case AXIS_POSITIVE_Z:
+        return "+z";
+      case AXIS_NEGATIVE_X:
+        return "-x";
+      case AXIS_NEGATIVE_Y:
+        return "-y";
+      case AXIS_NEGATIVE_Z:
+        return "-z";
+    }
+    throw new UnreachableCodeException();
+  }
+
+  private static String serializeWindingOrder(
+    final SMFFaceWindingOrder order)
+  {
+    switch (order) {
+      case FACE_WINDING_ORDER_CLOCKWISE:
+        return "clockwise";
+      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
+        return "counter-clockwise";
+    }
+    throw new UnreachableCodeException();
+  }
+
+  private static String serializeAxes(
+    final SMFCoordinateSystem system)
+  {
+    final CAxisSystem axes = system.axes();
+    return String.format(
+      "coordinates %s %s %s %s",
+      serializeAxis(axes.right()),
+      serializeAxis(axes.up()),
+      serializeAxis(axes.forward()),
+      serializeWindingOrder(system.windingOrder()));
+  }
+
   @Override
   public void serializeHeader(
     final SMFHeader in_header)
@@ -116,6 +164,9 @@ final class SMFTV1Serializer implements SMFSerializerType
               "triangles %s %s",
               Long.toUnsignedString(this.header.triangleCount()),
               Long.toUnsignedString(this.header.triangleIndexSizeBits())));
+          this.writer.newLine();
+
+          this.writer.append(serializeAxes(this.header.coordinateSystem()));
           this.writer.newLine();
 
           for (final SMFAttribute attribute : attributes) {
