@@ -465,6 +465,7 @@ class SMFExporter:
 
     out_file.write("vertices %d\n" % vertex_count)
     out_file.write("triangles %d %d\n" % (triangle_count, smf_mesh.triangles_index_size))
+    out_file.write("coordinates +x +y -z counter-clockwise\n")
     out_file.write("data\n")
 
     out_file.write("attribute \"POSITION\"\n")
