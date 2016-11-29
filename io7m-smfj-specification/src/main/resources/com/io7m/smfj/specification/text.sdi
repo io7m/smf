@@ -136,6 +136,25 @@ The command takes the following arguments:
 The command is allowed to appear any number of times in the header, but
 all specified attribute names must be unique.
 
+[subsection [title Header - coordinates] [id smft.header.commands.coordinates]]
+[paragraph]
+The [term [type command] coordinates] command specifies the
+[link [target smf_model.coords] coordinate space] of the mesh data that will
+follow in the [link [target smft.data] data] section of the file.
+
+[formal-item [title "coordinates"] [id smft.header.coordinates.def]]
+[verbatim [include "smft-header-coordinates.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "coordinates Arguments"] [id smft.header.coordinates.args]]
+[list-ordered
+  [item The axis for the [term [type term] right] direction]
+  [item The axis for the [term [type term] up] direction]
+  [item The axis for the [term [type term] forward] direction]
+  [item The triangle [term [type term] winding order]]]
+
 [subsection [title Data] [id smft.data]]
 [paragraph]
 The data section of the file specifies the data for attributes and triangles.
