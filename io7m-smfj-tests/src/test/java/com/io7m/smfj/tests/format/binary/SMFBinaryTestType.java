@@ -23,14 +23,9 @@ import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 public interface SMFBinaryTestType
 {
-  interface IOConsumerType<T> {
-    void accept(T x) throws IOException;
-  }
-
   SMFParserRandomAccessType parserRandomFor(
     final SMFParserEventsType events,
     final IOConsumerType<SMFBDataStreamWriterType> o);
@@ -38,4 +33,10 @@ public interface SMFBinaryTestType
   SMFParserSequentialType parserSequentialFor(
     final SMFParserEventsType events,
     final IOConsumerType<SMFBDataStreamWriterType> o);
+
+  interface IOConsumerType<T>
+  {
+    void accept(T x)
+      throws IOException;
+  }
 }

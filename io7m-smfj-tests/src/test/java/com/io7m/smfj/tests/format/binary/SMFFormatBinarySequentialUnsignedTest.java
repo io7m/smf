@@ -76,7 +76,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -117,7 +119,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -138,7 +141,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -179,7 +184,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -200,7 +206,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -241,7 +249,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -262,7 +271,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -303,7 +314,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -324,7 +336,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -365,7 +379,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -386,7 +401,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -427,7 +444,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -448,7 +466,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -489,7 +509,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -510,7 +531,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -551,7 +574,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -572,7 +596,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -613,7 +639,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -634,7 +661,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -675,7 +704,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -696,7 +726,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -737,7 +769,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -758,7 +791,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -799,7 +834,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -820,7 +856,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -861,7 +899,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -882,7 +921,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -923,7 +964,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -944,7 +986,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -985,7 +1029,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -1006,7 +1051,9 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -1047,9 +1094,10 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
-  
+
   @Test
   public void testSerializerAttributeTooFew()
     throws IOException

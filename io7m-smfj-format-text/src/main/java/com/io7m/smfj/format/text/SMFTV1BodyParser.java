@@ -74,78 +74,6 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     this.triangle_size = in_triangle_size;
   }
 
-  @Override
-  public void parse()
-  {
-    this.log().debug("parsing body");
-
-    try {
-      while (true) {
-        final Optional<List<String>> line_opt = super.reader.line();
-        if (!line_opt.isPresent()) {
-          this.onEOF();
-          return;
-        }
-
-        this.log().debug("line: {}", line_opt.get());
-        final List<String> line = line_opt.get();
-        if (line.isEmpty()) {
-          continue;
-        }
-
-        switch (line.get(0)) {
-          case "triangles": {
-            if (line.size() == 1) {
-              this.parseTriangles();
-            } else {
-              super.failExpectedGot(
-                "Incorrect number of arguments",
-                "triangles",
-                line.toJavaStream().collect(Collectors.joining(" ")));
-              return;
-            }
-            break;
-          }
-
-          case "attribute": {
-            if (line.size() == 2) {
-              SMFAttributeName name = null;
-
-              try {
-                name = SMFAttributeName.of(line.get(1));
-              } catch (final IllegalArgumentException e) {
-                super.failExpectedGot(
-                  e.getMessage(),
-                  "attribute",
-                  line.toJavaStream().collect(Collectors.joining(" ")));
-                return;
-              }
-
-              this.parseAttribute(name);
-            } else {
-              super.failExpectedGot(
-                "Incorrect number of arguments",
-                "attribute <attribute-name>",
-                line.toJavaStream().collect(Collectors.joining(" ")));
-              return;
-            }
-            break;
-          }
-
-          default: {
-            super.failExpectedGot(
-              "Unrecognized command.",
-              "attribute | triangles",
-              line.toJavaStream().collect(Collectors.joining(" ")));
-            return;
-          }
-        }
-      }
-    } catch (final Exception e) {
-      this.fail(e.getMessage());
-    }
-  }
-
   private void parseAttribute(
     final SMFAttributeName name)
     throws Exception
@@ -659,5 +587,105 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   protected Logger log()
   {
     return LOG;
+  }
+
+  @Override
+  public void parseHeader()
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    switch (this.state.get()) {
+      case STATE_INITIAL:
+        throw new IllegalStateException("Header has not been parsed");
+      case STATE_HEADER_PARSING:
+        throw new IllegalStateException("Header has not been parsed");
+      case STATE_HEADER_PARSED: {
+        this.log().debug("parsing body");
+        this.parseDataActual();
+
+        if (!this.parserHasFailed()) {
+          super.state.set(ParserState.STATE_FINISHED);
+        }
+        return;
+      }
+      case STATE_FAILED:
+        throw new IllegalStateException("Parser has failed");
+      case STATE_FINISHED:
+        throw new IllegalStateException("Parser has already completed");
+    }
+  }
+
+  private void parseDataActual()
+  {
+    try {
+      while (true) {
+        final Optional<List<String>> line_opt = super.reader.line();
+        if (!line_opt.isPresent()) {
+          this.onEOF();
+          return;
+        }
+
+        this.log().debug("line: {}", line_opt.get());
+        final List<String> line = line_opt.get();
+        if (line.isEmpty()) {
+          continue;
+        }
+
+        switch (line.get(0)) {
+          case "triangles": {
+            if (line.size() == 1) {
+              this.parseTriangles();
+            } else {
+              super.failExpectedGot(
+                "Incorrect number of arguments",
+                "triangles",
+                line.toJavaStream().collect(Collectors.joining(" ")));
+              return;
+            }
+            break;
+          }
+
+          case "attribute": {
+            if (line.size() == 2) {
+              SMFAttributeName name = null;
+
+              try {
+                name = SMFAttributeName.of(line.get(1));
+              } catch (final IllegalArgumentException e) {
+                super.failExpectedGot(
+                  e.getMessage(),
+                  "attribute",
+                  line.toJavaStream().collect(Collectors.joining(" ")));
+                return;
+              }
+
+              this.parseAttribute(name);
+            } else {
+              super.failExpectedGot(
+                "Incorrect number of arguments",
+                "attribute <attribute-name>",
+                line.toJavaStream().collect(Collectors.joining(" ")));
+              return;
+            }
+            break;
+          }
+
+          default: {
+            super.failExpectedGot(
+              "Unrecognized command.",
+              "attribute | triangles",
+              line.toJavaStream().collect(Collectors.joining(" ")));
+            return;
+          }
+        }
+      }
+    } catch (final Exception e) {
+      this.fail(e.getMessage());
+    }
   }
 }

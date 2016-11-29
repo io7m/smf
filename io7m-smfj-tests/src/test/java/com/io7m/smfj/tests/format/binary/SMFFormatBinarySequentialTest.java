@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.tests.format.binary;
 
-import com.io7m.jcoords.core.conversion.CAxis;
-import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.jpra.runtime.java.JPRAStringTruncation;
@@ -25,11 +23,8 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
-import com.io7m.smfj.core.SMFCoordinateSystem;
-import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
@@ -40,7 +35,6 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -85,7 +79,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
 
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -113,7 +107,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         (byte) 'D',
         (byte) 'X'});
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -136,7 +130,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(891237L);
       out.putU32(0L);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -163,7 +157,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0L);
       out.putBytes(header_s.buffer());
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -196,7 +190,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(0L);
       out.putBytes(buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -366,7 +360,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         out.putU32(16L);
       });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -579,7 +573,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(8L);
     });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -792,7 +786,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(8L);
     });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -833,7 +827,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(4);
     attribute_view.setComponentKind(1000);
     attribute_view.setComponentSize(64);
@@ -845,7 +841,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(header_s.buffer());
       out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -887,7 +883,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(1000);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);
@@ -899,7 +897,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(header_s.buffer());
       out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -941,7 +939,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(0);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);
@@ -953,7 +953,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(header_s.buffer());
       out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -999,7 +999,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("ATTRIBUTE", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "ATTRIBUTE",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(4);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);
@@ -1012,7 +1014,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(attribute_buffer);
       out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 

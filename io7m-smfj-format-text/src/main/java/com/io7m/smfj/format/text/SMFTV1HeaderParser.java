@@ -116,35 +116,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     }
   }
 
-  @Override
-  public void parse()
-  {
-    this.log().debug("parsing header");
-
-    try {
-      this.parseHeaderCommands();
-
-      if (super.state.get() != ParserState.STATE_FINISHED) {
-        this.parseHeaderCheckAll();
-      }
-
-      if (super.state.get() != ParserState.STATE_FINISHED) {
-        final SMFHeader.Builder hb = SMFHeader.builder();
-        hb.setAttributesInOrder(this.attributes_list);
-        hb.setAttributesByName(this.attributes);
-        hb.setTriangleIndexSizeBits(this.triangle_size);
-        hb.setTriangleCount(this.triangle_count);
-        hb.setVertexCount(this.vertex_count);
-        hb.setSchemaIdentifier(this.schema_id);
-        hb.setCoordinateSystem(this.coords);
-        super.events.onHeaderParsed(hb.build());
-      }
-
-    } catch (final Exception e) {
-      this.fail(e.getMessage());
-    }
-  }
-
   private void parseHeaderCheckAll()
   {
     this.parseHeaderCheckUniqueAttributeNames();
@@ -403,5 +374,64 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   protected Logger log()
   {
     return LOG;
+  }
+
+  @Override
+  public void parseHeader()
+  {
+    switch (super.state.get()) {
+
+      case STATE_INITIAL: {
+        this.log().debug("parsing header");
+
+        try {
+          super.state.set(ParserState.STATE_HEADER_PARSING);
+
+          this.parseHeaderCommands();
+
+          if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
+            this.parseHeaderCheckAll();
+          }
+
+          if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
+            final SMFHeader.Builder hb = SMFHeader.builder();
+            hb.setAttributesInOrder(this.attributes_list);
+            hb.setAttributesByName(this.attributes);
+            hb.setTriangleIndexSizeBits(this.triangle_size);
+            hb.setTriangleCount(this.triangle_count);
+            hb.setVertexCount(this.vertex_count);
+            hb.setSchemaIdentifier(this.schema_id);
+            hb.setCoordinateSystem(this.coords);
+            super.events.onHeaderParsed(hb.build());
+            super.state.set(ParserState.STATE_HEADER_PARSED);
+          }
+
+          return;
+        } catch (final Exception e) {
+          this.fail(e.getMessage());
+          return;
+        }
+      }
+
+      case STATE_HEADER_PARSING: {
+        throw new IllegalStateException(
+          "Header parsing is already in progress");
+      }
+      case STATE_HEADER_PARSED: {
+        throw new IllegalStateException(
+          "Header has already been parsed");
+      }
+      case STATE_FAILED: {
+        throw new IllegalStateException(
+          "Parser has already failed");
+      }
+    }
+  }
+
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    throw new UnsupportedOperationException();
   }
 }

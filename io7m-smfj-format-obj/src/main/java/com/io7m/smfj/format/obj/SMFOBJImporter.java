@@ -66,115 +66,29 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   private final List<Vertex> vertices;
   private final List<Triangle> triangles;
   private final Map<OriginalVertexIdentifier, Integer> vertex_mappings;
+  private State state;
   private int triangle_v0;
   private int triangle_v1;
   private int triangle_v2;
   private TriangleState triangle_state = TriangleState.WANT_VERTEX_0;
-  private boolean closed;
+  private SMFAttribute attrib_position;
+  private SMFAttribute attrib_normal;
+  private SMFAttribute attrib_uv;
 
-  private enum TriangleState
+  private SMFOBJImporter(
+    final Optional<Path> in_path,
+    final InputStream in_stream,
+    final SMFParserEventsType in_events)
   {
-    WANT_VERTEX_0,
-    WANT_VERTEX_1,
-    WANT_VERTEX_2
-  }
-
-  private static final class OriginalVertexIdentifier
-  {
-    protected final int v;
-    protected final int vn;
-    protected final int vt;
-
-    @Override
-    public String toString()
-    {
-      final StringBuilder sb = new StringBuilder(16);
-      sb.append(this.v);
-      sb.append("/");
-      sb.append(this.vn);
-      sb.append("/");
-      sb.append(this.vt);
-      return sb.toString();
-    }
-
-    @Override
-    public boolean equals(final Object o)
-    {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || this.getClass() != o.getClass()) {
-        return false;
-      }
-
-      final OriginalVertexIdentifier that = (OriginalVertexIdentifier) o;
-      return this.v == that.v && this.vn == that.vn && this.vt == that.vt;
-    }
-
-    @Override
-    public int hashCode()
-    {
-      int result = this.v;
-      result = 31 * result + this.vn;
-      result = 31 * result + this.vt;
-      return result;
-    }
-
-    OriginalVertexIdentifier(
-      final int in_v,
-      final int in_vn,
-      final int in_vt)
-    {
-      this.v = in_v;
-      this.vn = in_vn;
-      this.vt = in_vt;
-    }
-  }
-
-  private static final class Vertex
-  {
-    protected final @Nullable VectorI3D position;
-    protected final @Nullable VectorI3D normal;
-    protected final @Nullable VectorI2D uv;
-
-    Vertex(
-      final VectorI3D in_position,
-      final VectorI3D in_normal,
-      final VectorI2D in_uv)
-    {
-      this.position = in_position;
-      this.normal = in_normal;
-      this.uv = in_uv;
-    }
-  }
-
-  private static final class Triangle
-  {
-    protected final int v0;
-    protected final int v1;
-    protected final int v2;
-
-    @Override
-    public String toString()
-    {
-      final StringBuilder sb = new StringBuilder(16);
-      sb.append(this.v0);
-      sb.append(" ");
-      sb.append(this.v1);
-      sb.append(" ");
-      sb.append(this.v2);
-      return sb.toString();
-    }
-
-    Triangle(
-      final int in_v0,
-      final int in_v1,
-      final int in_v2)
-    {
-      this.v0 = in_v0;
-      this.v1 = in_v1;
-      this.v2 = in_v2;
-    }
+    this.events = NullCheck.notNull(in_events, "Events");
+    this.parser = JOParser.newParserFromStream(in_path, in_stream, this);
+    this.positions = new ArrayList<>(8);
+    this.normals = new ArrayList<>(8);
+    this.uvs = new ArrayList<>(8);
+    this.vertices = new ArrayList<>(0);
+    this.triangles = new ArrayList<>(0);
+    this.vertex_mappings = new HashMap<>(16);
+    this.state = State.STATE_INITIAL;
   }
 
   /**
@@ -195,19 +109,36 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     return new SMFOBJImporter(in_path, in_stream, in_events);
   }
 
-  private SMFOBJImporter(
-    final Optional<Path> in_path,
-    final InputStream in_stream,
-    final SMFParserEventsType in_events)
+  @Override
+  public boolean parserHasFailed()
   {
-    this.events = NullCheck.notNull(in_events, "Events");
-    this.parser = JOParser.newParserFromStream(in_path, in_stream, this);
-    this.positions = new ArrayList<>(8);
-    this.normals = new ArrayList<>(8);
-    this.uvs = new ArrayList<>(8);
-    this.vertices = new ArrayList<>(0);
-    this.triangles = new ArrayList<>(0);
-    this.vertex_mappings = new HashMap<>(16);
+    return this.state == State.STATE_FAILED;
+  }
+
+  @Override
+  public void parseHeader()
+  {
+    if (this.state != State.STATE_INITIAL) {
+      throw new IllegalStateException("Parser has already executed");
+    }
+
+    this.events.onStart();
+    this.parser.run();
+  }
+
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    if (this.state != State.STATE_HEADER_PARSED) {
+      throw new IllegalStateException("Header has not been parsed");
+    }
+
+    this.deliverData();
+
+    if (this.state == State.STATE_HEADER_PARSED) {
+      this.state = State.STATE_FINISHED;
+    }
   }
 
   @Override
@@ -216,6 +147,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final Optional<Throwable> e,
     final String message)
   {
+    this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
       LexicalPosition.copyOf(p),
       e + ": " + message));
@@ -227,6 +159,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final JOParserErrorCode e,
     final String message)
   {
+    this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
       LexicalPosition.copyOf(p),
       e + ": " + message));
@@ -244,6 +177,25 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   public void onEOF(
     final LexicalPositionType<Path> p)
   {
+    this.deliverHeader();
+  }
+
+  private void deliverData()
+  {
+    if (this.vertices.size() > 0) {
+      final Vertex vertex = this.vertices.get(0);
+      this.deliverDataPosition(this.attrib_position, vertex);
+      this.deliverDataNormals(this.attrib_normal, vertex);
+      this.deliverDataUV(this.attrib_uv, vertex);
+    }
+
+    if (this.triangles.size() > 0) {
+      this.deliverDataTriangles();
+    }
+  }
+
+  private void deliverHeader()
+  {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(0, 0, 0, 0));
 
@@ -257,24 +209,24 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final SMFAttributeName name_uv =
       SMFAttributeName.of("UV:0");
 
-    final SMFAttribute attrib_position = SMFAttribute.of(
+    this.attrib_position = SMFAttribute.of(
       name_position, SMFComponentType.ELEMENT_TYPE_FLOATING, 3, 32);
-    final SMFAttribute attrib_normal = SMFAttribute.of(
+    this.attrib_normal = SMFAttribute.of(
       name_normal, SMFComponentType.ELEMENT_TYPE_FLOATING, 3, 32);
-    final SMFAttribute attrib_uv = SMFAttribute.of(
+    this.attrib_uv = SMFAttribute.of(
       name_uv, SMFComponentType.ELEMENT_TYPE_FLOATING, 2, 32);
 
     if (this.vertices.size() > 0) {
       header_b.setVertexCount((long) this.vertices.size());
       final Vertex vertex = this.vertices.get(0);
       if (vertex.position != null) {
-        attributes = attributes.append(attrib_position);
+        attributes = attributes.append(this.attrib_position);
       }
       if (vertex.normal != null) {
-        attributes = attributes.append(attrib_normal);
+        attributes = attributes.append(this.attrib_normal);
       }
       if (vertex.uv != null) {
-        attributes = attributes.append(attrib_uv);
+        attributes = attributes.append(this.attrib_uv);
       }
     }
 
@@ -290,17 +242,6 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     header_b.setTriangleCount((long) this.triangles.size());
     final SMFHeader header = header_b.build();
     this.events.onHeaderParsed(header);
-
-    if (this.vertices.size() > 0) {
-      final Vertex vertex = this.vertices.get(0);
-      this.deliverDataPosition(attrib_position, vertex);
-      this.deliverDataNormals(attrib_normal, vertex);
-      this.deliverDataUV(attrib_uv, vertex);
-    }
-
-    if (this.triangles.size() > 0) {
-      this.deliverDataTriangles();
-    }
   }
 
   private void deliverDataTriangles()
@@ -313,49 +254,49 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   }
 
   private void deliverDataUV(
-    final SMFAttribute attrib_uv,
+    final SMFAttribute in_attrib_uv,
     final Vertex vertex)
   {
     if (vertex.uv != null) {
-      this.events.onDataAttributeStart(attrib_uv);
+      this.events.onDataAttributeStart(in_attrib_uv);
       for (final Vertex v : this.vertices) {
         this.events.onDataAttributeValueFloat2(
           v.uv.getXD(),
           v.uv.getYD());
       }
-      this.events.onDataAttributeFinish(attrib_uv);
+      this.events.onDataAttributeFinish(in_attrib_uv);
     }
   }
 
   private void deliverDataNormals(
-    final SMFAttribute attrib_normal,
+    final SMFAttribute in_attrib_normal,
     final Vertex vertex)
   {
     if (vertex.normal != null) {
-      this.events.onDataAttributeStart(attrib_normal);
+      this.events.onDataAttributeStart(in_attrib_normal);
       for (final Vertex v : this.vertices) {
         this.events.onDataAttributeValueFloat3(
           v.normal.getXD(),
           v.normal.getYD(),
           v.normal.getZD());
       }
-      this.events.onDataAttributeFinish(attrib_normal);
+      this.events.onDataAttributeFinish(in_attrib_normal);
     }
   }
 
   private void deliverDataPosition(
-    final SMFAttribute attrib_position,
+    final SMFAttribute in_attrib_position,
     final Vertex vertex)
   {
     if (vertex.position != null) {
-      this.events.onDataAttributeStart(attrib_position);
+      this.events.onDataAttributeStart(in_attrib_position);
       for (final Vertex v : this.vertices) {
         this.events.onDataAttributeValueFloat3(
           v.position.getXD(),
           v.position.getYD(),
           v.position.getZD());
       }
-      this.events.onDataAttributeFinish(attrib_position);
+      this.events.onDataAttributeFinish(in_attrib_position);
     }
   }
 
@@ -676,26 +617,129 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   }
 
   @Override
-  public void parse()
-  {
-    if (this.closed) {
-      throw new IllegalStateException("Parser is already closed");
-    }
-
-    this.events.onStart();
-    this.parser.run();
-  }
-
-  @Override
   public void close()
     throws IOException
   {
     try {
-      if (!this.closed) {
+      if (this.state != State.STATE_CLOSED) {
         this.events.onFinish();
       }
     } finally {
-      this.closed = true;
+      this.state = State.STATE_CLOSED;
+    }
+  }
+
+  private enum State
+  {
+    STATE_INITIAL,
+    STATE_FAILED,
+    STATE_HEADER_PARSED,
+    STATE_FINISHED,
+    STATE_CLOSED
+  }
+
+  private enum TriangleState
+  {
+    WANT_VERTEX_0,
+    WANT_VERTEX_1,
+    WANT_VERTEX_2
+  }
+
+  private static final class OriginalVertexIdentifier
+  {
+    protected final int v;
+    protected final int vn;
+    protected final int vt;
+
+    OriginalVertexIdentifier(
+      final int in_v,
+      final int in_vn,
+      final int in_vt)
+    {
+      this.v = in_v;
+      this.vn = in_vn;
+      this.vt = in_vt;
+    }
+
+    @Override
+    public String toString()
+    {
+      final StringBuilder sb = new StringBuilder(16);
+      sb.append(this.v);
+      sb.append("/");
+      sb.append(this.vn);
+      sb.append("/");
+      sb.append(this.vt);
+      return sb.toString();
+    }
+
+    @Override
+    public boolean equals(final Object o)
+    {
+      if (this == o) {
+        return true;
+      }
+      if (o == null || this.getClass() != o.getClass()) {
+        return false;
+      }
+
+      final OriginalVertexIdentifier that = (OriginalVertexIdentifier) o;
+      return this.v == that.v && this.vn == that.vn && this.vt == that.vt;
+    }
+
+    @Override
+    public int hashCode()
+    {
+      int result = this.v;
+      result = 31 * result + this.vn;
+      result = 31 * result + this.vt;
+      return result;
+    }
+  }
+
+  private static final class Vertex
+  {
+    protected final @Nullable VectorI3D position;
+    protected final @Nullable VectorI3D normal;
+    protected final @Nullable VectorI2D uv;
+
+    Vertex(
+      final VectorI3D in_position,
+      final VectorI3D in_normal,
+      final VectorI2D in_uv)
+    {
+      this.position = in_position;
+      this.normal = in_normal;
+      this.uv = in_uv;
+    }
+  }
+
+  private static final class Triangle
+  {
+    protected final int v0;
+    protected final int v1;
+    protected final int v2;
+
+    Triangle(
+      final int in_v0,
+      final int in_v1,
+      final int in_v2)
+    {
+      this.v0 = in_v0;
+      this.v1 = in_v1;
+      this.v2 = in_v2;
+    }
+
+    @Override
+    public String toString()
+    {
+      final StringBuilder sb = new StringBuilder(16);
+      sb.append(this.v0);
+      sb.append(" ");
+      sb.append(this.v1);
+      sb.append(" ");
+      sb.append(this.v2);
+      return sb.toString();
     }
   }
 }

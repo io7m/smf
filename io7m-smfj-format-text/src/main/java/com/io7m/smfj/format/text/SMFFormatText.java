@@ -151,6 +151,8 @@ public final class SMFFormatText implements SMFParserProviderType,
 
   private static final class Parser extends SMFTAbstractParser
   {
+    private SMFTV1Parser v1;
+
     Parser(
       final SMFParserEventsType in_events,
       final SMFTLineReader in_reader,
@@ -165,51 +167,6 @@ public final class SMFFormatText implements SMFParserProviderType,
       return LOG;
     }
 
-    @Override
-    public void parse()
-    {
-      if (super.state.get() != ParserState.STATE_INITIAL) {
-        throw new IllegalStateException("Parser has already executed");
-      }
-
-      super.state.set(ParserState.STATE_PARSING);
-      try {
-        super.events.onStart();
-
-        final Optional<List<String>> line = super.reader.line();
-        if (line.isPresent()) {
-          final Validation<List<SMFParseError>, SMFFormatVersion> v_version =
-            this.onParseVersion(line.get());
-
-          if (v_version.isValid()) {
-            final SMFFormatVersion version = v_version.get();
-            super.events.onVersionReceived(version);
-            switch (version.major()) {
-              case 1: {
-                LOG.debug("instantiating 1.* parser");
-                new SMFTV1Parser(
-                  this,
-                  super.events,
-                  super.reader,
-                  version).parse();
-                return;
-              }
-              default: {
-                LOG.debug("no parser for version {}", version);
-                this.fail("Unsupported version");
-                return;
-              }
-            }
-          }
-
-          this.failErrors(v_version.getError());
-          return;
-        }
-        this.fail("Unexpected EOF");
-      } catch (final Exception e) {
-        this.fail(e.getMessage());
-      }
-    }
 
     private Validation<List<SMFParseError>, SMFFormatVersion> onParseVersion(
       final List<String> line)
@@ -256,6 +213,60 @@ public final class SMFFormatText implements SMFParserProviderType,
     {
       LOG.debug("closing parser");
       super.events.onFinish();
+    }
+
+    @Override
+    public void parseHeader()
+    {
+      if (super.state.get() != ParserState.STATE_INITIAL) {
+        throw new IllegalStateException("Parser has already executed");
+      }
+
+      try {
+        super.events.onStart();
+
+        final Optional<List<String>> line = super.reader.line();
+        if (line.isPresent()) {
+          final Validation<List<SMFParseError>, SMFFormatVersion> v_version =
+            this.onParseVersion(line.get());
+
+          if (v_version.isValid()) {
+            final SMFFormatVersion version = v_version.get();
+            super.events.onVersionReceived(version);
+            switch (version.major()) {
+              case 1: {
+                LOG.debug("instantiating 1.* parser");
+                this.v1 =
+                  new SMFTV1Parser(this, super.events, super.reader, version);
+                this.v1.parseHeader();
+                return;
+              }
+              default: {
+                LOG.debug("no parser for version {}", version);
+                this.fail("Unsupported version");
+                return;
+              }
+            }
+          }
+
+          this.failErrors(v_version.getError());
+          return;
+        }
+        this.fail("Unexpected EOF");
+      } catch (final Exception e) {
+        this.fail(e.getMessage());
+      }
+    }
+
+    @Override
+    public void parseData()
+      throws IllegalStateException
+    {
+      if (super.state.get() != ParserState.STATE_HEADER_PARSED) {
+        throw new IllegalStateException("Header has not been parsed");
+      }
+
+      this.v1.parseData();
     }
   }
 }

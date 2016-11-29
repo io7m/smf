@@ -64,6 +64,7 @@ public final class SMFFormatTextTest
 
   private static void runForText(
     final SMFParserEventsType events,
+    final boolean data,
     final StringBuilder text)
   {
     try {
@@ -73,11 +74,34 @@ public final class SMFFormatTextTest
       final SMFFormatText format = new SMFFormatText();
       final SMFParserSequentialType parser =
         format.parserCreateSequential(events, PATH, stream);
-      parser.parse();
+      parser.parseHeader();
+      if (data) {
+        parser.parseData();
+      }
       parser.close();
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private static SMFHeader.Builder baseHeader(
+    final List<SMFAttribute> attributes)
+  {
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+    return header_b;
   }
 
   @Test
@@ -94,7 +118,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -113,7 +137,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -132,7 +156,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -151,7 +175,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -170,7 +194,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -189,7 +213,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -208,7 +232,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -228,7 +252,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -248,7 +272,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -268,7 +292,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -292,7 +316,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -316,7 +340,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -340,7 +364,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -364,7 +388,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -388,7 +412,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -412,7 +436,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -436,7 +460,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -464,7 +488,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -492,7 +516,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -520,7 +544,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -548,7 +572,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -576,7 +600,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -604,7 +628,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -628,7 +652,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -654,7 +678,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -678,7 +702,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -707,7 +731,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -1098,7 +1122,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1120,7 +1144,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -1152,7 +1176,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -1211,7 +1235,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1264,7 +1288,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1320,7 +1344,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1376,7 +1400,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1422,7 +1446,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1468,7 +1492,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1518,7 +1542,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1571,7 +1595,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1638,7 +1662,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1684,7 +1708,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1745,7 +1769,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1806,7 +1830,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1867,7 +1891,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1928,9 +1952,8 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
-
 
   @Test
   public void testBadDataAttributeValuesWrongIntegerSigned4(
@@ -1990,7 +2013,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2051,7 +2074,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2112,7 +2135,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2173,9 +2196,8 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
-
 
   @Test
   public void testBadDataAttributeValuesWrongIntegerUnsigned4(
@@ -2235,7 +2257,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2296,7 +2318,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2357,7 +2379,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2418,7 +2440,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2442,7 +2464,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2466,7 +2488,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2490,7 +2512,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2514,7 +2536,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2538,7 +2560,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2616,26 +2638,6 @@ public final class SMFFormatTextTest
     serializer.serializeData(SMFAttributeName.of("x"));
   }
 
-  private static SMFHeader.Builder baseHeader(
-    final List<SMFAttribute> attributes)
-  {
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(
-        CAxis.AXIS_POSITIVE_X,
-        CAxis.AXIS_POSITIVE_Y,
-        CAxis.AXIS_NEGATIVE_Z),
-      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-    return header_b;
-  }
-
   @Test
   public void testSerializerAttributeNoneExpected()
     throws IOException
@@ -2686,7 +2688,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2713,7 +2715,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2742,7 +2744,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test

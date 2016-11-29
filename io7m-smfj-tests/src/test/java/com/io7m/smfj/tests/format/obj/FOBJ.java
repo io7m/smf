@@ -285,7 +285,8 @@ public final class FOBJ
           LOG.debug("parser finished");
         }
       }, path, is)) {
-        p.parse();
+        p.parseHeader();
+        p.parseData();
       }
     }
   }

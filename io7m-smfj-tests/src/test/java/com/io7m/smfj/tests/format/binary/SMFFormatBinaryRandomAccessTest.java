@@ -25,7 +25,6 @@ import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
@@ -34,10 +33,8 @@ import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
-import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -835,7 +832,9 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(4);
     attribute_view.setComponentKind(1000);
     attribute_view.setComponentSize(64);
@@ -885,12 +884,14 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
       ByteBuffer.wrap(attribute_buffer);
     final JPRACursor1DType<SMFBV1AttributeType> attribute_cursor =
       JPRACursor1DByteBufferedChecked.newCursor(
-      attribute_wrap,
-      SMFBV1AttributeByteBuffered::newValueWithOffset);
+        attribute_wrap,
+        SMFBV1AttributeByteBuffered::newValueWithOffset);
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(1000);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);
@@ -945,7 +946,9 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("F64_4", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(0);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);
@@ -1004,7 +1007,9 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFBV1AttributeType attribute_view =
       attribute_cursor.getElementView();
 
-    attribute_view.getNameWritable().setValue("ATTRIBUTE", JPRAStringTruncation.REJECT);
+    attribute_view.getNameWritable().setValue(
+      "ATTRIBUTE",
+      JPRAStringTruncation.REJECT);
     attribute_view.setComponentCount(4);
     attribute_view.setComponentKind(0);
     attribute_view.setComponentSize(64);

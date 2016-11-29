@@ -18,7 +18,6 @@ package com.io7m.smfj.tests.core;
 
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNames;
-import org.hamcrest.core.StringStartsWith;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -36,7 +35,8 @@ public final class SMFAttributeNameTest
 
   @Rule public final ExpectedException expected = ExpectedException.none();
 
-  @Test public void testValid()
+  @Test
+  public void testValid()
   {
     final String[] valids = {
       "abcdefghijklmnopqrstuvwxyz",
@@ -71,10 +71,13 @@ public final class SMFAttributeNameTest
       all_ok = ok[index] && all_ok;
     }
 
-    if (!all_ok) Assert.fail();
+    if (!all_ok) {
+      Assert.fail();
+    }
   }
 
-  @Test public void testInvalid()
+  @Test
+  public void testInvalid()
   {
     final String[] invalids = {
       "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
@@ -111,6 +114,8 @@ public final class SMFAttributeNameTest
       all_ok = ok[index] && all_ok;
     }
 
-    if (!all_ok) Assert.fail();
+    if (!all_ok) {
+      Assert.fail();
+    }
   }
 }

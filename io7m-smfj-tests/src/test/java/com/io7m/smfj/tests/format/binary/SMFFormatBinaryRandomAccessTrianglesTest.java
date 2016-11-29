@@ -16,21 +16,12 @@
 
 package com.io7m.smfj.tests.format.binary;
 
-import com.io7m.jcoords.core.conversion.CAxis;
-import com.io7m.jcoords.core.conversion.CAxisSystem;
-import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFCoordinateSystem;
-import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
-import javaslang.collection.HashMap;
-import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 import org.junit.Rule;
@@ -44,7 +35,8 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public final class SMFFormatBinaryRandomAccessTrianglesTest extends SMFBinaryTest
+public final class SMFFormatBinaryRandomAccessTrianglesTest extends
+  SMFBinaryTest
 {
   private static final Logger LOG;
 

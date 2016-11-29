@@ -99,7 +99,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
       out.put("0 2 3");
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -147,7 +148,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
       out.put("0 2 3");
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -195,7 +197,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
       out.put("0 2 3");
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test

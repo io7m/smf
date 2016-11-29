@@ -28,7 +28,6 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import com.io7m.smfj.format.binary.SMFBCoordinateSystems;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -69,13 +68,14 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     hb.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     hb.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(CAxis.AXIS_POSITIVE_X,
-                     CAxis.AXIS_POSITIVE_Y,
-                     CAxis.AXIS_NEGATIVE_Z),
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     return hb.build();
   }
-  
+
   @Test
   public void testDataAttributesFloating64_4(
     final @Mocked SMFParserEventsType events)
@@ -94,7 +94,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -157,7 +159,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -222,7 +226,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -287,7 +293,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -352,7 +360,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -417,7 +427,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -482,7 +494,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -547,7 +561,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -612,7 +628,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -677,7 +695,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -742,7 +762,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
@@ -807,7 +829,9 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(p.name(), p)));
+    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
+      p.name(),
+      p)));
 
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();

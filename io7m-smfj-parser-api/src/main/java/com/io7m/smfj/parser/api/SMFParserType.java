@@ -16,26 +16,17 @@
 
 package com.io7m.smfj.parser.api;
 
+import java.io.Closeable;
+
 /**
- * The type of sequential parsers.
+ * The type of parsers.
  */
 
-public interface SMFParserSequentialType extends SMFParserType
+public interface SMFParserType extends Closeable
 {
   /**
-   * Parse the header of the file.
+   * @return {@code true} iff the parser has failed
    */
 
-  void parseHeader();
-
-  /**
-   * Parse the file data, delivering events to any provided event listener.
-   *
-   * @throws IllegalStateException If {@link #parseHeader()} has not been
-   *                               called, or if parsing the header previously
-   *                               failed
-   */
-
-  void parseData()
-    throws IllegalStateException;
+  boolean parserHasFailed();
 }

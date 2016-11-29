@@ -96,7 +96,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     return LOG;
   }
 
-  private void parseHeader()
+  private void parseHeaderActual()
   {
     LOG.debug("parsing header");
 
@@ -104,8 +104,8 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       super.reader.readBytes(Optional.of("header"), this.header_buffer);
       this.header_cursor =
         JPRACursor1DByteBufferedChecked.newCursor(
-        this.header_buffer_wrap,
-        SMFBV1HeaderByteBuffered::newValueWithOffset);
+          this.header_buffer_wrap,
+          SMFBV1HeaderByteBuffered::newValueWithOffset);
       this.header_view =
         this.header_cursor.getElementView();
 
@@ -119,16 +119,17 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
           Long.toUnsignedString((long) this.header_view.getTriangleIndexSizeBits()));
         LOG.debug(
           "expecting {} attributes",
-          Long.toUnsignedString((long) this.header_view.getAttributeCount()));
+          Long.toUnsignedString(this.header_view.getAttributeCount()));
       }
 
       this.parseHeaderAttributes();
       this.checkHeaderAttributes();
 
-      if (super.state.get() != ParserState.STATE_FAILED) {
+      if (!this.parserHasFailed()) {
         super.events.onHeaderParsed(this.header);
         super.state.set(ParserState.STATE_PARSED_HEADER);
       }
+
     } catch (final IOException e) {
       super.fail("I/O error: " + e.getMessage());
     } catch (final Exception e) {
@@ -777,33 +778,31 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       this.attributes_named = this.attributes_named.put(name, attribute);
     });
 
-    if (this.state.get() == ParserState.STATE_FAILED) {
-      return;
+    if (!this.parserHasFailed()) {
+      final SMFBV1SchemaIDReadableType schema_id_view =
+        this.header_view.getSchemaReadable();
+
+      final SMFSchemaIdentifier.Builder vb =
+        SMFSchemaIdentifier.builder();
+      vb.setVendorID(schema_id_view.getVendorId());
+      vb.setSchemaID(schema_id_view.getSchemaId());
+      vb.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
+      vb.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
+
+      final SMFHeader.Builder hb = SMFHeader.builder();
+      hb.setVertexCount(this.header_view.getVertexCount());
+      hb.setTriangleCount(this.header_view.getTriangleCount());
+      hb.setTriangleIndexSizeBits((long) this.header_view.getTriangleIndexSizeBits());
+      hb.setAttributesInOrder(this.attributes);
+      hb.setAttributesByName(this.attributes_named);
+      hb.setSchemaIdentifier(vb.build());
+      hb.setCoordinateSystem(
+        SMFBCoordinateSystems.unpack(
+          this.header_view.getCoordinateSystemReadable()));
+
+      this.header = hb.build();
+      this.offsets = SMFBV1Offsets.fromHeader(this.header);
     }
-
-    final SMFBV1SchemaIDReadableType schema_id_view =
-      this.header_view.getSchemaReadable();
-
-    final SMFSchemaIdentifier.Builder vb =
-      SMFSchemaIdentifier.builder();
-    vb.setVendorID(schema_id_view.getVendorId());
-    vb.setSchemaID(schema_id_view.getSchemaId());
-    vb.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
-    vb.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
-
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setVertexCount(this.header_view.getVertexCount());
-    hb.setTriangleCount(this.header_view.getTriangleCount());
-    hb.setTriangleIndexSizeBits((long) this.header_view.getTriangleIndexSizeBits());
-    hb.setAttributesInOrder(this.attributes);
-    hb.setAttributesByName(this.attributes_named);
-    hb.setSchemaIdentifier(vb.build());
-    hb.setCoordinateSystem(
-      SMFBCoordinateSystems.unpack(
-        this.header_view.getCoordinateSystemReadable()));
-
-    this.header = hb.build();
-    this.offsets = SMFBV1Offsets.fromHeader(this.header);
   }
 
   private void parseHeaderAttributes()
@@ -830,7 +829,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 
     for (long index = 0L;
          Long.compareUnsigned(
-           index, (long) this.header_view.getAttributeCount()) < 0;
+           index, this.header_view.getAttributeCount()) < 0;
          index = Math.addExact(index, 1L)) {
 
       if (LOG.isDebugEnabled()) {
@@ -890,24 +889,38 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
   }
 
   @Override
-  public void parse()
+  public void parseHeader()
   {
-    this.parseHeader();
-    if (this.state.get() == ParserState.STATE_FAILED) {
-      return;
-    }
+    this.parseHeaderActual();
+  }
 
-    for (final SMFAttribute attribute : this.attributes) {
-      this.parseAttributeData(attribute);
-      if (this.state.get() == ParserState.STATE_FAILED) {
-        return;
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    switch (super.state.get()) {
+      case STATE_INITIAL: {
+        throw new IllegalStateException("Header has not been parsed");
+      }
+      case STATE_PARSED_HEADER: {
+        for (final SMFAttribute attribute : this.attributes) {
+          this.parseAttributeData(attribute);
+          if (this.parserHasFailed()) {
+            return;
+          }
+        }
+
+        if (!this.parserHasFailed()) {
+          this.parseTriangles();
+        }
+        break;
+      }
+      case STATE_FAILED: {
+        throw new IllegalStateException("Parser has already failed");
+      }
+      case STATE_FINISHED: {
+        throw new IllegalStateException("Parser has already completed");
       }
     }
-
-    if (this.state.get() == ParserState.STATE_FAILED) {
-      return;
-    }
-
-    this.parseTriangles();
   }
 }

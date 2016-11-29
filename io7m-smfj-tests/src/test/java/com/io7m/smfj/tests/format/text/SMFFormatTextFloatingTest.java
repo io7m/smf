@@ -134,7 +134,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -193,7 +194,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -252,7 +254,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -311,7 +314,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -370,7 +374,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -429,7 +434,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -488,7 +494,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -547,7 +554,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -606,7 +614,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -665,7 +674,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -724,7 +734,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -783,7 +794,8 @@ public final class SMFFormatTextFloatingTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test

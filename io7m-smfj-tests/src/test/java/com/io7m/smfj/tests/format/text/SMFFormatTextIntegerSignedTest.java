@@ -62,7 +62,9 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setAttributesByName(List.of(attr).toMap(a -> Tuple.of(
+      a.name(),
+      a)));
     header_b.setVertexCount(3L);
     header_b.setTriangleIndexSizeBits(32L);
     header_b.setTriangleCount(0L);
@@ -76,7 +78,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     return header_b.build();
   }
-  
+
   @Test
   public void testDataAttributesIntegerSigned64_4(
     final @Mocked SMFParserEventsType events)
@@ -92,7 +94,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -132,7 +134,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -150,7 +153,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -190,7 +193,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -208,7 +212,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -248,7 +252,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -266,7 +271,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -306,7 +311,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -324,7 +330,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -364,7 +370,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -382,7 +389,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -422,7 +429,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -440,7 +448,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -480,7 +488,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -498,7 +507,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -538,7 +547,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -556,7 +566,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -596,7 +606,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -614,7 +625,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -654,7 +665,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -672,7 +684,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -712,7 +724,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -730,7 +743,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -770,7 +783,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -788,7 +802,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -828,7 +842,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -846,7 +861,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -886,7 +901,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -904,7 +920,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -944,7 +960,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -962,7 +979,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       (int) component_size);
 
     final SMFHeader h = header(attr);
-    
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -1002,7 +1019,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
       }
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test

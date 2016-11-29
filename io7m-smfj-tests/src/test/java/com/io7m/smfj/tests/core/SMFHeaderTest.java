@@ -75,7 +75,10 @@ public final class SMFHeaderTest
     final SMFHeader.Builder b = SMFHeader.builder();
     b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(CAxis.AXIS_POSITIVE_X, CAxis.AXIS_POSITIVE_Y, CAxis.AXIS_NEGATIVE_Z),
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.of(attr1.name(), attr1));
@@ -95,7 +98,10 @@ public final class SMFHeaderTest
     final SMFHeader.Builder b = SMFHeader.builder();
     b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(CAxis.AXIS_POSITIVE_X, CAxis.AXIS_POSITIVE_Y, CAxis.AXIS_NEGATIVE_Z),
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.of(attr1.name(), attr1));
@@ -113,7 +119,10 @@ public final class SMFHeaderTest
     final SMFHeader.Builder b = SMFHeader.builder();
     b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(CAxis.AXIS_POSITIVE_X, CAxis.AXIS_POSITIVE_Y, CAxis.AXIS_NEGATIVE_Z),
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     b.setAttributesInOrder(List.empty());
     b.setAttributesByName(HashMap.of(attr0.name(), attr0));
@@ -131,7 +140,10 @@ public final class SMFHeaderTest
     final SMFHeader.Builder b = SMFHeader.builder();
     b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(CAxis.AXIS_POSITIVE_X, CAxis.AXIS_POSITIVE_Y, CAxis.AXIS_NEGATIVE_Z),
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     b.setAttributesInOrder(List.of(attr0));
     b.setAttributesByName(HashMap.empty());

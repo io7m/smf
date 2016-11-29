@@ -16,21 +16,12 @@
 
 package com.io7m.smfj.tests.format.binary;
 
-import com.io7m.jcoords.core.conversion.CAxis;
-import com.io7m.jcoords.core.conversion.CAxisSystem;
-import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFCoordinateSystem;
-import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
-import javaslang.collection.HashMap;
-import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
 import org.junit.Rule;
@@ -91,7 +82,8 @@ public final class SMFFormatBinarySequentialTrianglesTest extends SMFBinaryTest
       out.putU8(3L);
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -131,7 +123,8 @@ public final class SMFFormatBinarySequentialTrianglesTest extends SMFBinaryTest
       out.putU16(3L);
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
@@ -171,7 +164,8 @@ public final class SMFFormatBinarySequentialTrianglesTest extends SMFBinaryTest
       out.putU32(3L);
     });
 
-    p.parse();
+    p.parseHeader();
+    p.parseData();
   }
 
   @Test
