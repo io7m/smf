@@ -56,7 +56,11 @@ axis names and a triangle [term [type term] winding order]. The axis names
 specify which Cartesian coordinate system axes correspond to the
 [term [type term] right], [term [type term] up], and [term [type term] forward]
 directions. The winding order specifies whether vertices for triangles are
-given in clockwise or counter-clockwise order.
+given in clockwise or counter-clockwise order. A coordinate system is only
+[term [type term] valid] if the three chosen axes have different
+[term [type term] axis names]. The [term [type function] axisName] function
+relates an axis to an axis name. The [term [type function] axisValid] function
+gives a formal definition of the validity of sets of axes.
 
 [formal-item [title "Axis"] [id smf_model.coords.axis_def]]
 [verbatim [include "axis.hs"]]
