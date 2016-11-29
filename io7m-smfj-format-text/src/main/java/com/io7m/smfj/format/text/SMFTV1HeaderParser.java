@@ -425,6 +425,10 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         throw new IllegalStateException(
           "Parser has already failed");
       }
+      case STATE_FINISHED: {
+        throw new IllegalStateException(
+          "Parser has already completed");
+      }
     }
   }
 
