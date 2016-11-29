@@ -26,6 +26,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.format.text.SMFBase64Lines;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -464,6 +465,78 @@ public final class SMFFormatTextTest
   }
 
   @Test
+  public void testBadMeta0(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadMeta1(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta x");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Cannot parse number")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadMeta2(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta 1 2");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
   public void testBadCoordinateSpace0(
     final @Mocked SMFParserEventsType events)
   {
@@ -743,6 +816,8 @@ public final class SMFFormatTextTest
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
     s.append(System.lineSeparator());
+    s.append("meta 1");
+    s.append(System.lineSeparator());
     s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute \"float-1-16\" float 1 16");
@@ -930,6 +1005,26 @@ public final class SMFFormatTextTest
     s.append("0 2 3");
     s.append(System.lineSeparator());
 
+    final byte[] bytes = new byte[256];
+    for (int index = 0; index < bytes.length; ++index) {
+      bytes[index] = (byte) index;
+    }
+
+    s.append("metadata");
+    s.append(System.lineSeparator());
+    s.append("meta 696F376D 0A0B0C0D 5");
+    s.append(System.lineSeparator());
+    s.append("AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1");
+    s.append(System.lineSeparator());
+    s.append("Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr");
+    s.append(System.lineSeparator());
+    s.append("bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch");
+    s.append(System.lineSeparator());
+    s.append("oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX");
+    s.append(System.lineSeparator());
+    s.append("2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==");
+    s.append(System.lineSeparator());
+
     final SMFAttribute attr_f1_16 = SMFAttribute.of(
       SMFAttributeName.of("float-1-16"),
       SMFComponentType.ELEMENT_TYPE_FLOATING,
@@ -1014,6 +1109,7 @@ public final class SMFFormatTextTest
     header_b.setTriangleCount(2L);
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setVertexCount(4L);
+    header_b.setMetaCount(1L);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
@@ -1118,6 +1214,10 @@ public final class SMFFormatTextTest
       events.onDataTriangle(0L, 1L, 2L);
       events.onDataTriangle(0L, 2L, 3L);
       events.onDataTrianglesFinish();
+
+      events.onMeta(0x696F376D, 0x0A0B0C0D, 256L);
+      this.result = Boolean.TRUE;
+      events.onMetaData(0x696F376D, 0x0A0B0C0D, bytes);
 
       events.onFinish();
     }};

@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeType;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -32,6 +33,7 @@ import javaslang.control.Option;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,42 +45,35 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     LOG = LoggerFactory.getLogger(SMFTV1BodyParser.class);
   }
 
-  protected final Map<SMFAttributeName, SMFAttribute> attributes;
   private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
-  private final long vertex_count;
-  private final long triangle_count;
-  private final long triangle_size;
+  private final SMFHeader header;
   private Map<SMFAttributeName, Boolean> attributes_ok;
   private Map<SMFAttributeName, Boolean> attributes_attempted;
   private long parsed_triangles;
+  private long parsed_metas;
 
   SMFTV1BodyParser(
     final SMFTAbstractParser in_parent,
     final SMFParserEventsType in_events,
     final SMFTLineReader in_reader,
     final SMFFormatVersion in_version,
-    final Map<SMFAttributeName, SMFAttribute> in_attributes,
-    final long in_vertex_count,
-    final long in_triangle_count,
-    final long in_triangle_size)
+    final SMFHeader in_header)
   {
     super(in_events, in_reader, in_parent.state);
     this.parent = NullCheck.notNull(in_parent, "Parent");
     this.version = NullCheck.notNull(in_version, "Version");
-    this.attributes = NullCheck.notNull(in_attributes, "attributes");
+    this.header = NullCheck.notNull(in_header, "Header");
     this.attributes_ok = HashMap.empty();
     this.attributes_attempted = HashMap.empty();
-    this.vertex_count = in_vertex_count;
-    this.triangle_count = in_triangle_count;
-    this.triangle_size = in_triangle_size;
   }
 
   private void parseAttribute(
     final SMFAttributeName name)
     throws Exception
   {
-    final Option<SMFAttribute> attribute_opt = this.attributes.get(name);
+    final Option<SMFAttribute> attribute_opt =
+      this.header.attributesByName().get(name);
     if (attribute_opt.isDefined()) {
       final SMFAttribute attribute = attribute_opt.get();
 
@@ -95,7 +90,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         super.events.onDataAttributeStart(attribute);
 
         long parsed_vertices = 0L;
-        while (parsed_vertices != this.vertex_count) {
+        while (parsed_vertices != this.header.vertexCount()) {
           final Optional<List<String>> line_opt = super.reader.line();
           if (!line_opt.isPresent()) {
             this.onEOF();
@@ -128,21 +123,30 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     if (!this.isBodyDone()) {
       this.failMissedAttributes();
       this.failMissedTriangles();
+      this.failMissedMetadata();
       this.fail("Unexpected EOF");
+    }
+  }
+
+  private void failMissedMetadata()
+  {
+    if (this.parsed_metas != this.header.metaCount()) {
+      this.fail("Too few metadata elements specified");
     }
   }
 
   private void failMissedTriangles()
   {
-    if (this.parsed_triangles != this.triangle_count) {
+    if (this.parsed_triangles != this.header.triangleCount()) {
       this.fail("Too few triangles specified");
     }
   }
 
   private void failMissedAttributes()
   {
-    final Set<SMFAttributeName> names = this.attributes.keySet().diff(
-      this.attributes_attempted.keySet());
+    final Set<SMFAttributeName> names =
+      this.header.attributesByName().keySet().diff(
+        this.attributes_attempted.keySet());
     if (!names.isEmpty()) {
       names.forEach(
         name -> this.fail("No data specified for attribute: " + name.value()));
@@ -516,11 +520,13 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   private void parseTriangles()
     throws Exception
   {
+    LOG.debug("parsing triangles");
+
     try {
       super.events.onDataTrianglesStart();
 
       this.parsed_triangles = 0L;
-      while (this.parsed_triangles != this.triangle_count) {
+      while (this.parsed_triangles != this.header.triangleCount()) {
         final Optional<List<String>> line_opt = super.reader.line();
         if (!line_opt.isPresent()) {
           this.onEOF();
@@ -563,23 +569,124 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     }
   }
 
+  private void parseMetas()
+    throws Exception
+  {
+    LOG.debug("parsing metadata values");
+
+    if (this.header.metaCount() == 0L) {
+      super.fail("No metadata was expected.");
+      return;
+    }
+
+    this.parsed_metas = 0L;
+    while (this.parsed_metas != this.header.metaCount()) {
+      if (this.parserHasFailed()) {
+        return;
+      }
+
+      final Optional<List<String>> line_opt = super.reader.line();
+      if (!line_opt.isPresent()) {
+        this.onEOF();
+        return;
+      }
+
+      this.log().debug("line: {}", line_opt.get());
+      final List<String> line = line_opt.get();
+      if (line.isEmpty()) {
+        continue;
+      }
+
+      switch (line.get(0)) {
+        case "meta": {
+          this.parseMeta(line);
+          break;
+        }
+
+        default: {
+          super.failExpectedGot(
+            "Expected a meta command.",
+            "meta <vendor-id> <schema-id> <integer-unsigned>",
+            line.toJavaStream().collect(Collectors.joining(" ")));
+        }
+      }
+
+      this.parsed_metas = Math.addExact(this.parsed_metas, 1L);
+    }
+  }
+
+  private void parseMeta(
+    final List<String> line)
+    throws Exception
+  {
+    if (line.length() == 4) {
+      final int vendor_id =
+        Integer.parseUnsignedInt(line.get(1), 16);
+      final int schema_id =
+        Integer.parseUnsignedInt(line.get(2), 16);
+      final long lines =
+        Long.parseUnsignedLong(line.get(3));
+      this.parseMetaDataValues(vendor_id, schema_id, lines);
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "meta <vendor-id> <schema-id> <integer-unsigned>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
+    }
+  }
+
+  private void parseMetaDataValues(
+    final int vendor_id,
+    final int schema_id,
+    final long lines)
+    throws Exception
+  {
+    final ArrayList<String> saved_lines = new ArrayList<>();
+
+    while ((long) saved_lines.size() < lines) {
+      final Optional<List<String>> line_opt = super.reader.line();
+      if (!line_opt.isPresent()) {
+        this.onEOF();
+        return;
+      }
+
+      this.log().debug("line: {}", line_opt.get());
+      final List<String> line = line_opt.get();
+      if (line.isEmpty()) {
+        super.failExpectedGot(
+          "Received an empty line.",
+          "A line of Base64 encoded data.",
+          "");
+        return;
+      }
+
+      saved_lines.add(line.toJavaStream().collect(Collectors.joining()));
+    }
+
+    final byte[] decoded = SMFBase64Lines.fromBase64Lines(saved_lines);
+    if (this.events.onMeta(vendor_id, schema_id, (long) decoded.length)) {
+      this.events.onMetaData(vendor_id, schema_id, decoded);
+    }
+  }
+
   private boolean isBodyDone()
   {
     final boolean ok_triangles =
-      this.triangle_count == this.parsed_triangles;
+      this.header.triangleCount() == this.parsed_triangles;
 
     final boolean attribute_size_ok =
-      this.attributes_ok.size() == this.attributes.size();
+      this.attributes_ok.size() == this.header.attributesByName().size();
     final boolean attribute_all_done =
       this.attributes_ok.foldRight(
         Boolean.TRUE,
         (p, x) -> Boolean.valueOf(p._2.booleanValue() && x.booleanValue())).booleanValue();
 
-    this.log().trace("triangles done: {}", Boolean.valueOf(ok_triangles));
-    this.log().trace("attributes size: {}", Boolean.valueOf(attribute_size_ok));
     this.log().trace(
-      "attributes done: {}",
-      Boolean.valueOf(attribute_all_done));
+      "triangles done: {}", Boolean.valueOf(ok_triangles));
+    this.log().trace(
+      "attributes size: {}", Boolean.valueOf(attribute_size_ok));
+    this.log().trace(
+      "attributes done: {}", Boolean.valueOf(attribute_all_done));
     return ok_triangles && attribute_size_ok && attribute_all_done;
   }
 
@@ -650,9 +757,22 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
             break;
           }
 
+          case "metadata": {
+            if (line.size() == 1) {
+              this.parseMetas();
+            } else {
+              super.failExpectedGot(
+                "Incorrect number of arguments",
+                "metadata",
+                line.toJavaStream().collect(Collectors.joining(" ")));
+              return;
+            }
+            break;
+          }
+
           case "attribute": {
             if (line.size() == 2) {
-              SMFAttributeName name = null;
+              final SMFAttributeName name;
 
               try {
                 name = SMFAttributeName.of(line.get(1));
@@ -678,7 +798,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
           default: {
             super.failExpectedGot(
               "Unrecognized command.",
-              "attribute | triangles",
+              "attribute | metadata | triangles",
               line.toJavaStream().collect(Collectors.joining(" ")));
             return;
           }

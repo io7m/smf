@@ -558,6 +558,24 @@ public final class Main implements Runnable
     {
 
     }
+
+    @Override
+    public boolean onMeta(
+      final int vendor,
+      final int schema,
+      final long length)
+    {
+      return true;
+    }
+
+    @Override
+    public void onMetaData(
+      final int vendor,
+      final int schema,
+      final byte[] data)
+    {
+
+    }
   }
 
   private static SMFParserProviderType findParserProvider(

@@ -94,3 +94,13 @@ values identify the version of the schema.
 
 [footnote [id smf_model.xmlns]]
 [link-ext [target "https://en.wikipedia.org/wiki/XML_Namespace"] "https://en.wikipedia.org/wiki/XML_Namespace"]
+
+[subsection [title Metadata] [id smf_model.metadata]]
+[paragraph]
+The SMF model supports untyped metadata. A [term [type term] metadata value]
+is an opaque data value with [term [type term] vendor] and
+[term [type term] schema] identifiers specified in the same manner as
+the [link [target smf_model.schema_id] schema identifier]. Applications may
+use the metadata facilities to associate small amounts of extra information
+with mesh data. Typical uses include checksums, copyright information, and
+generating software package version information.

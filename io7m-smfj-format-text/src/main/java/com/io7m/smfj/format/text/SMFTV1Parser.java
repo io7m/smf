@@ -74,10 +74,7 @@ final class SMFTV1Parser extends SMFTAbstractParser
         super.events,
         super.reader,
         this.version,
-        this.header_parser.attributes,
-        this.header_parser.vertex_count,
-        this.header_parser.triangle_count,
-        this.header_parser.triangle_size);
+        this.header_parser.header());
     body_parser.parseData();
   }
 }

@@ -23,7 +23,7 @@ import com.io7m.smfj.core.SMFFormatVersion;
  */
 
 public interface SMFParserEventsType extends SMFParserEventsHeaderType,
-  SMFParserEventsDataType
+  SMFParserEventsDataType, SMFParserEventsMetaType
 {
   /**
    * Parsing has started.

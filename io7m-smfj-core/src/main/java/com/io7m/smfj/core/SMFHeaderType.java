@@ -93,6 +93,17 @@ public interface SMFHeaderType
   Map<SMFAttributeName, SMFAttribute> attributesByName();
 
   /**
+   * @return The number of metadata elements in the file
+   */
+
+  @Value.Parameter
+  @Value.Default
+  default long metaCount()
+  {
+    return 0L;
+  }
+
+  /**
    * Check preconditions for the type.
    */
 
@@ -120,7 +131,8 @@ public interface SMFHeaderType
       if (attribute_opt.isDefined()) {
         if (!Objects.equals(attribute, attribute_opt.get())) {
           final StringBuilder sb = new StringBuilder(128);
-          sb.append("An attribute that appears in the ordered list does not match that in the named map.");
+          sb.append(
+            "An attribute that appears in the ordered list does not match that in the named map.");
           sb.append(System.lineSeparator());
           sb.append("  Attribute: ");
           sb.append(attribute.name());
@@ -129,7 +141,8 @@ public interface SMFHeaderType
         }
       } else {
         final StringBuilder sb = new StringBuilder(128);
-        sb.append("An attribute that appears in the ordered list does not exist in the named map.");
+        sb.append(
+          "An attribute that appears in the ordered list does not exist in the named map.");
         sb.append(System.lineSeparator());
         sb.append("  Attribute: ");
         sb.append(attribute.name());

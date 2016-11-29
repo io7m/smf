@@ -25,12 +25,10 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
-import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -123,7 +121,10 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
           Long.toUnsignedString((long) this.header_view.getTriangleIndexSizeBits()));
         LOG.debug(
           "expecting {} attributes",
-          Long.toUnsignedString((long) this.header_view.getAttributeCount()));
+          Long.toUnsignedString(this.header_view.getAttributeCount()));
+        LOG.debug(
+          "expecting {} metadata",
+          Integer.toUnsignedString(this.header_view.getMetaCount()));
       }
 
       this.parseHeaderAttributes();
@@ -205,8 +206,9 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
         this.offsets.trianglesDataOffset();
 
       final long size =
-        Math.multiplyExact(3L,
-                           (long) this.header_view.getTriangleIndexSizeBits() / 8L);
+        Math.multiplyExact(
+          3L,
+          (long) this.header_view.getTriangleIndexSizeBits() / 8L);
       Invariants.checkInvariant(size != 0L, "Triangle size is nonzero");
 
       for (long index = 0L;
@@ -886,28 +888,10 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     });
 
     if (!this.parserHasFailed()) {
-      final SMFBV1SchemaIDReadableType schema_id_view =
-        this.header_view.getSchemaReadable();
-
-      final SMFSchemaIdentifier.Builder vb =
-        SMFSchemaIdentifier.builder();
-      vb.setVendorID(schema_id_view.getVendorId());
-      vb.setSchemaID(schema_id_view.getSchemaId());
-      vb.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
-      vb.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
-
-      final SMFHeader.Builder hb = SMFHeader.builder();
-      hb.setVertexCount(this.header_view.getVertexCount());
-      hb.setTriangleCount(this.header_view.getTriangleCount());
-      hb.setTriangleIndexSizeBits((long) this.header_view.getTriangleIndexSizeBits());
-      hb.setAttributesInOrder(this.attributes);
-      hb.setAttributesByName(this.attributes_named);
-      hb.setSchemaIdentifier(vb.build());
-      hb.setCoordinateSystem(
-        SMFBCoordinateSystems.unpack(
-          this.header_view.getCoordinateSystemReadable()));
-
-      this.header = hb.build();
+      this.header = SMFBV1.header(
+        this.header_view,
+        this.attributes,
+        this.attributes_named);
       this.offsets = SMFBV1Offsets.fromHeader(this.header);
     }
   }

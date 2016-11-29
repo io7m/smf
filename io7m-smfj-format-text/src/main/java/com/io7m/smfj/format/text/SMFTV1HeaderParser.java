@@ -52,16 +52,18 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
 
   private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
-  protected Map<SMFAttributeName, SMFAttribute> attributes;
-  protected Map<SMFAttributeName, Integer> attribute_lines;
-  protected List<SMFAttribute> attributes_list;
-  protected long vertex_count;
-  protected long triangle_count;
-  protected long triangle_size;
+  private Map<SMFAttributeName, SMFAttribute> attributes;
+  private Map<SMFAttributeName, Integer> attribute_lines;
+  private List<SMFAttribute> attributes_list;
+  private long vertex_count;
+  private long triangle_count;
+  private long triangle_size;
   private boolean ok_triangles;
   private boolean ok_vertices;
   private SMFSchemaIdentifier schema_id;
   private @Nullable SMFCoordinateSystem coords;
+  private long meta_count;
+  private SMFHeader header;
 
   SMFTV1HeaderParser(
     final SMFTAbstractParser in_parent,
@@ -167,6 +169,11 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           return;
         }
 
+        case "meta": {
+          this.parseHeaderCommandMeta(line);
+          break;
+        }
+
         case "coordinates": {
           this.parseHeaderCommandCoordinates(line);
           break;
@@ -195,7 +202,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         default: {
           super.failExpectedGot(
             "Unrecognized command.",
-            "attribute | coordinates | data | triangles | vertices | schema",
+            "attribute | coordinates | data | meta | triangles | vertices | schema",
             line.toJavaStream().collect(Collectors.joining(" ")));
           return;
         }
@@ -239,24 +246,22 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     }
   }
 
-  private void parseHeaderCommandSchema(final List<String> line)
+  private void parseHeaderCommandSchema(
+    final List<String> line)
   {
     if (line.size() == 5) {
       try {
-        final int vendor_id =
+        final int vendor =
           Integer.parseUnsignedInt(line.get(1), 16);
-        final int vendor_schema =
+        final int schema =
           Integer.parseUnsignedInt(line.get(2), 16);
-        final int vendor_schema_version_major =
+        final int schema_version_major =
           Integer.parseUnsignedInt(line.get(3));
-        final int vendor_schema_version_minor =
+        final int schema_version_minor =
           Integer.parseUnsignedInt(line.get(4));
 
         this.schema_id = SMFSchemaIdentifier.of(
-          vendor_id,
-          vendor_schema,
-          vendor_schema_version_major,
-          vendor_schema_version_minor);
+          vendor, schema, schema_version_major, schema_version_minor);
       } catch (final NumberFormatException e) {
         super.failExpectedGot(
           "Could not parse number: " + e.getMessage(),
@@ -322,6 +327,26 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
       super.failExpectedGot(
         "Incorrect number of arguments",
         "triangles <triangle-count> <triangle-index-size>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
+    }
+  }
+
+  private void parseHeaderCommandMeta(
+    final Seq<String> line)
+  {
+    if (line.size() == 2) {
+      try {
+        this.meta_count = Long.parseUnsignedLong(line.get(1));
+      } catch (final NumberFormatException e) {
+        super.failExpectedGot(
+          "Cannot parse number: " + e.getMessage(),
+          "meta <meta-count>",
+          line.toJavaStream().collect(Collectors.joining(" ")));
+      }
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "meta <meta-count>",
         line.toJavaStream().collect(Collectors.joining(" ")));
     }
   }
@@ -394,15 +419,17 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           }
 
           if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
-            final SMFHeader.Builder hb = SMFHeader.builder();
-            hb.setAttributesInOrder(this.attributes_list);
-            hb.setAttributesByName(this.attributes);
-            hb.setTriangleIndexSizeBits(this.triangle_size);
-            hb.setTriangleCount(this.triangle_count);
-            hb.setVertexCount(this.vertex_count);
-            hb.setSchemaIdentifier(this.schema_id);
-            hb.setCoordinateSystem(this.coords);
-            super.events.onHeaderParsed(hb.build());
+            final SMFHeader.Builder header_b = SMFHeader.builder();
+            header_b.setAttributesInOrder(this.attributes_list);
+            header_b.setAttributesByName(this.attributes);
+            header_b.setTriangleIndexSizeBits(this.triangle_size);
+            header_b.setTriangleCount(this.triangle_count);
+            header_b.setVertexCount(this.vertex_count);
+            header_b.setSchemaIdentifier(this.schema_id);
+            header_b.setCoordinateSystem(this.coords);
+            header_b.setMetaCount(this.meta_count);
+            this.header = header_b.build();
+            super.events.onHeaderParsed(this.header);
             super.state.set(ParserState.STATE_HEADER_PARSED);
           }
 
@@ -437,5 +464,10 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     throws IllegalStateException
   {
     throw new UnsupportedOperationException();
+  }
+
+  public SMFHeader header()
+  {
+    return NullCheck.notNull(this.header, "Header");
   }
 }

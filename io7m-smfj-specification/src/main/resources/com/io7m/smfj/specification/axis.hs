@@ -1,3 +1,5 @@
+module Axis where
+
 data Axis
   = PositiveX
   | PositiveY

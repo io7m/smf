@@ -26,12 +26,10 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
-import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -120,6 +118,9 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
         LOG.debug(
           "expecting {} attributes",
           Long.toUnsignedString(this.header_view.getAttributeCount()));
+        LOG.debug(
+          "expecting {} metadata",
+          Integer.toUnsignedString(this.header_view.getMetaCount()));
       }
 
       this.parseHeaderAttributes();
@@ -185,6 +186,67 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     } finally {
       super.events.onDataAttributeFinish(attribute);
     }
+  }
+
+  private void parseMetas()
+  {
+    if (this.header_view.getMetaCount() == 0L) {
+      LOG.debug("no meta data, not parsing meta data");
+      return;
+    }
+
+    try {
+      final Optional<String> name = Optional.of("metadata");
+      this.parseSkipUntilOffset(this.offsets.metaDataOffset());
+
+      for (long index = 0L;
+           Long.compareUnsigned(
+             index,
+             (long) this.header_view.getMetaCount()) < 0;
+           index = Math.addExact(index, 1L)) {
+        this.parseMetaOne(name);
+      }
+
+    } catch (final IOException e) {
+      super.fail(e.getMessage());
+    }
+  }
+
+  private void parseMetaOne(
+    final Optional<String> name)
+    throws IOException
+  {
+    Invariants.checkInvariantL(
+      this.reader.position(),
+      this.reader.position() % 8L == 0L,
+      pos -> "Reader must be 8 octet aligned for metadata");
+
+    final long vendor = super.reader.readU32(name);
+    final long schema = super.reader.readU32(name);
+    final long size = super.reader.readU64(name);
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(
+        "read metadata {} {} {}",
+        Long.toUnsignedString(vendor, 16),
+        Long.toUnsignedString(schema, 16),
+        Long.toUnsignedString(size));
+    }
+
+    final long seek_to;
+    final int vendor_i = Math.toIntExact(vendor);
+    final int schema_i = Math.toIntExact(schema);
+    if (super.events.onMeta(vendor_i, schema_i, size)) {
+      final byte[] data = new byte[Math.toIntExact(size)];
+      super.reader.readBytes(name, data);
+      super.events.onMetaData(vendor_i, schema_i, data);
+      seek_to = SMFBV1Offsets.alignToNext8(super.reader.position());
+    } else {
+      seek_to = SMFBV1Offsets.alignToNext8(
+        Math.addExact(super.reader.position(), size));
+    }
+
+    this.parseSkipUntilOffset(seek_to);
   }
 
   private void parseTriangles()
@@ -779,28 +841,10 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     });
 
     if (!this.parserHasFailed()) {
-      final SMFBV1SchemaIDReadableType schema_id_view =
-        this.header_view.getSchemaReadable();
-
-      final SMFSchemaIdentifier.Builder vb =
-        SMFSchemaIdentifier.builder();
-      vb.setVendorID(schema_id_view.getVendorId());
-      vb.setSchemaID(schema_id_view.getSchemaId());
-      vb.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
-      vb.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
-
-      final SMFHeader.Builder hb = SMFHeader.builder();
-      hb.setVertexCount(this.header_view.getVertexCount());
-      hb.setTriangleCount(this.header_view.getTriangleCount());
-      hb.setTriangleIndexSizeBits((long) this.header_view.getTriangleIndexSizeBits());
-      hb.setAttributesInOrder(this.attributes);
-      hb.setAttributesByName(this.attributes_named);
-      hb.setSchemaIdentifier(vb.build());
-      hb.setCoordinateSystem(
-        SMFBCoordinateSystems.unpack(
-          this.header_view.getCoordinateSystemReadable()));
-
-      this.header = hb.build();
+      this.header = SMFBV1.header(
+        this.header_view,
+        this.attributes,
+        this.attributes_named);
       this.offsets = SMFBV1Offsets.fromHeader(this.header);
     }
   }
@@ -912,6 +956,10 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 
         if (!this.parserHasFailed()) {
           this.parseTriangles();
+        }
+
+        if (!this.parserHasFailed()) {
+          this.parseMetas();
         }
         break;
       }

@@ -26,6 +26,8 @@ A [term [type term] header command] is one of the following:
 [formal-item [title "Header Commands"] [id smft.header.commands.list]]
 [list-unordered
   [item [link [target smft.header.commands.attribute] attribute]]
+  [item [link [target smft.header.commands.coordinates] coordinates]]
+  [item [link [target smft.header.commands.meta] meta]]
   [item [link [target smft.header.commands.schema] schema]]
   [item [link [target smft.header.commands.triangles] triangles]]
   [item [link [target smft.header.commands.vertices] vertices]]]
@@ -50,6 +52,8 @@ The command takes the following arguments:
 [formal-item [title "smf"] [id smft.header.smf.def]]
 [verbatim [include "smft-header-smf.ebnf"]]
 
+
+
 [subsection [title Header - vertices] [id smft.header.commands.vertices]]
 [paragraph]
 The [term [type command] vertices] command specifies the number of
@@ -68,6 +72,8 @@ The command takes the following arguments:
 
 [paragraph]
 The command is required to appear exactly once in the header.
+
+
 
 [subsection [title Header - schema] [id smft.header.commands.schema]]
 [paragraph]
@@ -92,6 +98,8 @@ The command is allowed to appear at most once in the header. If the command
 is not specified, a default schema identifier consisting of all zeroes is
 implicitly defined.
 
+
+
 [subsection [title Header - triangles] [id smft.header.commands.triangles]]
 [paragraph]
 The [term [type command] triangles] command specifies the number of
@@ -112,6 +120,8 @@ The command takes the following arguments:
 
 [paragraph]
 The command is required to appear exactly once in the header.
+
+
 
 [subsection [title Header - attribute] [id smft.header.commands.attribute]]
 [paragraph]
@@ -136,6 +146,8 @@ The command takes the following arguments:
 The command is allowed to appear any number of times in the header, but
 all specified attribute names must be unique.
 
+
+
 [subsection [title Header - coordinates] [id smft.header.commands.coordinates]]
 [paragraph]
 The [term [type command] coordinates] command specifies the
@@ -155,6 +167,29 @@ The command takes the following arguments:
   [item The axis for the [term [type term] forward] direction]
   [item The triangle [term [type term] winding order]]]
 
+
+
+[subsection [title Header - meta] [id smft.header.commands.meta]]
+[paragraph]
+The [term [type command] meta] command specifies the number of
+[link [target smf_model.metadata] metadata values] that will appear in the
+[link [target smft.data] data] section.
+
+[formal-item [title "meta"] [id smft.header.meta.def]]
+[verbatim [include "smft-header-meta.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "meta Arguments"] [id smft.header.meta.args]]
+[list-ordered
+  [item The non-negative number of metadata values that will appear in the file]]
+
+[paragraph]
+The command is allowed to appear at most once in the header.
+
+
+
 [subsection [title Data] [id smft.data]]
 [paragraph]
 The data section of the file specifies the data for attributes and triangles.
@@ -167,7 +202,11 @@ A [term [type term] data command] is one of the following:
 [formal-item [title "Data Commands"] [id smft.data.commands.list]]
 [list-unordered
   [item [link [target smft.data.commands.attribute] attribute]]
+  [item [link [target smft.data.commands.meta] metadata]]
+  [item [link [target smft.data.commands.meta] meta]]
   [item [link [target smft.data.commands.triangles] triangles]]]
+
+
 
 [subsection [title Data - data] [id smft.data.commands.data]]
 [paragraph]
@@ -179,6 +218,8 @@ section.
 
 [paragraph]
 The command takes no arguments.
+
+
 
 [subsection [title Data - attribute] [id smft.data.commands.attribute]]
 [paragraph]
@@ -203,6 +244,8 @@ of type [term [type variable] t], in a file that is specified to contain
 non-commented lines will contain exactly [term [type variable] c]
 whitespace-separated values of type [term [type variable] t].
 
+
+
 [subsection [title Data - triangles] [id smft.data.commands.triangles]]
 [paragraph]
 The [term [type command] triangles] command indicates the start of triangle
@@ -212,7 +255,7 @@ data.
 [verbatim [include "smft-data-triangles.ebnf"]]
 
 [paragraph]
-The command takes no arguments:
+The command takes no arguments.
 
 [paragraph]
 In a file that is specified to contain [term [type variable] k] triangles,
@@ -227,3 +270,54 @@ The following is a complete example of an [term [type type] SMFT] file:
 
 [formal-item [title "smf"] [id smft.example.def]]
 [verbatim [include "example.smft"]]
+
+
+
+
+[subsection [title Data - metadata] [id smft.data.commands.metadata]]
+[paragraph]
+The [term [type command] metadata] command indicates the start of metadata.
+
+[formal-item [title "metadata"] [id smft.data.metadata.def]]
+[verbatim [include "smft-data-metadata.ebnf"]]
+
+[paragraph]
+The command takes no arguments.
+
+[paragraph]
+The command may only appear in the file after all
+[link [target smft.data.commands.triangles] triangles] and
+[link [target smft.data.commands.attribute] attributes] have been received.
+
+
+
+
+[subsection [title Data - meta] [id smft.data.commands.meta]]
+[paragraph]
+The [term [type command] meta] command indicates the start of the file
+metadata.
+
+[formal-item [title "meta"] [id smft.data.meta.def]]
+[verbatim [include "smft-data-meta.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "meta Arguments"] [id smft.data.meta.args]]
+[list-ordered
+  [item The vendor ID as a hexadecimal integer]
+  [item The schema ID as a hexadecimal integer]
+  [item The non-negative number of lines of metadata that will follow the command]]
+
+[paragraph]
+For any [term [type variable] v], [term [type variable] s], and
+[term [type variable] n], the command [term [type command] meta v s n] will
+indicate that the next [term [type expression] n] lines will contain
+[link-ext [target https://tools.ietf.org/html/rfc4648] RFC4648 base64url]
+data.
+
+[paragraph]
+In a file that has declared in the header that [term [type expression] m]
+values will appear in the data section, the [term [type command] meta]
+command must be present exactly [term [type expression] m] times, in any order,
+following a single [link [target smft.data.commands.metadata] metadata] command.

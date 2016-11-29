@@ -17,6 +17,7 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Invariants;
+import com.io7m.jaffirm.core.Postconditions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
@@ -78,16 +79,20 @@ public final class SMFBV1Offsets
   private final long vertices_data_offset;
   private final long triangles_data_offset;
   private final Map<SMFAttributeName, SMFBOctetRange> attributes_offsets;
+  private final long meta_data_offset;
 
   private SMFBV1Offsets(
     final long in_vertices_data_offset,
     final long in_triangles_data_offset,
+    final long in_meta_data_offset,
     final Map<SMFAttributeName, SMFBOctetRange> in_attributes_offsets)
   {
     this.vertices_data_offset =
       in_vertices_data_offset;
     this.triangles_data_offset =
       in_triangles_data_offset;
+    this.meta_data_offset =
+      in_meta_data_offset;
     this.attributes_offsets =
       NullCheck.notNull(in_attributes_offsets, "Offsets");
   }
@@ -164,7 +169,7 @@ public final class SMFBV1Offsets
     if (LOG.isDebugEnabled()) {
       LOG.debug(
         "vertex data offset: {}",
-        Long.valueOf(vertices_data_offset));
+        Long.toUnsignedString(vertices_data_offset));
     }
 
     long off = vertices_data_offset;
@@ -181,11 +186,8 @@ public final class SMFBV1Offsets
 
       final long data_size =
         Math.multiplyExact(header.vertexCount(), data_element_size);
-
       final long data_size_padded =
-        Math.multiplyExact(
-          Math.floorDiv(Math.addExact(data_size, 8L), 8L),
-          8L);
+        alignToNext8(data_size);
 
       final SMFBOctetRange.Builder range_builder = SMFBOctetRange.builder();
       range_builder.setOctetStart(off);
@@ -216,13 +218,67 @@ public final class SMFBV1Offsets
     if (LOG.isDebugEnabled()) {
       LOG.debug(
         "triangles offset: {}",
-        Long.valueOf(triangles_data_offset));
+        Long.toUnsignedString(triangles_data_offset));
     }
+
+    final long triangle_size_one =
+      Math.multiplyExact(3L, header.triangleIndexSizeBits() / 8L);
+    final long triangle_size_all =
+      Math.multiplyExact(triangle_size_one, header.triangleCount());
+
+    final long meta_data_offset =
+      Math.addExact(triangles_data_offset, triangle_size_all);
+    final long meta_data_padded =
+      alignToNext8(meta_data_offset);
+
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(
+        "meta data offset: {}",
+        Long.toUnsignedString(meta_data_padded));
+    }
+
+    Invariants.checkInvariantL(
+      meta_data_padded,
+      meta_data_padded % 8L == 0L,
+      meta_data_padded_now ->
+        "Offset " + meta_data_padded_now + " must be divisible by 8");
 
     return new SMFBV1Offsets(
       vertices_data_offset,
       triangles_data_offset,
+      meta_data_padded,
       attributes_offsets);
+  }
+
+  /**
+   * Align {@code offset} to the next 8-octet boundary. If {@code offset}
+   * is already divisible by 8, the function returns {@code offset}.
+   *
+   * @param offset The offset
+   *
+   * @return The aligned offset
+   */
+
+  public static long alignToNext8(
+    final long offset)
+  {
+    final long result;
+    if (offset % 8L == 0L) {
+      result = offset;
+    } else {
+      result = Math.multiplyExact(Math.addExact(offset, 8L) / 8L, 8L);
+    }
+
+    LOG.trace(
+      "align {} -> {}",
+      Long.toUnsignedString(offset),
+      Long.toUnsignedString(result));
+
+    Postconditions.checkPostconditionL(
+      result,
+      Long.compareUnsigned(result, offset) >= 0,
+      x -> "Alignment must be correct");
+    return result;
   }
 
   /**
@@ -241,6 +297,15 @@ public final class SMFBV1Offsets
   public long verticesDataOffset()
   {
     return this.vertices_data_offset;
+  }
+
+  /**
+   * @return The offset in octets of the start of the meta data in the file
+   */
+
+  public long metaDataOffset()
+  {
+    return this.meta_data_offset;
   }
 
   /**
