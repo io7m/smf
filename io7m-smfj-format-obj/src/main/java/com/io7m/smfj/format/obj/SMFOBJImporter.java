@@ -128,6 +128,10 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
     this.events.onStart();
     this.parser.run();
+
+    if (this.state != State.STATE_FAILED) {
+      this.state = State.STATE_HEADER_PARSED;
+    }
   }
 
   @Override

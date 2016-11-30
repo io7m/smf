@@ -856,6 +856,9 @@ final class SMFBV1Serializer implements SMFSerializerType
 
           if (this.triangle_values_remaining == 0L) {
             this.state = SerializerState.STATE_FINISHED_TRIANGLE_DATA;
+            if (this.meta_values_remaining == 0L) {
+              this.state = SerializerState.STATE_FINISHED_METADATA;
+            }
           }
           return;
         }

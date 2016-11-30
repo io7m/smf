@@ -664,8 +664,12 @@ final class SMFTV1Serializer implements SMFSerializerType
       case STATE_SERIALIZED_ATTRIBUTE_DATA: {
         if (this.triangle_values_remaining != 0L) {
           this.serializeTriangleWrite(v0, v1, v2);
+
           if (this.triangle_values_remaining == 0L) {
             this.state = SerializerState.STATE_SERIALIZED_TRIANGLE_DATA;
+            if (this.meta_values_remaining == 0L) {
+              this.state = SerializerState.STATE_SERIALIZED_METADATA;
+            }
           }
           return;
         }
@@ -683,7 +687,7 @@ final class SMFTV1Serializer implements SMFSerializerType
           "Triangle data has already been serialized");
       case STATE_SERIALIZED_METADATA:
         throw new IllegalStateException(
-          "Triangle data has already been serialized");
+          "Metadata has already been serialized");
       case STATE_FAILED:
         throw new IllegalStateException(
           "Serializer has already failed");
@@ -744,7 +748,7 @@ final class SMFTV1Serializer implements SMFSerializerType
           "Attribute data has not yet been serialized");
       case STATE_SERIALIZED_METADATA:
         throw new IllegalStateException(
-          "Triangle data has already been serialized");
+          "Metadata has already been serialized");
       case STATE_FAILED:
         throw new IllegalStateException(
           "Serializer has already failed");
