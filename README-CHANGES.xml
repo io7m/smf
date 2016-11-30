@@ -7,6 +7,13 @@
     <c:version>0.2.0</c:version>
 
     <c:item>
+      <c:date>2016-11-30</c:date>
+      <c:type-code-new/>
+      <c:ticket>8</c:ticket>
+      <c:summary>The Blender plugin may now export all meshes, or just the selected meshes.</c:summary>
+    </c:item>
+
+    <c:item>
       <c:date>2016-11-29</c:date>
       <c:type-code-new/>
       <c:ticket>12</c:ticket>
