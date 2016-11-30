@@ -17,6 +17,8 @@
 package com.io7m.smfj.format.obj;
 
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jnull.NullCheck;
@@ -29,6 +31,8 @@ import com.io7m.jtensors.VectorI3D;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -237,6 +241,16 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     if (this.vertices.size() < 65536) {
       triangle_bits = 16;
     }
+
+    LOG.warn("OBJ files do not contain coordinate system information.");
+    LOG.warn("A possibly incorrect default coordinate system has been assumed: Right +X, Up +Y, Forward -Z");
+
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
 
     header_b.setTriangleIndexSizeBits((long) triangle_bits);
     header_b.setTriangleCount((long) this.triangles.size());
