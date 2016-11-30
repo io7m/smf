@@ -3,6 +3,38 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2016-11-30</c:date>
+    <c:version>0.2.0</c:version>
+
+    <c:item>
+      <c:date>2016-11-29</c:date>
+      <c:type-code-new/>
+      <c:ticket>12</c:ticket>
+      <c:summary>Allow for the inclusion of arbitrary metadata in files.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-11-29</c:date>
+      <c:type-code-change/>
+      <c:ticket>11</c:ticket>
+      <c:summary>Allow for separately parsing the header and data sections of files in sequential parsers.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-11-28</c:date>
+      <c:type-code-new/>
+      <c:ticket>2</c:ticket>
+      <c:summary>Add coordinate system metadata to SMF files.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-11-18</c:date>
+      <c:type-code-new/>
+      <c:summary>Add the ability to read Wavefront OBJ files for conversion.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2016-11-22</c:date>
     <c:version>0.1.0</c:version>
     <c:item>
