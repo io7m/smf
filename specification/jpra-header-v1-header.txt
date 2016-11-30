@@ -1,0 +1,11 @@
+[record SMFBV1Header
+  ([field schema                   SMFBV1SchemaID]
+   [field vertex_count             [integer unsigned 64]]
+   [field triangle_count           [integer unsigned 64]]
+   [field triangle_index_size_bits [integer unsigned 32]]
+   [field coordinate_system        SMFBV1CoordinateSystems]
+   [padding-octets 2]
+   [padding-octets 4]
+   [field meta_count               [integer unsigned 32]]
+   [field attribute_count          [integer unsigned 64]])]
+

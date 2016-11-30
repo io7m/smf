@@ -1,4 +1,3 @@
 [section [title Platform Specific Issues] [id pkg.platform]]
 [paragraph]
-The package only works on
-[link-ext [target "http://www.freebsd.org"] FreeBSD].
+There are no known platform-specific issues.

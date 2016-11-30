@@ -1,4 +1,4 @@
-io7m-smfj 0.1.0 Specification
+io7m-smfj 0.2.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 1 Notational Conventions [id: conventions]
@@ -82,7 +82,67 @@ io7m-smfj 0.1.0 Specification
 1     A triangle is a 3-tuple of vertices [ref: smf_model.vertex]. In the SMF
       model, a triangle references vertices by their numeric index.
 
-2.6 Schema ID [id: smf_model.schema_id]
+2.6 Coordinate System [id: smf_model.coords]
+
+1     A coordinate system in the SMF model is a set of three axis names and a
+      triangle winding order. The axis names specify which Cartesian coordinate
+      system axes correspond to the right, up, and forward directions. The
+      winding order specifies whether vertices for triangles are given in
+      clockwise or counter-clockwise order. A coordinate system is only valid
+      if the three chosen axes have different axis names. The axisName function
+      relates an axis to an axis name. The axisValid function gives a formal
+      definition of the validity of sets of axes.
+
+      2.6.2 Axis
+      ──────────
+
+      module Axis where
+
+      data Axis
+        = PositiveX
+        | PositiveY
+        | PositiveZ
+        | NegativeX
+        | NegativeY
+        | NegativeZ
+
+      data AxisName
+        = AxisX
+        | AxisY
+        | AxisZ
+
+      axisName :: Axis -> AxisName
+      axisName PositiveX = AxisX
+      axisName NegativeX = AxisX
+      axisName PositiveY = AxisY
+      axisName NegativeY = AxisY
+      axisName PositiveZ = AxisZ
+      axisName NegativeZ = AxisZ
+
+      data AxisSystem = AxisSystem {
+        axis_right   :: Axis,
+        axis_up      :: Axis,
+        axis_forward :: Axis
+      }
+
+      axisValid :: (Axis, Axis, Axis) -> Bool
+      axisValid (right, up, forward) =
+        case (axisName right, axisName up, axisName forward) of
+          (AxisX, AxisY, AxisZ) -> True
+          (AxisZ, AxisX, AxisY) -> True
+          (AxisY, AxisZ, AxisX) -> True
+          _                     -> False
+
+      data WindingOrder
+        = WindingOrderClockwise
+        | WindingOrderCounterClockwise
+
+      data CoordinateSystem = CoordinateSystem {
+        coords_axes  :: AxisSystem,
+        coords_order :: WindingOrder
+      }
+
+2.7 Schema ID [id: smf_model.schema_id]
 
 1     A schema identifier is an optional identifier that can be inserted into
       SMF files. Because the SMF model does not predefine any particular
@@ -99,7 +159,7 @@ io7m-smfj 0.1.0 Specification
 
 2     A schema identifier consists of four integer values:
 
-      2.6.3 Schema Identifier
+      2.7.3 Schema Identifier
       ───────────────────────
 
       data SchemaIdentifier = SchemaIdentifier {
@@ -113,6 +173,16 @@ io7m-smfj 0.1.0 Specification
 4     The vendor_id uniquely identifiers the vendor, the schema_id uniquely
       identifies the file type, and the schema_version_major and
       schema_version_minor values identify the version of the schema.
+
+2.8 Metadata [id: smf_model.metadata]
+
+1     The SMF model supports the inclusion of arbitrary metadata. A metadata
+      value is an opaque data value with vendor and schema identifiers
+      specified in the same manner as the schema identifier [ref:
+      smf_model.schema_id]. Applications may use the metadata facilities to
+      associate small amounts of extra information with mesh data. Typical uses
+      include checksums, copyright information, and generating software package
+      version information.
 
 3 SMFT - Text Encoding [id: smft]
 
@@ -139,6 +209,8 @@ io7m-smfj 0.1.0 Specification
       ─────────────────────
 
       • attribute [ref: smft.header.commands.attribute]
+      • coordinates [ref: smft.header.commands.coordinates]
+      • meta [ref: smft.header.commands.meta]
       • schema [ref: smft.header.commands.schema]
       • triangles [ref: smft.header.commands.triangles]
       • vertices [ref: smft.header.commands.vertices]
@@ -248,7 +320,7 @@ io7m-smfj 0.1.0 Specification
       ───────────────
 
       attribute_name =
-        ? [\p{IsAlphabetic}\p{IsDigit}_\-\.]{1,64} ? ;
+        ? [\p{IsAlphabetic}\p{IsDigit}_\-\.:]{1,64} ? ;
 
       attribute_type =
         "integer-signed" | "integer-unsigned" | "float" ;
@@ -271,7 +343,60 @@ io7m-smfj 0.1.0 Specification
 5     The command is allowed to appear any number of times in the header, but
       all specified attribute names must be unique.
 
-3.8 Data [id: smft.data]
+3.8 Header - coordinates [id: smft.header.commands.coordinates]
+
+1     The coordinates command specifies the coordinate space [ref:
+      smf_model.coords] of the mesh data that will follow in the data [ref:
+      smft.data] section of the file.
+
+      3.8.2 coordinates
+      ─────────────────
+
+      axis =
+        "+x" | "-x" | "+y" | "-y" | "+z" | "-z" ;
+
+      winding_order =
+        "clockwise" | "counter-clockwise" ;
+
+      header_command_coordinates =
+        "coordinates" , <axis> , <axis> , <axis> , <winding_order> ;
+
+
+3     The command takes the following arguments:
+
+      3.8.4 coordinates Arguments
+      ───────────────────────────
+
+      0.  The axis for the right direction
+      1.  The axis for the up direction
+      2.  The axis for the forward direction
+      3.  The triangle winding order
+
+
+3.9 Header - meta [id: smft.header.commands.meta]
+
+1     The meta command specifies the number of metadata values [ref:
+      smf_model.metadata] that will appear in the data [ref: smft.data]
+      section.
+
+      3.9.2 meta
+      ──────────
+
+      header_command_meta =
+        "meta" , integer-unsigned ;
+
+3     The command takes the following arguments:
+
+      3.9.4 meta Arguments
+      ────────────────────
+
+      0.  The non-negative number of metadata values that will appear in the
+          file
+
+
+5     The command is allowed to appear at most once in the header.
+
+3.10 Data [id: smft.data]
 
 1     The data section of the file specifies the data for attributes and
       triangles. The section begins with the data [ref:
@@ -280,30 +405,32 @@ io7m-smfj 0.1.0 Specification
 
 2     A data command is one of the following:
 
-      3.8.3 Data Commands
-      ───────────────────
+      3.10.3 Data Commands
+      ────────────────────
 
       • attribute [ref: smft.data.commands.attribute]
+      • metadata [ref: smft.data.commands.meta]
+      • meta [ref: smft.data.commands.meta]
       • triangles [ref: smft.data.commands.triangles]
 
 
-3.9 Data - data [id: smft.data.commands.data]
+3.11 Data - data [id: smft.data.commands.data]
 
 1     The data command indicates the start of the data section.
 
-      3.9.2 data
-      ──────────
+      3.11.2 data
+      ───────────
 
       data_command_data =
         "data" ;
 
 3     The command takes no arguments.
 
-3.10 Data - attribute [id: smft.data.commands.attribute]
+3.12 Data - attribute [id: smft.data.commands.attribute]
 
 1     The attribute command indicates the start of data for an attribute.
 
-      3.10.2 attribute
+      3.12.2 attribute
       ────────────────
 
       data_command_attribute =
@@ -311,7 +438,7 @@ io7m-smfj 0.1.0 Specification
 
 3     The command takes the following arguments:
 
-      3.10.4 attribute Arguments
+      3.12.4 attribute Arguments
       ──────────────────────────
 
       0.  The name of the attribute
@@ -322,37 +449,87 @@ io7m-smfj 0.1.0 Specification
       specified to contain v vertices, the next v non-empty, non-commented
       lines will contain exactly c whitespace-separated values of type t.
 
-3.11 Data - triangles [id: smft.data.commands.triangles]
+3.13 Data - triangles [id: smft.data.commands.triangles]
 
 1     The triangles command indicates the start of triangle data.
 
-      3.11.2 triangles
+      3.13.2 triangles
       ────────────────
 
       data_command_triangles =
         "triangles" ;
 
-3     The command takes no arguments:
+3     The command takes no arguments.
 
 4     In a file that is specified to contain k triangles, the next k non-empty,
       non-commented lines will contain exactly 3 whitespace-separated unsigned
       integer values each representing the index of a vertex.
 
-3.12 Example [id: smft.example]
+3.14 Data - metadata [id: smft.data.commands.metadata]
+
+1     The metadata command indicates the start of metadata.
+
+      3.14.2 metadata
+      ───────────────
+
+      data_command_metadata =
+        "metadata" ;
+
+3     The command takes no arguments.
+
+4     The command may only appear in the file after all triangles [ref:
+      smft.data.commands.triangles] and attributes [ref:
+      smft.data.commands.attribute] have been received.
+
+3.15 Data - meta [id: smft.data.commands.meta]
+
+1     The meta command indicates the start of the file metadata.
+
+      3.15.2 meta
+      ───────────
+
+      data_command_meta =
+        "meta" , integer-unsigned-base16 , integer-unsigned-base16 , integer-unsigned ;
+
+
+3     The command takes the following arguments:
+
+      3.15.4 meta Arguments
+      ─────────────────────
+
+      0.  The vendor ID as a hexadecimal integer
+      1.  The schema ID as a hexadecimal integer
+      2.  The non-negative number of lines of metadata that will follow the
+          command
+
+
+5     For any v, s, and n, the command meta v s n will indicate that the next n
+      lines will contain RFC4648 base64url [url:
+      https://tools.ietf.org/html/rfc4648] encoded data of a type with vendor v
+      and schema s.
+
+6     In a file that has declared in the header that m values will appear in
+      the data section, the meta command must be present exactly m times, in
+      any order, following a single metadata [ref: smft.data.commands.metadata]
+      command.
+
+3.16 Example [id: smft.example]
 
 1     The following is a complete example of an SMFT file:
 
-      3.12.2 smf
+      3.16.2 smf
       ──────────
 
       smf 1 0
-      vendor 696f376d a0b0c0d0 1 0
+      schema 696f376d a0b0c0d0 1 0
+      meta 2
+      vertices 9
+      triangles 4 32
+      coordinates +x +y -z counter-clockwise
       attribute "POSITION" float 3 32
       attribute "NORMAL" float 3 32
       attribute "UV:UVMap" float 2 32
       attribute "GROUP:group0" float 1 32
-      vertices 9
-      triangles 4 32
       data
       attribute "POSITION"
       0.000000000000000 0.000000000000000 0.000000000000000
@@ -388,17 +565,26 @@ io7m-smfj 0.1.0 Specification
       0.000000000000000
       0.300000011920929
       0.200000002980232
-      0.400000005960464
+      0.400000005960465
       0.600000023841858
       0.699999988079071
       0.300000011920929
-      0.400000005960464
+      0.400000005960465
       0.300000011920929
       triangles
       1 2 0
       6 5 3
       1 7 2
       8 4 5
+      metadata
+      meta 696f376d a1b1c1d0 1
+      aGVsbG8taGVsbG8K
+      meta 696f376d a0b0c0d1 5
+      AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1
+      Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr
+      bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch
+      oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX
+      2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==
 
 
 4 SMFB - Binary Encoding [id: smfb]
@@ -423,54 +609,90 @@ io7m-smfj 0.1.0 Specification
          [field version_minor   [integer unsigned 32]])]
 
 
+
 4     The magic number MUST always be 0x89534d460d0a1a0a; implementations are
       required to immediately reject any files that do not begin with this
       magic number. The derivation of this constant is taken almost verbatim
       from the PNG [2] file format with the characters PNG changed to SMF .
 
-5     The header continues with an encoding of the schema ID [ref:
-      smf_model.schema_id].
+5     The rest of the header is given by the SMFBV1Header type:
 
-      4.1.6 Header (schema ID)
-      ────────────────────────
+      4.1.6 Header (Main)
+      ───────────────────
 
-      [record SMFBV1VendorSchemaID
-        ([field vendor_id                   [integer unsigned 32]]
-         [field vendor_schema_id            [integer unsigned 32]]
-         [field vendor_schema_version_major [integer unsigned 32]]
-         [field vendor_schema_version_minor [integer unsigned 32]])]
-
-
-7     The header continues by specifying the number of vertices [ref:
-      smf_model.vertex] present in the file, the number of triangles [ref:
-      smf_model.triangle] present in the file, the size in bits of the
-      individual triangle indices, and the number of attributes [ref:
-      smf_model.attribute] present in the file. Two fields are reserved for
-      future use.
-
-      4.1.8 Header (Counts)
-      ─────────────────────
-
-      [record SMFBV1VendorSchemaID
-        ([field vendor_id                   [integer unsigned 32]]
-         [field vendor_schema_id            [integer unsigned 32]]
-         [field vendor_schema_version_major [integer unsigned 32]]
-         [field vendor_schema_version_minor [integer unsigned 32]])]
-
-      [record SMFBV1Counts
-        ([field vertex_count             [integer unsigned 64]]
+      [record SMFBV1Header
+        ([field schema                   SMFBV1SchemaID]
+         [field vertex_count             [integer unsigned 64]]
          [field triangle_count           [integer unsigned 64]]
          [field triangle_index_size_bits [integer unsigned 32]]
-         [field reserved_0               [integer unsigned 32]]
-         [field attribute_count          [integer unsigned 32]]
-         [field reserved_1               [integer unsigned 32]])]
+         [field coordinate_system        SMFBV1CoordinateSystems]
+         [padding-octets 2]
+         [padding-octets 4]
+         [field meta_count               [integer unsigned 32]]
+         [field attribute_count          [integer unsigned 64]])]
 
 
-9     The header concludes by giving definitions for exactly n attributes,
+
+7     The SMFBV1SchemaID type encodes the schema ID [ref: smf_model.schema_id]:
+
+      4.1.8 Header (schema ID)
+      ────────────────────────
+
+      [record SMFBV1SchemaID
+        ([field vendor_id            [integer unsigned 32]]
+         [field schema_id            [integer unsigned 32]]
+         [field schema_version_major [integer unsigned 32]]
+         [field schema_version_minor [integer unsigned 32]])]
+
+
+
+9     The SMFBV1CoordinateSystems type encodes the coordinate system [ref:
+      smf_model.coords]:
+
+      4.1.10 Header (Coordinate system)
+      ─────────────────────────────────
+
+      [packed SMFBV1CoordinateSystems
+        ([field right   [integer unsigned 3]]
+         [field up      [integer unsigned 3]]
+         [field forward [integer unsigned 3]]
+         [field winding [integer unsigned 2]]
+         [padding-bits 5])]
+
+
+
+11    The axis and winding order values are related to integers in the binary
+      encoding via the following functions:
+
+      4.1.12 Header (Coordinate system mapping)
+      ─────────────────────────────────────────
+
+      import qualified Axis as A
+
+      axisOrdinal :: A.Axis -> Integer
+      axisOrdinal A.PositiveX = 0
+      axisOrdinal A.PositiveY = 1
+      axisOrdinal A.PositiveZ = 2
+      axisOrdinal A.NegativeX = 3
+      axisOrdinal A.NegativeY = 4
+      axisOrdinal A.NegativeZ = 5
+
+      windingOrdinal :: A.WindingOrder -> Integer
+      windingOrdinal A.WindingOrderClockwise        = 0
+      windingOrdinal A.WindingOrderCounterClockwise = 1
+
+
+13    The header specifies the number of vertices [ref: smf_model.vertex]
+      present in the file, the number of triangles [ref: smf_model.triangle]
+      present in the file, the size in bits of the individual triangle indices,
+      and the number of attributes [ref: smf_model.attribute] present in the
+      file.
+
+14    The header concludes by giving definitions for exactly n attributes,
       where n is the attribute count specified in the previous section of the
       header.
 
-      4.1.10 Header (Attributes)
+      4.1.15 Header (Attributes)
       ──────────────────────────
 
       [record SMFBV1Attribute
@@ -480,7 +702,8 @@ io7m-smfj 0.1.0 Specification
          [field component_size  [integer unsigned 32]])]
 
 
-11    The header is constructed with no implicit padding and no particular
+
+16    The header is constructed with no implicit padding and no particular
       alignment. However, the individual header structures are constructed such
       that their sizes are always a multiple of 8. This ensures that the data
       [ref: smfb.data.initial] that immediately follows the header also starts
@@ -513,6 +736,27 @@ io7m-smfj 0.1.0 Specification
       [image: alignment.svg.png] (Padding for alignment)
 
 4     All values are stored in big-endian form.
+
+5     After all triangle and attribute data has been specified, the metadata
+      [ref: smf_model.metadata] values are specified. A metadata value begins
+      with the following structure:
+
+      4.2.6 Metadata
+      ──────────────
+
+      [record SMFBV1Metadata
+        ([field vendor [integer unsigned 32]]
+         [field schema [integer unsigned 32]]
+         [field size   [integer unsigned 64]])]
+
+7     The vendor and schema fields are for use by applications to identify the
+      types of metadata. The size field records the size of the metadata in
+      octets.
+
+8     This structure is followed by the opaque metadata octets with any
+      additional padding [ref: smfb.data.alignment] to ensure that the next
+      metadata value occurs on an 8 octet boundary. The padding is not included
+      in the recorded size of the metadata.
 
 
 Footnotes
