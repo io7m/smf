@@ -263,15 +263,6 @@ the next [term [type variable] k] non-empty, non-commented lines will contain
 exactly [term [type constant] 3] whitespace-separated unsigned integer values
 each representing the index of a vertex.
 
-[subsection [title Example] [id smft.example]]
-
-[paragraph]
-The following is a complete example of an [term [type type] SMFT] file:
-
-[formal-item [title "smf"] [id smft.example.def]]
-[verbatim [include "example.smft"]]
-
-
 
 
 [subsection [title Data - metadata] [id smft.data.commands.metadata]]
@@ -321,3 +312,13 @@ In a file that has declared in the header that [term [type expression] m]
 values will appear in the data section, the [term [type command] meta]
 command must be present exactly [term [type expression] m] times, in any order,
 following a single [link [target smft.data.commands.metadata] metadata] command.
+
+
+
+[subsection [title Example] [id smft.example]]
+
+[paragraph]
+The following is a complete example of an [term [type type] SMFT] file:
+
+[formal-item [title "smf"] [id smft.example.def]]
+[verbatim [include "example.smft"]]
