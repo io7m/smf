@@ -16,12 +16,17 @@
 
 package com.io7m.smfj.tests.format.text;
 
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.format.text.SMFBase64Lines;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -60,6 +65,7 @@ public final class SMFFormatTextTest
 
   private static void runForText(
     final SMFParserEventsType events,
+    final boolean data,
     final StringBuilder text)
   {
     try {
@@ -69,11 +75,34 @@ public final class SMFFormatTextTest
       final SMFFormatText format = new SMFFormatText();
       final SMFParserSequentialType parser =
         format.parserCreateSequential(events, PATH, stream);
-      parser.parse();
+      parser.parseHeader();
+      if (data) {
+        parser.parseData();
+      }
       parser.close();
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  private static SMFHeader.Builder baseHeader(
+    final List<SMFAttribute> attributes)
+  {
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setVertexCount(0L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangleCount(0L);
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setSchemaIdentifier(
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+    return header_b;
   }
 
   @Test
@@ -90,7 +119,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -109,7 +138,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -128,7 +157,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -147,7 +176,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -166,7 +195,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -185,7 +214,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -204,7 +233,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -224,7 +253,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -244,7 +273,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -264,7 +293,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -288,7 +317,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -312,7 +341,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -336,7 +365,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -360,7 +389,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -384,7 +413,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -408,7 +437,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -432,7 +461,247 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadMeta0(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadMeta1(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta x");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Cannot parse number")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadMeta2(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("meta 1 2");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unexpected EOF")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace0(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace1(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace2(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace3(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y +z");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Incorrect number of arguments")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace4(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +x +z clockwise");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Axes must be perpendicular")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testBadCoordinateSpace5(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("vertices 4");
+    s.append(System.lineSeparator());
+    s.append("triangles 2 16");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y +z q");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("Unrecognized winding order: q")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
   }
 
   @Test
@@ -456,7 +725,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -482,7 +751,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -506,7 +775,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -535,7 +804,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -546,6 +815,10 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("meta 1");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute \"float-1-16\" float 1 16");
     s.append(System.lineSeparator());
@@ -732,6 +1005,26 @@ public final class SMFFormatTextTest
     s.append("0 2 3");
     s.append(System.lineSeparator());
 
+    final byte[] bytes = new byte[256];
+    for (int index = 0; index < bytes.length; ++index) {
+      bytes[index] = (byte) index;
+    }
+
+    s.append("metadata");
+    s.append(System.lineSeparator());
+    s.append("meta 696F376D 0A0B0C0D 5");
+    s.append(System.lineSeparator());
+    s.append("AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1");
+    s.append(System.lineSeparator());
+    s.append("Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr");
+    s.append(System.lineSeparator());
+    s.append("bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch");
+    s.append(System.lineSeparator());
+    s.append("oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX");
+    s.append(System.lineSeparator());
+    s.append("2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==");
+    s.append(System.lineSeparator());
+
     final SMFAttribute attr_f1_16 = SMFAttribute.of(
       SMFAttributeName.of("float-1-16"),
       SMFComponentType.ELEMENT_TYPE_FLOATING,
@@ -810,15 +1103,22 @@ public final class SMFFormatTextTest
       attr_s4_16
     );
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(attribs);
-    hb.setAttributesByName(attribs.toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(2L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(4L);
-    hb.setSchemaIdentifier(
-    SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = SMFHeader.builder();
+    header_b.setAttributesInOrder(attribs);
+    header_b.setAttributesByName(attribs.toMap(a -> Tuple.of(a.name(), a)));
+    header_b.setTriangleCount(2L);
+    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setVertexCount(4L);
+    header_b.setMetaCount(1L);
+    header_b.setSchemaIdentifier(
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -915,10 +1215,14 @@ public final class SMFFormatTextTest
       events.onDataTriangle(0L, 2L, 3L);
       events.onDataTrianglesFinish();
 
+      events.onMeta(0x696F376D, 0x0A0B0C0D, 256L);
+      this.result = Boolean.TRUE;
+      events.onMetaData(0x696F376D, 0x0A0B0C0D, bytes);
+
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -940,7 +1244,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -958,6 +1262,8 @@ public final class SMFFormatTextTest
     s.append(System.lineSeparator());
     s.append("attribute x float 4 32");
     s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
+    s.append(System.lineSeparator());
     s.append("data");
     s.append(System.lineSeparator());
 
@@ -970,7 +1276,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -981,6 +1287,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1005,15 +1313,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1032,7 +1335,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1043,6 +1346,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1063,15 +1368,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1088,7 +1388,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1099,6 +1399,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1119,15 +1421,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1147,7 +1444,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1158,6 +1455,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1178,15 +1477,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1206,7 +1500,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1217,6 +1511,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1235,15 +1531,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1255,7 +1546,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1266,6 +1557,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1284,15 +1577,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1304,7 +1592,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1315,6 +1603,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1336,15 +1626,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1357,7 +1642,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1375,6 +1660,8 @@ public final class SMFFormatTextTest
     s.append(System.lineSeparator());
     s.append("triangles 1 16");
     s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
+    s.append(System.lineSeparator());
     s.append("data");
     s.append(System.lineSeparator());
     s.append("triangles");
@@ -1388,15 +1675,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1413,7 +1695,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1424,6 +1706,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1454,15 +1738,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1483,7 +1762,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1494,6 +1773,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -1512,15 +1793,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(3L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(3L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1532,7 +1808,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1543,6 +1819,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a float 4 32");
     s.append(System.lineSeparator());
@@ -1569,15 +1847,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1596,7 +1869,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1607,6 +1880,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a float 3 32");
     s.append(System.lineSeparator());
@@ -1633,15 +1908,10 @@ public final class SMFFormatTextTest
       3,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1660,7 +1930,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1671,6 +1941,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a float 2 32");
     s.append(System.lineSeparator());
@@ -1697,15 +1969,10 @@ public final class SMFFormatTextTest
       2,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1724,7 +1991,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1735,6 +2002,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a float 1 32");
     s.append(System.lineSeparator());
@@ -1761,15 +2030,10 @@ public final class SMFFormatTextTest
       1,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1788,9 +2052,8 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
-
 
   @Test
   public void testBadDataAttributeValuesWrongIntegerSigned4(
@@ -1800,6 +2063,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 4 32");
     s.append(System.lineSeparator());
@@ -1826,15 +2091,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1853,7 +2113,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1864,6 +2124,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 3 32");
     s.append(System.lineSeparator());
@@ -1890,15 +2152,10 @@ public final class SMFFormatTextTest
       3,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1917,7 +2174,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1928,6 +2185,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 2 32");
     s.append(System.lineSeparator());
@@ -1954,15 +2213,10 @@ public final class SMFFormatTextTest
       2,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -1981,7 +2235,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -1992,6 +2246,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-signed 1 32");
     s.append(System.lineSeparator());
@@ -2018,15 +2274,10 @@ public final class SMFFormatTextTest
       1,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -2045,9 +2296,8 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
-
 
   @Test
   public void testBadDataAttributeValuesWrongIntegerUnsigned4(
@@ -2057,6 +2307,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 4 32");
     s.append(System.lineSeparator());
@@ -2083,15 +2335,10 @@ public final class SMFFormatTextTest
       4,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -2110,7 +2357,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2121,6 +2368,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 3 32");
     s.append(System.lineSeparator());
@@ -2147,15 +2396,10 @@ public final class SMFFormatTextTest
       3,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -2174,7 +2418,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2185,6 +2429,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 2 32");
     s.append(System.lineSeparator());
@@ -2211,15 +2457,10 @@ public final class SMFFormatTextTest
       2,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -2238,7 +2479,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2249,6 +2490,8 @@ public final class SMFFormatTextTest
     s.append("smf 1 0");
     s.append(System.lineSeparator());
     s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
     s.append(System.lineSeparator());
     s.append("attribute a integer-unsigned 1 32");
     s.append(System.lineSeparator());
@@ -2275,15 +2518,10 @@ public final class SMFFormatTextTest
       1,
       32);
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.of(attribute));
-    hb.setAttributesByName(List.of(attribute).toMap(a -> Tuple.of(a.name(), a)));
-    hb.setTriangleCount(1L);
-    hb.setTriangleIndexSizeBits(16L);
-    hb.setVertexCount(2L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(2L);
+    final SMFHeader h = header_b.build();
 
     new StrictExpectations()
     {{
@@ -2302,7 +2540,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, true, s);
   }
 
   @Test
@@ -2326,7 +2564,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2350,7 +2588,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2374,7 +2612,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2398,7 +2636,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2422,7 +2660,7 @@ public final class SMFFormatTextTest
       events.onFinish();
     }};
 
-    runForText(events, s);
+    runForText(events, false, s);
   }
 
   @Test
@@ -2440,14 +2678,7 @@ public final class SMFFormatTextTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    final SMFHeader.Builder header_b = baseHeader(attributes);
     final SMFHeader header = header_b.build();
 
     final SMFSerializerType serializer =
@@ -2497,14 +2728,7 @@ public final class SMFFormatTextTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    final SMFHeader.Builder header_b = baseHeader(attributes);
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -2532,14 +2756,7 @@ public final class SMFFormatTextTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
-    header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    final SMFHeader.Builder header_b = baseHeader(attributes);
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -2547,6 +2764,87 @@ public final class SMFFormatTextTest
 
     this.expected.expect(IllegalArgumentException.class);
     serializer.serializeData(SMFAttributeName.of("x"));
+  }
+
+  @Test
+  public void testNoTriangles(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    final SMFHeader.Builder header_b = baseHeader(List.empty());
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("No triangle count was specified")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testNoVertices(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("triangles 0 16");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    final SMFHeader.Builder header_b = baseHeader(List.empty());
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("No vertex count was specified")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
+  }
+
+  @Test
+  public void testNoCoordinateSpace(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("triangles 0 16");
+    s.append(System.lineSeparator());
+    s.append("vertices 0");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+
+    final SMFHeader.Builder header_b = baseHeader(List.empty());
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("No coordinate system was specified")));
+      events.onFinish();
+    }};
+
+    runForText(events, false, s);
   }
 
   @Test
@@ -2579,7 +2877,13 @@ public final class SMFFormatTextTest
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+      SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
+    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
+      CAxisSystem.of(
+        CAxis.AXIS_POSITIVE_X,
+        CAxis.AXIS_POSITIVE_Y,
+        CAxis.AXIS_NEGATIVE_Z),
+      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

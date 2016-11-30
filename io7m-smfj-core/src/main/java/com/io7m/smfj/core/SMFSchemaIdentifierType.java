@@ -24,7 +24,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @ImmutableStyleType
-public interface SMFVendorSchemaIdentifierType
+public interface SMFSchemaIdentifierType
 {
   /**
    * @return The vendor ID

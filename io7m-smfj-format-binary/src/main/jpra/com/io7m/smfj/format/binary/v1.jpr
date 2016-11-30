@@ -1,5 +1,29 @@
 [package-begin com.io7m.smfj.format.binary.v1]
 
+[record SMFBV1SchemaID
+  ([field vendor_id            [integer unsigned 32]]
+   [field schema_id            [integer unsigned 32]]
+   [field schema_version_major [integer unsigned 32]]
+   [field schema_version_minor [integer unsigned 32]])]
+
+[packed SMFBV1CoordinateSystems
+  ([field right   [integer unsigned 3]]
+   [field up      [integer unsigned 3]]
+   [field forward [integer unsigned 3]]
+   [field winding [integer unsigned 2]]
+   [padding-bits 5])]
+
+[record SMFBV1Header
+  ([field schema                   SMFBV1SchemaID]
+   [field vertex_count             [integer unsigned 64]]
+   [field triangle_count           [integer unsigned 64]]
+   [field triangle_index_size_bits [integer unsigned 32]]
+   [field coordinate_system        SMFBV1CoordinateSystems]
+   [padding-octets 2]
+   [padding-octets 4]
+   [field meta_count               [integer unsigned 32]]
+   [field attribute_count          [integer unsigned 64]])]
+
 [record SMFBV1Attribute
   ([field name            [string 64 "UTF-8"]]
    [field component_kind  [integer unsigned 32]]

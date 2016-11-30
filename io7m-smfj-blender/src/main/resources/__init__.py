@@ -17,7 +17,7 @@
 bl_info = {
   "name":        "SMF format",
   "author":      "io7m",
-  "version":     (0, 1, 0),
+  "version":     (0, 2, 0),
   "blender":     (2, 66, 0),
   "location":    "File > Export > SMF (.smft)",
   "description": "Export meshes to SMF format",
@@ -33,23 +33,26 @@ class ExportSMF(bpy.types.Operator):
   bl_idname = "export_scene.smft"
   bl_label = "Export SMF"
 
-  filepath = bpy.props.StringProperty(subtype='FILE_PATH')
-  verbose  = bpy.props.BoolProperty(name="Verbose logging",description="Enable verbose debug logging",default=True)
+  # This property ends up being assigned by context.window_manager.fileselect_add()
+  directory = bpy.props.StringProperty(subtype='DIR_PATH')
+  verbose = bpy.props.BoolProperty(name="Verbose logging",description="Enable verbose debug logging",default=True)
+
+  __select_items = []
+  __select_items.append(('EXPORT_ALL','All','Export all mesh objects'))
+  __select_items.append(('EXPORT_SELECTED','Selected','Export all selected mesh objects'))
+  selection = bpy.props.EnumProperty(items=__select_items,name="Export",description="Specify which items should be exported")
 
   def execute(self, context):
-    self.filepath = bpy.path.ensure_ext(self.filepath, ".smft")
-
     args = {}
     args['verbose'] = self.verbose
     assert type(args['verbose']) == bool
+    args['export_selection'] = self.selection
 
     from . import export
     e = export.SMFExporter(args)
 
     try:
-      e.write(self.filepath)
-    except export.SMFNoMeshSelected as ex:
-      self.report({'ERROR'}, ex.value)
+      e.write(self.directory)
     except export.SMFExportFailed as ex:
       self.report({'ERROR'}, ex.value)
     #endtry
@@ -58,8 +61,6 @@ class ExportSMF(bpy.types.Operator):
   #end
 
   def invoke(self, context, event):
-    if not self.filepath:
-      self.filepath = bpy.path.ensure_ext(bpy.data.filepath, ".smft")
     context.window_manager.fileselect_add(self)
     return {'RUNNING_MODAL'}
   #end

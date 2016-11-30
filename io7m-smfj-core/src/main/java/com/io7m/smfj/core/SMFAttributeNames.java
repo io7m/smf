@@ -42,7 +42,7 @@ public final class SMFAttributeNames
   private static final String PATTERN_TEXT;
 
   static {
-    PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.]{1," + MAXIMUM_CHARACTERS + "}";
+    PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.:]{1," + MAXIMUM_CHARACTERS + "}";
     PATTERN = NullCheck.notNull(
       Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS));
   }

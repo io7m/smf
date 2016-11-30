@@ -49,28 +49,32 @@ final class SMFTV1Parser extends SMFTAbstractParser
   }
 
   @Override
-  public void parse()
-  {
-    this.header_parser.parse();
-
-    if (super.state.get() != ParserState.STATE_FINISHED) {
-      final SMFParserSequentialType body_parser =
-        new SMFTV1BodyParser(
-          this,
-          super.events,
-          super.reader,
-          this.version,
-          this.header_parser.attributes,
-          this.header_parser.vertex_count,
-          this.header_parser.triangle_count,
-          this.header_parser.triangle_size);
-      body_parser.parse();
-    }
-  }
-
-  @Override
   protected Logger log()
   {
     return LOG;
+  }
+
+  @Override
+  public void parseHeader()
+  {
+    this.header_parser.parseHeader();
+  }
+
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    if (super.state.get() != ParserState.STATE_HEADER_PARSED) {
+      throw new IllegalStateException("Header has not been parsed");
+    }
+
+    final SMFParserSequentialType body_parser =
+      new SMFTV1BodyParser(
+        this,
+        super.events,
+        super.reader,
+        this.version,
+        this.header_parser.header());
+    body_parser.parseData();
   }
 }

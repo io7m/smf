@@ -33,11 +33,6 @@ final class SMFTLineReader
   private final LexicalPositionMutable<Path> position;
   private final SMFLineLexer lexer;
 
-  LexicalPositionMutable<Path> position()
-  {
-    return this.position;
-  }
-
   SMFTLineReader(
     final Path in_path,
     final InputStream in_stream)
@@ -47,6 +42,11 @@ final class SMFTLineReader
         NullCheck.notNull(in_stream, "stream"), StandardCharsets.UTF_8));
     this.position = LexicalPositionMutable.create(0, 0, Optional.of(in_path));
     this.lexer = new SMFLineLexer();
+  }
+
+  LexicalPositionMutable<Path> position()
+  {
+    return this.position;
   }
 
   public Optional<List<String>> line()

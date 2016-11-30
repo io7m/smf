@@ -303,7 +303,10 @@ public final class Main implements Runnable
               final SMFFCopierType copier = SMFFCopier.create(serializer);
               try (final SMFParserSequentialType parser =
                      provider_parser.parserCreateSequential(copier, path_out, is)) {
-                parser.parse();
+                parser.parseHeader();
+                if (!parser.parserHasFailed()) {
+                  parser.parseData();
+                }
               }
               if (!copier.errors().isEmpty()) {
                 Main.this.exit_code = 1;
@@ -351,7 +354,10 @@ public final class Main implements Runnable
         try (final InputStream is = Files.newInputStream(path)) {
           final SMFParserSequentialType parser =
             provider.parserCreateSequential(this, path, is);
-          parser.parse();
+          parser.parseHeader();
+          if (!parser.parserHasFailed()) {
+            parser.parseData();
+          }
 
           if (Main.this.exit_code != 0) {
             LOG.error("validation failed due to errors");
@@ -549,6 +555,24 @@ public final class Main implements Runnable
 
     @Override
     public void onDataTrianglesFinish()
+    {
+
+    }
+
+    @Override
+    public boolean onMeta(
+      final int vendor,
+      final int schema,
+      final long length)
+    {
+      return true;
+    }
+
+    @Override
+    public void onMetaData(
+      final int vendor,
+      final int schema,
+      final byte[] data)
     {
 
     }

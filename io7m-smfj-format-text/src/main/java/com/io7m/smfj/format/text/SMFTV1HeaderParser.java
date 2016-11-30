@@ -17,13 +17,18 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Invariants;
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jnull.NullCheck;
+import com.io7m.jnull.Nullable;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -47,15 +52,18 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
 
   private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
-  protected Map<SMFAttributeName, SMFAttribute> attributes;
-  protected Map<SMFAttributeName, Integer> attribute_lines;
-  protected List<SMFAttribute> attributes_list;
-  protected long vertex_count;
-  protected long triangle_count;
-  protected long triangle_size;
-  private boolean ok_vertices;
+  private Map<SMFAttributeName, SMFAttribute> attributes;
+  private Map<SMFAttributeName, Integer> attribute_lines;
+  private List<SMFAttribute> attributes_list;
+  private long vertex_count;
+  private long triangle_count;
+  private long triangle_size;
   private boolean ok_triangles;
-  private SMFVendorSchemaIdentifier schema_id;
+  private boolean ok_vertices;
+  private SMFSchemaIdentifier schema_id;
+  private @Nullable SMFCoordinateSystem coords;
+  private long meta_count;
+  private SMFHeader header;
 
   SMFTV1HeaderParser(
     final SMFTAbstractParser in_parent,
@@ -69,36 +77,66 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
     this.attributes = HashMap.empty();
-    this.ok_vertices = false;
     this.ok_triangles = false;
-    this.schema_id = SMFVendorSchemaIdentifier.of(0, 0, 0, 0);
+    this.ok_vertices = false;
+    this.schema_id = SMFSchemaIdentifier.of(0, 0, 0, 0);
   }
 
-  @Override
-  public void parse()
+  private static SMFFaceWindingOrder parseWindingOrder(
+    final String name)
   {
-    this.log().debug("parsing header");
-
-    try {
-      this.parseHeaderCommands();
-
-      if (super.state.get() != ParserState.STATE_FINISHED) {
-        this.parseHeaderCheckUniqueAttributeNames();
+    switch (name) {
+      case "clockwise":
+        return SMFFaceWindingOrder.FACE_WINDING_ORDER_CLOCKWISE;
+      case "counter-clockwise":
+        return SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
+      default: {
+        throw new IllegalArgumentException("Unrecognized winding order: " + name);
       }
+    }
+  }
 
-      if (super.state.get() != ParserState.STATE_FINISHED) {
-        final SMFHeader.Builder hb = SMFHeader.builder();
-        hb.setAttributesInOrder(this.attributes_list);
-        hb.setAttributesByName(this.attributes);
-        hb.setTriangleIndexSizeBits(this.triangle_size);
-        hb.setTriangleCount(this.triangle_count);
-        hb.setVertexCount(this.vertex_count);
-        hb.setSchemaIdentifier(this.schema_id);
-        super.events.onHeaderParsed(hb.build());
+  private static CAxis parseAxis(
+    final String name)
+  {
+    switch (name) {
+      case "+x":
+        return CAxis.AXIS_POSITIVE_X;
+      case "+y":
+        return CAxis.AXIS_POSITIVE_Y;
+      case "+z":
+        return CAxis.AXIS_POSITIVE_Z;
+      case "-x":
+        return CAxis.AXIS_NEGATIVE_X;
+      case "-y":
+        return CAxis.AXIS_NEGATIVE_Y;
+      case "-z":
+        return CAxis.AXIS_NEGATIVE_Z;
+      default: {
+        throw new IllegalArgumentException("Unrecognized axis name: " + name);
       }
+    }
+  }
 
-    } catch (final Exception e) {
-      this.fail(e.getMessage());
+  private void parseHeaderCheckAll()
+  {
+    this.parseHeaderCheckUniqueAttributeNames();
+    this.parseHeaderCheckRequired();
+  }
+
+  private void parseHeaderCheckRequired()
+  {
+    if (!this.ok_triangles) {
+      this.fail("No triangle count was specified");
+      return;
+    }
+    if (!this.ok_vertices) {
+      this.fail("No vertex count was specified");
+      return;
+    }
+    if (this.coords == null) {
+      this.fail("No coordinate system was specified");
+      return;
     }
   }
 
@@ -131,6 +169,16 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           return;
         }
 
+        case "meta": {
+          this.parseHeaderCommandMeta(line);
+          break;
+        }
+
+        case "coordinates": {
+          this.parseHeaderCommandCoordinates(line);
+          break;
+        }
+
         case "schema": {
           this.parseHeaderCommandSchema(line);
           break;
@@ -154,7 +202,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         default: {
           super.failExpectedGot(
             "Unrecognized command.",
-            "attribute | triangles | vertices | data | vendor",
+            "attribute | coordinates | data | meta | triangles | vertices | schema",
             line.toJavaStream().collect(Collectors.joining(" ")));
           return;
         }
@@ -162,24 +210,58 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     }
   }
 
-  private void parseHeaderCommandSchema(final List<String> line)
+  private void parseHeaderCommandCoordinates(
+    final List<String> line)
   {
     if (line.size() == 5) {
       try {
-        final int vendor_id =
+        final CAxis axis_right = parseAxis(line.get(1));
+        final CAxis axis_up = parseAxis(line.get(2));
+        final CAxis axis_forward = parseAxis(line.get(3));
+        final SMFFaceWindingOrder order = parseWindingOrder(line.get(4));
+
+        boolean bad = false;
+        bad = bad || axis_right.axis() == axis_up.axis();
+        bad = bad || axis_up.axis() == axis_forward.axis();
+        bad = bad || axis_forward.axis() == axis_right.axis();
+
+        if (bad) {
+          throw new IllegalArgumentException("Axes must be perpendicular");
+        }
+
+        this.coords = SMFCoordinateSystem.of(
+          CAxisSystem.of(axis_right, axis_up, axis_forward),
+          order);
+      } catch (final IllegalArgumentException e) {
+        super.failExpectedGot(
+          e.getMessage(),
+          "coordinates <axis> <axis> <axis> <winding-order>",
+          line.toJavaStream().collect(Collectors.joining(" ")));
+      }
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "coordinates <axis> <axis> <axis> <winding-order>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
+    }
+  }
+
+  private void parseHeaderCommandSchema(
+    final List<String> line)
+  {
+    if (line.size() == 5) {
+      try {
+        final int vendor =
           Integer.parseUnsignedInt(line.get(1), 16);
-        final int vendor_schema =
+        final int schema =
           Integer.parseUnsignedInt(line.get(2), 16);
-        final int vendor_schema_version_major =
+        final int schema_version_major =
           Integer.parseUnsignedInt(line.get(3));
-        final int vendor_schema_version_minor =
+        final int schema_version_minor =
           Integer.parseUnsignedInt(line.get(4));
 
-        this.schema_id = SMFVendorSchemaIdentifier.of(
-          vendor_id,
-          vendor_schema,
-          vendor_schema_version_major,
-          vendor_schema_version_minor);
+        this.schema_id = SMFSchemaIdentifier.of(
+          vendor, schema, schema_version_major, schema_version_minor);
       } catch (final NumberFormatException e) {
         super.failExpectedGot(
           "Could not parse number: " + e.getMessage(),
@@ -249,6 +331,26 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     }
   }
 
+  private void parseHeaderCommandMeta(
+    final Seq<String> line)
+  {
+    if (line.size() == 2) {
+      try {
+        this.meta_count = Long.parseUnsignedLong(line.get(1));
+      } catch (final NumberFormatException e) {
+        super.failExpectedGot(
+          "Cannot parse number: " + e.getMessage(),
+          "meta <meta-count>",
+          line.toJavaStream().collect(Collectors.joining(" ")));
+      }
+    } else {
+      super.failExpectedGot(
+        "Incorrect number of arguments",
+        "meta <meta-count>",
+        line.toJavaStream().collect(Collectors.joining(" ")));
+    }
+  }
+
   private void parseHeaderCommandVertices(
     final Seq<String> line)
   {
@@ -297,5 +399,75 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   protected Logger log()
   {
     return LOG;
+  }
+
+  @Override
+  public void parseHeader()
+  {
+    switch (super.state.get()) {
+
+      case STATE_INITIAL: {
+        this.log().debug("parsing header");
+
+        try {
+          super.state.set(ParserState.STATE_HEADER_PARSING);
+
+          this.parseHeaderCommands();
+
+          if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
+            this.parseHeaderCheckAll();
+          }
+
+          if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
+            final SMFHeader.Builder header_b = SMFHeader.builder();
+            header_b.setAttributesInOrder(this.attributes_list);
+            header_b.setAttributesByName(this.attributes);
+            header_b.setTriangleIndexSizeBits(this.triangle_size);
+            header_b.setTriangleCount(this.triangle_count);
+            header_b.setVertexCount(this.vertex_count);
+            header_b.setSchemaIdentifier(this.schema_id);
+            header_b.setCoordinateSystem(this.coords);
+            header_b.setMetaCount(this.meta_count);
+            this.header = header_b.build();
+            super.events.onHeaderParsed(this.header);
+            super.state.set(ParserState.STATE_HEADER_PARSED);
+          }
+
+          return;
+        } catch (final Exception e) {
+          this.fail(e.getMessage());
+          return;
+        }
+      }
+
+      case STATE_HEADER_PARSING: {
+        throw new IllegalStateException(
+          "Header parsing is already in progress");
+      }
+      case STATE_HEADER_PARSED: {
+        throw new IllegalStateException(
+          "Header has already been parsed");
+      }
+      case STATE_FAILED: {
+        throw new IllegalStateException(
+          "Parser has already failed");
+      }
+      case STATE_FINISHED: {
+        throw new IllegalStateException(
+          "Parser has already completed");
+      }
+    }
+  }
+
+  @Override
+  public void parseData()
+    throws IllegalStateException
+  {
+    throw new UnsupportedOperationException();
+  }
+
+  public SMFHeader header()
+  {
+    return NullCheck.notNull(this.header, "Header");
   }
 }

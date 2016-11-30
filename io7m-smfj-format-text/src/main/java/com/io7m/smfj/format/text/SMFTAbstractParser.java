@@ -99,7 +99,7 @@ abstract class SMFTAbstractParser implements
     final SMFParseError error)
   {
     this.log().trace("failure: {}", error);
-    this.state.set(ParserState.STATE_FINISHED);
+    this.state.set(ParserState.STATE_FAILED);
     this.events.onError(error);
   }
 
@@ -108,6 +108,12 @@ abstract class SMFTAbstractParser implements
     final String message)
   {
     this.onFailure(this.makeErrorWithLine(line, message));
+  }
+
+  @Override
+  public final boolean parserHasFailed()
+  {
+    return this.state.get() == ParserState.STATE_FAILED;
   }
 
   @Override
@@ -120,7 +126,9 @@ abstract class SMFTAbstractParser implements
   enum ParserState
   {
     STATE_INITIAL,
-    STATE_PARSING,
+    STATE_HEADER_PARSING,
+    STATE_HEADER_PARSED,
+    STATE_FAILED,
     STATE_FINISHED
   }
 }

@@ -1,5 +1,5 @@
 attribute_name =
-  ? [\p{IsAlphabetic}\p{IsDigit}_\-\.]{1,64} ? ;
+  ? [\p{IsAlphabetic}\p{IsDigit}_\-\.:]{1,64} ? ;
 
 attribute_type =
   "integer-signed" | "integer-unsigned" | "float" ;

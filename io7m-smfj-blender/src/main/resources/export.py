@@ -23,15 +23,6 @@ import io
 import mathutils
 import os
 
-class SMFNoMeshSelected(Exception):
-  def __init__(self, value):
-    self.value = value
-  #end
-  def __str__(self):
-    return repr(self.value)
-  #end
-#endclass
-
 class SMFExportFailed(Exception):
   def __init__(self, value):
     self.value = value
@@ -240,6 +231,9 @@ class SMFExporter:
 
     v = options['verbose']
     assert type(v) == bool
+
+    self.__selection = options['export_selection']
+    assert type(self.__selection) == str
 
     if v:
       self.__logger_severity = SMF_LOG_MESSAGE_DEBUG
@@ -465,6 +459,7 @@ class SMFExporter:
 
     out_file.write("vertices %d\n" % vertex_count)
     out_file.write("triangles %d %d\n" % (triangle_count, smf_mesh.triangles_index_size))
+    out_file.write("coordinates +x +y -z counter-clockwise\n")
     out_file.write("data\n")
 
     out_file.write("attribute \"POSITION\"\n")
@@ -529,53 +524,58 @@ class SMFExporter:
 
   def write(self, path):
     assert type(path) == str
-    error_path = path + ".log"
-    tmp_path = path + ".tmp"
 
-    with open(error_path, "wt") as error_file:
-      self.__logger = SMFLogger(self.__logger_severity, error_file)
-      t = datetime.datetime.now()
-      self.__logger.info("Export started at %s" % t.isoformat())
-      self.__logger.info("File: %s" % path)
-      self.__logger.info("Log:  %s" % error_path)
-
-      mesh = False
-      if len(bpy.context.selected_objects) > 0:
-        for obj in bpy.context.selected_objects:
-          if obj.type == 'MESH':
-            if mesh:
-              message = "Too many meshes selected: At most one of the selected objects can be a mesh when exporting"
-              self.__logger.error(message)
-              raise SMFTooManyMeshesSelected(message)
-            #endif
-            mesh = obj
-          #endif
-        #endfor
+    if not os.path.exists(path):
+      os.mkdir(path)
+    else:
+      if not os.path.isdir(path):
+        raise SMFExportFailed("Not a directory: %s" % path)
       #endif
+    #endif
 
-      if False == mesh:
-        message = "No meshes selected: A mesh object must be selected for export"
-        self.__logger.error(message)
-        raise SMFNoMeshSelected(message)
-      #endif
-
-      assert type(mesh) == bpy_types.Object
-      assert mesh.type == 'MESH'
-
-      self.__logger.debug("write: opening: %s" % tmp_path)
-      with open(tmp_path, "wt") as out_file:
-        self.__writeFile(out_file, mesh)
-
-        errors = self.__logger.counts[SMF_LOG_MESSAGE_ERROR]
-        if errors > 0:
-          self.__logger.error("Export failed with %d errors." % errors)
-          raise SMFExportFailed("Exporting failed due to errors.\nSee the log file at: %s" % error_path)
-        else:
-          self.__logger.info("Exported successfully")
-          os.rename(tmp_path, path)
+    meshes = []
+    if (self.__selection == 'EXPORT_ALL'):
+      for obj in bpy.data.objects:
+        if obj.type == 'MESH':
+          meshes.append(obj)
         #endif
+      #endfor
+    elif (self.__selection == 'EXPORT_SELECTED'):
+      for obj in bpy.context.selected_objects:
+        if obj.type == 'MESH':
+          meshes.append(obj)
+        #endif
+      #endfor
+    else:
+      assert False, ("Unknown selection type: " + self.__selection)
+    #endif
+
+    for mesh in meshes:
+      mesh_path     = os.path.join(path, bpy.path.clean_name(mesh.name) + ".smft")
+      mesh_path_tmp = os.path.join(path, bpy.path.clean_name(mesh.name) + ".smft.tmp")
+      mesh_log      = os.path.join(path, bpy.path.clean_name(mesh.name) + ".log")
+
+      with open(mesh_log, "wt") as error_file:
+        self.__logger = SMFLogger(self.__logger_severity, error_file)
+        t = datetime.datetime.now()
+        self.__logger.info("Export started at %s" % t.isoformat())
+        self.__logger.info("File: %s" % mesh_path)
+        self.__logger.info("Log:  %s" % mesh_log)
+
+        self.__logger.debug("write: opening: %s" % mesh_path_tmp)
+        with open(mesh_path_tmp, "wt") as out_file:
+          self.__writeFile(out_file, mesh)
+
+          errors = self.__logger.counts[SMF_LOG_MESSAGE_ERROR]
+          if errors > 0:
+            self.__logger.error("Export failed with %d errors." % errors)
+            raise SMFExportFailed("Exporting failed due to errors.\nSee the log file at: %s" % mesh_log)
+          else:
+            self.__logger.info("Exported successfully")
+            os.rename(mesh_path_tmp, mesh_path)
+          #endif
+        #endwith
       #endwith
-    #endwith
-  #end
+    #endfor
 
 #endclass

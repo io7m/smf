@@ -49,6 +49,22 @@ Vertices are numbered starting at [term [type expression] "0"].
 A triangle is a 3-tuple of [link [target smf_model.vertex] vertices]. In the
 SMF model, a triangle references vertices by their numeric index.
 
+[subsection [title Coordinate System] [id smf_model.coords]]
+[paragraph]
+A [term [type term] coordinate system] in the SMF model is a set of three
+axis names and a triangle [term [type term] winding order]. The axis names
+specify which Cartesian coordinate system axes correspond to the
+[term [type term] right], [term [type term] up], and [term [type term] forward]
+directions. The winding order specifies whether vertices for triangles are
+given in clockwise or counter-clockwise order. A coordinate system is only
+[term [type term] valid] if the three chosen axes have different
+[term [type term] axis names]. The [term [type function] axisName] function
+relates an axis to an axis name. The [term [type function] axisValid] function
+gives a formal definition of the validity of sets of axes.
+
+[formal-item [title "Axis"] [id smf_model.coords.axis_def]]
+[verbatim [include "axis.hs"]]
+
 [subsection [title Schema ID] [id smf_model.schema_id]]
 [paragraph]
 A [term [type term] schema identifier] is an optional identifier that can be
@@ -78,3 +94,13 @@ values identify the version of the schema.
 
 [footnote [id smf_model.xmlns]]
 [link-ext [target "https://en.wikipedia.org/wiki/XML_Namespace"] "https://en.wikipedia.org/wiki/XML_Namespace"]
+
+[subsection [title Metadata] [id smf_model.metadata]]
+[paragraph]
+The SMF model supports the inclusion of arbitrary metadata. A
+[term [type term] metadata value] is an opaque data value with
+[term [type term] vendor] and [term [type term] schema] identifiers specified
+in the same manner as the [link [target smf_model.schema_id] schema identifier].
+Applications may use the metadata facilities to associate small amounts of extra
+information with mesh data. Typical uses include checksums, copyright
+information, and generating software package version information.

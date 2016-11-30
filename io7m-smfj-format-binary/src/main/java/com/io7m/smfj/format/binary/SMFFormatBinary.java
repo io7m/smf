@@ -365,7 +365,6 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       return LOG;
     }
 
-
     private Optional<SMFBAbstractParserSequential> parseMagicNumberAndVersion()
     {
       try {
@@ -426,7 +425,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
     }
 
     @Override
-    public void parse()
+    public void parseHeader()
     {
       switch (super.state.get()) {
         case STATE_INITIAL: {
@@ -436,7 +435,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
             this.parser = this.parseMagicNumberAndVersion();
 
             if (this.parser.isPresent()) {
-              this.parser.get().parse();
+              this.parser.get().parseHeader();
             } else {
               Invariants.checkInvariant(
                 super.state.get(),
@@ -450,9 +449,39 @@ public final class SMFFormatBinary implements SMFParserProviderType,
           }
           break;
         }
+
         case STATE_PARSED_HEADER: {
           throw new IllegalStateException("Header has already been parsed");
         }
+
+        case STATE_FAILED: {
+          throw new IllegalStateException("Parser has already failed");
+        }
+      }
+    }
+
+    @Override
+    public void parseData()
+      throws IllegalStateException
+    {
+      switch (super.state.get()) {
+        case STATE_INITIAL: {
+          throw new IllegalStateException("Header has not been parsed");
+        }
+
+        case STATE_PARSED_HEADER: {
+          if (this.parser.isPresent()) {
+            this.parser.get().parseData();
+          } else {
+            Invariants.checkInvariant(
+              super.state.get(),
+              super.state.get() == ParserState.STATE_FAILED,
+              s -> String.format(
+                "State %s must be %s", s, ParserState.STATE_FAILED));
+          }
+          break;
+        }
+
         case STATE_FAILED: {
           throw new IllegalStateException("Parser has already failed");
         }

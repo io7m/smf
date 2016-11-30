@@ -16,21 +16,25 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
+import com.io7m.jpra.runtime.java.JPRACursor1DType;
+import com.io7m.jpra.runtime.java.JPRAStringTruncation;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.core.SMFAttributeNameType;
 import com.io7m.smfj.core.SMFAttributeNames;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
+import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
+import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
+import com.io7m.smfj.format.binary.v1.SMFBV1HeaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -44,6 +48,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -74,7 +79,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
 
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -102,7 +107,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         (byte) 'D',
         (byte) 'X'});
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -125,7 +130,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(891237L);
       out.putU32(0L);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -134,21 +139,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final @Mocked SMFParserEventsType events)
     throws IOException
   {
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(List.empty());
-    hb.setAttributesByName(HashMap.empty());
-    hb.setTriangleCount(0L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setVertexCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
       events.onFinish();
     }};
 
@@ -156,20 +155,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(0L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(0L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -178,6 +166,15 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final @Mocked SMFParserEventsType events)
     throws IOException
   {
+    final SerializedHeader header_s = new SerializedHeader();
+    final byte[] buffer = header_s.buffer();
+    final ByteBuffer wrap = ByteBuffer.wrap(buffer);
+    final JPRACursor1DType<SMFBV1HeaderType> cursor =
+      JPRACursor1DByteBufferedChecked.newCursor(
+        wrap, SMFBV1HeaderByteBuffered::newValueWithOffset);
+    final SMFBV1HeaderType view = cursor.getElementView();
+    view.setTriangleIndexSizeBits(1000);
+
     new StrictExpectations()
     {{
       events.onStart();
@@ -191,20 +188,9 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(0L);
-      out.putU64(0L);
-      out.putU32(1000L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(0L);
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -291,21 +277,17 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       f16_1
     );
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(xs);
-    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
-    hb.setVertexCount(0L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(xs);
+    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
       events.onFinish();
     }};
 
@@ -315,18 +297,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         out.putBytes(SMFFormatBinary.magicNumber());
         out.putU32(1L);
         out.putU32(0L);
-
-        out.putU32(0x696F376DL);
-        out.putU32(0xA0B0C0D0L);
-        out.putU32(1L);
-        out.putU32(2L);
-
-        out.putU64(0L);
-        out.putU64(0L);
-        out.putU32(32L);
-        out.putU32(0x7f7f7f7fL);
-        out.putU32(xs.length());
-        out.putU32(0x7f7f7f7fL);
+        out.putBytes(header_s.buffer());
 
         out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
         out.putU32((long) SMFComponentType.ELEMENT_TYPE_FLOATING.toInteger());
@@ -389,7 +360,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         out.putU32(16L);
       });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -501,21 +472,17 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       f8_1
     );
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(xs);
-    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
-    hb.setVertexCount(0L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(xs);
+    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
       events.onFinish();
     }};
 
@@ -523,18 +490,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(0L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(xs.length());
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED.toInteger());
@@ -617,7 +573,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(8L);
     });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -729,21 +685,17 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       f8_1
     );
 
-    final SMFHeader.Builder hb = SMFHeader.builder();
-    hb.setAttributesInOrder(xs);
-    hb.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
-    hb.setVertexCount(0L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
-    hb.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
-    final SMFHeader h = hb.build();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(xs);
+    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
+    final SMFHeader header = header_b.build();
 
     new StrictExpectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      events.onHeaderParsed(h);
+      events.onHeaderParsed(header);
       events.onFinish();
     }};
 
@@ -751,18 +703,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(0L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(xs.length());
-      out.putU32(0x7f7f7f7fL);
+      out.putBytes(header_s.buffer());
 
       out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
       out.putU32((long) SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED.toInteger());
@@ -845,7 +786,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       out.putU32(8L);
     });
 
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -863,29 +804,44 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+
+    final byte[] attribute_buffer =
+      new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
+    final ByteBuffer attribute_wrap =
+      ByteBuffer.wrap(attribute_buffer);
+    final JPRACursor1DType<SMFBV1AttributeType> attribute_cursor =
+      JPRACursor1DByteBufferedChecked.newCursor(
+        attribute_wrap,
+        SMFBV1AttributeByteBuffered::newValueWithOffset);
+    final SMFBV1AttributeType attribute_view =
+      attribute_cursor.getElementView();
+
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
+    attribute_view.setComponentCount(4);
+    attribute_view.setComponentKind(1000);
+    attribute_view.setComponentSize(64);
+
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
-      out.putU32(100L);
-      out.putU32(4L);
-      out.putU32(64L);
+      out.putBytes(header_s.buffer());
+      out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -904,29 +860,44 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+
+    final byte[] attribute_buffer =
+      new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
+    final ByteBuffer attribute_wrap =
+      ByteBuffer.wrap(attribute_buffer);
+    final JPRACursor1DType<SMFBV1AttributeType> attribute_cursor =
+      JPRACursor1DByteBufferedChecked.newCursor(
+        attribute_wrap,
+        SMFBV1AttributeByteBuffered::newValueWithOffset);
+    final SMFBV1AttributeType attribute_view =
+      attribute_cursor.getElementView();
+
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
+    attribute_view.setComponentCount(1000);
+    attribute_view.setComponentKind(0);
+    attribute_view.setComponentSize(64);
+
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
-      out.putU32(0L);
-      out.putU32(100L);
-      out.putU32(64L);
+      out.putBytes(header_s.buffer());
+      out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -945,29 +916,44 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+
+    final byte[] attribute_buffer =
+      new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
+    final ByteBuffer attribute_wrap =
+      ByteBuffer.wrap(attribute_buffer);
+    final JPRACursor1DType<SMFBV1AttributeType> attribute_cursor =
+      JPRACursor1DByteBufferedChecked.newCursor(
+        attribute_wrap,
+        SMFBV1AttributeByteBuffered::newValueWithOffset);
+    final SMFBV1AttributeType attribute_view =
+      attribute_cursor.getElementView();
+
+    attribute_view.getNameWritable().setValue(
+      "F64_4",
+      JPRAStringTruncation.REJECT);
+    attribute_view.setComponentCount(0);
+    attribute_view.setComponentKind(0);
+    attribute_view.setComponentSize(64);
+
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(1L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPadded("F64_4", SMFAttributeNames.MAXIMUM_CHARACTERS);
-      out.putU32(0L);
-      out.putU32(0L);
-      out.putU32(64L);
+      out.putBytes(header_s.buffer());
+      out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -985,34 +971,50 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onFinish();
     }};
 
+    final List<SMFAttribute> attributes = List.of(
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32),
+      SMFAttribute.of(
+        SMFAttributeName.of("y"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32));
+
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
+    header_b.setAttributesInOrder(attributes);
+    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
+
+    final byte[] attribute_buffer =
+      new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
+    final ByteBuffer attribute_wrap =
+      ByteBuffer.wrap(attribute_buffer);
+    final JPRACursor1DType<SMFBV1AttributeType> attribute_cursor =
+      JPRACursor1DByteBufferedChecked.newCursor(
+        attribute_wrap,
+        SMFBV1AttributeByteBuffered::newValueWithOffset);
+    final SMFBV1AttributeType attribute_view =
+      attribute_cursor.getElementView();
+
+    attribute_view.getNameWritable().setValue(
+      "ATTRIBUTE",
+      JPRAStringTruncation.REJECT);
+    attribute_view.setComponentCount(4);
+    attribute_view.setComponentKind(0);
+    attribute_view.setComponentSize(64);
+
     final SMFParserSequentialType p = this.parserSequentialFor(events, out -> {
       out.putBytes(SMFFormatBinary.magicNumber());
       out.putU32(1L);
       out.putU32(0L);
-
-      out.putU32(0x696F376DL);
-      out.putU32(0xA0B0C0D0L);
-      out.putU32(1L);
-      out.putU32(2L);
-
-      out.putU64(3L);
-      out.putU64(0L);
-      out.putU32(32L);
-      out.putU32(0x7f7f7f7fL);
-      out.putU32(2L);
-      out.putU32(0x7f7f7f7fL);
-
-      out.putStringPadded("ATTRIBUTE", SMFAttributeNames.MAXIMUM_CHARACTERS);
-      out.putU32(0L);
-      out.putU32(4L);
-      out.putU32(64L);
-
-      out.putStringPadded("ATTRIBUTE", SMFAttributeNames.MAXIMUM_CHARACTERS);
-      out.putU32(0L);
-      out.putU32(4L);
-      out.putU32(64L);
+      out.putBytes(header_s.buffer());
+      out.putBytes(attribute_buffer);
+      out.putBytes(attribute_buffer);
     });
-    p.parse();
+    p.parseHeader();
     p.close();
   }
 
@@ -1031,14 +1033,10 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     final SMFSerializerType serializer =
@@ -1088,14 +1086,10 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1123,14 +1117,10 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1163,14 +1153,11 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
         4,
         32));
 
-    final SMFHeader.Builder header_b = SMFHeader.builder();
+    final SerializedHeader header_s = new SerializedHeader();
+    final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
     header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
-    header_b.setSchemaIdentifier(
-      SMFVendorSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

@@ -317,4 +317,29 @@ public interface SMFSerializerType extends Closeable
     long v1,
     long v2)
     throws IOException, IllegalStateException;
+
+  /**
+   * <p>Serialize one item of metadata.</p>
+   *
+   * <p>Metadata is serialized after all other data in the file has been
+   * serialized.</p>
+   *
+   * @param vendor The vendor ID
+   * @param schema The schema ID
+   * @param data   The data
+   *
+   * @throws IllegalStateException If the header has not yet been serialized
+   * @throws IllegalStateException If the mesh data has not yet been serialized
+   * @throws IllegalStateException If the triangle data has not yet been
+   *                               serialized
+   * @throws IllegalStateException If no metadata was specified by the header
+   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IOException           On I/O errors
+   */
+
+  void serializeMetadata(
+    int vendor,
+    int schema,
+    byte[] data)
+    throws IOException, IllegalStateException;
 }

@@ -1,0 +1,7 @@
+[packed SMFBV1CoordinateSystems
+  ([field right   [integer unsigned 3]]
+   [field up      [integer unsigned 3]]
+   [field forward [integer unsigned 3]]
+   [field winding [integer unsigned 2]]
+   [padding-bits 5])]
+

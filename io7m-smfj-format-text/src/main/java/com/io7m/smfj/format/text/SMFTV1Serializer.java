@@ -17,14 +17,18 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jcoords.core.conversion.CAxis;
+import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVendorSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 import javaslang.collection.Queue;
@@ -54,6 +58,7 @@ final class SMFTV1Serializer implements SMFSerializerType
   private long attribute_values_remaining;
   private SMFAttribute attribute_current;
   private long triangle_values_remaining;
+  private long meta_values_remaining;
 
   SMFTV1Serializer(
     final SMFFormatVersion in_version,
@@ -71,6 +76,50 @@ final class SMFTV1Serializer implements SMFSerializerType
     this.state = SerializerState.STATE_INITIAL;
   }
 
+  private static String serializeAxis(
+    final CAxis axis)
+  {
+    switch (axis) {
+      case AXIS_POSITIVE_X:
+        return "+x";
+      case AXIS_POSITIVE_Y:
+        return "+y";
+      case AXIS_POSITIVE_Z:
+        return "+z";
+      case AXIS_NEGATIVE_X:
+        return "-x";
+      case AXIS_NEGATIVE_Y:
+        return "-y";
+      case AXIS_NEGATIVE_Z:
+        return "-z";
+    }
+    throw new UnreachableCodeException();
+  }
+
+  private static String serializeWindingOrder(
+    final SMFFaceWindingOrder order)
+  {
+    switch (order) {
+      case FACE_WINDING_ORDER_CLOCKWISE:
+        return "clockwise";
+      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
+        return "counter-clockwise";
+    }
+    throw new UnreachableCodeException();
+  }
+
+  private static String serializeAxes(
+    final SMFCoordinateSystem system)
+  {
+    final CAxisSystem axes = system.axes();
+    return String.format(
+      "coordinates %s %s %s %s",
+      serializeAxis(axes.right()),
+      serializeAxis(axes.up()),
+      serializeAxis(axes.forward()),
+      serializeWindingOrder(system.windingOrder()));
+  }
+
   @Override
   public void serializeHeader(
     final SMFHeader in_header)
@@ -84,6 +133,7 @@ final class SMFTV1Serializer implements SMFSerializerType
           this.header = in_header;
           this.attribute_queue = Queue.ofAll(attributes);
           this.triangle_values_remaining = in_header.triangleCount();
+          this.meta_values_remaining = in_header.metaCount();
 
           this.writer.append(
             String.format(
@@ -92,7 +142,7 @@ final class SMFTV1Serializer implements SMFSerializerType
               Integer.valueOf(this.version.minor())));
           this.writer.newLine();
 
-          final SMFVendorSchemaIdentifier schema_id =
+          final SMFSchemaIdentifier schema_id =
             this.header.schemaIdentifier();
           if (schema_id.vendorID() != 0) {
             this.writer.append(
@@ -107,6 +157,12 @@ final class SMFTV1Serializer implements SMFSerializerType
 
           this.writer.append(
             String.format(
+              "meta %s",
+              Long.toUnsignedString(this.header.metaCount())));
+          this.writer.newLine();
+
+          this.writer.append(
+            String.format(
               "vertices %s",
               Long.toUnsignedString(this.header.vertexCount())));
           this.writer.newLine();
@@ -116,6 +172,9 @@ final class SMFTV1Serializer implements SMFSerializerType
               "triangles %s %s",
               Long.toUnsignedString(this.header.triangleCount()),
               Long.toUnsignedString(this.header.triangleIndexSizeBits())));
+          this.writer.newLine();
+
+          this.writer.append(serializeAxes(this.header.coordinateSystem()));
           this.writer.newLine();
 
           for (final SMFAttribute attribute : attributes) {
@@ -135,28 +194,31 @@ final class SMFTV1Serializer implements SMFSerializerType
            */
 
           if (attributes.isEmpty()) {
-            this.state = SerializerState.STATE_ATTRIBUTE_DATA_SERIALIZED;
+            this.state = SerializerState.STATE_SERIALIZED_ATTRIBUTE_DATA;
           } else {
             this.writer.append("data");
             this.writer.newLine();
-            this.state = SerializerState.STATE_HEADER_SERIALIZED;
+            this.state = SerializerState.STATE_SERIALIZED_HEADER;
           }
 
           break;
         }
 
-        case STATE_ATTRIBUTE_DATA_SERIALIZED:
-        case STATE_HEADER_SERIALIZED: {
-          throw new IllegalStateException("Header has already been serialized");
-        }
-
-        case STATE_FAILED: {
-          throw new IllegalStateException("Serializer has already failed");
-        }
-
-        case STATE_FINISHED: {
-          throw new IllegalStateException("Serializer has already finished");
-        }
+        case STATE_SERIALIZED_ATTRIBUTE_DATA:
+          throw new IllegalStateException(
+            "Attribute data has already been serialized");
+        case STATE_SERIALIZED_HEADER:
+          throw new IllegalStateException(
+            "Header has already been serialized");
+        case STATE_SERIALIZED_TRIANGLE_DATA:
+          throw new IllegalStateException(
+            "Triangle data has already been serialized");
+        case STATE_SERIALIZED_METADATA:
+          throw new IllegalStateException(
+            "Metadata has already been serialized");
+        case STATE_FAILED:
+          throw new IllegalStateException(
+            "Serializer has already failed");
       }
     } catch (final IOException e) {
       LOG.debug("failure: ", e);
@@ -172,11 +234,7 @@ final class SMFTV1Serializer implements SMFSerializerType
     NullCheck.notNull(name, "Name");
 
     switch (this.state) {
-      case STATE_INITIAL: {
-        throw new IllegalStateException("Header not yet serialized");
-      }
-
-      case STATE_HEADER_SERIALIZED: {
+      case STATE_SERIALIZED_HEADER: {
         if (this.attribute_values_remaining != 0L) {
           final StringBuilder sb = new StringBuilder(128);
           sb.append("Too few attribute values serialized.");
@@ -224,18 +282,21 @@ final class SMFTV1Serializer implements SMFSerializerType
         throw new IllegalArgumentException(sb.toString());
       }
 
-      case STATE_ATTRIBUTE_DATA_SERIALIZED: {
+      case STATE_INITIAL:
+        throw new IllegalStateException(
+          "Header not yet serialized");
+      case STATE_SERIALIZED_ATTRIBUTE_DATA:
         throw new IllegalStateException(
           "Attribute data has already been serialized");
-      }
-
-      case STATE_FAILED: {
-        throw new IllegalStateException("Serializer has already failed");
-      }
-
-      case STATE_FINISHED: {
-        throw new IllegalStateException("Serializer has already finished");
-      }
+      case STATE_SERIALIZED_TRIANGLE_DATA:
+        throw new IllegalStateException(
+          "Triangle data has already been serialized");
+      case STATE_SERIALIZED_METADATA:
+        throw new IllegalStateException(
+          "Metadata has already been serialized");
+      case STATE_FAILED:
+        throw new IllegalStateException(
+          "Serializer has already failed");
     }
 
     throw new UnreachableCodeException();
@@ -246,11 +307,7 @@ final class SMFTV1Serializer implements SMFSerializerType
     final int count)
   {
     switch (this.state) {
-      case STATE_INITIAL: {
-        throw new IllegalStateException("Header not yet serialized");
-      }
-
-      case STATE_HEADER_SERIALIZED: {
+      case STATE_SERIALIZED_HEADER: {
         final SMFAttribute a = this.attribute_current;
         if (a != null) {
           if (a.componentType() == type && a.componentCount() == count) {
@@ -284,18 +341,21 @@ final class SMFTV1Serializer implements SMFSerializerType
         throw new IllegalStateException(sb.toString());
       }
 
-      case STATE_ATTRIBUTE_DATA_SERIALIZED: {
+      case STATE_SERIALIZED_ATTRIBUTE_DATA:
         throw new IllegalStateException(
           "Attribute data has already been serialized");
-      }
-
-      case STATE_FAILED: {
-        throw new IllegalStateException("Serializer has already failed");
-      }
-
-      case STATE_FINISHED: {
-        throw new IllegalStateException("Serializer has already finished");
-      }
+      case STATE_INITIAL:
+        throw new IllegalStateException(
+          "Header not yet serialized");
+      case STATE_SERIALIZED_TRIANGLE_DATA:
+        throw new IllegalStateException(
+          "Triangle data has already been serialized");
+      case STATE_SERIALIZED_METADATA:
+        throw new IllegalStateException(
+          "Metadata has already been serialized");
+      case STATE_FAILED:
+        throw new IllegalStateException(
+          "Serializer has already failed");
     }
   }
 
@@ -577,14 +637,14 @@ final class SMFTV1Serializer implements SMFSerializerType
   {
     Preconditions.checkPrecondition(
       this.state,
-      this.state == SerializerState.STATE_HEADER_SERIALIZED,
-      s -> s + " must be " + SerializerState.STATE_HEADER_SERIALIZED);
+      this.state == SerializerState.STATE_SERIALIZED_HEADER,
+      s -> s + " must be " + SerializerState.STATE_SERIALIZED_HEADER);
 
     this.attribute_values_remaining =
       Math.subtractExact(this.attribute_values_remaining, 1L);
 
     if (this.attribute_values_remaining == 0L && this.attribute_queue.isEmpty()) {
-      this.state = SerializerState.STATE_ATTRIBUTE_DATA_SERIALIZED;
+      this.state = SerializerState.STATE_SERIALIZED_ATTRIBUTE_DATA;
 
       if (this.header.triangleCount() != 0L) {
         this.writer.append("triangles");
@@ -601,28 +661,100 @@ final class SMFTV1Serializer implements SMFSerializerType
     throws IOException, IllegalStateException
   {
     switch (this.state) {
-      case STATE_INITIAL: {
-        throw new IllegalStateException(
-          "Header has not yet been serialized");
-      }
-      case STATE_HEADER_SERIALIZED: {
-        throw new IllegalStateException(
-          "Attribute data has not yet been serialized");
-      }
-      case STATE_ATTRIBUTE_DATA_SERIALIZED: {
+      case STATE_SERIALIZED_ATTRIBUTE_DATA: {
         if (this.triangle_values_remaining != 0L) {
           this.serializeTriangleWrite(v0, v1, v2);
+
+          if (this.triangle_values_remaining == 0L) {
+            this.state = SerializerState.STATE_SERIALIZED_TRIANGLE_DATA;
+            if (this.meta_values_remaining == 0L) {
+              this.state = SerializerState.STATE_SERIALIZED_METADATA;
+            }
+          }
           return;
         }
         throw new IllegalStateException("No triangles are required");
       }
-      case STATE_FAILED: {
-        throw new IllegalStateException("Serializer has already failed");
-      }
-      case STATE_FINISHED: {
-        throw new IllegalStateException("Serializer has already finished");
-      }
+
+      case STATE_INITIAL:
+        throw new IllegalStateException(
+          "Header has not yet been serialized");
+      case STATE_SERIALIZED_HEADER:
+        throw new IllegalStateException(
+          "Attribute data has not yet been serialized");
+      case STATE_SERIALIZED_TRIANGLE_DATA:
+        throw new IllegalStateException(
+          "Triangle data has already been serialized");
+      case STATE_SERIALIZED_METADATA:
+        throw new IllegalStateException(
+          "Metadata has already been serialized");
+      case STATE_FAILED:
+        throw new IllegalStateException(
+          "Serializer has already failed");
     }
+  }
+
+  @Override
+  public void serializeMetadata(
+    final int vendor,
+    final int schema,
+    final byte[] data)
+    throws IOException, IllegalStateException
+  {
+    switch (this.state) {
+      case STATE_SERIALIZED_TRIANGLE_DATA: {
+        if (this.meta_values_remaining != 0L) {
+          if (this.meta_values_remaining == this.header.metaCount()) {
+            this.writer.append("metadata");
+            this.writer.newLine();
+          }
+
+          final java.util.List<String> lines =
+            SMFBase64Lines.toBase64Lines(data);
+
+          this.writer.append(
+            String.format(
+              "meta %s %s %d",
+              Integer.toUnsignedString(vendor, 16),
+              Integer.toUnsignedString(schema, 16),
+              Integer.valueOf(lines.size())));
+          this.writer.newLine();
+
+          for (final String line : lines) {
+            this.writer.append(line);
+            this.writer.newLine();
+          }
+
+          this.meta_values_remaining =
+            Math.subtractExact(this.meta_values_remaining, 1L);
+
+          if (this.meta_values_remaining == 0L) {
+            this.state = SerializerState.STATE_SERIALIZED_METADATA;
+          }
+          return;
+        }
+
+        throw new IllegalStateException("No metadata is required");
+      }
+
+      case STATE_SERIALIZED_ATTRIBUTE_DATA:
+        throw new IllegalStateException(
+          "Triangle data has not yet been serialized");
+      case STATE_INITIAL:
+        throw new IllegalStateException(
+          "Header has not yet been serialized");
+      case STATE_SERIALIZED_HEADER:
+        throw new IllegalStateException(
+          "Attribute data has not yet been serialized");
+      case STATE_SERIALIZED_METADATA:
+        throw new IllegalStateException(
+          "Metadata has already been serialized");
+      case STATE_FAILED:
+        throw new IllegalStateException(
+          "Serializer has already failed");
+    }
+
+    throw new UnreachableCodeException();
   }
 
   private void serializeTriangleWrite(
@@ -641,10 +773,6 @@ final class SMFTV1Serializer implements SMFSerializerType
 
     this.triangle_values_remaining =
       Math.subtractExact(this.triangle_values_remaining, 1L);
-
-    if (this.triangle_values_remaining == 0L) {
-      this.state = SerializerState.STATE_FINISHED;
-    }
   }
 
   @Override
@@ -655,15 +783,16 @@ final class SMFTV1Serializer implements SMFSerializerType
 
     switch (this.state) {
       case STATE_INITIAL:
-      case STATE_HEADER_SERIALIZED:
-      case STATE_ATTRIBUTE_DATA_SERIALIZED: {
+      case STATE_SERIALIZED_HEADER:
+      case STATE_SERIALIZED_TRIANGLE_DATA:
+      case STATE_SERIALIZED_ATTRIBUTE_DATA: {
         throw new IllegalStateException(
-          "Closed a serializer without finishing it");
+          "Closed a serializer without finishing it (state " + this.state + ")");
       }
       case STATE_FAILED: {
         break;
       }
-      case STATE_FINISHED: {
+      case STATE_SERIALIZED_METADATA: {
         this.writer.flush();
         break;
       }
@@ -673,9 +802,10 @@ final class SMFTV1Serializer implements SMFSerializerType
   private enum SerializerState
   {
     STATE_INITIAL,
-    STATE_HEADER_SERIALIZED,
-    STATE_ATTRIBUTE_DATA_SERIALIZED,
-    STATE_FAILED,
-    STATE_FINISHED
+    STATE_SERIALIZED_HEADER,
+    STATE_SERIALIZED_ATTRIBUTE_DATA,
+    STATE_SERIALIZED_TRIANGLE_DATA,
+    STATE_SERIALIZED_METADATA,
+    STATE_FAILED
   }
 }

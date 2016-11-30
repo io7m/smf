@@ -43,6 +43,12 @@ abstract class SMFBAbstractParserSequential implements
     this.state = NullCheck.notNull(in_state, "State");
   }
 
+  @Override
+  public final boolean parserHasFailed()
+  {
+    return this.state.get() == ParserState.STATE_FAILED;
+  }
+
   protected abstract Logger log();
 
   protected final String onFailure(
@@ -83,6 +89,7 @@ abstract class SMFBAbstractParserSequential implements
   {
     STATE_INITIAL,
     STATE_PARSED_HEADER,
-    STATE_FAILED
+    STATE_FAILED,
+    STATE_FINISHED
   }
 }

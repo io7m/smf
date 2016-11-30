@@ -18,13 +18,11 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFAttributeName;
 
-import java.io.Closeable;
-
 /**
  * The type of random-access parsers.
  */
 
-public interface SMFParserRandomAccessType extends Closeable
+public interface SMFParserRandomAccessType extends SMFParserType
 {
   /**
    * Parse the header of the file.
@@ -36,14 +34,25 @@ public interface SMFParserRandomAccessType extends Closeable
    * Parse data for a specific attribute.
    *
    * @param name The attribute name
+   *
+   * @throws IllegalStateException If {@link #parseHeader()} has not been
+   *                               called, or if parsing the header previously
+   *                               failed
    */
 
   void parseAttributeData(
-    SMFAttributeName name);
+    SMFAttributeName name)
+    throws IllegalStateException;
 
   /**
    * Parse triangle data.
+   *
+   * @throws IllegalStateException If {@link #parseHeader()} has not been
+   *                               called, or if parsing the header previously
+   *                               failed
    */
 
-  void parseTriangles();
+  void parseTriangles()
+    throws IllegalStateException;
+
 }

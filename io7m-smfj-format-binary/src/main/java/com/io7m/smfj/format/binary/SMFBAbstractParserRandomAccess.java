@@ -79,6 +79,12 @@ abstract class SMFBAbstractParserRandomAccess implements
     return this.onFailure(sb.toString());
   }
 
+  @Override
+  public final boolean parserHasFailed()
+  {
+    return this.state.get() == ParserState.STATE_FAILED;
+  }
+
   enum ParserState
   {
     STATE_INITIAL,
