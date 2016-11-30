@@ -305,7 +305,8 @@ For any [term [type variable] v], [term [type variable] s], and
 [term [type variable] n], the command [term [type command] meta v s n] will
 indicate that the next [term [type expression] n] lines will contain
 [link-ext [target https://tools.ietf.org/html/rfc4648] RFC4648 base64url]
-data.
+data of a type with vendor [term [type variable] v] and schema
+[term [type variable] s].
 
 [paragraph]
 In a file that has declared in the header that [term [type expression] m]
