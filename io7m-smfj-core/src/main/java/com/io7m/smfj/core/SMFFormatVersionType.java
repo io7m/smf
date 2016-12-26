@@ -25,7 +25,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @Value.Modifiable
-@ImmutableStyleType
+@SMFImmutableStyleType
 public interface SMFFormatVersionType extends Comparable<SMFFormatVersionType>
 {
   /**

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.binary;
 
-import com.io7m.smfj.core.ImmutableStyleType;
+import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 /**
@@ -24,7 +24,7 @@ import org.immutables.value.Value;
  */
 
 @Value.Immutable
-@ImmutableStyleType
+@SMFImmutableStyleType
 public interface SMFBOctetRangeType
 {
   /**

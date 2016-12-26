@@ -23,7 +23,7 @@ import org.immutables.value.Value;
  */
 
 @Value.Immutable
-@ImmutableStyleType
+@SMFImmutableStyleType
 public interface SMFAttributeNameType
 {
   /**
