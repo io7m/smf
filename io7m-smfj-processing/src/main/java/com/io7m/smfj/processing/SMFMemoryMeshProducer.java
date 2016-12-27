@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.processing;
 
+import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.VectorI2D;
 import com.io7m.jtensors.VectorI2L;
 import com.io7m.jtensors.VectorI3D;
@@ -47,6 +49,7 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
   private Map<SMFAttributeName, SMFAttributeArrayType> arrays;
   private Vector<VectorI3L> triangles;
   private SMFMemoryMesh mesh;
+  private boolean finished;
 
   private SMFMemoryMeshProducer()
   {
@@ -99,13 +102,15 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
         .setTriangles(this.triangles)
         .setMetadata(this.metadata)
         .build();
+
+    this.finished = true;
   }
 
   @Override
   public void onHeaderParsed(
     final SMFHeader in_header)
   {
-    this.header = in_header;
+    this.header = NullCheck.notNull(in_header, "Header");
   }
 
   @Override
@@ -118,6 +123,9 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
   public SMFMemoryMesh mesh()
     throws IllegalStateException
   {
+    Preconditions.checkPrecondition(
+      this.finished, "Mesh parsing has not yet finished");
+
     if (this.errors.isEmpty()) {
       return this.mesh;
     }
