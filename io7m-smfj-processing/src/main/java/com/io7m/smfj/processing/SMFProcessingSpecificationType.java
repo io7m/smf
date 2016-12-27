@@ -47,6 +47,10 @@ public interface SMFProcessingSpecificationType
   @Value.Parameter
   SMFProcessTriangles triangles();
 
+  /**
+   * Check preconditions for the type.
+   */
+
   @Value.Check
   default void checkPreconditions()
   {
