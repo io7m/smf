@@ -10,11 +10,11 @@
     <artifactId>io7m-smfj</artifactId>
     <version>0.3.0-SNAPSHOT</version>
   </parent>
-  <artifactId>io7m-smfj-tests</artifactId>
+  <artifactId>io7m-smfj-processing</artifactId>
 
-  <packaging>jar</packaging>
-  <name>io7m-smfj-tests</name>
-  <description>Sequential mesh format (Tests)</description>
+  <packaging>bundle</packaging>
+  <name>io7m-smfj-processing</name>
+  <description>Sequential mesh format (Processing and filtering)</description>
   <url>http://io7m.github.io/smfj/</url>
 
   <scm>
@@ -34,51 +34,21 @@
       <artifactId>io7m-smfj-parser-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-processing</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.immutables</groupId>
+      <artifactId>value</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-text</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-binary</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-format-obj</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.immutables.javaslang</groupId>
+      <artifactId>javaslang-encodings</artifactId>
+      <scope>provided</scope>
     </dependency>
 
-    <!-- JMockit MUST appear before junit, until junit 5 is released -->
-    <dependency>
-      <groupId>org.jmockit</groupId>
-      <artifactId>jmockit</artifactId>
-      <scope>test</scope>
-    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.marschall</groupId>
-      <artifactId>memoryfilesystem</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.java.quickcheck</groupId>
-      <artifactId>quickcheck</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -89,6 +59,20 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <!-- Produce OSGi bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Export-Package>
+              com.io7m.smfj.processing
+            </Export-Package>
+          </instructions>
+        </configuration>
       </plugin>
     </plugins>
   </build>

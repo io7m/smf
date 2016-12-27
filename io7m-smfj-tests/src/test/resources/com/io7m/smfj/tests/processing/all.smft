@@ -1,0 +1,262 @@
+smf 1 0
+vertices 3
+triangles 1 8
+coordinates +x +y -z counter-clockwise
+meta 3
+
+attribute "f16_4" float 4 16
+attribute "f16_3" float 3 16
+attribute "f16_2" float 2 16
+attribute "f16_1" float 1 16
+
+attribute "f32_4" float 4 32
+attribute "f32_3" float 3 32
+attribute "f32_2" float 2 32
+attribute "f32_1" float 1 32
+
+attribute "f64_4" float 4 64
+attribute "f64_3" float 3 64
+attribute "f64_2" float 2 64
+attribute "f64_1" float 1 64
+
+attribute "i64_4" integer-signed 4 64
+attribute "i64_3" integer-signed 3 64
+attribute "i64_2" integer-signed 2 64
+attribute "i64_1" integer-signed 1 64
+
+attribute "i32_4" integer-signed 4 32
+attribute "i32_3" integer-signed 3 32
+attribute "i32_2" integer-signed 2 32
+attribute "i32_1" integer-signed 1 32
+
+attribute "i16_4" integer-signed 4 16
+attribute "i16_3" integer-signed 3 16
+attribute "i16_2" integer-signed 2 16
+attribute "i16_1" integer-signed 1 16
+
+attribute "i8_4" integer-signed 4 8
+attribute "i8_3" integer-signed 3 8
+attribute "i8_2" integer-signed 2 8
+attribute "i8_1" integer-signed 1 8
+
+attribute "u64_4" integer-unsigned 4 64
+attribute "u64_3" integer-unsigned 3 64
+attribute "u64_2" integer-unsigned 2 64
+attribute "u64_1" integer-unsigned 1 64
+
+attribute "u32_4" integer-unsigned 4 32
+attribute "u32_3" integer-unsigned 3 32
+attribute "u32_2" integer-unsigned 2 32
+attribute "u32_1" integer-unsigned 1 32
+
+attribute "u16_4" integer-unsigned 4 16
+attribute "u16_3" integer-unsigned 3 16
+attribute "u16_2" integer-unsigned 2 16
+attribute "u16_1" integer-unsigned 1 16
+
+attribute "u8_4" integer-unsigned 4 8
+attribute "u8_3" integer-unsigned 3 8
+attribute "u8_2" integer-unsigned 2 8
+attribute "u8_1" integer-unsigned 1 8
+
+data
+attribute "f16_4"
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+attribute "f16_3"
+-127.0 0 127.0
+-127.0 0 127.0
+-127.0 0 127.0
+attribute "f16_2"
+-127.0 127.0
+-127.0 127.0
+-127.0 127.0
+attribute "f16_1"
+127.0
+127.0
+127.0
+
+attribute "f32_4"
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+attribute "f32_3"
+-127.0 0 127.0
+-127.0 0 127.0
+-127.0 0 127.0
+attribute "f32_2"
+-127.0 127.0
+-127.0 127.0
+-127.0 127.0
+attribute "f32_1"
+127.0
+127.0
+127.0
+
+attribute "f64_4"
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+-127.0 0 1 127.0
+attribute "f64_3"
+-127.0 0 127.0
+-127.0 0 127.0
+-127.0 0 127.0
+attribute "f64_2"
+-127.0 127.0
+-127.0 127.0
+-127.0 127.0
+attribute "f64_1"
+127.0
+127.0
+127.0
+
+attribute "i64_4"
+-127 0 1 127
+-127 0 1 127
+-127 0 1 127
+attribute "i64_3"
+-127 0 127
+-127 0 127
+-127 0 127
+attribute "i64_2"
+-127 127
+-127 127
+-127 127
+attribute "i64_1"
+127
+127
+127
+
+attribute "i32_4"
+-127 0 1 127
+-127 0 1 127
+-127 0 1 127
+attribute "i32_3"
+-127 0 127
+-127 0 127
+-127 0 127
+attribute "i32_2"
+-127 127
+-127 127
+-127 127
+attribute "i32_1"
+127
+127
+127
+
+attribute "i16_4"
+-127 0 1 127
+-127 0 1 127
+-127 0 1 127
+attribute "i16_3"
+-127 0 127
+-127 0 127
+-127 0 127
+attribute "i16_2"
+-127 127
+-127 127
+-127 127
+attribute "i16_1"
+127
+127
+127
+
+attribute "i8_4"
+-127 0 1 127
+-127 0 1 127
+-127 0 1 127
+attribute "i8_3"
+-127 0 127
+-127 0 127
+-127 0 127
+attribute "i8_2"
+-127 127
+-127 127
+-127 127
+attribute "i8_1"
+127
+127
+127
+
+attribute "u64_4"
+127 0 1 127
+127 0 1 127
+127 0 1 127
+attribute "u64_3"
+127 0 127
+127 0 127
+127 0 127
+attribute "u64_2"
+127 127
+127 127
+127 127
+attribute "u64_1"
+127
+127
+127
+
+attribute "u32_4"
+127 0 1 127
+127 0 1 127
+127 0 1 127
+attribute "u32_3"
+127 0 127
+127 0 127
+127 0 127
+attribute "u32_2"
+127 127
+127 127
+127 127
+attribute "u32_1"
+127
+127
+127
+
+attribute "u16_4"
+127 0 1 127
+127 0 1 127
+127 0 1 127
+attribute "u16_3"
+127 0 127
+127 0 127
+127 0 127
+attribute "u16_2"
+127 127
+127 127
+127 127
+attribute "u16_1"
+127
+127
+127
+
+attribute "u8_4"
+127 0 1 127
+127 0 1 127
+127 0 1 127
+attribute "u8_3"
+127 0 127
+127 0 127
+127 0 127
+attribute "u8_2"
+127 127
+127 127
+127 127
+attribute "u8_1"
+127
+127
+127
+
+triangles
+0 1 2
+
+metadata
+
+meta 696f376d 0 1
+aGVsbG8=
+
+meta 696f376d 1 1
+b2xsZWg=
+
+meta 696f376d 2 1
+dGhlIGVuZA==

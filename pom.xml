@@ -25,6 +25,7 @@
     <module>io7m-smfj-format-text</module>
     <module>io7m-smfj-frontend</module>
     <module>io7m-smfj-parser-api</module>
+    <module>io7m-smfj-processing</module>
     <module>io7m-smfj-serializer-api</module>
     <module>io7m-smfj-specification</module>
     <module>io7m-smfj-tests</module>
