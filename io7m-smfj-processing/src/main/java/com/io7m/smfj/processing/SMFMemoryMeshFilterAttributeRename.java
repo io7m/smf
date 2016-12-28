@@ -20,11 +20,15 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.Tuple;
 import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.control.Validation;
+
+import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * A filter that renames a mesh attribute.
@@ -48,6 +52,42 @@ public final class SMFMemoryMeshFilterAttributeRename implements
   {
     this.source = NullCheck.notNull(in_source, "Source");
     this.target = NullCheck.notNull(in_target, "Target");
+  }
+
+  /**
+   * Attempt to parse a command.
+   *
+   * @param file The file, if any
+   * @param line The line
+   * @param text The text
+   *
+   * @return A parsed command or a list of parse errors
+   */
+
+  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text)
+  {
+    NullCheck.notNull(file, "file");
+    NullCheck.notNull(text, "text");
+
+    final String name = NAME;
+    final String syntax = " <source> <target>";
+
+    if (text.length() == 3) {
+      try {
+        final SMFAttributeName source = SMFAttributeName.of(text.get(1));
+        final SMFAttributeName target = SMFAttributeName.of(text.get(2));
+        return Validation.valid(
+          create(source, target));
+      } catch (final IllegalArgumentException e) {
+        return SMFFilterCommandParsing.errorExpectedGot(
+          file, line, name + syntax, text);
+      }
+    }
+    return SMFFilterCommandParsing.errorExpectedGot(
+      file, line, name + syntax, text);
   }
 
   @Override

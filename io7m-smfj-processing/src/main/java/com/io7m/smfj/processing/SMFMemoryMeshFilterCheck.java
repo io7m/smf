@@ -19,15 +19,22 @@ package com.io7m.smfj.processing;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.control.Validation;
+
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 
 /**
  * A filter that checks the existence and type of an attribute.
  */
 
-public final class SMFMemoryMeshFilterCheckType implements
+public final class SMFMemoryMeshFilterCheck implements
   SMFMemoryMeshFilterType
 {
   /**
@@ -36,10 +43,10 @@ public final class SMFMemoryMeshFilterCheckType implements
 
   public static final String NAME = "check";
 
-  private final SMFMemoryMeshFilterCheckTypeConfiguration config;
+  private final SMFMemoryMeshFilterCheckConfiguration config;
 
-  private SMFMemoryMeshFilterCheckType(
-    final SMFMemoryMeshFilterCheckTypeConfiguration in_config)
+  private SMFMemoryMeshFilterCheck(
+    final SMFMemoryMeshFilterCheckConfiguration in_config)
   {
     this.config = NullCheck.notNull(in_config, "Config");
   }
@@ -53,9 +60,74 @@ public final class SMFMemoryMeshFilterCheckType implements
    */
 
   public static SMFMemoryMeshFilterType create(
-    final SMFMemoryMeshFilterCheckTypeConfiguration in_config)
+    final SMFMemoryMeshFilterCheckConfiguration in_config)
   {
-    return new SMFMemoryMeshFilterCheckType(in_config);
+    return new SMFMemoryMeshFilterCheck(in_config);
+  }
+
+  /**
+   * Attempt to parse a command.
+   *
+   * @param file The file, if any
+   * @param line The line
+   * @param text The text
+   *
+   * @return A parsed command or a list of parse errors
+   */
+
+  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text)
+  {
+    NullCheck.notNull(file, "file");
+    NullCheck.notNull(text, "text");
+
+    final String name = SMFMemoryMeshFilterTrianglesOptimize.NAME;
+    final String syntax = " <name> (<type> | '-') (<count> | '-') (<size> | '-')";
+
+    if (text.length() == 5) {
+      try {
+        final SMFAttributeName attr = SMFAttributeName.of(text.get(1));
+
+        final Optional<SMFComponentType> type;
+        final String type_text = text.get(2);
+        if (Objects.equals(type_text, "-")) {
+          type = Optional.empty();
+        } else {
+          type = Optional.of(SMFComponentType.of(type_text));
+        }
+
+        final OptionalInt count;
+        final String count_text = text.get(3);
+        if (Objects.equals(count_text, "-")) {
+          count = OptionalInt.empty();
+        } else {
+          count = OptionalInt.of(Integer.parseInt(count_text));
+        }
+
+        final OptionalInt size;
+        final String size_text = text.get(4);
+        if (Objects.equals(size_text, "-")) {
+          size = OptionalInt.empty();
+        } else {
+          size = OptionalInt.of(Integer.parseInt(size_text));
+        }
+
+        return Validation.valid(create(
+          SMFMemoryMeshFilterCheckConfiguration.builder()
+            .setComponentCount(count)
+            .setComponentSize(size)
+            .setName(attr)
+            .setComponentType(type)
+            .build()));
+      } catch (final IllegalArgumentException e) {
+        return SMFFilterCommandParsing.errorExpectedGot(
+          file, line, name + syntax, text);
+      }
+    }
+    return SMFFilterCommandParsing.errorExpectedGot(
+      file, line, name + syntax, text);
   }
 
   @Override

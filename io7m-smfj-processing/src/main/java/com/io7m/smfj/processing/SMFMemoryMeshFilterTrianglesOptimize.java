@@ -18,10 +18,14 @@ package com.io7m.smfj.processing;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.VectorI3L;
+import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.List;
 import javaslang.collection.Vector;
 import javaslang.control.Validation;
 
+import java.nio.file.Path;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
@@ -74,6 +78,65 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
       "Triangle %d points to nonexistent vertex %d",
       Integer.valueOf(triangle),
       Long.valueOf(vertex));
+  }
+
+  /**
+   * Attempt to parse a command.
+   *
+   * @param file The file, if any
+   * @param line The line
+   * @param text The text
+   *
+   * @return A parsed command or a list of parse errors
+   */
+
+  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text)
+  {
+    NullCheck.notNull(file, "file");
+    NullCheck.notNull(text, "text");
+
+    final String name = NAME;
+    final String syntax = " (<size> | '-') ('validate' | 'no-validate')";
+
+    if (text.length() == 3) {
+      try {
+        final int size;
+        final String size_text = text.get(1);
+        if (Objects.equals(size_text, "-")) {
+          size = 0;
+        } else {
+          size = Integer.parseInt(size_text);
+        }
+
+        final String validate = text.get(2);
+
+        final SMFMemoryMeshFilterTrianglesOptimizeConfiguration.Builder builder =
+          SMFMemoryMeshFilterTrianglesOptimizeConfiguration.builder();
+        if (size > 0) {
+          builder.setOptimize(size);
+        }
+
+        if (Objects.equals(validate, "validate")) {
+          builder.setValidate(true);
+        } else if (Objects.equals(validate, "no-validate")) {
+          builder.setValidate(false);
+        } else {
+          throw new IllegalArgumentException(
+            "Could not parse validation value: Must be 'validate' | 'no-validate'");
+        }
+
+        return Validation.valid(
+          create(builder.build()));
+      } catch (final IllegalArgumentException e) {
+        return SMFFilterCommandParsing.errorExpectedGot(
+          file, line, name + syntax, text);
+      }
+    }
+    return SMFFilterCommandParsing.errorExpectedGot(
+      file, line, name + syntax, text);
   }
 
   @Override

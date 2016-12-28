@@ -30,7 +30,7 @@ import java.util.OptionalInt;
 
 @SMFImmutableStyleType
 @Value.Immutable
-public interface SMFMemoryMeshFilterCheckTypeConfigurationType
+public interface SMFMemoryMeshFilterCheckConfigurationType
 {
   /**
    * @return The name of the attribute
