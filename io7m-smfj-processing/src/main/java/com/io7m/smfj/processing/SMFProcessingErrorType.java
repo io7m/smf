@@ -16,31 +16,21 @@
 
 package com.io7m.smfj.processing;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.parser.api.SMFParserEventsType;
-import javaslang.collection.List;
+import com.io7m.smfj.core.SMFImmutableStyleType;
+import org.immutables.value.Value;
 
 /**
- * The type of parser event listeners that produce values of type {@link
- * SMFMemoryMeshType} as a result.
+ * The type of processing errors.
  */
 
-public interface SMFMemoryMeshProducerType extends SMFParserEventsType
+@Value.Immutable
+@SMFImmutableStyleType
+public interface SMFProcessingErrorType
 {
   /**
-   * @return The list of parse errors encountered, if any
+   * @return The error message
    */
 
-  List<SMFParseError> errors();
-
-  /**
-   * The parsed mesh, if no parse errors were encountered.
-   *
-   * @return The parsed mesh
-   *
-   * @throws IllegalStateException If {@link #errors()} is non-empty
-   */
-
-  SMFMemoryMesh mesh()
-    throws IllegalStateException;
+  @Value.Parameter
+  String message();
 }

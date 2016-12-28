@@ -60,31 +60,13 @@ public final class SMFMemoryMeshProducerTest
 {
   @Rule public ExpectedException expected = ExpectedException.none();
 
-  private static SMFParserSequentialType createParser(
-    final SMFParserEventsType loader,
-    final String name)
-    throws IOException
-  {
-    final String rpath = "/com/io7m/smfj/tests/processing/" + name;
-    try (final InputStream stream =
-           SMFMemoryMeshProducerTest.class.getResourceAsStream(rpath)) {
-      final SMFParserProviderType fmt = new SMFFormatText();
-      final Path path = Paths.get(rpath);
-      final SMFParserSequentialType parser =
-        fmt.parserCreateSequential(loader, path, stream);
-      parser.parseHeader();
-      parser.parseData();
-      return parser;
-    }
-  }
-
   @Test
   public void testReuse()
     throws Exception
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser = createParser(
+    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
       loader,
       "all.smft")) {
       // Nothing
@@ -92,7 +74,7 @@ public final class SMFMemoryMeshProducerTest
 
     this.expected.expect(IllegalStateException.class);
 
-    try (final SMFParserSequentialType parser = createParser(
+    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
       loader,
       "all.smft")) {
       // Nothing
@@ -105,7 +87,7 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser = createParser(
+    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
       loader,
       "all.smft")) {
       // Nothing

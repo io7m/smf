@@ -16,31 +16,23 @@
 
 package com.io7m.smfj.processing;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.List;
+import javaslang.control.Validation;
 
 /**
- * The type of parser event listeners that produce values of type {@link
- * SMFMemoryMeshType} as a result.
+ * A filter that transforms an in-memory mesh.
  */
 
-public interface SMFMemoryMeshProducerType extends SMFParserEventsType
+public interface SMFMemoryMeshFilterType
 {
   /**
-   * @return The list of parse errors encountered, if any
+   * Evaluate the filter on the given mesh.
+   *
+   * @param m A mesh
+   *
+   * @return A filtered mesh, or a list or reasons why the filtering did not
+   * work
    */
 
-  List<SMFParseError> errors();
-
-  /**
-   * The parsed mesh, if no parse errors were encountered.
-   *
-   * @return The parsed mesh
-   *
-   * @throws IllegalStateException If {@link #errors()} is non-empty
-   */
-
-  SMFMemoryMesh mesh()
-    throws IllegalStateException;
+  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(SMFMemoryMesh m);
 }

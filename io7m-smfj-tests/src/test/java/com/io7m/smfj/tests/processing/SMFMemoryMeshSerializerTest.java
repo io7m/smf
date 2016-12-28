@@ -26,8 +26,6 @@ import com.io7m.jtensors.VectorI4L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.format.text.SMFFormatText;
-import com.io7m.smfj.parser.api.SMFParserEventsType;
-import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.SMFAttributeArrayFloating1Type;
 import com.io7m.smfj.processing.SMFAttributeArrayFloating2Type;
@@ -54,12 +52,10 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import static com.io7m.jfunctional.Unit.unit;
@@ -72,24 +68,6 @@ public final class SMFMemoryMeshSerializerTest
     LOG = LoggerFactory.getLogger(SMFMemoryMeshSerializerTest.class);
   }
 
-  private static SMFParserSequentialType createParser(
-    final SMFParserEventsType loader,
-    final String name)
-    throws IOException
-  {
-    final String rpath = "/com/io7m/smfj/tests/processing/" + name;
-    try (final InputStream stream =
-           SMFMemoryMeshProducerTest.class.getResourceAsStream(rpath)) {
-      final SMFParserProviderType fmt = new SMFFormatText();
-      final Path path = Paths.get(rpath);
-      final SMFParserSequentialType parser =
-        fmt.parserCreateSequential(loader, path, stream);
-      parser.parseHeader();
-      parser.parseData();
-      return parser;
-    }
-  }
-
   @Test
   public void testAll()
     throws Exception
@@ -97,7 +75,7 @@ public final class SMFMemoryMeshSerializerTest
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
     try (final SMFParserSequentialType parser0 =
-           createParser(loader0, "all.smft")) {
+           SMFTestFiles.createParser(loader0, "all.smft")) {
       // Nothing
     }
 
