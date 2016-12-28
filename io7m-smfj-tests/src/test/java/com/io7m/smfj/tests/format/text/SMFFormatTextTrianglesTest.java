@@ -18,6 +18,7 @@ package com.io7m.smfj.tests.format.text;
 
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
+import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
@@ -230,6 +231,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -262,6 +265,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -294,6 +299,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -326,6 +333,8 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -358,9 +367,11 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
 
-    this.expected.expect(IllegalStateException.class);
+    this.expected.expect(FSMTransitionException.class);
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 }

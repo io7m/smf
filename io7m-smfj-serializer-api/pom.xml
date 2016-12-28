@@ -34,6 +34,10 @@
       <groupId>com.io7m.jnull</groupId>
       <artifactId>io7m-jnull-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jfsm</groupId>
+      <artifactId>io7m-jfsm-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.javaslang</groupId>

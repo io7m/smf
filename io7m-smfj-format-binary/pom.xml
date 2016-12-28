@@ -64,6 +64,10 @@
       <groupId>com.io7m.ieee754b16</groupId>
       <artifactId>io7m-ieee754b16-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jfsm</groupId>
+      <artifactId>io7m-jfsm-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>commons-io</groupId>

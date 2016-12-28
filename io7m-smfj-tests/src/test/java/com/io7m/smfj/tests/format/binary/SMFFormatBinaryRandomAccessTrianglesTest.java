@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
@@ -190,6 +191,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -211,6 +214,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -232,6 +237,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -253,6 +260,8 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 
@@ -274,9 +283,11 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+    serializer.serializeTrianglesStart();
     serializer.serializeTriangle(0L, 1L, 2L);
 
-    this.expected.expect(IllegalStateException.class);
+    this.expected.expect(FSMTransitionException.class);
     serializer.serializeTriangle(0L, 1L, 2L);
   }
 }

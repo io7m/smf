@@ -3,8 +3,21 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
-    <c:date>2016-12-27</c:date>
+    <c:date>2016-12-28</c:date>
     <c:version>0.3.0</c:version>
+
+    <c:item>
+      <c:date>2016-12-28</c:date>
+      <c:type-code-change/>
+      <c:summary>Change serialization API to make implementations easier to write.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-28</c:date>
+      <c:type-code-new/>
+      <c:ticket>5</c:ticket>
+      <c:summary>Add API and tools to process meshes.</c:summary>
+    </c:item>
 
     <c:item>
       <c:date>2016-12-27</c:date>

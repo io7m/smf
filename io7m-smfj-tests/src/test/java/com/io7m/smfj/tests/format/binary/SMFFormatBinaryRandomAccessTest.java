@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.jpra.runtime.java.JPRAStringTruncation;
@@ -1051,6 +1052,7 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
       new SMFFormatBinary().serializerCreate(version, path, out);
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
 
     this.expected.expect(IllegalArgumentException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
@@ -1067,7 +1069,7 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFSerializerType serializer =
       new SMFFormatBinary().serializerCreate(version, path, out);
 
-    this.expected.expect(IllegalStateException.class);
+    this.expected.expect(FSMTransitionException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
   }
 
@@ -1101,6 +1103,7 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1132,6 +1135,7 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1169,6 +1173,7 @@ public final class SMFFormatBinaryRandomAccessTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalStateException.class);
