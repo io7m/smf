@@ -381,7 +381,7 @@ public final class Main implements Runnable
           mesh_current = result.get();
         } else {
           result.getError().map(e -> {
-            LOG.error("filter: {}", e.message());
+            LOG.error("filter: {}: {}", filter.name(), e.message());
             return unit();
           });
           return Optional.empty();

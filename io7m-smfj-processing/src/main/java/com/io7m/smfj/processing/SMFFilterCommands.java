@@ -19,6 +19,7 @@ package com.io7m.smfj.processing;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -28,6 +29,7 @@ import javaslang.control.Validation;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
 /**
@@ -41,11 +43,17 @@ public final class SMFFilterCommands
   static {
     HashMap<String, SMFFilterCommandParserType> cmds = HashMap.empty();
     cmds = cmds.put(
-      SMFMemoryMeshFilterAttributeRename.NAME, SMFFilterCommands::parseRename);
+      SMFMemoryMeshFilterAttributeRename.NAME,
+      SMFFilterCommands::parseRename);
     cmds = cmds.put(
-      SMFMemoryMeshFilterAttributeRemove.NAME, SMFFilterCommands::parseRemove);
+      SMFMemoryMeshFilterAttributeRemove.NAME,
+      SMFFilterCommands::parseRemove);
     cmds = cmds.put(
-      SMFMemoryMeshFilterTrianglesOptimize.NAME, SMFFilterCommands::parseTrianglesOptimize);
+      SMFMemoryMeshFilterTrianglesOptimize.NAME,
+      SMFFilterCommands::parseTrianglesOptimize);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterCheckType.NAME,
+      SMFFilterCommands::parseCheck);
     COMMANDS = cmds;
   }
 
@@ -108,15 +116,17 @@ public final class SMFFilterCommands
     final List<String> text)
   {
     final String name = SMFMemoryMeshFilterAttributeRemove.NAME;
+    final String syntax = " <name>";
+
     if (text.length() == 2) {
       try {
         final SMFAttributeName attr = SMFAttributeName.of(text.get(1));
         return Validation.valid(SMFMemoryMeshFilterAttributeRemove.create(attr));
       } catch (final IllegalArgumentException e) {
-        return errorExpectedGot(file, line, name + " <name>", text);
+        return errorExpectedGot(file, line, name + syntax, text);
       }
     }
-    return errorExpectedGot(file, line, name + " <name>", text);
+    return errorExpectedGot(file, line, name + syntax, text);
   }
 
   private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> errorExpectedGot(
@@ -144,6 +154,8 @@ public final class SMFFilterCommands
     final List<String> text)
   {
     final String name = SMFMemoryMeshFilterAttributeRename.NAME;
+    final String syntax = " <source> <target>";
+
     if (text.length() == 3) {
       try {
         final SMFAttributeName source = SMFAttributeName.of(text.get(1));
@@ -151,10 +163,10 @@ public final class SMFFilterCommands
         return Validation.valid(
           SMFMemoryMeshFilterAttributeRename.create(source, target));
       } catch (final IllegalArgumentException e) {
-        return errorExpectedGot(file, line, name + " <source> <target>", text);
+        return errorExpectedGot(file, line, name + syntax, text);
       }
     }
-    return errorExpectedGot(file, line, name + " <source> <target>", text);
+    return errorExpectedGot(file, line, name + syntax, text);
   }
 
   private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parseTrianglesOptimize(
@@ -163,9 +175,18 @@ public final class SMFFilterCommands
     final List<String> text)
   {
     final String name = SMFMemoryMeshFilterTrianglesOptimize.NAME;
+    final String syntax = " (<size> | '-') ('validate' | 'no-validate')";
+
     if (text.length() == 3) {
       try {
-        final int size = Integer.parseInt(text.get(1));
+        final int size;
+        final String size_text = text.get(1);
+        if (Objects.equals(size_text, "-")) {
+          size = 0;
+        } else {
+          size = Integer.parseInt(size_text);
+        }
+
         final String validate = text.get(2);
 
         final SMFMemoryMeshFilterTrianglesOptimizeConfiguration.Builder builder =
@@ -186,10 +207,60 @@ public final class SMFFilterCommands
         return Validation.valid(
           SMFMemoryMeshFilterTrianglesOptimize.create(builder.build()));
       } catch (final IllegalArgumentException e) {
-        return errorExpectedGot(
-          file, line, name + " <size> <validation>", text);
+        return errorExpectedGot(file, line, name + syntax, text);
       }
     }
-    return errorExpectedGot(file, line, name + " <size> <validation>", text);
+    return errorExpectedGot(file, line, name + syntax, text);
+  }
+
+  private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parseCheck(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text)
+  {
+    final String name = SMFMemoryMeshFilterTrianglesOptimize.NAME;
+    final String syntax = " <name> (<type> | '-') (<count> | '-') (<size> | '-')";
+
+    if (text.length() == 5) {
+      try {
+        final SMFAttributeName attr = SMFAttributeName.of(text.get(1));
+
+        final Optional<SMFComponentType> type;
+        final String type_text = text.get(2);
+        if (Objects.equals(type_text, "-")) {
+          type = Optional.empty();
+        } else {
+          type = Optional.of(SMFComponentType.of(type_text));
+        }
+
+        final OptionalInt count;
+        final String count_text = text.get(3);
+        if (Objects.equals(count_text, "-")) {
+          count = OptionalInt.empty();
+        } else {
+          count = OptionalInt.of(Integer.parseInt(count_text));
+        }
+
+        final OptionalInt size;
+        final String size_text = text.get(4);
+        if (Objects.equals(size_text, "-")) {
+          size = OptionalInt.empty();
+        } else {
+          size = OptionalInt.of(Integer.parseInt(size_text));
+        }
+
+        return Validation.valid(
+          SMFMemoryMeshFilterCheckType.create(
+            SMFMemoryMeshFilterCheckTypeConfiguration.builder()
+              .setComponentCount(count)
+              .setComponentSize(size)
+              .setName(attr)
+              .setComponentType(type)
+              .build()));
+      } catch (final IllegalArgumentException e) {
+        return errorExpectedGot(file, line, name + syntax, text);
+      }
+    }
+    return errorExpectedGot(file, line, name + syntax, text);
   }
 }

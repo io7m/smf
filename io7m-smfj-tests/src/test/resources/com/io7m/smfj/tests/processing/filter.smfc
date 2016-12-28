@@ -54,3 +54,8 @@ rename f32_2 c
 rename f32_1 d
 
 triangles-optimize 0 validate
+
+check a float 4 32
+check b float 3 32
+check c float 2 32
+check d float 1 32
