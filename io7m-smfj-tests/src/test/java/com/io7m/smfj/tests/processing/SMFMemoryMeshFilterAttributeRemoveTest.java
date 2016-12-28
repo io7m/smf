@@ -20,6 +20,7 @@ import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.SMFAttributeArrayType;
 import com.io7m.smfj.processing.SMFMemoryMesh;
@@ -36,12 +37,51 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 public final class SMFMemoryMeshFilterAttributeRemoveTest
 {
   private static final Logger LOG;
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeRemoveTest.class);
+  }
+
+  @Test public void testParseWrong0()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.empty());
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test public void testParseWrong1()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test public void testParseWrong2()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "<#@"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test public void testParseWrong3()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "x", "y"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test public void testParse()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "x"));
+    Assert.assertTrue(r.isValid());
+    final SMFMemoryMeshFilterType c = r.get();
+    Assert.assertEquals(c.name(), "remove");
   }
 
   @Test

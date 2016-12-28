@@ -18,8 +18,10 @@ package com.io7m.smfj.tests.processing;
 
 import com.io7m.jfunctional.Unit;
 import com.io7m.jtensors.VectorI3L;
+import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.SMFMemoryMesh;
+import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeRename;
 import com.io7m.smfj.processing.SMFMemoryMeshFilterTrianglesOptimize;
 import com.io7m.smfj.processing.SMFMemoryMeshFilterTrianglesOptimizeConfiguration;
 import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
@@ -33,6 +35,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Optional;
 
 public final class SMFMemoryMeshFilterTrianglesOptimizeTest
 {
@@ -77,6 +81,94 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       Assert.assertTrue(Long.compareUnsigned(triangle.getYL(), max) <= 0);
       Assert.assertTrue(Long.compareUnsigned(triangle.getZL(), max) <= 0);
     }
+  }
+
+  @Test
+  public void testParseWrong0()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.empty());
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testParseWrong1()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testParseWrong2()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "16"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testParseWrong3()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "16", "x"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testParseWrong4()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "16", "validate", "x"));
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testParseOk0()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "16", "validate"));
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public void testParseOk1()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "16", "no-validate"));
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public void testParseOk2()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterTrianglesOptimize.parse(
+        Optional.empty(),
+        1,
+        List.of("triangles-optimize", "-", "no-validate"));
+    Assert.assertTrue(r.isValid());
   }
 
   @Test
