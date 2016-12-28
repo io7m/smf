@@ -51,6 +51,12 @@ public interface SMFAttributeArrayIntegerSigned2Type extends
     return on_i2.call(context, this);
   }
 
+  @Override
+  default int size()
+  {
+    return this.values().size();
+  }
+
   /**
    * @return The array values
    */

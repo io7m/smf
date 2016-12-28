@@ -32,6 +32,12 @@ import javaslang.control.Validation;
 public final class SMFMemoryMeshFilterAttributeRemove implements
   SMFMemoryMeshFilterType
 {
+  /**
+   * The command name.
+   */
+
+  public static final String NAME = "remove";
+
   private final SMFAttributeName source;
 
   private SMFMemoryMeshFilterAttributeRemove(
@@ -52,6 +58,12 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
     final SMFAttributeName in_source)
   {
     return new SMFMemoryMeshFilterAttributeRemove(in_source);
+  }
+
+  @Override
+  public String name()
+  {
+    return NAME;
   }
 
   @Override

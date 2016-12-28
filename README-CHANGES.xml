@@ -8,6 +8,12 @@
 
     <c:item>
       <c:date>2016-12-28</c:date>
+      <c:type-code-change/>
+      <c:summary>Change serialization API to make implementations easier to write.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-28</c:date>
       <c:type-code-new/>
       <c:ticket>5</c:ticket>
       <c:summary>Add API and tools to process meshes.</c:summary>

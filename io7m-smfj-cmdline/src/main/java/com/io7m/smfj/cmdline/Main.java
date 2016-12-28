@@ -27,20 +27,35 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.format.text.SMFLineLexer;
 import com.io7m.smfj.frontend.SMFFCopier;
 import com.io7m.smfj.frontend.SMFFCopierType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.processing.SMFFilterCommands;
+import com.io7m.smfj.processing.SMFMemoryMesh;
+import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.SMFMemoryMeshSerializer;
+import com.io7m.smfj.processing.SMFProcessingError;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
+import javaslang.collection.List;
+import javaslang.collection.Seq;
 import javaslang.collection.SortedSet;
+import javaslang.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -75,20 +90,17 @@ public final class Main implements Runnable
     this.args = NullCheck.notNull(in_args);
 
     final CommandRoot r = new CommandRoot();
-    final CommandValidate validate = new CommandValidate();
     final CommandFormats formats = new CommandFormats();
-    final CommandTranscode transcode = new CommandTranscode();
+    final CommandFilter filter = new CommandFilter();
 
     this.commands = new HashMap<>(8);
+    this.commands.put("filter", filter);
     this.commands.put("formats", formats);
-    this.commands.put("validate", validate);
-    this.commands.put("transcode", transcode);
 
     this.commander = new JCommander(r);
     this.commander.setProgramName("smf");
-    this.commander.addCommand("validate", validate);
+    this.commander.addCommand("filter", filter);
     this.commander.addCommand("formats", formats);
-    this.commander.addCommand("transcode", transcode);
   }
 
   /**
@@ -248,8 +260,8 @@ public final class Main implements Runnable
     }
   }
 
-  @Parameters(commandDescription = "Transcode a mesh file")
-  private final class CommandTranscode extends CommandRoot
+  @Parameters(commandDescription = "Filter mesh data")
+  private final class CommandFilter extends CommandRoot
   {
     @Parameter(
       names = "-file-in",
@@ -264,7 +276,6 @@ public final class Main implements Runnable
 
     @Parameter(
       names = "-file-out",
-      required = true,
       description = "The output file")
     private String file_out;
 
@@ -273,7 +284,13 @@ public final class Main implements Runnable
       description = "The output file format")
     private String format_out;
 
-    CommandTranscode()
+    @Parameter(
+      names = "-commands",
+      required = true,
+      description = "The filter commands")
+    private String file_commands;
+
+    CommandFilter()
     {
 
     }
@@ -284,297 +301,183 @@ public final class Main implements Runnable
     {
       super.call();
 
+      final Optional<List<SMFMemoryMeshFilterType>> filters_opt =
+        this.parseFilterCommands();
+
+      if (!filters_opt.isPresent()) {
+        Main.this.exit_code = 1;
+        return unit();
+      }
+
+      final List<SMFMemoryMeshFilterType> filters = filters_opt.get();
+
       final SMFParserProviderType provider_parser =
         findParserProvider(this.format_in, this.file_in);
-      final SMFSerializerProviderType provider_serializer =
-        findSerializerProvider(this.format_out, this.file_out);
 
-      if (provider_parser != null && provider_serializer != null) {
-        final Path path_in = Paths.get(this.file_in);
+      if (provider_parser == null) {
+        Main.this.exit_code = 1;
+        return unit();
+      }
+
+      final Path path_in = Paths.get(this.file_in);
+
+      final Optional<SMFMemoryMesh> mesh_opt =
+        this.loadMemoryMesh(provider_parser, path_in);
+
+      if (!mesh_opt.isPresent()) {
+        Main.this.exit_code = 1;
+        return unit();
+      }
+
+      final Optional<SMFMemoryMesh> filtered_opt =
+        this.runFilters(filters, mesh_opt.get());
+
+      if (!filtered_opt.isPresent()) {
+        Main.this.exit_code = 1;
+        return unit();
+      }
+
+      final SMFMemoryMesh filtered = filtered_opt.get();
+      
+      if (this.file_out != null) {
+        final SMFSerializerProviderType provider_serializer =
+          findSerializerProvider(this.format_out, this.file_out);
+
+        if (provider_serializer == null) {
+          Main.this.exit_code = 1;
+          return unit();
+        }
+
         final Path path_out = Paths.get(this.file_out);
-
         try (final OutputStream os = Files.newOutputStream(path_out)) {
           try (final SMFSerializerType serializer =
-            provider_serializer.serializerCreate(
-              provider_serializer.serializerSupportedVersions().last(),
-              path_out,
-              os)) {
-            try (final InputStream is = Files.newInputStream(path_in)) {
-              final SMFFCopierType copier = SMFFCopier.create(serializer);
-              try (final SMFParserSequentialType parser =
-                     provider_parser.parserCreateSequential(copier, path_out, is)) {
-                parser.parseHeader();
-                if (!parser.parserHasFailed()) {
-                  parser.parseData();
-                }
-              }
-              if (!copier.errors().isEmpty()) {
-                Main.this.exit_code = 1;
-              }
-            }
+                 provider_serializer.serializerCreate(
+                   provider_serializer.serializerSupportedVersions().last(),
+                   path_out,
+                   os)) {
+            SMFMemoryMeshSerializer.serialize(filtered, serializer);
           }
+        } catch (final IOException e) {
+          Main.this.exit_code = 1;
+          LOG.error("could not serialize mesh: {}", e.getMessage());
+          LOG.debug("i/o error: ", e);
         }
       }
 
       return unit();
     }
-  }
 
-  @Parameters(commandDescription = "Validate a mesh file")
-  private final class CommandValidate extends CommandRoot implements
-    SMFParserEventsType
-  {
-    @Parameter(
-      names = "-file",
-      required = true,
-      description = "The input file")
-    private String file;
-
-    @Parameter(
-      names = "-format",
-      description = "The input file format")
-    private String format;
-
-    CommandValidate()
+    private Optional<SMFMemoryMesh> runFilters(
+      final Seq<SMFMemoryMeshFilterType> filters,
+      final SMFMemoryMesh mesh)
     {
+      SMFMemoryMesh mesh_current = mesh;
+      for (int index = 0; index < filters.size(); ++index) {
+        final SMFMemoryMeshFilterType filter = filters.get(index);
+        LOG.debug("evaluating filter: {}", filter.name());
 
+        final Validation<List<SMFProcessingError>, SMFMemoryMesh> result =
+          filter.filter(mesh_current);
+        if (result.isValid()) {
+          mesh_current = result.get();
+        } else {
+          result.getError().map(e -> {
+            LOG.error("filter: {}", e.message());
+            return unit();
+          });
+          return Optional.empty();
+        }
+      }
+
+      return Optional.of(mesh_current);
     }
 
-    @Override
-    public Unit call()
-      throws Exception
+    private Optional<SMFMemoryMesh> loadMemoryMesh(
+      final SMFParserProviderType provider_parser,
+      final Path path_in)
+      throws IOException
     {
-      super.call();
+      final SMFMemoryMeshProducerType loader =
+        SMFMemoryMeshProducer.create();
 
-      final SMFParserProviderType provider =
-        findParserProvider(this.format, this.file);
-
-      if (provider != null) {
-        final Path path = Paths.get(this.file);
-        try (final InputStream is = Files.newInputStream(path)) {
-          final SMFParserSequentialType parser =
-            provider.parserCreateSequential(this, path, is);
+      try (final InputStream is = Files.newInputStream(path_in)) {
+        try (final SMFParserSequentialType parser =
+               provider_parser.parserCreateSequential(loader, path_in, is)) {
           parser.parseHeader();
           if (!parser.parserHasFailed()) {
             parser.parseData();
           }
+        }
+        if (!loader.errors().isEmpty()) {
+          loader.errors().map(e -> {
+            final LexicalPosition<Path> lex = e.lexical();
+            LOG.error(
+              "{}:{}:{}: {}",
+              this.file_in,
+              Integer.valueOf(lex.line()),
+              Integer.valueOf(lex.column()),
+              e.message());
+            return unit();
+          });
+          Main.this.exit_code = 1;
+          return Optional.empty();
+        }
+      }
+      return Optional.of(loader.mesh());
+    }
 
-          if (Main.this.exit_code != 0) {
-            LOG.error("validation failed due to errors");
+    private Optional<List<SMFMemoryMeshFilterType>> parseFilterCommands()
+      throws IOException
+    {
+      final Path path_commands = Paths.get(this.file_commands);
+      final SMFLineLexer lexer = new SMFLineLexer();
+
+      boolean failed = false;
+      List<SMFMemoryMeshFilterType> filters = List.empty();
+      LexicalPosition<Path> position =
+        LexicalPosition.of(1, 0, Optional.of(path_commands));
+      try (final InputStream stream = Files.newInputStream(path_commands)) {
+        try (final BufferedReader reader =
+               new BufferedReader(new InputStreamReader(
+                 stream,
+                 StandardCharsets.UTF_8))) {
+          while (true) {
+            final String line = reader.readLine();
+            if (line == null) {
+              break;
+            }
+            final List<String> text = lexer.lex(line);
+            if (text.isEmpty()) {
+              continue;
+            }
+
+            final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> result =
+              SMFFilterCommands.parse(position.file(), position.line(), text);
+            if (result.isValid()) {
+              filters = filters.append(result.get());
+            } else {
+              failed = true;
+              result.getError().map(e -> {
+                final LexicalPosition<Path> lex = e.lexical();
+                LOG.error(
+                  "{}:{}:{}: {}",
+                  path_commands,
+                  Integer.valueOf(lex.line()),
+                  Integer.valueOf(lex.column()),
+                  e.message());
+                return unit();
+              });
+            }
+            position = position.withLine(position.line() + 1).withColumn(0);
           }
         }
-
-      } else {
-        LOG.error("Could not find a suitable format provider");
-        Main.this.exit_code = 1;
       }
 
-      return unit();
-    }
-
-    @Override
-    public void onStart()
-    {
-
-    }
-
-    @Override
-    public void onVersionReceived(
-      final SMFFormatVersion version)
-    {
-
-    }
-
-    @Override
-    public void onFinish()
-    {
-
-    }
-
-    @Override
-    public void onError(
-      final SMFParseError e)
-    {
-      final LexicalPosition<Path> lex = e.lexical();
-      final Optional<Path> file_opt = lex.file();
-      if (file_opt.isPresent()) {
-        LOG.error(
-          "parse error: {}:{}:{}: {}",
-          file_opt.get(),
-          Integer.valueOf(lex.line()),
-          Integer.valueOf(lex.column()),
-          e.message());
-        Main.this.exit_code = 1;
-      } else {
-        LOG.error(
-          "parse error: {}:{}: {}",
-          Integer.valueOf(lex.line()),
-          Integer.valueOf(lex.column()),
-          e.message());
-        Main.this.exit_code = 1;
+      if (failed) {
+        return Optional.empty();
       }
-    }
 
-    @Override
-    public void onHeaderParsed(
-      final SMFHeader header)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeStart(
-      final SMFAttribute attribute)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerSigned1(
-      final long x)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerSigned2(
-      final long x,
-      final long y)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerSigned3(
-      final long x,
-      final long y,
-      final long z)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerSigned4(
-      final long x,
-      final long y,
-      final long z,
-      final long w)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerUnsigned1(
-      final long x)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerUnsigned2(
-      final long x,
-      final long y)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerUnsigned3(
-      final long x,
-      final long y,
-      final long z)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueIntegerUnsigned4(
-      final long x,
-      final long y,
-      final long z,
-      final long w)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueFloat1(
-      final double x)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueFloat2(
-      final double x,
-      final double y)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueFloat3(
-      final double x,
-      final double y,
-      final double z)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeValueFloat4(
-      final double x,
-      final double y,
-      final double z,
-      final double w)
-    {
-
-    }
-
-    @Override
-    public void onDataAttributeFinish(
-      final SMFAttribute attribute)
-    {
-
-    }
-
-    @Override
-    public void onDataTrianglesStart()
-    {
-
-    }
-
-    @Override
-    public void onDataTriangle(
-      final long v0,
-      final long v1,
-      final long v2)
-    {
-
-    }
-
-    @Override
-    public void onDataTrianglesFinish()
-    {
-
-    }
-
-    @Override
-    public boolean onMeta(
-      final int vendor,
-      final int schema,
-      final long length)
-    {
-      return true;
-    }
-
-    @Override
-    public void onMetaData(
-      final int vendor,
-      final int schema,
-      final byte[] data)
-    {
-
+      return Optional.of(filters);
     }
   }
 

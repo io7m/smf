@@ -16,29 +16,31 @@
 
 package com.io7m.smfj.processing;
 
+import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
+import java.nio.file.Path;
+import java.util.Optional;
+
 /**
- * A filter that transforms an in-memory mesh.
+ * The type of command parsers.
  */
 
-public interface SMFMemoryMeshFilterType
+public interface SMFFilterCommandParserType
 {
   /**
-   * @return The name of the filter
+   * Parse a filter command.
+   *
+   * @param file The current file
+   * @param line The current line
+   * @param text The current line text
+   *
+   * @return A filter, or a list of reasons why parsing failed
    */
 
-  String name();
-
-  /**
-   * Evaluate the filter on the given mesh.
-   *
-   * @param m A mesh
-   *
-   * @return A filtered mesh, or a list or reasons why the filtering did not
-   * work
-   */
-
-  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(SMFMemoryMesh m);
+  Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text);
 }

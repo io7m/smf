@@ -1,0 +1,56 @@
+remove f16_4
+remove f16_3
+remove f16_2
+remove f16_1
+
+remove f64_4
+remove f64_3
+remove f64_2
+remove f64_1
+
+remove i8_4
+remove i8_3
+remove i8_2
+remove i8_1
+
+remove i16_4
+remove i16_3
+remove i16_2
+remove i16_1
+
+remove i32_4
+remove i32_3
+remove i32_2
+remove i32_1
+
+remove i64_4
+remove i64_3
+remove i64_2
+remove i64_1
+
+remove u8_4
+remove u8_3
+remove u8_2
+remove u8_1
+
+remove u16_4
+remove u16_3
+remove u16_2
+remove u16_1
+
+remove u32_4
+remove u32_3
+remove u32_2
+remove u32_1
+
+remove u64_4
+remove u64_3
+remove u64_2
+remove u64_1
+
+rename f32_4 a
+rename f32_3 b
+rename f32_2 c
+rename f32_1 d
+
+triangles-optimize 0 validate

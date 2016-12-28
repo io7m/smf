@@ -62,6 +62,7 @@ public final class SMFMemoryMeshSerializer
 
     final SMFHeader header = mesh.header();
     s.serializeHeader(header);
+    s.serializeDataStart();
 
     for (final SMFAttribute attribute : header.attributesInOrder()) {
       final SMFAttributeName name = attribute.name();
@@ -83,10 +84,12 @@ public final class SMFMemoryMeshSerializer
         (x, y) -> serializeSigned1(s, y));
     }
 
+    s.serializeTrianglesStart();
     for (final VectorI3L triangle : mesh.triangles()) {
       s.serializeTriangle(triangle.getXL(), triangle.getYL(), triangle.getZL());
     }
 
+    s.serializeMetadataStart();
     for (final SMFMetadata meta : mesh.metadata()) {
       s.serializeMetadata(meta.vendor(), meta.schema(), meta.data());
     }

@@ -909,6 +909,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
     serializer.serializeValueFloat4(0.0, 1.0, 2.0, 3.0);
 
@@ -942,6 +943,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -974,6 +976,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1006,6 +1009,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1038,6 +1042,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1070,6 +1075,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1102,6 +1108,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1134,6 +1141,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1166,6 +1174,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1199,6 +1208,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1231,6 +1241,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1263,6 +1274,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1295,6 +1307,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1341,6 +1354,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     for (final SMFAttribute attribute : attributes) {
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {

@@ -33,6 +33,12 @@ import javaslang.control.Validation;
 public final class SMFMemoryMeshFilterAttributeRename implements
   SMFMemoryMeshFilterType
 {
+  /**
+   * The command name.
+   */
+
+  public static final String NAME = "rename";
+
   private final SMFAttributeName source;
   private final SMFAttributeName target;
 
@@ -42,6 +48,12 @@ public final class SMFMemoryMeshFilterAttributeRename implements
   {
     this.source = NullCheck.notNull(in_source, "Source");
     this.target = NullCheck.notNull(in_target, "Target");
+  }
+
+  @Override
+  public String name()
+  {
+    return NAME;
   }
 
   /**

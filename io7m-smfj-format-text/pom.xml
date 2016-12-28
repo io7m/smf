@@ -56,6 +56,10 @@
       <groupId>com.io7m.jaffirm</groupId>
       <artifactId>io7m-jaffirm-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jfsm</groupId>
+      <artifactId>io7m-jfsm-core</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.slf4j</groupId>

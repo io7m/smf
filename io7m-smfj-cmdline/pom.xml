@@ -26,6 +26,11 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>io7m-smfj-processing</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>io7m-smfj-format-binary</artifactId>
       <version>${project.version}</version>
     </dependency>

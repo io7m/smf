@@ -65,4 +65,10 @@ public interface SMFAttributeArrayType
     PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
     PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
     throws E;
+
+  /**
+   * @return The size of the array
+   */
+
+  int size();
 }

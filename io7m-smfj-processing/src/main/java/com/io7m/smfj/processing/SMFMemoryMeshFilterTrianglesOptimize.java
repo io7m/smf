@@ -31,6 +31,12 @@ import java.util.OptionalInt;
 public final class SMFMemoryMeshFilterTrianglesOptimize implements
   SMFMemoryMeshFilterType
 {
+  /**
+   * The command name.
+   */
+
+  public static final String NAME = "triangles-optimize";
+
   private final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config;
 
   private SMFMemoryMeshFilterTrianglesOptimize(
@@ -68,6 +74,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
       "Triangle %d points to nonexistent vertex %d",
       Integer.valueOf(triangle),
       Long.valueOf(vertex));
+  }
+
+  @Override
+  public String name()
+  {
+    return NAME;
   }
 
   @Override

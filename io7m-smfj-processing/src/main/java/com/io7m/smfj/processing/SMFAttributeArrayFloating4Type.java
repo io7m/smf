@@ -50,6 +50,12 @@ public interface SMFAttributeArrayFloating4Type extends SMFAttributeArrayType
     return on_f4.call(context, this);
   }
 
+  @Override
+  default int size()
+  {
+    return this.values().size();
+  }
+
   /**
    * @return The array values
    */

@@ -50,6 +50,12 @@ public interface SMFAttributeArrayIntegerUnsigned1Type extends
     return on_u1.call(context, this);
   }
 
+  @Override
+  default int size()
+  {
+    return this.values().size();
+  }
+
   /**
    * @return The array values
    */

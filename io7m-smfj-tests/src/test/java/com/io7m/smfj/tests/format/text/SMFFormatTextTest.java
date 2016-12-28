@@ -18,6 +18,7 @@ package com.io7m.smfj.tests.format.text;
 
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
+import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -2685,6 +2686,7 @@ public final class SMFFormatTextTest
       new SMFFormatText().serializerCreate(version, path, out);
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
 
     this.expected.expect(IllegalArgumentException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
@@ -2701,7 +2703,7 @@ public final class SMFFormatTextTest
     final SMFSerializerType serializer =
       new SMFFormatText().serializerCreate(version, path, out);
 
-    this.expected.expect(IllegalStateException.class);
+    this.expected.expect(FSMTransitionException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
   }
 
@@ -2732,6 +2734,7 @@ public final class SMFFormatTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -2757,12 +2760,14 @@ public final class SMFFormatTextTest
         32));
 
     final SMFHeader.Builder header_b = baseHeader(attributes);
+    header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
-    this.expected.expect(IllegalArgumentException.class);
+    this.expected.expect(IllegalStateException.class);
     serializer.serializeData(SMFAttributeName.of("x"));
   }
 
@@ -2887,6 +2892,7 @@ public final class SMFFormatTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalStateException.class);
