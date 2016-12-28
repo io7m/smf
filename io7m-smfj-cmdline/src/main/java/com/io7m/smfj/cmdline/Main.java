@@ -23,18 +23,12 @@ import com.beust.jcommander.Parameters;
 import com.io7m.jfunctional.Unit;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
-import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
-import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.format.text.SMFLineLexer;
-import com.io7m.smfj.frontend.SMFFCopier;
-import com.io7m.smfj.frontend.SMFFCopierType;
+import com.io7m.smfj.frontend.SMFFilterCommandFile;
 import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFFilterCommands;
 import com.io7m.smfj.processing.SMFMemoryMesh;
 import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.SMFMemoryMeshProducer;
@@ -50,12 +44,9 @@ import javaslang.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -338,7 +329,7 @@ public final class Main implements Runnable
       }
 
       final SMFMemoryMesh filtered = filtered_opt.get();
-      
+
       if (this.file_out != null) {
         final SMFSerializerProviderType provider_serializer =
           findSerializerProvider(this.format_out, this.file_out);
@@ -430,54 +421,29 @@ public final class Main implements Runnable
       throws IOException
     {
       final Path path_commands = Paths.get(this.file_commands);
-      final SMFLineLexer lexer = new SMFLineLexer();
 
-      boolean failed = false;
-      List<SMFMemoryMeshFilterType> filters = List.empty();
-      LexicalPosition<Path> position =
-        LexicalPosition.of(1, 0, Optional.of(path_commands));
       try (final InputStream stream = Files.newInputStream(path_commands)) {
-        try (final BufferedReader reader =
-               new BufferedReader(new InputStreamReader(
-                 stream,
-                 StandardCharsets.UTF_8))) {
-          while (true) {
-            final String line = reader.readLine();
-            if (line == null) {
-              break;
-            }
-            final List<String> text = lexer.lex(line);
-            if (text.isEmpty()) {
-              continue;
-            }
-
-            final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> result =
-              SMFFilterCommands.parse(position.file(), position.line(), text);
-            if (result.isValid()) {
-              filters = filters.append(result.get());
-            } else {
-              failed = true;
-              result.getError().map(e -> {
-                final LexicalPosition<Path> lex = e.lexical();
-                LOG.error(
-                  "{}:{}:{}: {}",
-                  path_commands,
-                  Integer.valueOf(lex.line()),
-                  Integer.valueOf(lex.column()),
-                  e.message());
-                return unit();
-              });
-            }
-            position = position.withLine(position.line() + 1).withColumn(0);
-          }
+        final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
+          SMFFilterCommandFile.parseFromStream(
+            Optional.of(path_commands),
+            stream);
+        if (r.isValid()) {
+          return Optional.of(r.get());
         }
-      }
 
-      if (failed) {
+        r.getError().map(e -> {
+          final LexicalPosition<Path> lex = e.lexical();
+          LOG.error(
+            "{}:{}:{}: {}",
+            path_commands,
+            Integer.valueOf(lex.line()),
+            Integer.valueOf(lex.column()),
+            e.message());
+          return unit();
+        });
+
         return Optional.empty();
       }
-
-      return Optional.of(filters);
     }
   }
 
