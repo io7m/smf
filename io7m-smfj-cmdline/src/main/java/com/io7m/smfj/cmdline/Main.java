@@ -26,6 +26,8 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.frontend.SMFFilterCommandFile;
+import com.io7m.smfj.frontend.SMFParserProviders;
+import com.io7m.smfj.frontend.SMFSerializerProviders;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -208,19 +210,19 @@ public final class Main implements Runnable
         final SMFParserProviderType provider = parser_providers.next();
         final SMFFormatDescription format = provider.parserFormat();
         final SortedSet<SMFFormatVersion> versions = provider.parserSupportedVersions();
-        versions.forEach(version -> {
-          System.out.printf(
-            fmt_string,
-            format.name(),
-            format.suffix(),
-            format.mimeType(),
-            String.format(
-              "%d.%d",
-              Integer.valueOf(version.major()),
-              Integer.valueOf(version.minor())),
-            "read",
-            format.description());
-        });
+        versions.forEach(
+          version ->
+            System.out.printf(
+              fmt_string,
+              format.name(),
+              format.suffix(),
+              format.mimeType(),
+              String.format(
+                "%d.%d",
+                Integer.valueOf(version.major()),
+                Integer.valueOf(version.minor())),
+              "read",
+              format.description()));
       }
 
       final ServiceLoader<SMFSerializerProviderType> serializer_loader =
@@ -232,19 +234,19 @@ public final class Main implements Runnable
         final SMFSerializerProviderType provider = serializer_providers.next();
         final SMFFormatDescription format = provider.serializerFormat();
         final SortedSet<SMFFormatVersion> versions = provider.serializerSupportedVersions();
-        versions.forEach(version -> {
-          System.out.printf(
-            fmt_string,
-            format.name(),
-            format.suffix(),
-            format.mimeType(),
-            String.format(
-              "%d.%d",
-              Integer.valueOf(version.major()),
-              Integer.valueOf(version.minor())),
-            "write",
-            format.description());
-        });
+        versions.forEach(
+          version ->
+            System.out.printf(
+              fmt_string,
+              format.name(),
+              format.suffix(),
+              format.mimeType(),
+              String.format(
+                "%d.%d",
+                Integer.valueOf(version.major()),
+                Integer.valueOf(version.minor())),
+              "write",
+              format.description()));
       }
 
       return unit();
@@ -302,14 +304,17 @@ public final class Main implements Runnable
 
       final List<SMFMemoryMeshFilterType> filters = filters_opt.get();
 
-      final SMFParserProviderType provider_parser =
-        findParserProvider(this.format_in, this.file_in);
+      final Optional<SMFParserProviderType> provider_parser_opt =
+        SMFParserProviders.findParserProvider(
+          Optional.ofNullable(this.format_in),
+          this.file_in);
 
-      if (provider_parser == null) {
+      if (!provider_parser_opt.isPresent()) {
         Main.this.exit_code = 1;
         return unit();
       }
 
+      final SMFParserProviderType provider_parser = provider_parser_opt.get();
       final Path path_in = Paths.get(this.file_in);
 
       final Optional<SMFMemoryMesh> mesh_opt =
@@ -331,14 +336,17 @@ public final class Main implements Runnable
       final SMFMemoryMesh filtered = filtered_opt.get();
 
       if (this.file_out != null) {
-        final SMFSerializerProviderType provider_serializer =
-          findSerializerProvider(this.format_out, this.file_out);
+        final Optional<SMFSerializerProviderType> provider_serializer_opt =
+          SMFSerializerProviders.findSerializerProvider(
+            Optional.ofNullable(this.format_out), this.file_out);
 
-        if (provider_serializer == null) {
+        if (!provider_serializer_opt.isPresent()) {
           Main.this.exit_code = 1;
           return unit();
         }
 
+        final SMFSerializerProviderType provider_serializer =
+          provider_serializer_opt.get();
         final Path path_out = Paths.get(this.file_out);
         try (final OutputStream os = Files.newOutputStream(path_out)) {
           try (final SMFSerializerType serializer =
@@ -445,93 +453,5 @@ public final class Main implements Runnable
         return Optional.empty();
       }
     }
-  }
-
-  private static SMFParserProviderType findParserProvider(
-    final String format,
-    final String file)
-  {
-    final ServiceLoader<SMFParserProviderType> loader =
-      ServiceLoader.load(SMFParserProviderType.class);
-
-    if (format == null) {
-      LOG.debug("attempting to infer format from file suffix");
-      final int index = file.lastIndexOf('.');
-      if (index != -1) {
-        final String suffix = file.substring(index + 1);
-        final Iterator<SMFParserProviderType> providers =
-          loader.iterator();
-        while (providers.hasNext()) {
-          final SMFParserProviderType current_provider =
-            providers.next();
-          if (current_provider.parserFormat().suffix().equals(suffix)) {
-            LOG.debug("using provider: {}", current_provider);
-            return current_provider;
-          }
-        }
-      }
-
-      LOG.error("File {} does not have a recognized suffix", file);
-    } else {
-      LOG.debug("attempting to find provider for {}", format);
-      final Iterator<SMFParserProviderType> providers =
-        loader.iterator();
-      while (providers.hasNext()) {
-        final SMFParserProviderType current_provider =
-          providers.next();
-        if (current_provider.parserFormat().name().equals(format)) {
-          LOG.debug("using provider: {}", current_provider);
-          return current_provider;
-        }
-      }
-
-      LOG.error("Could not find a provider for the format '{}'", format);
-    }
-
-    return null;
-  }
-
-  private static SMFSerializerProviderType findSerializerProvider(
-    final String format,
-    final String file)
-  {
-    final ServiceLoader<SMFSerializerProviderType> loader =
-      ServiceLoader.load(SMFSerializerProviderType.class);
-
-    if (format == null) {
-      LOG.debug("attempting to infer format from file suffix");
-      final int index = file.lastIndexOf('.');
-      if (index != -1) {
-        final String suffix = file.substring(index + 1);
-        final Iterator<SMFSerializerProviderType> providers =
-          loader.iterator();
-        while (providers.hasNext()) {
-          final SMFSerializerProviderType current_provider =
-            providers.next();
-          if (current_provider.serializerFormat().suffix().equals(suffix)) {
-            LOG.debug("using provider: {}", current_provider);
-            return current_provider;
-          }
-        }
-      }
-
-      LOG.error("File {} does not have a recognized suffix", file);
-    } else {
-      LOG.debug("attempting to find provider for {}", format);
-      final Iterator<SMFSerializerProviderType> providers =
-        loader.iterator();
-      while (providers.hasNext()) {
-        final SMFSerializerProviderType current_provider =
-          providers.next();
-        if (current_provider.serializerFormat().name().equals(format)) {
-          LOG.debug("using provider: {}", current_provider);
-          return current_provider;
-        }
-      }
-
-      LOG.error("Could not find a provider for the format '{}'", format);
-    }
-
-    return null;
   }
 }
