@@ -1,5 +1,13 @@
-io7m-smfj 0.2.0 Specification
+io7m-smfj 0.3.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  Contents
+  ─────────────────────────────────────────────────────────────────────────────
+  1 Notational Conventions ........................................ conventions
+  2 Model ..................................................... smf_model.model
+  3 SMFT - Text Encoding ................................................. smft
+  4 SMFB - Binary Encoding ............................................... smfb
+
 
 1 Notational Conventions [id: conventions]
 
@@ -67,6 +75,7 @@ io7m-smfj 0.2.0 Specification
       • 8/16/32/64-bit signed integer vectors of 1-4 components
       • 8/16/32/64-bit unsigned integer vectors of 1-4 components
       • 16/32/64-bit floating point vectors of 1-4 components
+
 
 
 2.4 Vertices [id: smf_model.vertex]
@@ -142,6 +151,7 @@ io7m-smfj 0.2.0 Specification
         coords_order :: WindingOrder
       }
 
+
 2.7 Schema ID [id: smf_model.schema_id]
 
 1     A schema identifier is an optional identifier that can be inserted into
@@ -168,6 +178,7 @@ io7m-smfj 0.2.0 Specification
         schema_version_major :: Word32,
         schema_version_minor :: Word32
       }
+
 
 
 4     The vendor_id uniquely identifiers the vendor, the schema_id uniquely
@@ -216,6 +227,7 @@ io7m-smfj 0.2.0 Specification
       • vertices [ref: smft.header.commands.vertices]
 
 
+
 3.3 Header - smf [id: smft.header.smf]
 
 1     The smf command specifies the major and minor version of the
@@ -234,11 +246,13 @@ io7m-smfj 0.2.0 Specification
       1.  The non-negative SMF minor version
 
 
+
       3.3.4 smf
       ─────────
 
       header_command_smf =
         "smf" , integer-unsigned , integer-unsigned ;
+
 
 3.4 Header - vertices [id: smft.header.commands.vertices]
 
@@ -252,12 +266,14 @@ io7m-smfj 0.2.0 Specification
       header_command_vertices =
         "vertices" , integer-unsigned ;
 
+
 3     The command takes the following arguments:
 
       3.4.4 vertices Arguments
       ────────────────────────
 
       0.  The non-negative number of vertices that will appear in the file
+
 
 
 5     The command is required to appear exactly once in the header.
@@ -273,6 +289,7 @@ io7m-smfj 0.2.0 Specification
       header_command_schema =
         "schema" , integer-unsigned-base16 , integer-unsigned-base16 , integer-unsigned , integer-unsigned ;
 
+
 3     The command takes the following arguments:
 
       3.5.4 schema Arguments
@@ -282,6 +299,7 @@ io7m-smfj 0.2.0 Specification
       1.  The schema ID as a hexadecimal integer
       2.  The non-negative schema major version
       3.  The non-negative schema minor version
+
 
 
 5     The command is allowed to appear at most once in the header. If the
@@ -300,6 +318,7 @@ io7m-smfj 0.2.0 Specification
       header_command_triangles =
         "triangles" , integer-unsigned , integer-unsigned ;
 
+
 3     The command takes the following arguments:
 
       3.6.4 triangles Arguments
@@ -307,6 +326,7 @@ io7m-smfj 0.2.0 Specification
 
       0.  The non-negative triangle count
       1.  The non-negative size in bits of a triangle vertex index
+
 
 
 5     The command is required to appear exactly once in the header.
@@ -329,6 +349,7 @@ io7m-smfj 0.2.0 Specification
         "attribute" , attribute_name , attribute_type , integer-unsigned , integer-unsigned ;
 
 
+
 3     The command takes the following arguments:
 
       3.7.4 attributes Arguments
@@ -338,6 +359,7 @@ io7m-smfj 0.2.0 Specification
       1.  The type of the components in the attribute
       2.  The non-negative number of components in the attribute
       3.  The non-negative size in bits of an individual component
+
 
 
 5     The command is allowed to appear any number of times in the header, but
@@ -362,6 +384,7 @@ io7m-smfj 0.2.0 Specification
         "coordinates" , <axis> , <axis> , <axis> , <winding_order> ;
 
 
+
 3     The command takes the following arguments:
 
       3.8.4 coordinates Arguments
@@ -371,6 +394,7 @@ io7m-smfj 0.2.0 Specification
       1.  The axis for the up direction
       2.  The axis for the forward direction
       3.  The triangle winding order
+
 
 
 3.9 Header - meta [id: smft.header.commands.meta]
@@ -385,6 +409,7 @@ io7m-smfj 0.2.0 Specification
       header_command_meta =
         "meta" , integer-unsigned ;
 
+
 3     The command takes the following arguments:
 
       3.9.4 meta Arguments
@@ -392,6 +417,7 @@ io7m-smfj 0.2.0 Specification
 
       0.  The non-negative number of metadata values that will appear in the
           file
+
 
 
 5     The command is allowed to appear at most once in the header.
@@ -414,6 +440,7 @@ io7m-smfj 0.2.0 Specification
       • triangles [ref: smft.data.commands.triangles]
 
 
+
 3.11 Data - data [id: smft.data.commands.data]
 
 1     The data command indicates the start of the data section.
@@ -423,6 +450,7 @@ io7m-smfj 0.2.0 Specification
 
       data_command_data =
         "data" ;
+
 
 3     The command takes no arguments.
 
@@ -436,12 +464,14 @@ io7m-smfj 0.2.0 Specification
       data_command_attribute =
         "attribute" , attribute_name ;
 
+
 3     The command takes the following arguments:
 
       3.12.4 attribute Arguments
       ──────────────────────────
 
       0.  The name of the attribute
+
 
 
 5     The named attribute must have been declared in the header. For an
@@ -459,6 +489,7 @@ io7m-smfj 0.2.0 Specification
       data_command_triangles =
         "triangles" ;
 
+
 3     The command takes no arguments.
 
 4     In a file that is specified to contain k triangles, the next k non-empty,
@@ -474,6 +505,7 @@ io7m-smfj 0.2.0 Specification
 
       data_command_metadata =
         "metadata" ;
+
 
 3     The command takes no arguments.
 
@@ -492,6 +524,7 @@ io7m-smfj 0.2.0 Specification
         "meta" , integer-unsigned-base16 , integer-unsigned-base16 , integer-unsigned ;
 
 
+
 3     The command takes the following arguments:
 
       3.15.4 meta Arguments
@@ -501,6 +534,7 @@ io7m-smfj 0.2.0 Specification
       1.  The schema ID as a hexadecimal integer
       2.  The non-negative number of lines of metadata that will follow the
           command
+
 
 
 5     For any v, s, and n, the command meta v s n will indicate that the next n
@@ -587,6 +621,7 @@ io7m-smfj 0.2.0 Specification
       2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==
 
 
+
 4 SMFB - Binary Encoding [id: smfb]
 
 4.1 Header [id: smfb.header]
@@ -607,6 +642,7 @@ io7m-smfj 0.2.0 Specification
         ([field magic           [integer unsigned 64]]
          [field version_major   [integer unsigned 32]]
          [field version_minor   [integer unsigned 32]])]
+
 
 
 
@@ -633,6 +669,7 @@ io7m-smfj 0.2.0 Specification
 
 
 
+
 7     The SMFBV1SchemaID type encodes the schema ID [ref: smf_model.schema_id]:
 
       4.1.8 Header (schema ID)
@@ -643,6 +680,7 @@ io7m-smfj 0.2.0 Specification
          [field schema_id            [integer unsigned 32]]
          [field schema_version_major [integer unsigned 32]]
          [field schema_version_minor [integer unsigned 32]])]
+
 
 
 
@@ -658,6 +696,7 @@ io7m-smfj 0.2.0 Specification
          [field forward [integer unsigned 3]]
          [field winding [integer unsigned 2]]
          [padding-bits 5])]
+
 
 
 
@@ -682,6 +721,7 @@ io7m-smfj 0.2.0 Specification
       windingOrdinal A.WindingOrderCounterClockwise = 1
 
 
+
 13    The header specifies the number of vertices [ref: smf_model.vertex]
       present in the file, the number of triangles [ref: smf_model.triangle]
       present in the file, the size in bits of the individual triangle indices,
@@ -700,6 +740,7 @@ io7m-smfj 0.2.0 Specification
          [field component_kind  [integer unsigned 32]]
          [field component_count [integer unsigned 32]]
          [field component_size  [integer unsigned 32]])]
+
 
 
 
@@ -735,6 +776,7 @@ io7m-smfj 0.2.0 Specification
 
       [image: alignment.svg.png] (Padding for alignment)
 
+
 4     All values are stored in big-endian form.
 
 5     After all triangle and attribute data has been specified, the metadata
@@ -748,6 +790,7 @@ io7m-smfj 0.2.0 Specification
         ([field vendor [integer unsigned 32]]
          [field schema [integer unsigned 32]]
          [field size   [integer unsigned 64]])]
+
 
 7     The vendor and schema fields are for use by applications to identify the
       types of metadata. The size field records the size of the metadata in
