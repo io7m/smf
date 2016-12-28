@@ -14,33 +14,33 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.core;
+package com.io7m.smfj.processing;
 
-import org.immutables.value.Value;
+import com.io7m.smfj.parser.api.SMFParseError;
+import javaslang.collection.List;
+import javaslang.control.Validation;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.nio.file.Path;
+import java.util.Optional;
 
 /**
- * The {@code immutables.org} style for the project.
+ * The type of command parsers.
  */
 
-@Target({ElementType.PACKAGE, ElementType.TYPE})
-@Retention(RetentionPolicy.CLASS)
-@Value.Style(
-  get = {"is*", "get*"},
-  init = "set*",
-  typeAbstract = {"Abstract*", "*Type"},
-  typeImmutable = "*",
-  typeModifiable = "*Mutable",
-  builder = "builder",
-  build = "build",
-  visibility = Value.Style.ImplementationVisibility.PUBLIC,
-  defaults = @Value.Immutable(copy = true))
-public @interface ImmutableStyleType
+public interface SMFFilterCommandParserType
 {
+  /**
+   * Parse a filter command.
+   *
+   * @param file The current file
+   * @param line The current line
+   * @param text The current line text
+   *
+   * @return A filter, or a list of reasons why parsing failed
+   */
 
+  Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+    final Optional<Path> file,
+    final int line,
+    final List<String> text);
 }
-

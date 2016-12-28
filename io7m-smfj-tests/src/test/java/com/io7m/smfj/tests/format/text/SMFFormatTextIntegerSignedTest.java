@@ -1064,6 +1064,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
     serializer.serializeValueIntegerSigned4(0, 1, 2, 3);
 
@@ -1107,6 +1108,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1149,6 +1151,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1191,6 +1194,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1233,6 +1237,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1275,6 +1280,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1316,6 +1322,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1357,6 +1364,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1398,6 +1406,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1440,6 +1449,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1481,6 +1491,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1522,6 +1533,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1563,6 +1575,7 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1618,6 +1631,8 @@ public final class SMFFormatTextIntegerSignedTest extends SMFTextTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+
     for (final SMFAttribute attribute : attributes) {
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {

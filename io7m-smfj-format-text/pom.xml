@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>io7m-smfj</artifactId>
-    <version>0.2.0</version>
+    <version>0.3.0</version>
   </parent>
   <artifactId>io7m-smfj-format-text</artifactId>
 
@@ -55,6 +55,10 @@
     <dependency>
       <groupId>com.io7m.jaffirm</groupId>
       <artifactId>io7m-jaffirm-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jfsm</groupId>
+      <artifactId>io7m-jfsm-core</artifactId>
     </dependency>
 
     <dependency>

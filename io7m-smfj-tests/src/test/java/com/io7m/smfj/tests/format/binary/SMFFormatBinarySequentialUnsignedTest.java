@@ -1139,6 +1139,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
     serializer.serializeValueIntegerUnsigned4(0L, 1L, 2L, 3L);
 
@@ -1172,6 +1173,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1204,6 +1206,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1236,6 +1239,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1268,6 +1272,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1300,6 +1305,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1332,6 +1338,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1364,6 +1371,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1396,6 +1404,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1429,6 +1438,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1461,6 +1471,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1493,6 +1504,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1525,6 +1537,7 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
     serializer.serializeData(SMFAttributeName.of("x"));
 
     this.expected.expect(IllegalArgumentException.class);
@@ -1571,6 +1584,8 @@ public final class SMFFormatBinarySequentialUnsignedTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
+    serializer.serializeDataStart();
+
     for (final SMFAttribute attribute : attributes) {
       serializer.serializeData(attribute.name());
       switch (attribute.componentCount()) {

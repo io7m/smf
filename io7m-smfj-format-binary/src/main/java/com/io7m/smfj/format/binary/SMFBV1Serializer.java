@@ -18,6 +18,8 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Invariants;
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jfsm.core.FSMEnumMutable;
+import com.io7m.jfsm.core.FSMEnumMutableBuilderType;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
@@ -64,7 +66,7 @@ final class SMFBV1Serializer implements SMFSerializerType
   private final ByteBuffer attribute_buffer;
   private final byte[] header_buffer;
   private final ByteBuffer header_buffer_wrap;
-  private SerializerState state;
+  private FSMEnumMutable<SerializerState> state;
   private SMFHeader header;
   private Queue<SMFAttribute> attribute_queue;
   private long attribute_values_remaining;
@@ -95,7 +97,64 @@ final class SMFBV1Serializer implements SMFSerializerType
     this.attribute_bytes = new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
     this.attribute_buffer = ByteBuffer.wrap(this.attribute_bytes);
     this.attribute_buffer.order(ByteOrder.BIG_ENDIAN);
-    this.state = SerializerState.STATE_INITIAL;
+
+    final FSMEnumMutableBuilderType<SerializerState> builder =
+      FSMEnumMutable.builder(SerializerState.STATE_INITIAL)
+        .addTransition(
+          SerializerState.STATE_INITIAL,
+          SerializerState.STATE_HEADER)
+        .addTransition(
+          SerializerState.STATE_HEADER,
+          SerializerState.STATE_DATA_ATTRIBUTES_START)
+        .addTransition(
+          SerializerState.STATE_DATA_ATTRIBUTES_START,
+          SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS)
+        .addTransition(
+          SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS,
+          SerializerState.STATE_DATA_ATTRIBUTES_FINISHED)
+        .addTransition(
+          SerializerState.STATE_DATA_ATTRIBUTES_FINISHED,
+          SerializerState.STATE_DATA_TRIANGLES_START)
+        .addTransition(
+          SerializerState.STATE_DATA_TRIANGLES_START,
+          SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS)
+        .addTransition(
+          SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS,
+          SerializerState.STATE_DATA_TRIANGLES_FINISHED)
+        .addTransition(
+          SerializerState.STATE_DATA_TRIANGLES_FINISHED,
+          SerializerState.STATE_DATA_METADATA_START)
+        .addTransition(
+          SerializerState.STATE_DATA_METADATA_START,
+          SerializerState.STATE_DATA_METADATA_IN_PROGRESS)
+        .addTransition(
+          SerializerState.STATE_DATA_METADATA_IN_PROGRESS,
+          SerializerState.STATE_DATA_METADATA_FINISHED)
+        .addTransition(
+          SerializerState.STATE_DATA_METADATA_FINISHED,
+          SerializerState.STATE_FINISHED);
+
+    builder.addTransition(
+      SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS,
+      SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
+
+    builder.addTransition(
+      SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS,
+      SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
+
+    builder.addTransition(
+      SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS,
+      SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS);
+
+    builder.addTransition(
+      SerializerState.STATE_DATA_METADATA_IN_PROGRESS,
+      SerializerState.STATE_DATA_METADATA_IN_PROGRESS);
+
+    for (final SerializerState source : SerializerState.values()) {
+      builder.addTransition(source, SerializerState.STATE_FAILED);
+    }
+
+    this.state = builder.build();
   }
 
   @Override
@@ -105,113 +164,95 @@ final class SMFBV1Serializer implements SMFSerializerType
     NullCheck.notNull(in_header, "Header");
 
     try {
-      switch (this.state) {
-        case STATE_INITIAL: {
-          final List<SMFAttribute> attributes = in_header.attributesInOrder();
-          final long attribute_count = (long) attributes.length();
+      this.state.transition(SerializerState.STATE_HEADER);
 
-          this.writer.putBytes(SMFFormatBinary.magicNumber());
-          this.writer.putU32((long) this.version.major());
-          this.writer.putU32((long) this.version.minor());
+      final List<SMFAttribute> attributes = in_header.attributesInOrder();
+      final long attribute_count = (long) attributes.length();
 
-          this.header_cursor =
-            JPRACursor1DByteBufferedChecked.newCursor(
-              this.header_buffer_wrap,
-              SMFBV1HeaderByteBuffered::newValueWithOffset);
-          this.header_view =
-            this.header_cursor.getElementView();
+      this.writer.putBytes(SMFFormatBinary.magicNumber());
+      this.writer.putU32((long) this.version.major());
+      this.writer.putU32((long) this.version.minor());
 
-          final SMFBV1SchemaIDWritableType header_schema_id =
-            this.header_view.getSchemaWritable();
+      this.header_cursor =
+        JPRACursor1DByteBufferedChecked.newCursor(
+          this.header_buffer_wrap,
+          SMFBV1HeaderByteBuffered::newValueWithOffset);
+      this.header_view =
+        this.header_cursor.getElementView();
 
-          final SMFSchemaIdentifier schema_id = in_header.schemaIdentifier();
-          header_schema_id.setVendorId(
-            schema_id.vendorID());
-          header_schema_id.setSchemaId(
-            schema_id.schemaID());
-          header_schema_id.setSchemaVersionMajor(
-            schema_id.schemaMajorVersion());
-          header_schema_id.setSchemaVersionMinor(
-            schema_id.schemaMinorVersion());
+      final SMFBV1SchemaIDWritableType header_schema_id =
+        this.header_view.getSchemaWritable();
 
-          this.header_view.setVertexCount(
-            in_header.vertexCount());
-          this.header_view.setTriangleCount(
-            in_header.triangleCount());
-          this.header_view.setTriangleIndexSizeBits(
-            (int) in_header.triangleIndexSizeBits());
-          this.header_view.setAttributeCount(
-            attribute_count);
-          this.header_view.setMetaCount(
-            (int) in_header.metaCount());
+      final SMFSchemaIdentifier schema_id = in_header.schemaIdentifier();
+      header_schema_id.setVendorId(
+        schema_id.vendorID());
+      header_schema_id.setSchemaId(
+        schema_id.schemaID());
+      header_schema_id.setSchemaVersionMajor(
+        schema_id.schemaMajorVersion());
+      header_schema_id.setSchemaVersionMinor(
+        schema_id.schemaMinorVersion());
 
-          final SMFBV1CoordinateSystemsWritableType coords =
-            this.header_view.getCoordinateSystemWritable();
-          SMFBCoordinateSystems.pack(in_header.coordinateSystem(), coords);
+      this.header_view.setVertexCount(
+        in_header.vertexCount());
+      this.header_view.setTriangleCount(
+        in_header.triangleCount());
+      this.header_view.setTriangleIndexSizeBits(
+        (int) in_header.triangleIndexSizeBits());
+      this.header_view.setAttributeCount(
+        attribute_count);
+      this.header_view.setMetaCount(
+        (int) in_header.metaCount());
 
-          this.writer.putBytes(this.header_buffer);
+      final SMFBV1CoordinateSystemsWritableType coords =
+        this.header_view.getCoordinateSystemWritable();
+      SMFBCoordinateSystems.pack(in_header.coordinateSystem(), coords);
 
-          final JPRACursor1DType<SMFBV1AttributeType> cursor =
-            JPRACursor1DByteBufferedChecked.newCursor(
-              this.attribute_buffer,
-              SMFBV1AttributeByteBuffered::newValueWithOffset);
-          final SMFBV1AttributeType view =
-            cursor.getElementView();
+      this.writer.putBytes(this.header_buffer);
 
-          for (final SMFAttribute attribute : attributes) {
-            Arrays.fill(this.attribute_bytes, (byte) 0);
+      final JPRACursor1DType<SMFBV1AttributeType> cursor =
+        JPRACursor1DByteBufferedChecked.newCursor(
+          this.attribute_buffer,
+          SMFBV1AttributeByteBuffered::newValueWithOffset);
+      final SMFBV1AttributeType view =
+        cursor.getElementView();
 
-            final JPRAStringCursorType name = view.getNameWritable();
-            name.setValue(
-              attribute.name().value(),
-              JPRAStringTruncation.TRUNCATE);
-            view.setComponentCount(attribute.componentCount());
-            view.setComponentSize(attribute.componentSizeBits());
-            view.setComponentKind(attribute.componentType().toInteger());
-            this.writer.putBytes(this.attribute_bytes);
-          }
+      for (final SMFAttribute attribute : attributes) {
+        Arrays.fill(this.attribute_bytes, (byte) 0);
 
-          this.attribute_queue = Queue.ofAll(attributes);
-          this.attribute_values_remaining = 0L;
-          this.triangle_values_remaining = in_header.triangleCount();
-          this.meta_values_remaining = in_header.metaCount();
-
-          this.header = in_header;
-          this.offsets = SMFBV1Offsets.fromHeader(in_header);
-
-          /*
-           * If there aren't any attributes, then the serialization of
-           * attribute data is already complete.
-           */
-
-          if (attributes.isEmpty()) {
-            this.state = SerializerState.STATE_FINISHED_ATTRIBUTE_DATA;
-          } else {
-            this.state = SerializerState.STATE_FINISHED_HEADER;
-          }
-
-          break;
-        }
-
-        case STATE_FINISHED_HEADER:
-          throw new IllegalStateException(
-            "Header has already been serialized");
-        case STATE_FINISHED_ATTRIBUTE_DATA:
-          throw new IllegalStateException(
-            "Attribute data has already been serialized");
-        case STATE_FAILED:
-          throw new IllegalStateException(
-            "Serializer has already failed");
-        case STATE_FINISHED_TRIANGLE_DATA:
-          throw new IllegalStateException(
-            "Triangle data has already been serialized");
-        case STATE_FINISHED_METADATA:
-          throw new IllegalStateException(
-            "Metadata has already been serialized");
+        final JPRAStringCursorType name = view.getNameWritable();
+        name.setValue(
+          attribute.name().value(),
+          JPRAStringTruncation.TRUNCATE);
+        view.setComponentCount(attribute.componentCount());
+        view.setComponentSize(attribute.componentSizeBits());
+        view.setComponentKind(attribute.componentType().toInteger());
+        this.writer.putBytes(this.attribute_bytes);
       }
+
+      this.attribute_queue = Queue.ofAll(attributes);
+      this.attribute_values_remaining = 0L;
+      this.triangle_values_remaining = in_header.triangleCount();
+      this.meta_values_remaining = in_header.metaCount();
+
+      this.header = in_header;
+      this.offsets = SMFBV1Offsets.fromHeader(in_header);
+
     } catch (final IOException e) {
       LOG.debug("failure: ", e);
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
+    }
+  }
+
+  @Override
+  public void serializeDataStart()
+    throws IllegalStateException, IOException
+  {
+    this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_START);
+
+    if (this.attribute_queue.isEmpty()) {
+      this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
+      this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_FINISHED);
     }
   }
 
@@ -222,68 +263,48 @@ final class SMFBV1Serializer implements SMFSerializerType
   {
     NullCheck.notNull(name, "Name");
 
-    switch (this.state) {
-      case STATE_FINISHED_HEADER: {
-        if (this.attribute_values_remaining != 0L) {
-          final StringBuilder sb = new StringBuilder(128);
-          sb.append("Too few attribute values serialized.");
-          sb.append(System.lineSeparator());
-          sb.append("  Attribute: ");
-          sb.append(this.attribute_current.name().value());
-          sb.append(System.lineSeparator());
-          sb.append("  Remaining: ");
-          sb.append(this.attribute_values_remaining);
-          sb.append(System.lineSeparator());
-          this.state = SerializerState.STATE_FAILED;
-          throw new IllegalStateException(sb.toString());
-        }
+    this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
 
-        if (!this.attribute_queue.isEmpty()) {
-          final SMFAttribute next = this.attribute_queue.head();
-          if (name.equals(next.name())) {
-            this.attribute_queue = this.attribute_queue.tail();
-            this.attribute_values_remaining = this.header.vertexCount();
-            this.attribute_current = next;
-            this.serializeDataInsertAlignmentPadding(name);
-            return;
-          }
-        }
-
-        final StringBuilder sb = new StringBuilder(128);
-        sb.append("Incorrect attribute specified for serialization.");
-        sb.append(System.lineSeparator());
-        sb.append("  Expected: ");
-        if (!this.attribute_queue.isEmpty()) {
-          sb.append(this.attribute_queue.head().name().value());
-        } else {
-          sb.append("(no attribute expected)");
-        }
-        sb.append(System.lineSeparator());
-        sb.append("  Received: ");
-        sb.append(name.value());
-        sb.append(System.lineSeparator());
-        this.state = SerializerState.STATE_FAILED;
-        throw new IllegalArgumentException(sb.toString());
-      }
-
-      case STATE_FINISHED_ATTRIBUTE_DATA:
-        throw new IllegalStateException(
-          "Attribute data has already been serialized");
-      case STATE_INITIAL:
-        throw new IllegalStateException(
-          "Header not yet serialized");
-      case STATE_FAILED:
-        throw new IllegalStateException(
-          "Serializer has already failed");
-      case STATE_FINISHED_TRIANGLE_DATA:
-        throw new IllegalStateException(
-          "Triangle data has already been serialized");
-      case STATE_FINISHED_METADATA:
-        throw new IllegalStateException(
-          "Metadata has already been serialized");
+    if (this.attribute_values_remaining != 0L) {
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append("Too few attribute values serialized.");
+      sb.append(System.lineSeparator());
+      sb.append("  Attribute: ");
+      sb.append(this.attribute_current.name().value());
+      sb.append(System.lineSeparator());
+      sb.append("  Remaining: ");
+      sb.append(this.attribute_values_remaining);
+      sb.append(System.lineSeparator());
+      this.state.transition(SerializerState.STATE_FAILED);
+      throw new IllegalStateException(sb.toString());
     }
 
-    throw new UnreachableCodeException();
+    if (!this.attribute_queue.isEmpty()) {
+      final SMFAttribute next = this.attribute_queue.head();
+      if (name.equals(next.name())) {
+        this.attribute_queue = this.attribute_queue.tail();
+        this.attribute_values_remaining = this.header.vertexCount();
+        this.attribute_current = next;
+        this.serializeDataInsertAlignmentPadding(name);
+        return;
+      }
+    }
+
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Incorrect attribute specified for serialization.");
+    sb.append(System.lineSeparator());
+    sb.append("  Expected: ");
+    if (!this.attribute_queue.isEmpty()) {
+      sb.append(this.attribute_queue.head().name().value());
+    } else {
+      sb.append("(no attribute expected)");
+    }
+    sb.append(System.lineSeparator());
+    sb.append("  Received: ");
+    sb.append(name.value());
+    sb.append(System.lineSeparator());
+    this.state.transition(SerializerState.STATE_FAILED);
+    throw new IllegalArgumentException(sb.toString());
   }
 
   private void serializeDataInsertAlignmentPadding(
@@ -333,57 +354,39 @@ final class SMFBV1Serializer implements SMFSerializerType
     final SMFComponentType type,
     final int count)
   {
-    switch (this.state) {
-      case STATE_FINISHED_HEADER: {
-        final SMFAttribute a = this.attribute_current;
-        if (a != null) {
-          if (a.componentType() == type && a.componentCount() == count) {
-            return;
-          }
+    this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
 
-          final StringBuilder sb = new StringBuilder(128);
-          sb.append("Incorrect type for attribute.");
-          sb.append(System.lineSeparator());
-          sb.append("  Attribute:      ");
-          sb.append(a.name().value());
-          sb.append(System.lineSeparator());
-          sb.append("  Attribute type: ");
-          sb.append(a.componentCount());
-          sb.append(" components of type ");
-          sb.append(a.componentType().name());
-          sb.append(System.lineSeparator());
-          sb.append("  Received:       ");
-          sb.append(count);
-          sb.append(" components of type ");
-          sb.append(type.name());
-          sb.append(System.lineSeparator());
-          this.state = SerializerState.STATE_FAILED;
-          throw new IllegalArgumentException(sb.toString());
-        }
-
-        final StringBuilder sb = new StringBuilder(128);
-        sb.append("No attribute data is currently being serialized.");
-        sb.append(System.lineSeparator());
-        this.state = SerializerState.STATE_FAILED;
-        throw new IllegalStateException(sb.toString());
+    final SMFAttribute a = this.attribute_current;
+    if (a != null) {
+      if (a.componentType() == type && a.componentCount() == count) {
+        return;
       }
 
-      case STATE_INITIAL:
-        throw new IllegalStateException(
-          "Header not yet serialized");
-      case STATE_FINISHED_ATTRIBUTE_DATA:
-        throw new IllegalStateException(
-          "Attribute data has already been serialized");
-      case STATE_FAILED:
-        throw new IllegalStateException(
-          "Serializer has already failed");
-      case STATE_FINISHED_TRIANGLE_DATA:
-        throw new IllegalStateException(
-          "Triangle data has already been serialized");
-      case STATE_FINISHED_METADATA:
-        throw new IllegalStateException(
-          "Metadata has already been serialized");
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append("Incorrect type for attribute.");
+      sb.append(System.lineSeparator());
+      sb.append("  Attribute:      ");
+      sb.append(a.name().value());
+      sb.append(System.lineSeparator());
+      sb.append("  Attribute type: ");
+      sb.append(a.componentCount());
+      sb.append(" components of type ");
+      sb.append(a.componentType().name());
+      sb.append(System.lineSeparator());
+      sb.append("  Received:       ");
+      sb.append(count);
+      sb.append(" components of type ");
+      sb.append(type.name());
+      sb.append(System.lineSeparator());
+      this.state.transition(SerializerState.STATE_FAILED);
+      throw new IllegalArgumentException(sb.toString());
     }
+
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("No attribute data is currently being serialized.");
+    sb.append(System.lineSeparator());
+    this.state.transition(SerializerState.STATE_FAILED);
+    throw new IllegalStateException(sb.toString());
   }
 
   @Override
@@ -423,7 +426,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -461,7 +464,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -495,7 +498,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -525,7 +528,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -567,7 +570,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -605,7 +608,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -639,7 +642,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -669,7 +672,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -711,7 +714,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -749,7 +752,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -783,7 +786,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.serializeValueUpdateRemaining();
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
     }
   }
@@ -814,8 +817,20 @@ final class SMFBV1Serializer implements SMFSerializerType
       this.serializeValueUpdateRemaining();
 
     } catch (final IOException e) {
-      this.state = SerializerState.STATE_FAILED;
+      this.state.transition(SerializerState.STATE_FAILED);
       throw e;
+    }
+  }
+
+  @Override
+  public void serializeTrianglesStart()
+    throws IllegalStateException, IOException
+  {
+    this.state.transition(SerializerState.STATE_DATA_TRIANGLES_START);
+
+    if (this.triangle_values_remaining == 0L) {
+      this.state.transition(SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS);
+      this.state.transition(SerializerState.STATE_DATA_TRIANGLES_FINISHED);
     }
   }
 
@@ -823,16 +838,17 @@ final class SMFBV1Serializer implements SMFSerializerType
     throws IOException
   {
     Preconditions.checkPrecondition(
-      this.state,
-      this.state == SerializerState.STATE_FINISHED_HEADER,
-      s -> s + " must be " + SerializerState.STATE_FINISHED_HEADER);
+      this.state.current(),
+      this.state.current() == SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS,
+      s -> s + " must be " + SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
 
     this.attribute_values_remaining =
       Math.subtractExact(this.attribute_values_remaining, 1L);
 
-    if (this.attribute_values_remaining == 0L && this.attribute_queue.isEmpty()) {
-      this.state = SerializerState.STATE_FINISHED_ATTRIBUTE_DATA;
-      this.insertAlignmentPadding(this.offsets.trianglesDataOffset());
+    if (this.attribute_values_remaining == 0L) {
+      if (this.attribute_queue.isEmpty()) {
+        this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_FINISHED);
+      }
     }
   }
 
@@ -843,36 +859,24 @@ final class SMFBV1Serializer implements SMFSerializerType
     final long v2)
     throws IOException, IllegalStateException
   {
-    switch (this.state) {
-      case STATE_INITIAL:
-        throw new IllegalStateException(
-          "Header has not yet been serialized");
-      case STATE_FINISHED_HEADER:
-        throw new IllegalStateException(
-          "Attribute data has not yet been serialized");
-      case STATE_FINISHED_ATTRIBUTE_DATA: {
-        if (this.triangle_values_remaining != 0L) {
-          this.serializeTriangleWrite(v0, v1, v2);
+    this.state.transition(SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS);
 
-          if (this.triangle_values_remaining == 0L) {
-            this.state = SerializerState.STATE_FINISHED_TRIANGLE_DATA;
-            if (this.meta_values_remaining == 0L) {
-              this.state = SerializerState.STATE_FINISHED_METADATA;
-            }
-          }
-          return;
-        }
-        throw new IllegalStateException("No triangles are required");
-      }
-      case STATE_FAILED:
-        throw new IllegalStateException(
-          "Serializer has already failed");
-      case STATE_FINISHED_TRIANGLE_DATA:
-        throw new IllegalStateException(
-          "Triangle data has already been serialized");
-      case STATE_FINISHED_METADATA:
-        throw new IllegalStateException(
-          "Metadata has already been serialized");
+    if (this.triangle_values_remaining != 0L) {
+      this.serializeTriangleWrite(v0, v1, v2);
+      return;
+    }
+    throw new IllegalStateException("No triangles are required");
+  }
+
+  @Override
+  public void serializeMetadataStart()
+    throws IllegalStateException, IOException
+  {
+    this.state.transition(SerializerState.STATE_DATA_METADATA_START);
+
+    if (this.meta_values_remaining == 0L) {
+      this.state.transition(SerializerState.STATE_DATA_METADATA_IN_PROGRESS);
+      this.state.transition(SerializerState.STATE_DATA_METADATA_FINISHED);
     }
   }
 
@@ -885,36 +889,14 @@ final class SMFBV1Serializer implements SMFSerializerType
   {
     NullCheck.notNull(data, "Data");
 
-    switch (this.state) {
-      case STATE_FINISHED_TRIANGLE_DATA: {
-        if (this.meta_values_remaining != 0L) {
-          this.serializeMetadataWrite(vendor, schema, data);
+    this.state.transition(SerializerState.STATE_DATA_METADATA_IN_PROGRESS);
 
-          if (this.meta_values_remaining == 0L) {
-            this.state = SerializerState.STATE_FINISHED_METADATA;
-          }
-          return;
-        }
-
-        throw new IllegalStateException("No metadata is required");
-      }
-
-      case STATE_INITIAL:
-        throw new IllegalStateException(
-          "Header has not yet been serialized");
-      case STATE_FINISHED_HEADER:
-        throw new IllegalStateException(
-          "Attribute data has not yet been serialized");
-      case STATE_FINISHED_ATTRIBUTE_DATA:
-        throw new IllegalStateException(
-          "Triangle data has not yet been serialized");
-      case STATE_FAILED:
-        throw new IllegalStateException(
-          "Serializer has already failed");
-      case STATE_FINISHED_METADATA:
-        throw new IllegalStateException(
-          "Metadata has already been serialized");
+    if (this.meta_values_remaining != 0L) {
+      this.serializeMetadataWrite(vendor, schema, data);
+      return;
     }
+
+    throw new IllegalStateException("No metadata is required");
   }
 
   private void serializeMetadataWrite(
@@ -947,6 +929,10 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     this.meta_values_remaining =
       Math.subtractExact(this.meta_values_remaining, 1L);
+
+    if (this.meta_values_remaining == 0L) {
+      this.state.transition(SerializerState.STATE_DATA_METADATA_FINISHED);
+    }
   }
 
   private void serializeTriangleWrite(
@@ -994,34 +980,68 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     this.triangle_values_remaining =
       Math.subtractExact(this.triangle_values_remaining, 1L);
+
+    if (this.triangle_values_remaining == 0L) {
+      this.state.transition(SerializerState.STATE_DATA_TRIANGLES_FINISHED);
+    }
   }
 
   @Override
   public void close()
     throws IOException
   {
-    switch (this.state) {
+    switch (this.state.current()) {
+      case STATE_HEADER:
       case STATE_INITIAL:
-      case STATE_FINISHED_HEADER:
-      case STATE_FINISHED_ATTRIBUTE_DATA:
-      case STATE_FINISHED_TRIANGLE_DATA: {
-        throw new IllegalStateException(
-          "Closed a serializer without finishing it (state " + this.state + ")");
-      }
-      case STATE_FINISHED_METADATA:
-      case STATE_FAILED: {
+      case STATE_DATA_ATTRIBUTES_START:
+      case STATE_DATA_ATTRIBUTES_IN_PROGRESS:
+      case STATE_DATA_ATTRIBUTES_FINISHED:
+      case STATE_DATA_TRIANGLES_START:
+      case STATE_DATA_TRIANGLES_IN_PROGRESS:
+      case STATE_DATA_TRIANGLES_FINISHED:
+      case STATE_DATA_METADATA_START:
+      case STATE_DATA_METADATA_IN_PROGRESS:
+      case STATE_DATA_METADATA_FINISHED:
+      case STATE_FINISHED: {
+        if (!this.attribute_queue.isEmpty()) {
+          throw new IllegalStateException(
+            "Closed a serializer with "
+              + this.attribute_queue.size()
+              + " attributes remaining");
+        }
+        if (this.triangle_values_remaining != 0L) {
+          throw new IllegalStateException(
+            "Closed a serializer with "
+              + this.triangle_values_remaining
+              + " triangles remaining");
+        }
+        if (this.meta_values_remaining != 0L) {
+          throw new IllegalStateException(
+            "Closed a serializer with "
+              + this.meta_values_remaining
+              + " metadata values remaining");
+        }
         break;
       }
+      case STATE_FAILED:
+        break;
     }
   }
 
   private enum SerializerState
   {
     STATE_INITIAL,
-    STATE_FAILED,
-    STATE_FINISHED_HEADER,
-    STATE_FINISHED_ATTRIBUTE_DATA,
-    STATE_FINISHED_TRIANGLE_DATA,
-    STATE_FINISHED_METADATA
+    STATE_HEADER,
+    STATE_DATA_ATTRIBUTES_START,
+    STATE_DATA_ATTRIBUTES_IN_PROGRESS,
+    STATE_DATA_ATTRIBUTES_FINISHED,
+    STATE_DATA_TRIANGLES_START,
+    STATE_DATA_TRIANGLES_IN_PROGRESS,
+    STATE_DATA_TRIANGLES_FINISHED,
+    STATE_DATA_METADATA_START,
+    STATE_DATA_METADATA_IN_PROGRESS,
+    STATE_DATA_METADATA_FINISHED,
+    STATE_FINISHED,
+    STATE_FAILED
   }
 }

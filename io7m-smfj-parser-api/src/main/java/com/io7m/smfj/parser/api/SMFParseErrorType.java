@@ -17,7 +17,7 @@
 package com.io7m.smfj.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.smfj.core.ImmutableStyleType;
+import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
@@ -27,7 +27,7 @@ import java.nio.file.Path;
  */
 
 @Value.Immutable
-@ImmutableStyleType
+@SMFImmutableStyleType
 public interface SMFParseErrorType
 {
   /**

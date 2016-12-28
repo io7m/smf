@@ -1,0 +1,15 @@
+smf 1 0
+vertices 3
+triangles 1 64
+coordinates +x +y -z counter-clockwise
+
+attribute "i8_1" integer-signed 1 8
+
+data
+attribute "i8_1"
+127
+127
+127
+
+triangles
+0 1 2

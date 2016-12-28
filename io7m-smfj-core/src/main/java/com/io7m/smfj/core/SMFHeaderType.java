@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 
 @Value.Immutable
-@ImmutableStyleType
+@SMFImmutableStyleType
 public interface SMFHeaderType
 {
   /**
