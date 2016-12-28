@@ -29,13 +29,13 @@ import javaslang.control.Validation;
  * A filter that renames a mesh attribute.
  */
 
-public final class SMFMemoryMeshAttributeRename implements
+public final class SMFMemoryMeshFilterAttributeRename implements
   SMFMemoryMeshFilterType
 {
   private final SMFAttributeName source;
   private final SMFAttributeName target;
 
-  private SMFMemoryMeshAttributeRename(
+  private SMFMemoryMeshFilterAttributeRename(
     final SMFAttributeName in_source,
     final SMFAttributeName in_target)
   {
@@ -56,7 +56,7 @@ public final class SMFMemoryMeshAttributeRename implements
     final SMFAttributeName in_source,
     final SMFAttributeName in_target)
   {
-    return new SMFMemoryMeshAttributeRename(in_source, in_target);
+    return new SMFMemoryMeshFilterAttributeRename(in_source, in_target);
   }
 
   private static SMFProcessingError error(

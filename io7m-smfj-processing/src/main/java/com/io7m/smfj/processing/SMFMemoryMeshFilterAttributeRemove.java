@@ -28,12 +28,12 @@ import javaslang.control.Validation;
  * A filter that removes a mesh attribute.
  */
 
-public final class SMFMemoryMeshAttributeRemove implements
+public final class SMFMemoryMeshFilterAttributeRemove implements
   SMFMemoryMeshFilterType
 {
   private final SMFAttributeName source;
 
-  private SMFMemoryMeshAttributeRemove(
+  private SMFMemoryMeshFilterAttributeRemove(
     final SMFAttributeName in_source)
   {
     this.source = NullCheck.notNull(in_source, "Source");
@@ -50,7 +50,7 @@ public final class SMFMemoryMeshAttributeRemove implements
   public static SMFMemoryMeshFilterType create(
     final SMFAttributeName in_source)
   {
-    return new SMFMemoryMeshAttributeRemove(in_source);
+    return new SMFMemoryMeshFilterAttributeRemove(in_source);
   }
 
   private static SMFProcessingError error(

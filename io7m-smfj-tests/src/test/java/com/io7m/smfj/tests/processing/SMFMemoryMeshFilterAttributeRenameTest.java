@@ -22,7 +22,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.SMFAttributeArrayType;
 import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshAttributeRemove;
+import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeRename;
 import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
@@ -36,10 +36,10 @@ import org.junit.Test;
 
 import java.util.Objects;
 
-public final class SMFMemoryMeshAttributeRemoveTest
+public final class SMFMemoryMeshFilterAttributeRenameTest
 {
   @Test
-  public void testRemoveNonexistent()
+  public void testRenameNonexistent()
     throws Exception
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
@@ -49,10 +49,11 @@ public final class SMFMemoryMeshAttributeRemoveTest
       // Nothing
     }
 
+    final SMFAttributeName name_target = SMFAttributeName.of("RENAMED");
     final SMFAttributeName name_source = SMFAttributeName.of("nonexistent");
 
     final SMFMemoryMeshFilterType filter =
-      SMFMemoryMeshAttributeRemove.create(name_source);
+      SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(loader.mesh());
@@ -60,7 +61,7 @@ public final class SMFMemoryMeshAttributeRemoveTest
   }
 
   @Test
-  public void testRemoveOK()
+  public void testRenameCollision()
     throws Exception
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
@@ -70,10 +71,33 @@ public final class SMFMemoryMeshAttributeRemoveTest
       // Nothing
     }
 
+    final SMFAttributeName name_target = SMFAttributeName.of("f16_3");
     final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
 
     final SMFMemoryMeshFilterType filter =
-      SMFMemoryMeshAttributeRemove.create(name_source);
+      SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
+
+    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+      filter.filter(loader.mesh());
+    Assert.assertTrue(r.isInvalid());
+  }
+
+  @Test
+  public void testRenameOK()
+    throws Exception
+  {
+    final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
+
+    try (final SMFParserSequentialType parser =
+           SMFTestFiles.createParser(loader, "all.smft")) {
+      // Nothing
+    }
+
+    final SMFAttributeName name_target = SMFAttributeName.of("RENAMED");
+    final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
+
+    final SMFMemoryMeshFilterType filter =
+      SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = filter.filter(mesh0).get();
@@ -83,12 +107,12 @@ public final class SMFMemoryMeshAttributeRemoveTest
     final SMFHeader header1 = mesh1.header();
 
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals((long) arrays0.size() - 1L, (long) arrays1.size());
+    Assert.assertEquals((long) arrays0.size(), (long) arrays1.size());
     Assert.assertEquals(
-      (long) header0.attributesByName().size() - 1L,
+      (long) header0.attributesByName().size(),
       (long) header1.attributesByName().size());
     Assert.assertEquals(
-      (long) header0.attributesInOrder().size() - 1L,
+      (long) header0.attributesInOrder().size(),
       (long) header1.attributesInOrder().size());
     Assert.assertEquals(
       header0.metaCount(),
@@ -103,13 +127,27 @@ public final class SMFMemoryMeshAttributeRemoveTest
       mesh0.metadata(),
       mesh1.metadata());
 
-    final SMFAttribute attr =
-      header0.attributesByName().get(name_source).get();
-    Assert.assertEquals(
-      header1.attributesInOrder(),
-      header0.attributesInOrder().remove(attr));
-    Assert.assertEquals(
-      header0.attributesByName().remove(name_source),
-      header1.attributesByName());
+    for (int index = 0; index < header0.attributesInOrder().size(); ++index) {
+      final SMFAttribute attr0 = header0.attributesInOrder().get(index);
+      final SMFAttribute attr1 = header1.attributesInOrder().get(index);
+      if (!Objects.equals(attr0.name(), name_source)) {
+        Assert.assertEquals(attr0, attr1);
+      }
+    }
+
+    for (final Tuple2<SMFAttributeName, SMFAttribute> pair0 : header0.attributesByName()) {
+      final SMFAttributeName name0 = pair0._1;
+      final SMFAttributeName name1;
+
+      if (Objects.equals("f16_4", name0.value())) {
+        name1 = name_target;
+      } else {
+        name1 = name0;
+      }
+
+      final SMFAttributeArrayType array0 = arrays0.get(name0).get();
+      final SMFAttributeArrayType array1 = arrays1.get(name1).get();
+      Assert.assertEquals(array0, array1);
+    }
   }
 }
