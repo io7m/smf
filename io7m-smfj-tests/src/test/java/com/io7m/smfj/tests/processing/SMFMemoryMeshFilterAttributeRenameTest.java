@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.processing;
 
+import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -33,11 +34,19 @@ import javaslang.collection.Map;
 import javaslang.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 
 public final class SMFMemoryMeshFilterAttributeRenameTest
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeRenameTest.class);
+  }
+
   @Test
   public void testRenameNonexistent()
     throws Exception
@@ -58,6 +67,11 @@ public final class SMFMemoryMeshFilterAttributeRenameTest
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(loader.mesh());
     Assert.assertTrue(r.isInvalid());
+
+    r.getError().map(e -> {
+      LOG.error("error: {}", e.message());
+      return Unit.unit();
+    });
   }
 
   @Test
@@ -80,6 +94,11 @@ public final class SMFMemoryMeshFilterAttributeRenameTest
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(loader.mesh());
     Assert.assertTrue(r.isInvalid());
+
+    r.getError().map(e -> {
+      LOG.error("error: {}", e.message());
+      return Unit.unit();
+    });
   }
 
   @Test

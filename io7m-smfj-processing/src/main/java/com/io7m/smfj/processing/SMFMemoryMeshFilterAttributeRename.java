@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFHeader;
 import javaslang.Tuple;
 import javaslang.collection.List;
 import javaslang.collection.Map;
+import javaslang.collection.Seq;
 import javaslang.control.Validation;
 
 /**
@@ -59,11 +60,52 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     return new SMFMemoryMeshFilterAttributeRename(in_source, in_target);
   }
 
-  private static SMFProcessingError error(
-    final String format,
-    final Object... params)
+  private SMFProcessingError nonexistentAttribute(
+    final Seq<SMFAttribute> ordered)
   {
-    return SMFProcessingError.of(String.format(format, params));
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Mesh does not contain the given attribute.");
+    sb.append(System.lineSeparator());
+    sb.append("  Attribute: ");
+    sb.append(this.source.value());
+    sb.append(System.lineSeparator());
+    sb.append("  Existing:  ");
+    sb.append(System.lineSeparator());
+
+    for (int index = 0; index < ordered.size(); ++index) {
+      final SMFAttribute attr = ordered.get(index);
+      sb.append("    [");
+      sb.append(index);
+      sb.append("] ");
+      sb.append(attr.name().value());
+      sb.append(System.lineSeparator());
+    }
+
+    return SMFProcessingError.of(sb.toString());
+  }
+
+  private SMFProcessingError collidingAttribute(
+    final Seq<SMFAttribute> ordered)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Mesh already contains the target attribute.");
+    sb.append(System.lineSeparator());
+    sb.append("  Attribute: ");
+    sb.append(this.target.value());
+    sb.append(System.lineSeparator());
+    sb.append("  Existing:  ");
+    sb.append(System.lineSeparator());
+
+    for (int index = 0; index < ordered.size(); ++index) {
+      final SMFAttribute attr = ordered.get(index);
+      sb.append("    [");
+      sb.append(index);
+      sb.append("] ");
+      sb.append(attr.name().value());
+      sb.append(System.lineSeparator());
+    }
+
+    return SMFProcessingError.of(sb.toString());
   }
 
   @Override
@@ -74,16 +116,12 @@ public final class SMFMemoryMeshFilterAttributeRename implements
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
     if (!arrays.containsKey(this.source)) {
-      return Validation.invalid(
-        List.of(error(
-          "Mesh does not contain an attribute named \"%s\"",
-          this.source.value())));
+      return Validation.invalid(List.of(
+        this.nonexistentAttribute(m.header().attributesInOrder())));
     }
     if (arrays.containsKey(this.target)) {
-      return Validation.invalid(
-        List.of(error(
-          "Mesh already contains an attribute named \"%s\"",
-          this.target.value())));
+      return Validation.invalid(List.of(
+        this.collidingAttribute(m.header().attributesInOrder())));
     }
 
     /*

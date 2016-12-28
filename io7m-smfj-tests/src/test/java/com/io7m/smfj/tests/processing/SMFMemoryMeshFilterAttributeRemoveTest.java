@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.processing;
 
+import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -32,9 +33,17 @@ import javaslang.collection.Map;
 import javaslang.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SMFMemoryMeshFilterAttributeRemoveTest
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeRemoveTest.class);
+  }
+
   @Test
   public void testRemoveNonexistent()
     throws Exception
@@ -54,6 +63,11 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(loader.mesh());
     Assert.assertTrue(r.isInvalid());
+
+    r.getError().map(e -> {
+      LOG.error("error: {}", e.message());
+      return Unit.unit();
+    });
   }
 
   @Test
