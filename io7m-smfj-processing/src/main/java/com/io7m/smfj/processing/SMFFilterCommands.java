@@ -50,6 +50,12 @@ public final class SMFFilterCommands
     cmds = cmds.put(
       SMFMemoryMeshFilterCheck.NAME,
       SMFMemoryMeshFilterCheck::parse);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterSchemaSet.NAME,
+      SMFMemoryMeshFilterSchemaSet::parse);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterSchemaCheck.NAME,
+      SMFMemoryMeshFilterSchemaCheck::parse);
     COMMANDS = cmds;
   }
 

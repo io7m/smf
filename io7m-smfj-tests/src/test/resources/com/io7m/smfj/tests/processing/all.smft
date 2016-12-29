@@ -1,6 +1,7 @@
 smf 1 0
 vertices 3
 triangles 1 8
+schema 696f376d 0 1 2
 coordinates +x +y -z counter-clockwise
 meta 3
 
