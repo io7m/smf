@@ -89,7 +89,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              com.io7m.smfj.obj
+              com.io7m.smfj.format.obj
             </Export-Package>
           </instructions>
         </configuration>
