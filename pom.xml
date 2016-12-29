@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.smfj</groupId>
   <artifactId>io7m-smfj</artifactId>
-  <version>0.4.0</version>
+  <version>0.4.1-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>io7m-smfj</name>
