@@ -836,7 +836,9 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     this.attributes.forEach(attribute -> {
       final SMFAttributeName name = attribute.name();
       if (this.attributes_named.containsKey(name)) {
-        super.fail("Duplicate attribute name: " + name.value(), Optional.empty());
+        super.fail(
+          "Duplicate attribute name: " + name.value(),
+          Optional.empty());
       }
       this.attributes_named = this.attributes_named.put(name, attribute);
     });

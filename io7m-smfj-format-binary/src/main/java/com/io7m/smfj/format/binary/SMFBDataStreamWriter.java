@@ -18,7 +18,6 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jintegers.Unsigned8;
 import com.io7m.jnull.NullCheck;
 import org.apache.commons.io.output.CountingOutputStream;
 
