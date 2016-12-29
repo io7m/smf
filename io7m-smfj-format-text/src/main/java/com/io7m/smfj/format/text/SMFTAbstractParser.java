@@ -23,6 +23,7 @@ import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 abstract class SMFTAbstractParser implements
@@ -58,27 +59,30 @@ abstract class SMFTAbstractParser implements
     sb.append("  Received: ");
     sb.append(received);
     sb.append(System.lineSeparator());
-    return this.makeError(sb.toString());
+    return this.makeError(sb.toString(), Optional.empty());
   }
 
   private SMFParseError makeError(
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
-    return SMFParseError.of(this.reader.position().toImmutable(), message);
+    return SMFParseError.of(this.reader.position().toImmutable(), message, exception);
   }
 
   private SMFParseError makeErrorWithLine(
     final int line,
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
     return SMFParseError.of(
-      this.reader.position().toImmutable().withLine(line), message);
+      this.reader.position().toImmutable().withLine(line), message, exception);
   }
 
   protected final void fail(
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
-    this.onFailure(this.makeError(message));
+    this.onFailure(this.makeError(message, exception));
   }
 
   protected final void failExpectedGot(
@@ -105,9 +109,10 @@ abstract class SMFTAbstractParser implements
 
   protected final void failWithLineNumber(
     final int line,
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
-    this.onFailure(this.makeErrorWithLine(line, message));
+    this.onFailure(this.makeErrorWithLine(line, message, exception));
   }
 
   @Override

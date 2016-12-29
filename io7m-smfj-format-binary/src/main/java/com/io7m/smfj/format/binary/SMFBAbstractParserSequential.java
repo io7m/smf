@@ -52,20 +52,22 @@ abstract class SMFBAbstractParserSequential implements
   protected abstract Logger log();
 
   protected final String onFailure(
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
     NullCheck.notNull(message, "message");
     this.log().debug("onFailure: {}", message);
     this.state.set(ParserState.STATE_FAILED);
     this.events.onError(SMFParseError.of(
-      LexicalPosition.of(-1, -1, Optional.of(this.reader.path())), message));
+      LexicalPosition.of(-1, -1, Optional.of(this.reader.path())), message, exception));
     return message;
   }
 
   protected final String fail(
-    final String message)
+    final String message,
+    final Optional<Exception> exception)
   {
-    return this.onFailure(message);
+    return this.onFailure(message, exception);
   }
 
   protected final String failExpectedGot(
@@ -82,7 +84,7 @@ abstract class SMFBAbstractParserSequential implements
     sb.append("  Received: ");
     sb.append(received);
     sb.append(System.lineSeparator());
-    return this.onFailure(sb.toString());
+    return this.onFailure(sb.toString(), Optional.empty());
   }
 
   enum ParserState

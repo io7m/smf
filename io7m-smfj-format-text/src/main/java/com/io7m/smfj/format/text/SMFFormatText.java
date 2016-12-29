@@ -243,7 +243,7 @@ public final class SMFFormatText implements SMFParserProviderType,
               }
               default: {
                 LOG.debug("no parser for version {}", version);
-                this.fail("Unsupported version");
+                this.fail("Unsupported version", Optional.empty());
                 return;
               }
             }
@@ -252,9 +252,9 @@ public final class SMFFormatText implements SMFParserProviderType,
           this.failErrors(v_version.getError());
           return;
         }
-        this.fail("Unexpected EOF");
+        this.fail("Unexpected EOF", Optional.empty());
       } catch (final Exception e) {
-        this.fail(e.getMessage());
+        this.fail(e.getMessage(), Optional.of(e));
       }
     }
 

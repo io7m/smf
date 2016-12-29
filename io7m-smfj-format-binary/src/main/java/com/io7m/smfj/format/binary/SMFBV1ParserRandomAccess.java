@@ -136,9 +136,9 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
       }
 
     } catch (final IOException e) {
-      super.fail("I/O error: " + e.getMessage());
+      super.fail("I/O error: " + e.getMessage(), Optional.of(e));
     } catch (final Exception e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     }
   }
 
@@ -188,7 +188,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
       }
 
     } catch (final IOException e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     } finally {
       super.events.onDataAttributeFinish(attribute);
     }
@@ -243,11 +243,51 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
       }
 
     } catch (final IOException e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     } finally {
       super.events.onDataTrianglesFinish();
     }
   }
+
+  @Override
+  public void parseMetadata()
+    throws IllegalStateException
+  {
+    if (this.header_view.getMetaCount() == 0) {
+      LOG.debug("no meta data, not parsing meta data");
+      return;
+    }
+
+    try {
+      long offset = this.offsets.metaDataOffset();
+
+      for (int index = 0; index < this.header_view.getMetaCount(); ++index) {
+        final long vendor =
+          super.reader.readUnsigned32(Optional.of("metadata vendor"), offset);
+        offset = Math.addExact(offset, 4L);
+        final long schema =
+          super.reader.readUnsigned32(Optional.of("metadata schema"), offset);
+        offset = Math.addExact(offset, 4L);
+        final long size =
+          super.reader.readUnsigned64(Optional.of("metadata size"), offset);
+        offset = Math.addExact(offset, 8L);
+
+        final int ivendor = Math.toIntExact(vendor);
+        final int ischema = Math.toIntExact(schema);
+        if (this.events.onMeta(ivendor, ischema, size)) {
+          final byte[] data = new byte[Math.toIntExact(size)];
+          super.reader.readBytes(Optional.of("metadata bytes"), data, offset);
+          this.events.onMetaData(ivendor, ischema, data);
+        }
+
+        offset = Math.addExact(offset, size);
+      }
+
+    } catch (final IOException e) {
+      super.fail(e.getMessage(), Optional.of(e));
+    }
+  }
+
 
   private void parseAttributeDataFloating(
     final SMFAttribute attribute,
@@ -882,7 +922,9 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     this.attributes.forEach(attribute -> {
       final SMFAttributeName name = attribute.name();
       if (this.attributes_named.containsKey(name)) {
-        super.fail("Duplicate attribute name: " + name.value());
+        super.fail(
+          "Duplicate attribute name: " + name.value(),
+          Optional.empty());
       }
       this.attributes_named = this.attributes_named.put(name, attribute);
     });
@@ -963,7 +1005,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
             component_count,
             component_size));
       } catch (final IllegalArgumentException e) {
-        super.fail(e.getMessage());
+        super.fail(e.getMessage(), Optional.of(e));
       }
 
       offset = Math.addExact(

@@ -158,7 +158,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
       LexicalPosition.copyOf(p),
-      e + ": " + message));
+      e + ": " + message,
+      e.map(Exception::new)));
   }
 
   @Override
@@ -170,7 +171,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
       LexicalPosition.copyOf(p),
-      e + ": " + message));
+      e + ": " + message,
+      Optional.empty()));
   }
 
   @Override

@@ -228,7 +228,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
             }
 
           } catch (final Exception e) {
-            super.fail(e.getMessage());
+            super.fail(e.getMessage(), Optional.of(e));
           }
           break;
         }
@@ -282,6 +282,27 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       }
     }
 
+    @Override
+    public void parseMetadata()
+      throws IllegalStateException
+    {
+      switch (super.state.get()) {
+        case STATE_INITIAL: {
+          throw new IllegalStateException("Header has not yet been parsed");
+        }
+        case STATE_PARSED_HEADER: {
+          Preconditions.checkPrecondition(
+            this.parser.isPresent(), "Parser must be present");
+
+          this.parser.get().parseMetadata();
+          break;
+        }
+        case STATE_FAILED: {
+          throw new IllegalStateException("Parser has already failed");
+        }
+      }
+    }
+
     private Optional<SMFBAbstractParserRandomAccess> parseMagicNumberAndVersion()
     {
       try {
@@ -300,7 +321,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
           DatatypeConverter.printHexBinary(buffer8));
         return Optional.empty();
       } catch (final IOException e) {
-        super.fail("I/O error: " + e.getMessage());
+        super.fail("I/O error: " + e.getMessage(), Optional.of(e));
         return Optional.empty();
       }
     }
@@ -338,7 +359,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
 
         default: {
           LOG.debug("no parser for version {}", version);
-          super.fail("Unsupported version");
+          super.fail("Unsupported version", Optional.empty());
           return Optional.empty();
         }
       }
@@ -380,7 +401,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
           DatatypeConverter.printHexBinary(buffer8));
         return Optional.empty();
       } catch (final IOException e) {
-        super.fail("I/O error: " + e.getMessage());
+        super.fail("I/O error: " + e.getMessage(), Optional.of(e));
         return Optional.empty();
       }
     }
@@ -418,7 +439,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
 
         default: {
           LOG.debug("no parser for version {}", version);
-          super.fail("Unsupported version");
+          super.fail("Unsupported version", Optional.empty());
           return Optional.empty();
         }
       }
@@ -445,7 +466,7 @@ public final class SMFFormatBinary implements SMFParserProviderType,
             }
 
           } catch (final Exception e) {
-            super.fail(e.getMessage());
+            super.fail(e.getMessage(), Optional.of(e));
           }
           break;
         }
@@ -453,9 +474,11 @@ public final class SMFFormatBinary implements SMFParserProviderType,
         case STATE_PARSED_HEADER: {
           throw new IllegalStateException("Header has already been parsed");
         }
-
         case STATE_FAILED: {
           throw new IllegalStateException("Parser has already failed");
+        }
+        case STATE_FINISHED: {
+          throw new IllegalStateException("Parser has already finished");
         }
       }
     }
@@ -484,6 +507,9 @@ public final class SMFFormatBinary implements SMFParserProviderType,
 
         case STATE_FAILED: {
           throw new IllegalStateException("Parser has already failed");
+        }
+        case STATE_FINISHED: {
+          throw new IllegalStateException("Parser has already finished");
         }
       }
     }
