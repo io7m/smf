@@ -21,6 +21,7 @@ import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 /**
  * The type of parse errors.
@@ -43,4 +44,11 @@ public interface SMFParseErrorType
 
   @Value.Parameter
   String message();
+
+  /**
+   * @return The exception raised, if any
+   */
+
+  @Value.Parameter
+  Optional<Exception> exception();
 }

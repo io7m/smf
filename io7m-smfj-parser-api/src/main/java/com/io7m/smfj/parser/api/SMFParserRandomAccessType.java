@@ -55,4 +55,14 @@ public interface SMFParserRandomAccessType extends SMFParserType
   void parseTriangles()
     throws IllegalStateException;
 
+  /**
+   * Parse metadata.
+   *
+   * @throws IllegalStateException If {@link #parseHeader()} has not been
+   *                               called, or if parsing the header previously
+   *                               failed
+   */
+
+  void parseMetadata()
+    throws IllegalStateException;
 }

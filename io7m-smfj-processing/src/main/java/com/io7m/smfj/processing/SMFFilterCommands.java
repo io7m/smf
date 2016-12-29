@@ -50,6 +50,15 @@ public final class SMFFilterCommands
     cmds = cmds.put(
       SMFMemoryMeshFilterCheck.NAME,
       SMFMemoryMeshFilterCheck::parse);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterSchemaSet.NAME,
+      SMFMemoryMeshFilterSchemaSet::parse);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterSchemaCheck.NAME,
+      SMFMemoryMeshFilterSchemaCheck::parse);
+    cmds = cmds.put(
+      SMFMemoryMeshFilterAttributeTrim.NAME,
+      SMFMemoryMeshFilterAttributeTrim::parse);
     COMMANDS = cmds;
   }
 
@@ -76,8 +85,10 @@ public final class SMFFilterCommands
     NullCheck.notNull(text, "text");
 
     if (text.isEmpty()) {
-      return Validation.invalid(List.of(
-        SMFParseError.of(LexicalPosition.of(line, 0, file), "Line is empty")));
+      return Validation.invalid(List.of(SMFParseError.of(
+        LexicalPosition.of(line, 0, file),
+        "Line is empty",
+        Optional.empty())));
     }
 
     final String name = text.get(0);
@@ -103,6 +114,9 @@ public final class SMFFilterCommands
     sb.append(text.toJavaStream().collect(Collectors.joining("|")));
     sb.append(System.lineSeparator());
     return Validation.invalid(List.of(
-      SMFParseError.of(LexicalPosition.of(line, 0, file), sb.toString())));
+      SMFParseError.of(
+        LexicalPosition.of(line, 0, file),
+        sb.toString(),
+        Optional.empty())));
   }
 }

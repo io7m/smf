@@ -50,7 +50,9 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
     final InputStream in_stream)
   {
     this.path = NullCheck.notNull(in_path, "Path");
-    this.stream = new CountingInputStream(NullCheck.notNull(in_stream, "Stream"));
+    this.stream = new CountingInputStream(NullCheck.notNull(
+      in_stream,
+      "Stream"));
 
     this.byte1 = new byte[1];
     this.byte2 = new byte[2];

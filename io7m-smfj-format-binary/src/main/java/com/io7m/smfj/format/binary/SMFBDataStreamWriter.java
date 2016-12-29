@@ -107,7 +107,7 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   public void putS8(final long value)
     throws IOException
   {
-    this.byte1[0] = (byte) (value & 0x7fL);
+    this.byte1[0] = (byte) value;
     this.stream.write(this.byte1);
   }
 

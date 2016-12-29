@@ -84,10 +84,11 @@ public enum SMFComponentType
       case "float": {
         return ELEMENT_TYPE_FLOATING;
       }
+      default: {
+        throw new IllegalArgumentException(
+          "Unrecognized type: " + name);
+      }
     }
-
-    throw new IllegalArgumentException(
-      "Unrecognized type: " + name);
   }
 
   @Override
@@ -117,10 +118,11 @@ public enum SMFComponentType
         return ELEMENT_TYPE_INTEGER_UNSIGNED;
       case 2:
         return ELEMENT_TYPE_FLOATING;
+      default: {
+        throw new IllegalArgumentException(
+          "Unrecognized type for integer index: " + x);
+      }
     }
-
-    throw new IllegalArgumentException(
-      "Unrecognized type for integer index: " + x);
   }
 
   /**

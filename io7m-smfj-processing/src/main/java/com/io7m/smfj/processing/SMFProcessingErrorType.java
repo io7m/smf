@@ -19,6 +19,8 @@ package com.io7m.smfj.processing;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
+import java.util.Optional;
+
 /**
  * The type of processing errors.
  */
@@ -33,4 +35,11 @@ public interface SMFProcessingErrorType
 
   @Value.Parameter
   String message();
+
+  /**
+   * @return The exception raised, if any
+   */
+
+  @Value.Parameter
+  Optional<Exception> exception();
 }

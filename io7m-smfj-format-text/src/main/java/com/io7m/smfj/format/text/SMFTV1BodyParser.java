@@ -79,7 +79,8 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
 
       if (this.attributes_attempted.containsKey(name)) {
         super.fail(
-          "An attempt has already been made to supply data for attribute " + name.value());
+          "An attempt has already been made to supply data for attribute " + name.value(),
+          Optional.empty());
         return;
       }
 
@@ -114,7 +115,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
       }
 
     } else {
-      super.fail("No such attribute: " + name.value());
+      super.fail("No such attribute: " + name.value(), Optional.empty());
     }
   }
 
@@ -124,21 +125,21 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
       this.failMissedAttributes();
       this.failMissedTriangles();
       this.failMissedMetadata();
-      this.fail("Unexpected EOF");
+      this.fail("Unexpected EOF", Optional.empty());
     }
   }
 
   private void failMissedMetadata()
   {
     if (this.parsed_metas != this.header.metaCount()) {
-      this.fail("Too few metadata elements specified");
+      this.fail("Too few metadata elements specified", Optional.empty());
     }
   }
 
   private void failMissedTriangles()
   {
     if (this.parsed_triangles != this.header.triangleCount()) {
-      this.fail("Too few triangles specified");
+      this.fail("Too few triangles specified", Optional.empty());
     }
   }
 
@@ -149,7 +150,9 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         this.attributes_attempted.keySet());
     if (!names.isEmpty()) {
       names.forEach(
-        name -> this.fail("No data specified for attribute: " + name.value()));
+        name -> this.fail(
+          "No data specified for attribute: " + name.value(),
+          Optional.empty()));
     }
   }
 
@@ -575,7 +578,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     LOG.debug("parsing metadata values");
 
     if (this.header.metaCount() == 0L) {
-      super.fail("No metadata was expected.");
+      super.fail("No metadata was expected.", Optional.empty());
       return;
     }
 
@@ -620,10 +623,10 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     throws Exception
   {
     if (line.length() == 4) {
-      final int vendor_id =
-        Integer.parseUnsignedInt(line.get(1), 16);
-      final int schema_id =
-        Integer.parseUnsignedInt(line.get(2), 16);
+      final long vendor_id =
+        (long) Integer.parseUnsignedInt(line.get(1), 16);
+      final long schema_id =
+        (long) Integer.parseUnsignedInt(line.get(2), 16);
       final long lines =
         Long.parseUnsignedLong(line.get(3));
       this.parseMetaDataValues(vendor_id, schema_id, lines);
@@ -636,8 +639,8 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   }
 
   private void parseMetaDataValues(
-    final int vendor_id,
-    final int schema_id,
+    final long vendor_id,
+    final long schema_id,
     final long lines)
     throws Exception
   {
@@ -805,7 +808,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         }
       }
     } catch (final Exception e) {
-      this.fail(e.getMessage());
+      this.fail(e.getMessage(), Optional.of(e));
     }
   }
 }

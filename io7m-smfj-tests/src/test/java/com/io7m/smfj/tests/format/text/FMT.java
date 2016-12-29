@@ -43,8 +43,8 @@ public final class FMT
         {
           @Override
           public boolean onMeta(
-            final int vendor,
-            final int schema,
+            final long vendor,
+            final long schema,
             final long length)
           {
             return true;
@@ -52,14 +52,14 @@ public final class FMT
 
           @Override
           public void onMetaData(
-            final int vendor,
-            final int schema,
+            final long vendor,
+            final long schema,
             final byte[] data)
           {
             LOG.debug(
               "metadata: {} {} {}",
-              Integer.toUnsignedString(vendor, 16),
-              Integer.toUnsignedString(schema, 16),
+              Long.toUnsignedString(vendor, 16),
+              Long.toUnsignedString(schema, 16),
               Base64.getUrlEncoder().encodeToString(data));
           }
 

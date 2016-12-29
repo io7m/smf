@@ -53,7 +53,8 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     final String format,
     final Object... params)
   {
-    return SMFProcessingError.of(String.format(format, params));
+    return SMFProcessingError.of(
+      String.format(format, params), Optional.empty());
   }
 
   /**

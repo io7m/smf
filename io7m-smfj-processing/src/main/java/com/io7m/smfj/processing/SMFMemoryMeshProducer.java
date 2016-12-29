@@ -24,6 +24,7 @@ import com.io7m.jtensors.VectorI3D;
 import com.io7m.jtensors.VectorI3L;
 import com.io7m.jtensors.VectorI4D;
 import com.io7m.jtensors.VectorI4L;
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -120,6 +121,16 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
   }
 
   @Override
+  public SMFHeader header()
+    throws IllegalStateException
+  {
+    if (this.header == null) {
+      throw new IllegalStateException("Header has not been parsed");
+    }
+    return this.header;
+  }
+
+  @Override
   public SMFMemoryMesh mesh()
     throws IllegalStateException
   {
@@ -134,8 +145,8 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
 
   @Override
   public boolean onMeta(
-    final int vendor,
-    final int schema,
+    final long vendor,
+    final long schema,
     final long length)
   {
     return true;
@@ -143,8 +154,8 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
 
   @Override
   public void onMetaData(
-    final int vendor,
-    final int schema,
+    final long vendor,
+    final long schema,
     final byte[] data)
   {
     this.metadata = this.metadata.append(SMFMetadata.of(vendor, schema, data));
@@ -298,6 +309,9 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
                 .build());
             break;
           }
+          default: {
+            throw new UnreachableCodeException();
+          }
         }
         break;
       }
@@ -336,6 +350,9 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
                 .build());
             break;
           }
+          default: {
+            throw new UnreachableCodeException();
+          }
         }
         break;
       }
@@ -373,6 +390,9 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
                 .setValues(this.elements.map(x -> (Double) x))
                 .build());
             break;
+          }
+          default: {
+            throw new UnreachableCodeException();
           }
         }
         break;

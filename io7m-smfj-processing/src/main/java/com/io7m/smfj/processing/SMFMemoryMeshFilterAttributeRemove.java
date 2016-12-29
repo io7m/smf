@@ -175,6 +175,6 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
       sb.append(System.lineSeparator());
     }
 
-    return SMFProcessingError.of(sb.toString());
+    return SMFProcessingError.of(sb.toString(), Optional.empty());
   }
 }

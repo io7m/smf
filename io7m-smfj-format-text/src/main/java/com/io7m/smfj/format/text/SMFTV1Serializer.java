@@ -700,8 +700,8 @@ final class SMFTV1Serializer implements SMFSerializerType
 
   @Override
   public void serializeMetadata(
-    final int vendor,
-    final int schema,
+    final long vendor,
+    final long schema,
     final byte[] data)
     throws IOException, IllegalStateException
   {
@@ -716,8 +716,8 @@ final class SMFTV1Serializer implements SMFSerializerType
       this.writer.append(
         String.format(
           "meta %s %s %d",
-          Integer.toUnsignedString(vendor, 16),
-          Integer.toUnsignedString(schema, 16),
+          Long.toUnsignedString(vendor, 16),
+          Long.toUnsignedString(schema, 16),
           Integer.valueOf(lines.size())));
       this.writer.newLine();
 
