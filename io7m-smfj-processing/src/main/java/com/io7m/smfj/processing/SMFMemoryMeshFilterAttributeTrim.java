@@ -114,8 +114,8 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
     List<SMFProcessingError> errors = List.empty();
     for (final SMFAttributeName name : this.attributes) {
       if (!header.attributesByName().containsKey(name)) {
-        errors = errors.append(
-          SMFProcessingError.of("Nonexistent attribute: " + name.value()));
+        errors = errors.append(SMFProcessingError.of(
+          "Nonexistent attribute: " + name.value(), Optional.empty()));
       }
     }
 

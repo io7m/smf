@@ -79,7 +79,8 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
 
       if (this.attributes_attempted.containsKey(name)) {
         super.fail(
-          "An attempt has already been made to supply data for attribute " + name.value());
+          "An attempt has already been made to supply data for attribute " + name.value(),
+          Optional.empty());
         return;
       }
 
@@ -114,7 +115,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
       }
 
     } else {
-      super.fail("No such attribute: " + name.value());
+      super.fail("No such attribute: " + name.value(), Optional.empty());
     }
   }
 
@@ -124,21 +125,21 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
       this.failMissedAttributes();
       this.failMissedTriangles();
       this.failMissedMetadata();
-      this.fail("Unexpected EOF");
+      this.fail("Unexpected EOF", Optional.empty());
     }
   }
 
   private void failMissedMetadata()
   {
     if (this.parsed_metas != this.header.metaCount()) {
-      this.fail("Too few metadata elements specified");
+      this.fail("Too few metadata elements specified", Optional.empty());
     }
   }
 
   private void failMissedTriangles()
   {
     if (this.parsed_triangles != this.header.triangleCount()) {
-      this.fail("Too few triangles specified");
+      this.fail("Too few triangles specified", Optional.empty());
     }
   }
 
@@ -149,7 +150,9 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         this.attributes_attempted.keySet());
     if (!names.isEmpty()) {
       names.forEach(
-        name -> this.fail("No data specified for attribute: " + name.value()));
+        name -> this.fail(
+          "No data specified for attribute: " + name.value(),
+          Optional.empty()));
     }
   }
 
@@ -575,7 +578,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     LOG.debug("parsing metadata values");
 
     if (this.header.metaCount() == 0L) {
-      super.fail("No metadata was expected.");
+      super.fail("No metadata was expected.", Optional.empty());
       return;
     }
 
@@ -805,7 +808,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         }
       }
     } catch (final Exception e) {
-      this.fail(e.getMessage());
+      this.fail(e.getMessage(), Optional.of(e));
     }
   }
 }

@@ -144,6 +144,7 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
     sb.append(received.schemaMinorVersion());
     sb.append(System.lineSeparator());
 
-    return Validation.invalid(List.of(SMFProcessingError.of(sb.toString())));
+    return Validation.invalid(List.of(
+      SMFProcessingError.of(sb.toString(), Optional.empty())));
   }
 }

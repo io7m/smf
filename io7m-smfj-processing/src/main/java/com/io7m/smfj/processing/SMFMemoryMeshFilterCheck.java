@@ -209,7 +209,7 @@ public final class SMFMemoryMeshFilterCheck implements
     sb.append("  Received: ");
     sb.append(text);
     sb.append(System.lineSeparator());
-    return List.of(SMFProcessingError.of(sb.toString()));
+    return List.of(SMFProcessingError.of(sb.toString(), Optional.empty()));
   }
 
 }

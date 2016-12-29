@@ -47,7 +47,10 @@ final class SMFFilterCommandParsing
     sb.append("  Received: ");
     sb.append(text.toJavaStream().collect(Collectors.joining(" ")));
     sb.append(System.lineSeparator());
-    return Validation.invalid(List.of(
-      SMFParseError.of(LexicalPosition.of(line, 0, file), sb.toString())));
+
+    final SMFParseError error =
+      SMFParseError.of(
+        LexicalPosition.of(line, 0, file), sb.toString(), Optional.empty());
+    return Validation.invalid(List.of(error));
   }
 }

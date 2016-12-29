@@ -263,6 +263,8 @@ final class SMFBV1Serializer implements SMFSerializerType
   {
     NullCheck.notNull(name, "Name");
 
+    LOG.debug("serializing data for {}", name.value());
+
     this.state.transition(SerializerState.STATE_DATA_ATTRIBUTES_IN_PROGRESS);
 
     if (this.attribute_values_remaining != 0L) {

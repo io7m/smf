@@ -132,9 +132,9 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       }
 
     } catch (final IOException e) {
-      super.fail("I/O error: " + e.getMessage());
+      super.fail("I/O error: " + e.getMessage(), Optional.empty());
     } catch (final Exception e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     }
   }
 
@@ -182,7 +182,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       }
 
     } catch (final IOException e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     } finally {
       super.events.onDataAttributeFinish(attribute);
     }
@@ -208,7 +208,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       }
 
     } catch (final IOException e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     }
   }
 
@@ -292,7 +292,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
       }
 
     } catch (final IOException e) {
-      super.fail(e.getMessage());
+      super.fail(e.getMessage(), Optional.of(e));
     } finally {
       super.events.onDataTrianglesFinish();
     }
@@ -835,7 +835,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     this.attributes.forEach(attribute -> {
       final SMFAttributeName name = attribute.name();
       if (this.attributes_named.containsKey(name)) {
-        super.fail("Duplicate attribute name: " + name.value());
+        super.fail("Duplicate attribute name: " + name.value(), Optional.empty());
       }
       this.attributes_named = this.attributes_named.put(name, attribute);
     });
@@ -920,7 +920,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
             component_count,
             component_size));
       } catch (final IllegalArgumentException e) {
-        super.fail(e.getMessage());
+        super.fail(e.getMessage(), Optional.of(e));
       }
     }
   }

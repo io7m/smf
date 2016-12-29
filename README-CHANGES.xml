@@ -3,6 +3,46 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2016-12-29</c:date>
+    <c:version>0.4.0</c:version>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-new/>
+      <c:ticket>19</c:ticket>
+      <c:summary>Add schema-set and schema-check commands.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-new/>
+      <c:ticket>21</c:ticket>
+      <c:summary>Add trim command.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-change/>
+      <c:ticket>23</c:ticket>
+      <c:summary>Update the random access parser API to deliver metadata.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-new/>
+      <c:ticket>18</c:ticket>
+      <c:summary>Add an adapter that can deliver parser events from an SMFMemoryMesh.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-change/>
+      <c:ticket>22</c:ticket>
+      <c:summary>Add an optional exception to parse and processing errors.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2016-12-28</c:date>
     <c:version>0.3.0</c:version>
 

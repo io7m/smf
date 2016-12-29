@@ -127,15 +127,15 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   private void parseHeaderCheckRequired()
   {
     if (!this.ok_triangles) {
-      this.fail("No triangle count was specified");
+      this.fail("No triangle count was specified", Optional.empty());
       return;
     }
     if (!this.ok_vertices) {
-      this.fail("No vertex count was specified");
+      this.fail("No vertex count was specified", Optional.empty());
       return;
     }
     if (this.coords == null) {
-      this.fail("No coordinate system was specified");
+      this.fail("No coordinate system was specified", Optional.empty());
       return;
     }
   }
@@ -146,7 +146,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     while (true) {
       final Optional<List<String>> line_opt = super.reader.line();
       if (!line_opt.isPresent()) {
-        this.fail("Unexpected EOF");
+        this.fail("Unexpected EOF", Optional.empty());
         return;
       }
 
@@ -387,7 +387,8 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
 
         this.failWithLineNumber(
           this.attribute_lines.get(name).get().intValue(),
-          "Duplicate attribute name: " + name.value());
+          "Duplicate attribute name: " + name.value(),
+          Optional.empty());
       } else {
         this.attributes = this.attributes.put(name, attribute);
       }
@@ -435,7 +436,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
 
           return;
         } catch (final Exception e) {
-          this.fail(e.getMessage());
+          this.fail(e.getMessage(), Optional.of(e));
           return;
         }
       }
