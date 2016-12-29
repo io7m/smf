@@ -28,18 +28,22 @@ import org.immutables.value.Value;
 public interface SMFMetadataType
 {
   /**
+   * An unsigned 32-bit value representing the vendor.
+   *
    * @return The metadata vendor
    */
 
   @Value.Parameter
-  int vendor();
+  long vendor();
 
   /**
+   * An unsigned 32-bit value representing the vendor.
+   *
    * @return The metadata schema
    */
 
   @Value.Parameter
-  int schema();
+  long schema();
 
   /**
    * @return The metadata

@@ -237,6 +237,9 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
               super.reader.readUnsigned32(name, Math.addExact(offset, 8L)));
             break;
           }
+          default: {
+            throw new UnreachableCodeException();
+          }
         }
 
         offset = Math.addExact(offset, size);
@@ -272,15 +275,20 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
           super.reader.readUnsigned64(Optional.of("metadata size"), offset);
         offset = Math.addExact(offset, 8L);
 
-        final int ivendor = Math.toIntExact(vendor);
-        final int ischema = Math.toIntExact(schema);
-        if (this.events.onMeta(ivendor, ischema, size)) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("vendor: {}", Long.toUnsignedString(vendor, 16));
+          LOG.debug("schema: {}", Long.toUnsignedString(schema, 16));
+          LOG.debug("size:   {}", Long.valueOf(size));
+        }
+
+        if (this.events.onMeta(vendor, schema, size)) {
           final byte[] data = new byte[Math.toIntExact(size)];
           super.reader.readBytes(Optional.of("metadata bytes"), data, offset);
-          this.events.onMetaData(ivendor, ischema, data);
+          this.events.onMetaData(vendor, schema, data);
         }
 
         offset = Math.addExact(offset, size);
+        offset = SMFBV1Offsets.alignToNext8(offset);
       }
 
     } catch (final IOException e) {

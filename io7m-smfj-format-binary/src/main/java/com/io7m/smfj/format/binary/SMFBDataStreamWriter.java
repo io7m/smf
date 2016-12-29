@@ -18,6 +18,7 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jintegers.Unsigned8;
 import com.io7m.jnull.NullCheck;
 import org.apache.commons.io.output.CountingOutputStream;
 
@@ -107,7 +108,7 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   public void putS8(final long value)
     throws IOException
   {
-    this.byte1[0] = (byte) (value & 0x7fL);
+    this.byte1[0] = (byte) value;
     this.stream.write(this.byte1);
   }
 

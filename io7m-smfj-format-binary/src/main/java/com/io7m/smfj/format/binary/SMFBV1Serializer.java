@@ -330,7 +330,11 @@ final class SMFBV1Serializer implements SMFSerializerType
   {
     final long diff = Math.subtractExact(off, this.writer.position());
     if (LOG.isTraceEnabled()) {
-      LOG.trace("padding required: {} octets", Long.valueOf(diff));
+      LOG.trace(
+        "padding required: (next {}) - (current {}) = {} octets",
+        Long.valueOf(off),
+        Long.valueOf(this.writer.position()),
+        Long.valueOf(diff));
     }
 
     Invariants.checkInvariantL(
@@ -424,6 +428,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putF64(w);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -462,6 +469,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putF64(z);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -496,6 +506,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putF64(y);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -526,6 +539,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putF64(x);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -547,6 +563,13 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putS8(x);
+          this.writer.putS8(y);
+          this.writer.putS8(z);
+          this.writer.putS8(w);
+          break;
+        }
         case 16: {
           this.writer.putS16(x);
           this.writer.putS16(y);
@@ -568,6 +591,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putS64(w);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -588,6 +614,12 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putS8(x);
+          this.writer.putS8(y);
+          this.writer.putS8(z);
+          break;
+        }
         case 16: {
           this.writer.putS16(x);
           this.writer.putS16(y);
@@ -605,6 +637,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putS64(y);
           this.writer.putS64(z);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -625,6 +660,11 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putS8(x);
+          this.writer.putS8(y);
+          break;
+        }
         case 16: {
           this.writer.putS16(x);
           this.writer.putS16(y);
@@ -639,6 +679,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putS64(x);
           this.writer.putS64(y);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -658,6 +701,10 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putS8(x);
+          break;
+        }
         case 16: {
           this.writer.putS16(x);
           break;
@@ -669,6 +716,9 @@ final class SMFBV1Serializer implements SMFSerializerType
         case 64: {
           this.writer.putS64(x);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -691,6 +741,13 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putU8(x);
+          this.writer.putU8(y);
+          this.writer.putU8(z);
+          this.writer.putU8(w);
+          break;
+        }
         case 16: {
           this.writer.putU16(x);
           this.writer.putU16(y);
@@ -712,6 +769,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putU64(w);
           break;
         }
+        default: {
+          throw new UnreachableCodeException();
+        }
       }
 
       this.serializeValueUpdateRemaining();
@@ -732,6 +792,12 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putU8(x);
+          this.writer.putU8(y);
+          this.writer.putU8(z);
+          break;
+        }
         case 16: {
           this.writer.putU16(x);
           this.writer.putU16(y);
@@ -749,6 +815,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putU64(y);
           this.writer.putU64(z);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -769,6 +838,11 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putU8(x);
+          this.writer.putU8(y);
+          break;
+        }
         case 16: {
           this.writer.putU16(x);
           this.writer.putU16(y);
@@ -783,6 +857,9 @@ final class SMFBV1Serializer implements SMFSerializerType
           this.writer.putU64(x);
           this.writer.putU64(y);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -802,6 +879,10 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     try {
       switch (this.attribute_current.componentSizeBits()) {
+        case 8: {
+          this.writer.putU8(x);
+          break;
+        }
         case 16: {
           this.writer.putU16(x);
           break;
@@ -813,6 +894,9 @@ final class SMFBV1Serializer implements SMFSerializerType
         case 64: {
           this.writer.putU64(x);
           break;
+        }
+        default: {
+          throw new UnreachableCodeException();
         }
       }
 
@@ -829,6 +913,8 @@ final class SMFBV1Serializer implements SMFSerializerType
     throws IllegalStateException, IOException
   {
     this.state.transition(SerializerState.STATE_DATA_TRIANGLES_START);
+
+    this.insertAlignmentPadding(this.offsets.trianglesDataOffset());
 
     if (this.triangle_values_remaining == 0L) {
       this.state.transition(SerializerState.STATE_DATA_TRIANGLES_IN_PROGRESS);
@@ -884,8 +970,8 @@ final class SMFBV1Serializer implements SMFSerializerType
 
   @Override
   public void serializeMetadata(
-    final int vendor,
-    final int schema,
+    final long vendor,
+    final long schema,
     final byte[] data)
     throws IOException, IllegalStateException
   {
@@ -902,8 +988,8 @@ final class SMFBV1Serializer implements SMFSerializerType
   }
 
   private void serializeMetadataWrite(
-    final int vendor,
-    final int schema,
+    final long vendor,
+    final long schema,
     final byte[] data)
     throws IOException
   {
@@ -921,8 +1007,8 @@ final class SMFBV1Serializer implements SMFSerializerType
       this.writer.position() % 8L == 0L,
       off -> "Writer must be at 8 octet aligned");
 
-    this.writer.putU32((long) vendor);
-    this.writer.putU32((long) schema);
+    this.writer.putU32(vendor);
+    this.writer.putU32(schema);
     this.writer.putU64((long) data.length);
     this.writer.putBytes(data);
 

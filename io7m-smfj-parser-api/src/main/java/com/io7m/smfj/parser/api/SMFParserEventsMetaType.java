@@ -30,12 +30,12 @@ public interface SMFParserEventsMetaType extends SMFParserEventsErrorType
    * @param length The length in octets of the data
    *
    * @return {@code true} iff the data should be delivered via the {@link
-   * #onMetaData(int, int, byte[])} method
+   * #onMetaData(long, long, byte[])} method
    */
 
   boolean onMeta(
-    int vendor,
-    int schema,
+    long vendor,
+    long schema,
     long length);
 
   /**
@@ -47,7 +47,7 @@ public interface SMFParserEventsMetaType extends SMFParserEventsErrorType
    */
 
   void onMetaData(
-    int vendor,
-    int schema,
+    long vendor,
+    long schema,
     byte[] data);
 }

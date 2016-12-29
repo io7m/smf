@@ -1216,9 +1216,9 @@ public final class SMFFormatTextTest
       events.onDataTriangle(0L, 2L, 3L);
       events.onDataTrianglesFinish();
 
-      events.onMeta(0x696F376D, 0x0A0B0C0D, 256L);
+      events.onMeta(0x696F376DL, 0x0A0B0C0DL, 256L);
       this.result = Boolean.TRUE;
-      events.onMetaData(0x696F376D, 0x0A0B0C0D, bytes);
+      events.onMetaData(0x696F376DL, 0x0A0B0C0DL, bytes);
 
       events.onFinish();
     }};

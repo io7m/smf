@@ -394,8 +394,8 @@ public interface SMFSerializerType extends Closeable
    */
 
   void serializeMetadata(
-    int vendor,
-    int schema,
+    long vendor,
+    long schema,
     byte[] data)
     throws IOException, FSMTransitionException;
 }

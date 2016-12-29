@@ -234,12 +234,10 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     }
 
     final long seek_to;
-    final int vendor_i = Math.toIntExact(vendor);
-    final int schema_i = Math.toIntExact(schema);
-    if (super.events.onMeta(vendor_i, schema_i, size)) {
+    if (super.events.onMeta(vendor, schema, size)) {
       final byte[] data = new byte[Math.toIntExact(size)];
       super.reader.readBytes(name, data);
-      super.events.onMetaData(vendor_i, schema_i, data);
+      super.events.onMetaData(vendor, schema, data);
       seek_to = SMFBV1Offsets.alignToNext8(super.reader.position());
     } else {
       seek_to = SMFBV1Offsets.alignToNext8(
@@ -287,6 +285,9 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
               super.reader.readU32(name),
               super.reader.readU32(name));
             break;
+          }
+          default: {
+            throw new UnreachableCodeException();
           }
         }
       }

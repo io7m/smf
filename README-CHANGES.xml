@@ -40,6 +40,19 @@
       <c:ticket>22</c:ticket>
       <c:summary>Add an optional exception to parse and processing errors.</c:summary>
     </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-fix/>
+      <c:ticket>24</c:ticket>
+      <c:summary>Fix a major issue with 8-bit data not being serialized.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2016-12-29</c:date>
+      <c:type-code-change/>
+      <c:summary>Make the SMFMetadata vendor/schema fields into long values to ease the use of them as unsigned 32 bit values.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">

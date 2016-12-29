@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.processing;
 
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.List;
@@ -32,6 +33,17 @@ public interface SMFMemoryMeshProducerType extends SMFParserEventsType
    */
 
   List<SMFParseError> errors();
+
+  /**
+   * The parsed header, if no parse errors were encountered.
+   *
+   * @return The parsed header
+   *
+   * @throws IllegalStateException If {@link #errors()} is non-empty
+   */
+
+  SMFHeader header()
+    throws IllegalStateException;
 
   /**
    * The parsed mesh, if no parse errors were encountered.

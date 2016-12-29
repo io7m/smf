@@ -623,10 +623,10 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
     throws Exception
   {
     if (line.length() == 4) {
-      final int vendor_id =
-        Integer.parseUnsignedInt(line.get(1), 16);
-      final int schema_id =
-        Integer.parseUnsignedInt(line.get(2), 16);
+      final long vendor_id =
+        (long) Integer.parseUnsignedInt(line.get(1), 16);
+      final long schema_id =
+        (long) Integer.parseUnsignedInt(line.get(2), 16);
       final long lines =
         Long.parseUnsignedLong(line.get(3));
       this.parseMetaDataValues(vendor_id, schema_id, lines);
@@ -639,8 +639,8 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   }
 
   private void parseMetaDataValues(
-    final int vendor_id,
-    final int schema_id,
+    final long vendor_id,
+    final long schema_id,
     final long lines)
     throws Exception
   {
