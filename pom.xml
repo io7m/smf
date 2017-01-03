@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.smfj</groupId>
   <artifactId>io7m-smfj</artifactId>
-  <version>0.4.0</version>
+  <version>0.5.0</version>
 
   <packaging>pom</packaging>
   <name>io7m-smfj</name>
@@ -25,7 +25,8 @@
     <module>io7m-smfj-format-text</module>
     <module>io7m-smfj-frontend</module>
     <module>io7m-smfj-parser-api</module>
-    <module>io7m-smfj-processing</module>
+    <module>io7m-smfj-processing-api</module>
+    <module>io7m-smfj-processing-main</module>
     <module>io7m-smfj-serializer-api</module>
     <module>io7m-smfj-specification</module>
     <module>io7m-smfj-tests</module>

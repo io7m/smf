@@ -1,18 +1,18 @@
-remove u64_1
+com.io7m.smf:remove u64_1
 
-trim f32_4 f32_3 f32_2 f32_1
+com.io7m.smf:trim f32_4 f32_3 f32_2 f32_1
 
-rename f32_4 a
-rename f32_3 b
-rename f32_2 c
-rename f32_1 d
+com.io7m.smf:rename f32_4 a
+com.io7m.smf:rename f32_3 b
+com.io7m.smf:rename f32_2 c
+com.io7m.smf:rename f32_1 d
 
-triangles-optimize 0 validate
+com.io7m.smf:triangles-optimize 0 validate
 
-check a float 4 32
-check b float 3 32
-check c float 2 32
-check d float 1 32
+com.io7m.smf:check a float 4 32
+com.io7m.smf:check b float 3 32
+com.io7m.smf:check c float 2 32
+com.io7m.smf:check d float 1 32
 
-schema-set a0a0a0a0 b0 3 2
-schema-check a0a0a0a0 b0 3 2
+com.io7m.smf:schema-set a0a0a0a0 b0 3 2
+com.io7m.smf:schema-check a0a0a0a0 b0 3 2

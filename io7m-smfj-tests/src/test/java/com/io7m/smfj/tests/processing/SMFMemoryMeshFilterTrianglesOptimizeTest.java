@@ -20,14 +20,13 @@ import com.io7m.jfunctional.Unit;
 import com.io7m.jtensors.VectorI3L;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeRename;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterTrianglesOptimize;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterTrianglesOptimizeConfiguration;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFProcessingError;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFProcessingError;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimize;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimizeConfiguration;
 import javaslang.collection.List;
 import javaslang.collection.Vector;
 import javaslang.control.Validation;
@@ -84,24 +83,13 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
   }
 
   @Test
-  public void testParseWrong0()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterTrianglesOptimize.parse(
-        Optional.empty(),
-        1,
-        List.empty());
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test
   public void testParseWrong1()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize"));
+        List.of());
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -112,7 +100,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "16"));
+        List.of("16"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -123,7 +111,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "16", "x"));
+        List.of("16", "x"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -134,7 +122,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "16", "validate", "x"));
+        List.of("16", "validate", "x"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -145,7 +133,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "16", "validate"));
+        List.of("16", "validate"));
     Assert.assertTrue(r.isValid());
   }
 
@@ -156,7 +144,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "16", "no-validate"));
+        List.of("16", "no-validate"));
     Assert.assertTrue(r.isValid());
   }
 
@@ -167,7 +155,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
-        List.of("triangles-optimize", "-", "no-validate"));
+        List.of("-", "no-validate"));
     Assert.assertTrue(r.isValid());
   }
 

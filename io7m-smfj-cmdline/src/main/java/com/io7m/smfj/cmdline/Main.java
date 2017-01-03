@@ -31,12 +31,14 @@ import com.io7m.smfj.frontend.SMFSerializerProviders;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFMemoryMeshSerializer;
-import com.io7m.smfj.processing.SMFProcessingError;
+import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
+import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
+import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
@@ -429,12 +431,13 @@ public final class Main implements Runnable
       throws IOException
     {
       final Path path_commands = Paths.get(this.file_commands);
+      final SMFFilterCommandModuleResolverType resolver =
+        SMFFilterCommandModuleResolver.create();
 
       try (final InputStream stream = Files.newInputStream(path_commands)) {
         final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
-            Optional.of(path_commands),
-            stream);
+            resolver, Optional.of(path_commands), stream);
         if (r.isValid()) {
           return Optional.of(r.get());
         }

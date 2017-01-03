@@ -20,12 +20,12 @@ import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterSchemaCheck;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFProcessingError;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFProcessingError;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterSchemaCheck;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 import org.junit.Assert;
@@ -44,24 +44,13 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
   }
 
   @Test
-  public void testParseWrong0()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterSchemaCheck.parse(
-        Optional.empty(),
-        1,
-        List.empty());
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test
   public void testParseWrong1()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaCheck.parse(
         Optional.empty(),
         1,
-        List.of("schema-check"));
+        List.of());
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -72,7 +61,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.parse(
         Optional.empty(),
         1,
-        List.of("schema-check", "x", "<#@"));
+        List.of("x", "<#@"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -83,7 +72,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.parse(
         Optional.empty(),
         1,
-        List.of("schema-check", "<#@", "y"));
+        List.of("<#@", "y"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -95,7 +84,6 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
         Optional.empty(),
         1,
         List.of(
-          "schema-check",
           "x",
           "y",
           "z"));
@@ -110,7 +98,6 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
         Optional.empty(),
         1,
         List.of(
-          "schema-check",
           "x",
           "float",
           "z",
@@ -125,7 +112,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.parse(
         Optional.empty(),
         1,
-        List.of("schema-check", "696f376d", "0", "1", "2"));
+        List.of("696f376d", "0", "1", "2"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "schema-check");

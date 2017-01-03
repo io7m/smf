@@ -24,6 +24,7 @@
         <li>Text and binary encodings.</li>
         <li><a href="http://blender.org">Blender</a> plugin to export directly to the text format.</li>
         <li>Event-based parsers for near zero-allocation parsing.</li>
+        <li>Extensible filter system for processing and transforming mesh data.</li>
         <li>ISC license.</li>
         <li>High-coverage automated test suite.</li>
       </ul>

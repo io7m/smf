@@ -17,7 +17,7 @@
 bl_info = {
   "name":        "SMF format",
   "author":      "io7m",
-  "version":     (0, 2, 0),
+  "version":     (0, 4, 0),
   "blender":     (2, 66, 0),
   "location":    "File > Export > SMF (.smft)",
   "description": "Export meshes to SMF format",
