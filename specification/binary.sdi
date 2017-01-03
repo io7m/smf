@@ -96,7 +96,7 @@ the previous attribute. For example, the following diagram shows how the data is
 aligned for a file containing three vertices with two attributes
 [term [type variable] "A"] and [term [type variable] "B"]. Attribute
 [term [type variable] "A"] consists of three 16-bit floating-point components,
-and attribute [term [type variable] "B"] consists for four 32-bit floating-point
+and attribute [term [type variable] "B"] consists of three 32-bit floating-point
 components. As the file has three vertices, [term [type variable] "3 * 3 = 9"]
 values are placed into the file first, consuming
 [term [type variable] "3 * 3 * 2 = 18"] octets. Because the next octet,
