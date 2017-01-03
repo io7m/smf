@@ -9,6 +9,12 @@
     <c:item>
       <c:date>2017-01-03</c:date>
       <c:type-code-fix/>
+      <c:summary>Update to the latest versions of all dependencies.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
+      <c:type-code-fix/>
       <c:ticket>27</c:ticket>
       <c:summary>Insert the project version into the Blender plugin sources at compile time.</c:summary>
     </c:item>
