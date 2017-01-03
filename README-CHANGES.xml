@@ -8,6 +8,13 @@
 
     <c:item>
       <c:date>2017-01-03</c:date>
+      <c:type-code-new/>
+      <c:ticket>28</c:ticket>
+      <c:summary>Add the ability to list the available filter commands.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
       <c:type-code-fix/>
       <c:summary>Update to the latest versions of all dependencies.</c:summary>
     </c:item>

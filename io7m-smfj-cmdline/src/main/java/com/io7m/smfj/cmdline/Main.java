@@ -33,6 +33,7 @@ import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
+import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
@@ -87,15 +88,18 @@ public final class Main implements Runnable
     final CommandRoot r = new CommandRoot();
     final CommandFormats formats = new CommandFormats();
     final CommandFilter filter = new CommandFilter();
+    final CommandListFilters list_filters = new CommandListFilters();
 
     this.commands = new HashMap<>(8);
     this.commands.put("filter", filter);
     this.commands.put("formats", formats);
+    this.commands.put("list-filters", list_filters);
 
     this.commander = new JCommander(r);
     this.commander.setProgramName("smf");
     this.commander.addCommand("filter", filter);
     this.commander.addCommand("formats", formats);
+    this.commander.addCommand("list-filters", list_filters);
   }
 
   /**
@@ -174,6 +178,38 @@ public final class Main implements Runnable
         (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(
           Logger.ROOT_LOGGER_NAME);
       root.setLevel(this.verbose.toLevel());
+      return unit();
+    }
+  }
+
+  @Parameters(commandDescription = "List available filters")
+  private final class CommandListFilters extends CommandRoot
+  {
+    CommandListFilters()
+    {
+
+    }
+
+    @Override
+    public Unit call()
+      throws Exception
+    {
+      super.call();
+
+      final SMFFilterCommandModuleResolverType r =
+        SMFFilterCommandModuleResolver.create();
+
+      for (final String module_name : r.available().keySet()) {
+        final SMFFilterCommandModuleType module =
+          r.available().get(module_name).get();
+        for (final String command_name : module.parsers().keySet()) {
+          System.out.print(module_name);
+          System.out.print(":");
+          System.out.print(command_name);
+          System.out.println();
+        }
+      }
+
       return unit();
     }
   }
