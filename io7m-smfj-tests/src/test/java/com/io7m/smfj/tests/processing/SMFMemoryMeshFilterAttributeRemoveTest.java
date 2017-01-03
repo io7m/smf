@@ -22,13 +22,13 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFAttributeArrayType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeRemove;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFProcessingError;
+import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFProcessingError;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeRemove;
 import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.control.Validation;
@@ -47,38 +47,47 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeRemoveTest.class);
   }
 
-  @Test public void testParseWrong0()
+  @Test
+  public void testParseWrong1()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.empty());
+      SMFMemoryMeshFilterAttributeRemove.parse(
+        Optional.empty(),
+        1,
+        List.of());
     Assert.assertTrue(r.isInvalid());
   }
 
-  @Test public void testParseWrong1()
+  @Test
+  public void testParseWrong2()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove"));
+      SMFMemoryMeshFilterAttributeRemove.parse(
+        Optional.empty(),
+        1,
+        List.of("<#@"));
     Assert.assertTrue(r.isInvalid());
   }
 
-  @Test public void testParseWrong2()
+  @Test
+  public void testParseWrong3()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "<#@"));
+      SMFMemoryMeshFilterAttributeRemove.parse(
+        Optional.empty(),
+        1,
+        List.of("x", "y"));
     Assert.assertTrue(r.isInvalid());
   }
 
-  @Test public void testParseWrong3()
+  @Test
+  public void testParse()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "x", "y"));
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test public void testParse()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterAttributeRemove.parse(Optional.empty(), 1, List.of("remove", "x"));
+      SMFMemoryMeshFilterAttributeRemove.parse(
+        Optional.empty(),
+        1,
+        List.of("x"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "remove");

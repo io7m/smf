@@ -27,23 +27,23 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating1Type;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating2Type;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating3Type;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating4Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned1Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned2Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned3Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned4Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned1Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned2Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned3Type;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned4Type;
-import com.io7m.smfj.processing.SMFAttributeArrayType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFMemoryMeshSerializer;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating2Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating3Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating4Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned1Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned2Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned3Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned4Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned1Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned2Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned3Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned4Type;
+import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.Tuple2;
 import javaslang.collection.Vector;
@@ -66,72 +66,6 @@ public final class SMFMemoryMeshSerializerTest
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshSerializerTest.class);
-  }
-
-  @Test
-  public void testAll()
-    throws Exception
-  {
-    final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
-
-    try (final SMFParserSequentialType parser0 =
-           SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
-    }
-
-    Assert.assertTrue(loader0.errors().isEmpty());
-
-    final SMFMemoryMesh mesh0 = loader0.mesh();
-    final SMFFormatText fmt = new SMFFormatText();
-    final Path tmp = Files.createTempFile("smf-memory-", ".smft");
-    try (final OutputStream stream =
-           Files.newOutputStream(
-             tmp,
-             StandardOpenOption.CREATE,
-             StandardOpenOption.TRUNCATE_EXISTING)) {
-      try (final SMFSerializerType serial =
-             fmt.serializerCreate(SMFFormatVersion.of(1, 0), tmp, stream)) {
-        SMFMemoryMeshSerializer.serialize(mesh0, serial);
-      }
-    }
-
-    final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
-    try (final InputStream stream = Files.newInputStream(tmp)) {
-      try (final SMFParserSequentialType parser1 =
-             fmt.parserCreateSequential(loader1, tmp, stream)) {
-        parser1.parseHeader();
-        parser1.parseData();
-      }
-    }
-
-    final SMFMemoryMesh mesh1 = loader1.mesh();
-
-    LOG.debug("mesh0: {} ", mesh0);
-    LOG.debug("mesh1: {} ", mesh1);
-
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-
-    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
-      final SMFAttributeName name = pair._1;
-      final SMFAttributeArrayType a0 = pair._2;
-      final SMFAttributeArrayType a1 = mesh1.arrays().get(name).get();
-
-      a0.matchArray(
-        unit(),
-        (x, y) -> checkFloat4(y, (SMFAttributeArrayFloating4Type) a1),
-        (x, y) -> checkFloat3(y, (SMFAttributeArrayFloating3Type) a1),
-        (x, y) -> checkFloat2(y, (SMFAttributeArrayFloating2Type) a1),
-        (x, y) -> checkFloat1(y, (SMFAttributeArrayFloating1Type) a1),
-        (x, y) -> checkUnsigned4(y, (SMFAttributeArrayIntegerUnsigned4Type) a1),
-        (x, y) -> checkUnsigned3(y, (SMFAttributeArrayIntegerUnsigned3Type) a1),
-        (x, y) -> checkUnsigned2(y, (SMFAttributeArrayIntegerUnsigned2Type) a1),
-        (x, y) -> checkUnsigned1(y, (SMFAttributeArrayIntegerUnsigned1Type) a1),
-        (x, y) -> checkSigned4(y, (SMFAttributeArrayIntegerSigned4Type) a1),
-        (x, y) -> checkSigned3(y, (SMFAttributeArrayIntegerSigned3Type) a1),
-        (x, y) -> checkSigned2(y, (SMFAttributeArrayIntegerSigned2Type) a1),
-        (x, y) -> checkSigned1(y, (SMFAttributeArrayIntegerSigned1Type) a1));
-    }
   }
 
   private static Unit checkFloat4(
@@ -300,5 +234,71 @@ public final class SMFMemoryMeshSerializerTest
     }
 
     return unit();
+  }
+
+  @Test
+  public void testAll()
+    throws Exception
+  {
+    final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
+
+    try (final SMFParserSequentialType parser0 =
+           SMFTestFiles.createParser(loader0, "all.smft")) {
+      // Nothing
+    }
+
+    Assert.assertTrue(loader0.errors().isEmpty());
+
+    final SMFMemoryMesh mesh0 = loader0.mesh();
+    final SMFFormatText fmt = new SMFFormatText();
+    final Path tmp = Files.createTempFile("smf-memory-", ".smft");
+    try (final OutputStream stream =
+           Files.newOutputStream(
+             tmp,
+             StandardOpenOption.CREATE,
+             StandardOpenOption.TRUNCATE_EXISTING)) {
+      try (final SMFSerializerType serial =
+             fmt.serializerCreate(SMFFormatVersion.of(1, 0), tmp, stream)) {
+        SMFMemoryMeshSerializer.serialize(mesh0, serial);
+      }
+    }
+
+    final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
+    try (final InputStream stream = Files.newInputStream(tmp)) {
+      try (final SMFParserSequentialType parser1 =
+             fmt.parserCreateSequential(loader1, tmp, stream)) {
+        parser1.parseHeader();
+        parser1.parseData();
+      }
+    }
+
+    final SMFMemoryMesh mesh1 = loader1.mesh();
+
+    LOG.debug("mesh0: {} ", mesh0);
+    LOG.debug("mesh1: {} ", mesh1);
+
+    Assert.assertEquals(mesh0.header(), mesh1.header());
+    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
+
+    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
+      final SMFAttributeName name = pair._1;
+      final SMFAttributeArrayType a0 = pair._2;
+      final SMFAttributeArrayType a1 = mesh1.arrays().get(name).get();
+
+      a0.matchArray(
+        unit(),
+        (x, y) -> checkFloat4(y, (SMFAttributeArrayFloating4Type) a1),
+        (x, y) -> checkFloat3(y, (SMFAttributeArrayFloating3Type) a1),
+        (x, y) -> checkFloat2(y, (SMFAttributeArrayFloating2Type) a1),
+        (x, y) -> checkFloat1(y, (SMFAttributeArrayFloating1Type) a1),
+        (x, y) -> checkUnsigned4(y, (SMFAttributeArrayIntegerUnsigned4Type) a1),
+        (x, y) -> checkUnsigned3(y, (SMFAttributeArrayIntegerUnsigned3Type) a1),
+        (x, y) -> checkUnsigned2(y, (SMFAttributeArrayIntegerUnsigned2Type) a1),
+        (x, y) -> checkUnsigned1(y, (SMFAttributeArrayIntegerUnsigned1Type) a1),
+        (x, y) -> checkSigned4(y, (SMFAttributeArrayIntegerSigned4Type) a1),
+        (x, y) -> checkSigned3(y, (SMFAttributeArrayIntegerSigned3Type) a1),
+        (x, y) -> checkSigned2(y, (SMFAttributeArrayIntegerSigned2Type) a1),
+        (x, y) -> checkSigned1(y, (SMFAttributeArrayIntegerSigned1Type) a1));
+    }
   }
 }
