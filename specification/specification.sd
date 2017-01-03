@@ -1,5 +1,5 @@
 [document
-  [title io7m-smfj 0.5.0 Specification]
+  [title io7m-smfj 0.5.1 Specification]
   [import "notational.sdi"]
   [import "model.sdi"]
   [import "text.sdi"]
