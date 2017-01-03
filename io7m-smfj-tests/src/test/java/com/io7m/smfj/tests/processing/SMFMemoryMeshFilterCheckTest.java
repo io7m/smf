@@ -17,31 +17,24 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.jfunctional.Unit;
-import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
-import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFAttributeArrayType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeRename;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterCheck;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterCheckConfiguration;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFProcessingError;
-import javaslang.Tuple2;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFProcessingError;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterCheck;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterCheckConfiguration;
 import javaslang.collection.List;
-import javaslang.collection.Map;
 import javaslang.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
@@ -54,24 +47,13 @@ public final class SMFMemoryMeshFilterCheckTest
   }
 
   @Test
-  public void testParseWrong0()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterCheck.parse(
-        Optional.empty(),
-        1,
-        List.empty());
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test
   public void testParseWrong1()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterCheck.parse(
         Optional.empty(),
         1,
-        List.of("check"));
+        List.of());
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -82,7 +64,7 @@ public final class SMFMemoryMeshFilterCheckTest
       SMFMemoryMeshFilterCheck.parse(
         Optional.empty(),
         1,
-        List.of("check", "x", "<#@"));
+        List.of("x", "<#@"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -93,7 +75,7 @@ public final class SMFMemoryMeshFilterCheckTest
       SMFMemoryMeshFilterCheck.parse(
         Optional.empty(),
         1,
-        List.of("check", "<#@", "y"));
+        List.of("<#@", "y"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -105,7 +87,6 @@ public final class SMFMemoryMeshFilterCheckTest
         Optional.empty(),
         1,
         List.of(
-          "check",
           "x",
           "y",
           "z"));
@@ -120,7 +101,6 @@ public final class SMFMemoryMeshFilterCheckTest
         Optional.empty(),
         1,
         List.of(
-          "check",
           "x",
           "float",
           "z",
@@ -135,7 +115,7 @@ public final class SMFMemoryMeshFilterCheckTest
       SMFMemoryMeshFilterCheck.parse(
         Optional.empty(),
         1,
-        List.of("check", "x", "float", "4", "32"));
+        List.of("x", "float", "4", "32"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "check");
@@ -148,7 +128,7 @@ public final class SMFMemoryMeshFilterCheckTest
       SMFMemoryMeshFilterCheck.parse(
         Optional.empty(),
         1,
-        List.of("check", "x", "-", "-", "-"));
+        List.of("x", "-", "-", "-"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "check");

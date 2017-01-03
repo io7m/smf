@@ -17,13 +17,20 @@
 package com.io7m.smfj.frontend;
 
 import com.io7m.jlexing.core.LexicalPosition;
+import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.format.text.SMFLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.processing.SMFFilterCommands;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
+import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
+import com.io7m.smfj.processing.api.SMFFilterCommandParserType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import javaslang.collection.List;
+import javaslang.collection.Map;
+import javaslang.collection.SortedMap;
 import javaslang.control.Validation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,6 +46,12 @@ import java.util.Optional;
 
 public final class SMFFilterCommandFile
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFFilterCommandFile.class);
+  }
+
   private SMFFilterCommandFile()
   {
 
@@ -49,6 +62,7 @@ public final class SMFFilterCommandFile
    *
    * @param path_opt The path for error reporting
    * @param stream   An input stream
+   * @param resolver A filter command module resolver
    *
    * @return A sequence of filters, or a list of errors encountered during
    * parsing
@@ -56,15 +70,21 @@ public final class SMFFilterCommandFile
    * @throws IOException On I/O errors
    */
 
-  public static Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> parseFromStream(
+  public static Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>>
+  parseFromStream(
+    final SMFFilterCommandModuleResolverType resolver,
     final Optional<Path> path_opt,
     final InputStream stream)
     throws IOException
   {
+    NullCheck.notNull(resolver, "Resolver");
     NullCheck.notNull(path_opt, "Path");
     NullCheck.notNull(stream, "Stream");
 
     final SMFLineLexer lexer = new SMFLineLexer();
+
+    final SortedMap<String, SMFFilterCommandModuleType> modules =
+      resolver.available();
 
     List<SMFParseError> errors = List.empty();
     List<SMFMemoryMeshFilterType> filters = List.empty();
@@ -74,6 +94,7 @@ public final class SMFFilterCommandFile
            new BufferedReader(new InputStreamReader(
              stream,
              StandardCharsets.UTF_8))) {
+
       while (true) {
         final String line = reader.readLine();
         if (line == null) {
@@ -84,14 +105,32 @@ public final class SMFFilterCommandFile
           continue;
         }
 
-        final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> result =
-          SMFFilterCommands.parse(position.file(), position.line(), text);
+        final String qualified = text.get(0);
+        final String[] segments = qualified.split(":");
+        if (segments.length == 2) {
+          final String module_name = segments[0];
+          final String command_name = segments[1];
 
-        if (result.isValid()) {
-          filters = filters.append(result.get());
+          final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> result =
+            resolveCommand(
+              modules,
+              position,
+              path_opt,
+              module_name,
+              command_name,
+              text);
+
+          if (result.isValid()) {
+            filters = filters.append(result.get());
+          } else {
+            errors = errors.appendAll(result.getError());
+          }
+
         } else {
-          errors = errors.appendAll(result.getError());
+          errors = errors.append(
+            notFullyQualified(position, path_opt, qualified));
         }
+
         position = position.withLine(position.line() + 1).withColumn(0);
       }
     }
@@ -100,5 +139,107 @@ public final class SMFFilterCommandFile
       return Validation.valid(filters);
     }
     return Validation.invalid(errors);
+  }
+
+  private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
+  resolveCommand(
+    final SortedMap<String, SMFFilterCommandModuleType> modules,
+    final LexicalPosition<Path> position,
+    final Optional<Path> path_opt,
+    final String module_name,
+    final String command_name,
+    final List<String> text)
+  {
+    if (modules.containsKey(module_name)) {
+      final SMFFilterCommandModuleType module =
+        modules.get(module_name).get();
+
+      if (module.parsers().containsKey(command_name)) {
+        final SMFFilterCommandParserType parser =
+          module.parsers().get(command_name).get();
+
+        LOG.debug(
+          "resolved {}:{} -> {}",
+          module_name,
+          command_name,
+          parser);
+
+        return parser.parse(position.file(), position.line(), text.tail());
+      }
+      return Validation.invalid(List.of(
+        noSuchCommand(position, path_opt, module, command_name)));
+    }
+    return Validation.invalid(List.of(
+      noSuchModule(position, path_opt, modules, module_name)));
+  }
+
+  private static SMFParseError notFullyQualified(
+    final LexicalPositionType<Path> position,
+    final Optional<Path> path_opt,
+    final String received)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Expected a fully qualified command name.");
+    sb.append(System.lineSeparator());
+    sb.append("  Received: ");
+    sb.append(received);
+    sb.append(System.lineSeparator());
+    return SMFParseError.of(
+      LexicalPosition.of(position.line(), position.column(), path_opt),
+      sb.toString(),
+      Optional.empty());
+  }
+
+  private static SMFParseError noSuchCommand(
+    final LexicalPositionType<Path> position,
+    final Optional<Path> path_opt,
+    final SMFFilterCommandModuleType module,
+    final String command_name)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Unknown command.");
+    sb.append(System.lineSeparator());
+    sb.append("  Received: ");
+    sb.append(command_name);
+    sb.append(System.lineSeparator());
+    sb.append("  Module: ");
+    sb.append(module.name());
+    sb.append(System.lineSeparator());
+    sb.append("  Available: ");
+    sb.append(System.lineSeparator());
+    for (final String available : module.parsers().keySet()) {
+      sb.append("    ");
+      sb.append(available);
+      sb.append(System.lineSeparator());
+    }
+    return SMFParseError.of(
+      LexicalPosition.of(position.line(), position.column(), path_opt),
+      sb.toString(),
+      Optional.empty());
+  }
+
+  private static SMFParseError noSuchModule(
+    final LexicalPositionType<Path> position,
+    final Optional<Path> path_opt,
+    final Map<String, SMFFilterCommandModuleType> modules,
+    final String module_name)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("Unknown module.");
+    sb.append(System.lineSeparator());
+    sb.append("  Received: ");
+    sb.append(module_name);
+    sb.append(System.lineSeparator());
+    sb.append("  Available: ");
+    sb.append(System.lineSeparator());
+    for (final String available : modules.keySet()) {
+      sb.append("    ");
+      sb.append(available);
+      sb.append(System.lineSeparator());
+    }
+    return SMFParseError.of(
+      LexicalPosition.of(position.line(), position.column(), path_opt),
+      sb.toString(),
+      Optional.empty());
   }
 }

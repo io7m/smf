@@ -23,27 +23,24 @@ import com.io7m.jtensors.VectorI3L;
 import com.io7m.jtensors.VectorI4D;
 import com.io7m.jtensors.VectorI4L;
 import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.format.text.SMFFormatText;
-import com.io7m.smfj.parser.api.SMFParserEventsType;
-import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating1;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating2;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating3;
-import com.io7m.smfj.processing.SMFAttributeArrayFloating4;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned1;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned2;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned3;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerSigned4;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned1;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned2;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned3;
-import com.io7m.smfj.processing.SMFAttributeArrayIntegerUnsigned4;
-import com.io7m.smfj.processing.SMFAttributeArrayType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFMetadata;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating2;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating3;
+import com.io7m.smfj.processing.api.SMFAttributeArrayFloating4;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned1;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned2;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned3;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerSigned4;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned1;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned2;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned3;
+import com.io7m.smfj.processing.api.SMFAttributeArrayIntegerUnsigned4;
+import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFMetadata;
 import javaslang.collection.Map;
 import javaslang.collection.Vector;
 import org.junit.Assert;
@@ -51,14 +48,303 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public final class SMFMemoryMeshProducerTest
 {
   @Rule public ExpectedException expected = ExpectedException.none();
+
+  private static void checkVector4F(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayFloating4 a = (SMFAttributeArrayFloating4)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI4D v = a.values().get(0);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(1.0, v.getZD(), 0.0);
+      Assert.assertEquals(127.0, v.getWD(), 0.0);
+    }
+    {
+      final VectorI4D v = a.values().get(1);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(1.0, v.getZD(), 0.0);
+      Assert.assertEquals(127.0, v.getWD(), 0.0);
+    }
+    {
+      final VectorI4D v = a.values().get(2);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(1.0, v.getZD(), 0.0);
+      Assert.assertEquals(127.0, v.getWD(), 0.0);
+    }
+  }
+
+  private static void checkVector3F(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayFloating3 a = (SMFAttributeArrayFloating3)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI3D v = a.values().get(0);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(127.0, v.getZD(), 0.0);
+    }
+    {
+      final VectorI3D v = a.values().get(1);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(127.0, v.getZD(), 0.0);
+    }
+    {
+      final VectorI3D v = a.values().get(2);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(0.0, v.getYD(), 0.0);
+      Assert.assertEquals(127.0, v.getZD(), 0.0);
+    }
+  }
+
+  private static void checkVector2F(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayFloating2 a = (SMFAttributeArrayFloating2)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI2D v = a.values().get(0);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(127.0, v.getYD(), 0.0);
+    }
+    {
+      final VectorI2D v = a.values().get(1);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(127.0, v.getYD(), 0.0);
+    }
+    {
+      final VectorI2D v = a.values().get(2);
+      Assert.assertEquals(-127.0, v.getXD(), 0.0);
+      Assert.assertEquals(127.0, v.getYD(), 0.0);
+    }
+  }
+
+  private static void checkVector1F(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayFloating1 a = (SMFAttributeArrayFloating1)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final Double v = a.values().get(0);
+      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+    }
+    {
+      final Double v = a.values().get(1);
+      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+    }
+    {
+      final Double v = a.values().get(2);
+      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+    }
+  }
+
+  private static void checkVector4I(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerSigned4 a = (SMFAttributeArrayIntegerSigned4)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI4L v = a.values().get(0);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+    {
+      final VectorI4L v = a.values().get(1);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+    {
+      final VectorI4L v = a.values().get(2);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+  }
+
+  private static void checkVector3I(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerSigned3 a = (SMFAttributeArrayIntegerSigned3)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI3L v = a.values().get(0);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+    {
+      final VectorI3L v = a.values().get(1);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+    {
+      final VectorI3L v = a.values().get(2);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+  }
+
+  private static void checkVector2I(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerSigned2 a = (SMFAttributeArrayIntegerSigned2)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI2L v = a.values().get(0);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+    {
+      final VectorI2L v = a.values().get(1);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+    {
+      final VectorI2L v = a.values().get(2);
+      Assert.assertEquals(-127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+  }
+
+  private static void checkVector1I(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerSigned1 a = (SMFAttributeArrayIntegerSigned1)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final Long v = a.values().get(0);
+      Assert.assertEquals(127L, v.longValue());
+    }
+    {
+      final Long v = a.values().get(1);
+      Assert.assertEquals(127L, v.longValue());
+    }
+    {
+      final Long v = a.values().get(2);
+      Assert.assertEquals(127L, v.longValue());
+    }
+  }
+
+  private static void checkVector4U(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerUnsigned4 a = (SMFAttributeArrayIntegerUnsigned4)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI4L v = a.values().get(0);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+    {
+      final VectorI4L v = a.values().get(1);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+    {
+      final VectorI4L v = a.values().get(2);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(1L, v.getZL());
+      Assert.assertEquals(127L, v.getWL());
+    }
+  }
+
+  private static void checkVector3U(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerUnsigned3 a = (SMFAttributeArrayIntegerUnsigned3)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI3L v = a.values().get(0);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+    {
+      final VectorI3L v = a.values().get(1);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+    {
+      final VectorI3L v = a.values().get(2);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(0L, v.getYL());
+      Assert.assertEquals(127L, v.getZL());
+    }
+  }
+
+  private static void checkVector2U(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerUnsigned2 a = (SMFAttributeArrayIntegerUnsigned2)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final VectorI2L v = a.values().get(0);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+    {
+      final VectorI2L v = a.values().get(1);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+    {
+      final VectorI2L v = a.values().get(2);
+      Assert.assertEquals(127L, v.getXL());
+      Assert.assertEquals(127L, v.getYL());
+    }
+  }
+
+  private static void checkVector1U(
+    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
+    final String name)
+  {
+    final SMFAttributeArrayIntegerUnsigned1 a = (SMFAttributeArrayIntegerUnsigned1)
+      arrays.get(SMFAttributeName.of(name)).get();
+    {
+      final Long v = a.values().get(0);
+      Assert.assertEquals(127L, v.longValue());
+    }
+    {
+      final Long v = a.values().get(1);
+      Assert.assertEquals(127L, v.longValue());
+    }
+    {
+      final Long v = a.values().get(2);
+      Assert.assertEquals(127L, v.longValue());
+    }
+  }
 
   @Test
   public void testReuse()
@@ -230,301 +516,5 @@ public final class SMFMemoryMeshProducerTest
     checkVector3U(arrays, "u8_3");
     checkVector2U(arrays, "u8_2");
     checkVector1U(arrays, "u8_1");
-  }
-
-  private static void checkVector4F(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayFloating4 a = (SMFAttributeArrayFloating4)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI4D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(1.0, v.getZD(), 0.0);
-      Assert.assertEquals(127.0, v.getWD(), 0.0);
-    }
-    {
-      final VectorI4D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(1.0, v.getZD(), 0.0);
-      Assert.assertEquals(127.0, v.getWD(), 0.0);
-    }
-    {
-      final VectorI4D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(1.0, v.getZD(), 0.0);
-      Assert.assertEquals(127.0, v.getWD(), 0.0);
-    }
-  }
-
-  private static void checkVector3F(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayFloating3 a = (SMFAttributeArrayFloating3)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI3D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(127.0, v.getZD(), 0.0);
-    }
-    {
-      final VectorI3D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(127.0, v.getZD(), 0.0);
-    }
-    {
-      final VectorI3D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(0.0, v.getYD(), 0.0);
-      Assert.assertEquals(127.0, v.getZD(), 0.0);
-    }
-  }
-
-  private static void checkVector2F(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayFloating2 a = (SMFAttributeArrayFloating2)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI2D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(127.0, v.getYD(), 0.0);
-    }
-    {
-      final VectorI2D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(127.0, v.getYD(), 0.0);
-    }
-    {
-      final VectorI2D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.getXD(), 0.0);
-      Assert.assertEquals(127.0, v.getYD(), 0.0);
-    }
-  }
-
-  private static void checkVector1F(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayFloating1 a = (SMFAttributeArrayFloating1)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final Double v = a.values().get(0);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
-    }
-    {
-      final Double v = a.values().get(1);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
-    }
-    {
-      final Double v = a.values().get(2);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
-    }
-  }
-
-
-  private static void checkVector4I(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerSigned4 a = (SMFAttributeArrayIntegerSigned4)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI4L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-    {
-      final VectorI4L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-    {
-      final VectorI4L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-  }
-
-  private static void checkVector3I(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerSigned3 a = (SMFAttributeArrayIntegerSigned3)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI3L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-    {
-      final VectorI3L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-    {
-      final VectorI3L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-  }
-
-  private static void checkVector2I(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerSigned2 a = (SMFAttributeArrayIntegerSigned2)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI2L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-    {
-      final VectorI2L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-    {
-      final VectorI2L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-  }
-
-  private static void checkVector1I(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerSigned1 a = (SMFAttributeArrayIntegerSigned1)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final Long v = a.values().get(0);
-      Assert.assertEquals(127L, v.longValue());
-    }
-    {
-      final Long v = a.values().get(1);
-      Assert.assertEquals(127L, v.longValue());
-    }
-    {
-      final Long v = a.values().get(2);
-      Assert.assertEquals(127L, v.longValue());
-    }
-  }
-
-
-  private static void checkVector4U(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerUnsigned4 a = (SMFAttributeArrayIntegerUnsigned4)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI4L v = a.values().get(0);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-    {
-      final VectorI4L v = a.values().get(1);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-    {
-      final VectorI4L v = a.values().get(2);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(1L, v.getZL());
-      Assert.assertEquals(127L, v.getWL());
-    }
-  }
-
-  private static void checkVector3U(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerUnsigned3 a = (SMFAttributeArrayIntegerUnsigned3)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI3L v = a.values().get(0);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-    {
-      final VectorI3L v = a.values().get(1);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-    {
-      final VectorI3L v = a.values().get(2);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(0L, v.getYL());
-      Assert.assertEquals(127L, v.getZL());
-    }
-  }
-
-  private static void checkVector2U(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerUnsigned2 a = (SMFAttributeArrayIntegerUnsigned2)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final VectorI2L v = a.values().get(0);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-    {
-      final VectorI2L v = a.values().get(1);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-    {
-      final VectorI2L v = a.values().get(2);
-      Assert.assertEquals(127L, v.getXL());
-      Assert.assertEquals(127L, v.getYL());
-    }
-  }
-
-  private static void checkVector1U(
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
-    final String name)
-  {
-    final SMFAttributeArrayIntegerUnsigned1 a = (SMFAttributeArrayIntegerUnsigned1)
-      arrays.get(SMFAttributeName.of(name)).get();
-    {
-      final Long v = a.values().get(0);
-      Assert.assertEquals(127L, v.longValue());
-    }
-    {
-      final Long v = a.values().get(1);
-      Assert.assertEquals(127L, v.longValue());
-    }
-    {
-      final Long v = a.values().get(2);
-      Assert.assertEquals(127L, v.longValue());
-    }
   }
 }

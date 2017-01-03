@@ -36,7 +36,7 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>io7m-smfj-processing</artifactId>
+      <artifactId>io7m-smfj-processing-main</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>

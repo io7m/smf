@@ -20,12 +20,12 @@ import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.SMFMemoryMesh;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterAttributeTrim;
-import com.io7m.smfj.processing.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.SMFMemoryMeshProducer;
-import com.io7m.smfj.processing.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.SMFProcessingError;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
+import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
+import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
+import com.io7m.smfj.processing.api.SMFProcessingError;
+import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeTrim;
 import javaslang.collection.HashSet;
 import javaslang.collection.List;
 import javaslang.control.Validation;
@@ -59,7 +59,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
-        List.of("trim"));
+        List.of());
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -70,18 +70,31 @@ public final class SMFMemoryMeshFilterAttributeTrimTest
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
-        List.of("trim", "~#@"));
+        List.of("~#@"));
     Assert.assertTrue(r.isInvalid());
   }
 
   @Test
-  public void testParse()
+  public void testParse0()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
-        List.of("trim", "x"));
+        List.of("x"));
+    Assert.assertTrue(r.isValid());
+    final SMFMemoryMeshFilterType c = r.get();
+    Assert.assertEquals(c.name(), "trim");
+  }
+
+  @Test
+  public void testParse1()
+  {
+    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+      SMFMemoryMeshFilterAttributeTrim.parse(
+        Optional.empty(),
+        1,
+        List.of("x", "y", "z"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "trim");
