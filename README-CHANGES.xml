@@ -3,8 +3,15 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
-    <c:date>2016-12-29</c:date>
-    <c:version>0.4.1</c:version>
+    <c:date>2017-01-03</c:date>
+    <c:version>0.5.0</c:version>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
+      <c:type-code-new/>
+      <c:ticket>26</c:ticket>
+      <c:summary>Allow the publication of new filter commands via a simple modular ServiceLoader-based resolution system.</c:summary>
+    </c:item>
 
     <c:item>
       <c:date>2016-12-29</c:date>
