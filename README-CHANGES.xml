@@ -4,6 +4,31 @@
 
   <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2017-01-03</c:date>
+    <c:version>0.5.1</c:version>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
+      <c:type-code-new/>
+      <c:ticket>28</c:ticket>
+      <c:summary>Add the ability to list the available filter commands.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
+      <c:type-code-fix/>
+      <c:summary>Update to the latest versions of all dependencies.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-03</c:date>
+      <c:type-code-fix/>
+      <c:ticket>27</c:ticket>
+      <c:summary>Insert the project version into the Blender plugin sources at compile time.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2017-01-03</c:date>
     <c:version>0.5.0</c:version>
 
     <c:item>
