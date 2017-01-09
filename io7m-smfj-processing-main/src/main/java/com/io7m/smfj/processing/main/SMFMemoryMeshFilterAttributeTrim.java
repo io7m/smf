@@ -78,11 +78,11 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
       try {
         return Validation.valid(create(text.map(SMFAttributeName::of).toSet()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 

@@ -97,12 +97,12 @@ public final class SMFMemoryMeshFilterSchemaSet implements
             .setSchemaMajorVersion(major)
             .setSchemaMinorVersion(minor).build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
 
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 

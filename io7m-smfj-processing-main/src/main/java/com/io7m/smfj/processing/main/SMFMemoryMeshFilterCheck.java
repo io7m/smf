@@ -125,11 +125,11 @@ public final class SMFMemoryMeshFilterCheck implements
             .setComponentType(type)
             .build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 

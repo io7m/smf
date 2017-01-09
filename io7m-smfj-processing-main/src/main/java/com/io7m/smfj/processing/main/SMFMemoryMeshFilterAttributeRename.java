@@ -85,11 +85,11 @@ public final class SMFMemoryMeshFilterAttributeRename implements
         return Validation.valid(
           create(source, target));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 

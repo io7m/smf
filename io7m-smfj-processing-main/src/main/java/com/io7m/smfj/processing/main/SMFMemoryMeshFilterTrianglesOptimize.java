@@ -134,12 +134,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
         return Validation.valid(
           create(builder.build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
 
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 

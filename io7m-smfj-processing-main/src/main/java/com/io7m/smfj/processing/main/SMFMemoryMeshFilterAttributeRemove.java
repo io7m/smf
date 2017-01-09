@@ -93,11 +93,11 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
         return Validation.valid(create(attr));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
