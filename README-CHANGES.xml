@@ -9,6 +9,12 @@
     <c:item>
       <c:date>2017-01-09</c:date>
       <c:type-code-change/>
+      <c:summary>Add context values to the filter interface. This is an API breaking change.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-09</c:date>
+      <c:type-code-change/>
       <c:ticket>17</c:ticket>
       <c:summary>Integrate immutables-javaslang. This is an API breaking change.</c:summary>
     </c:item>
