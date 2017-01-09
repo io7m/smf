@@ -19,6 +19,7 @@ package com.io7m.smfj.processing.main;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
@@ -126,8 +127,10 @@ public final class SMFMemoryMeshFilterSchemaSet implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
     return Validation.valid(
       m.withHeader(m.header().withSchemaIdentifier(this.config)));

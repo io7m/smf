@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
@@ -177,8 +178,10 @@ public final class SMFMemoryMeshFilterAttributeRename implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();

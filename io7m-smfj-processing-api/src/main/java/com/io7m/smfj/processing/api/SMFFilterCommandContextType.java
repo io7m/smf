@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,38 +16,28 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import com.io7m.smfj.core.SMFImmutableStyleType;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import org.immutables.value.Value;
+
+import java.nio.file.Path;
 
 /**
- * A filter that transforms an in-memory mesh.
+ * The context used during filtering.
  */
 
-public interface SMFMemoryMeshFilterType
+@Value.Immutable
+@JavaslangEncodingEnabled
+@SMFImmutableStyleType
+public interface SMFFilterCommandContextType
 {
   /**
-   * @return The name of the filter
-   */
-
-  String name();
-
-  /**
-   * @return The syntax of the filter
-   */
-
-  String syntax();
-
-  /**
-   * Evaluate the filter on the given mesh.
+   * The source root directory. If a filter causes files to be open, they must
+   * be descendants of this directory.
    *
-   * @param context The filtering context
-   * @param m       A mesh
-   *
-   * @return A filtered mesh, or a list or reasons why the filtering did not
-   * work
+   * @return A source root directory
    */
 
-  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
-    SMFFilterCommandContext context,
-    SMFMemoryMesh m);
+  @Value.Parameter
+  Path sourcesRoot();
 }

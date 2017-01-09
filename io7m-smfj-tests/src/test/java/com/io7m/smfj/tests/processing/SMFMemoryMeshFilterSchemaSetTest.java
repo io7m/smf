@@ -19,6 +19,7 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
@@ -32,6 +33,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public final class SMFMemoryMeshFilterSchemaSetTest
@@ -160,7 +163,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest
       SMFMemoryMeshFilterSchemaSet.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(loader.mesh());
+      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
     Assert.assertTrue(r.isValid());
     Assert.assertEquals(identifier, r.get().header().schemaIdentifier());
 

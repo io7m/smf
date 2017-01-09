@@ -31,6 +31,7 @@ import com.io7m.smfj.frontend.SMFSerializerProviders;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
@@ -321,6 +322,11 @@ public final class Main implements Runnable
       description = "The filter commands")
     private String file_commands;
 
+    @Parameter(
+      names = "-source-directory",
+      description = "The source directory")
+    private String source_directory = System.getProperty("user.dir");
+
     CommandFilter()
     {
 
@@ -363,8 +369,10 @@ public final class Main implements Runnable
         return unit();
       }
 
+      final SMFFilterCommandContext context =
+        SMFFilterCommandContext.of(Paths.get(this.source_directory));
       final Optional<SMFMemoryMesh> filtered_opt =
-        this.runFilters(filters, mesh_opt.get());
+        this.runFilters(context, filters, mesh_opt.get());
 
       if (!filtered_opt.isPresent()) {
         Main.this.exit_code = 1;
@@ -405,6 +413,7 @@ public final class Main implements Runnable
     }
 
     private Optional<SMFMemoryMesh> runFilters(
+      final SMFFilterCommandContext context,
       final Seq<SMFMemoryMeshFilterType> filters,
       final SMFMemoryMesh mesh)
     {
@@ -414,7 +423,7 @@ public final class Main implements Runnable
         LOG.debug("evaluating filter: {}", filter.name());
 
         final Validation<List<SMFProcessingError>, SMFMemoryMesh> result =
-          filter.filter(mesh_current);
+          filter.filter(context, mesh_current);
         if (result.isValid()) {
           mesh_current = result.get();
         } else {
@@ -473,7 +482,9 @@ public final class Main implements Runnable
       try (final InputStream stream = Files.newInputStream(path_commands)) {
         final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
-            resolver, Optional.of(path_commands), stream);
+            resolver,
+            Optional.of(path_commands),
+            stream);
         if (r.isValid()) {
           return Optional.of(r.get());
         }
