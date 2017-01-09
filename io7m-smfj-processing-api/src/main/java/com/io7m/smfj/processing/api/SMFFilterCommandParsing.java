@@ -14,12 +14,11 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.processing.main;
+package com.io7m.smfj.processing.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
