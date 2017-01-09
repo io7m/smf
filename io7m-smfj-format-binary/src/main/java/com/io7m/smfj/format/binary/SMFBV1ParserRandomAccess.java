@@ -940,8 +940,8 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     if (!this.parserHasFailed()) {
       this.header = SMFBV1.header(
         this.header_view,
-        this.attributes,
-        this.attributes_named);
+        this.attributes
+      );
       this.offsets = SMFBV1Offsets.fromHeader(this.header);
     }
   }

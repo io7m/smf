@@ -125,9 +125,10 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
     NullCheck.notNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
+    final SMFHeader orig_header = m.header();
     if (!arrays.containsKey(this.source)) {
       return Validation.invalid(List.of(this.nonexistentAttribute(
-        m.header().attributesInOrder())));
+        orig_header.attributesInOrder())));
     }
 
     /*
@@ -142,23 +143,15 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
      */
 
     final List<SMFAttribute> orig_ordered =
-      m.header().attributesInOrder();
+      orig_header.attributesInOrder();
     final Map<SMFAttributeName, SMFAttribute> orig_by_name =
-      m.header().attributesByName();
+      orig_header.attributesByName();
     final SMFAttribute orig_attrib =
       orig_by_name.get(this.source).get();
-
     final List<SMFAttribute> new_ordered =
       orig_ordered.remove(orig_attrib);
-    final Map<SMFAttributeName, SMFAttribute> new_by_name =
-      orig_by_name.remove(this.source);
-
     final SMFHeader new_header =
-      SMFHeader.builder()
-        .from(m.header())
-        .setAttributesInOrder(new_ordered)
-        .setAttributesByName(new_by_name)
-        .build();
+      orig_header.withAttributesInOrder(new_ordered);
 
     return Validation.valid(
       SMFMemoryMesh.builder()

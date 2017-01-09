@@ -27,6 +27,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
+import javaslang.collection.TreeMap;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,7 +49,6 @@ public final class SMFHeaderTest
     b.setVertexCount(256L);
     b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
     b.setAttributesInOrder(List.of(attr0));
-    b.setAttributesByName(HashMap.of(attr0.name(), attr0));
     b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,
@@ -61,7 +61,7 @@ public final class SMFHeaderTest
     Assert.assertEquals(256L, h.vertexCount());
     Assert.assertEquals(16L, h.triangleIndexSizeBits());
     Assert.assertEquals(List.of(attr0), h.attributesInOrder());
-    Assert.assertEquals(HashMap.of(attr0.name(), attr0), h.attributesByName());
+    Assert.assertEquals(TreeMap.of(attr0.name(), attr0), h.attributesByName());
   }
 
   @Test
@@ -80,73 +80,7 @@ public final class SMFHeaderTest
         CAxis.AXIS_POSITIVE_Y,
         CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-    b.setAttributesInOrder(List.of(attr0));
-    b.setAttributesByName(HashMap.of(attr1.name(), attr1));
-
-    this.expected.expect(IllegalArgumentException.class);
-    b.build();
-  }
-
-  @Test
-  public void testAttributeConsistency1()
-  {
-    final SMFAttribute attr0 = SMFAttribute.of(
-      SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
-    final SMFAttribute attr1 = SMFAttribute.of(
-      SMFAttributeName.of("y"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
-
-    final SMFHeader.Builder b = SMFHeader.builder();
-    b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
-    b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(
-        CAxis.AXIS_POSITIVE_X,
-        CAxis.AXIS_POSITIVE_Y,
-        CAxis.AXIS_NEGATIVE_Z),
-      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-    b.setAttributesInOrder(List.of(attr0));
-    b.setAttributesByName(HashMap.of(attr1.name(), attr1));
-
-    this.expected.expect(IllegalArgumentException.class);
-    b.build();
-  }
-
-  @Test
-  public void testAttributeConsistency2()
-  {
-    final SMFAttribute attr0 = SMFAttribute.of(
-      SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
-
-    final SMFHeader.Builder b = SMFHeader.builder();
-    b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
-    b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(
-        CAxis.AXIS_POSITIVE_X,
-        CAxis.AXIS_POSITIVE_Y,
-        CAxis.AXIS_NEGATIVE_Z),
-      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-    b.setAttributesInOrder(List.empty());
-    b.setAttributesByName(HashMap.of(attr0.name(), attr0));
-
-    this.expected.expect(IllegalArgumentException.class);
-    b.build();
-  }
-
-  @Test
-  public void testAttributeConsistency3()
-  {
-    final SMFAttribute attr0 = SMFAttribute.of(
-      SMFAttributeName.of("x"), SMFComponentType.ELEMENT_TYPE_FLOATING, 4, 32);
-
-    final SMFHeader.Builder b = SMFHeader.builder();
-    b.setSchemaIdentifier(SMFSchemaIdentifier.of(0x696F376D, 0, 1, 0));
-    b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(
-        CAxis.AXIS_POSITIVE_X,
-        CAxis.AXIS_POSITIVE_Y,
-        CAxis.AXIS_NEGATIVE_Z),
-      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-    b.setAttributesInOrder(List.of(attr0));
-    b.setAttributesByName(HashMap.empty());
+    b.setAttributesInOrder(List.of(attr0, attr1));
 
     this.expected.expect(IllegalArgumentException.class);
     b.build();

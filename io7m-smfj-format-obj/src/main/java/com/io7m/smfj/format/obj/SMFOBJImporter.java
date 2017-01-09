@@ -37,7 +37,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import javaslang.Tuple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -241,7 +240,6 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     }
 
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
 
     int triangle_bits = 32;
     if (this.vertices.size() < 65536) {
@@ -249,7 +247,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     }
 
     LOG.warn("OBJ files do not contain coordinate system information.");
-    LOG.warn("A possibly incorrect default coordinate system has been assumed: Right +X, Up +Y, Forward -Z");
+    LOG.warn(
+      "A possibly incorrect default coordinate system has been assumed: Right +X, Up +Y, Forward -Z");
 
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(

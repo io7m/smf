@@ -352,8 +352,6 @@ public final class FMB
         hb.setVertexCount(vertex_count.get());
         hb.setTriangleIndexSizeBits(triangle_size.get());
         hb.setTriangleCount(triangle_count.get());
-        hb.setAttributesByName(
-          javaslang.collection.HashMap.ofAll(attributes));
         hb.setAttributesInOrder(
           javaslang.collection.List.ofAll(attributes_ordered));
         serial.serializeHeader(hb.build());

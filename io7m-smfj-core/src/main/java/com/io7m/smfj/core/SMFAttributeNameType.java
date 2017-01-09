@@ -24,7 +24,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @SMFImmutableStyleType
-public interface SMFAttributeNameType
+public interface SMFAttributeNameType extends Comparable<SMFAttributeNameType>
 {
   /**
    * @return The actual name value
@@ -44,5 +44,11 @@ public interface SMFAttributeNameType
       throw new IllegalArgumentException(
         "Attribute names must match the pattern: " + SMFAttributeNames.PATTERN.pattern());
     }
+  }
+
+  @Override
+  default int compareTo(final SMFAttributeNameType o)
+  {
+    return this.value().compareTo(o.value());
   }
 }

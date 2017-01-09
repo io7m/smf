@@ -134,20 +134,12 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
     }
 
     if (errors.isEmpty()) {
-      final Map<SMFAttributeName, SMFAttribute> new_by_name =
-        header.attributesByName().filter(p -> this.attributes.contains(p._1));
       final List<SMFAttribute> new_by_order =
         header.attributesInOrder().filter(a -> this.attributes.contains(a.name()));
       final Map<SMFAttributeName, SMFAttributeArrayType> new_arrays =
         m.arrays().filter(p -> this.attributes.contains(p._1));
-
       final SMFHeader new_header =
-        SMFHeader.builder()
-          .from(header)
-          .setAttributesByName(new_by_name)
-          .setAttributesInOrder(new_by_order)
-          .build();
-
+        header.withAttributesInOrder(new_by_order);
       return Validation.valid(
         SMFMemoryMesh.builder()
           .from(m)

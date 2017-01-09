@@ -181,13 +181,14 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     NullCheck.notNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
+    final SMFHeader orig_header = m.header();
     if (!arrays.containsKey(this.source)) {
       return Validation.invalid(List.of(
-        this.nonexistentAttribute(m.header().attributesInOrder())));
+        this.nonexistentAttribute(orig_header.attributesInOrder())));
     }
     if (arrays.containsKey(this.target)) {
       return Validation.invalid(List.of(
-        this.collidingAttribute(m.header().attributesInOrder())));
+        this.collidingAttribute(orig_header.attributesInOrder())));
     }
 
     /*
@@ -204,29 +205,16 @@ public final class SMFMemoryMeshFilterAttributeRename implements
      * Rename attribute.
      */
 
-    final List<SMFAttribute> orig_ordered =
-      m.header().attributesInOrder();
     final Map<SMFAttributeName, SMFAttribute> orig_by_name =
-      m.header().attributesByName();
+      orig_header.attributesByName();
     final SMFAttribute orig_attrib =
       orig_by_name.get(this.source).get();
-
     final SMFAttribute new_attrib =
       orig_attrib.withName(this.target);
 
-    final List<SMFAttribute> new_ordered =
-      orig_ordered.replace(orig_attrib, new_attrib);
-    final Map<SMFAttributeName, SMFAttribute> new_by_name =
-      orig_by_name.replace(
-        Tuple.of(this.source, orig_attrib),
-        Tuple.of(this.target, new_attrib));
-
     final SMFHeader new_header =
-      SMFHeader.builder()
-        .from(m.header())
-        .setAttributesInOrder(new_ordered)
-        .setAttributesByName(new_by_name)
-        .build();
+      orig_header.withAttributesInOrder(
+        orig_header.attributesInOrder().replace(orig_attrib, new_attrib));
 
     return Validation.valid(
       SMFMemoryMesh.builder()

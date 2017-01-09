@@ -94,7 +94,6 @@ public final class SMFFormatTextTest
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
@@ -1106,7 +1105,6 @@ public final class SMFFormatTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(attribs);
-    header_b.setAttributesByName(attribs.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setTriangleCount(2L);
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setVertexCount(4L);
@@ -2880,7 +2878,6 @@ public final class SMFFormatTextTest
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setTriangleCount(0L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
