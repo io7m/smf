@@ -54,7 +54,7 @@ final class SMFTV1Serializer implements SMFSerializerType
 
   private final SMFFormatVersion version;
   private final BufferedWriter writer;
-  private FSMEnumMutable<SerializerState> state;
+  private final FSMEnumMutable<SerializerState> state;
   private SMFHeader header;
   private Queue<SMFAttribute> attribute_queue;
   private long attribute_values_remaining;

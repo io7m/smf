@@ -66,7 +66,7 @@ final class SMFBV1Serializer implements SMFSerializerType
   private final ByteBuffer attribute_buffer;
   private final byte[] header_buffer;
   private final ByteBuffer header_buffer_wrap;
-  private FSMEnumMutable<SerializerState> state;
+  private final FSMEnumMutable<SerializerState> state;
   private SMFHeader header;
   private Queue<SMFAttribute> attribute_queue;
   private long attribute_values_remaining;
