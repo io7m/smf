@@ -148,7 +148,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         return;
       }
 
-      this.log().debug("line: {}", line_opt.get());
+      this.log().trace("line: {}", line_opt.get());
       final List<String> line = line_opt.get();
       if (line.isEmpty()) {
         continue;

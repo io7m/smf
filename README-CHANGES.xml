@@ -3,18 +3,25 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
-    <c:date>2017-01-09</c:date>
+    <c:date>2017-01-10</c:date>
     <c:version>0.6.0</c:version>
 
     <c:item>
-      <c:date>2017-01-09</c:date>
+      <c:date>2017-01-10</c:date>
+      <c:type-code-fix/>
+      <c:ticket>31</c:ticket>
+      <c:summary>Reduce severity of line parser log messages.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-10</c:date>
       <c:type-code-fix/>
       <c:ticket>30</c:ticket>
       <c:summary>Zero pad schema ID values.</c:summary>
     </c:item>
 
     <c:item>
-      <c:date>2017-01-09</c:date>
+      <c:date>2017-01-10</c:date>
       <c:type-code-change/>
       <c:ticket>29</c:ticket>
       <c:summary>Allow redundant use of the metadata command.</c:summary>
