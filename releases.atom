@@ -6,44 +6,51 @@
   </a:author>
   <a:id>http://github.com/io7m/smf/releases.atom</a:id>
   <a:title>io7m-smfj Releases</a:title>
-  <a:updated>2017-01-03T00:00:00Z</a:updated>
+  <a:updated>2017-01-10T00:00:00Z</a:updated>
   <a:entry>
     <a:id>0</a:id>
+    <a:updated>2017-01-10T00:00:00Z</a:updated>
+    <a:published>2017-01-10T00:00:00Z</a:published>
+    <a:title>io7m-smfj 0.6.0 released</a:title>
+    <a:content type="text"> io7m-smfj 0.6.0 released </a:content>
+  </a:entry>
+  <a:entry>
+    <a:id>1</a:id>
     <a:updated>2017-01-03T00:00:00Z</a:updated>
     <a:published>2017-01-03T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.5.1 released</a:title>
     <a:content type="text"> io7m-smfj 0.5.1 released </a:content>
   </a:entry>
   <a:entry>
-    <a:id>1</a:id>
+    <a:id>2</a:id>
     <a:updated>2017-01-03T00:00:00Z</a:updated>
     <a:published>2017-01-03T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.5.0 released</a:title>
     <a:content type="text"> io7m-smfj 0.5.0 released </a:content>
   </a:entry>
   <a:entry>
-    <a:id>2</a:id>
+    <a:id>3</a:id>
     <a:updated>2016-12-29T00:00:00Z</a:updated>
     <a:published>2016-12-29T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.4.0 released</a:title>
     <a:content type="text"> io7m-smfj 0.4.0 released </a:content>
   </a:entry>
   <a:entry>
-    <a:id>3</a:id>
+    <a:id>4</a:id>
     <a:updated>2016-12-28T00:00:00Z</a:updated>
     <a:published>2016-12-28T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.3.0 released</a:title>
     <a:content type="text"> io7m-smfj 0.3.0 released </a:content>
   </a:entry>
   <a:entry>
-    <a:id>4</a:id>
+    <a:id>5</a:id>
     <a:updated>2016-11-30T00:00:00Z</a:updated>
     <a:published>2016-11-30T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.2.0 released</a:title>
     <a:content type="text"> io7m-smfj 0.2.0 released </a:content>
   </a:entry>
   <a:entry>
-    <a:id>5</a:id>
+    <a:id>6</a:id>
     <a:updated>2016-11-22T00:00:00Z</a:updated>
     <a:published>2016-11-22T00:00:00Z</a:published>
     <a:title>io7m-smfj 0.1.0 released</a:title>

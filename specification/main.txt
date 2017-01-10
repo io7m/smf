@@ -1,4 +1,4 @@
-io7m-smfj 0.5.1 Specification
+io7m-smfj 0.6.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents
@@ -511,7 +511,9 @@ io7m-smfj 0.5.1 Specification
 
 4     The command may only appear in the file after all triangles [ref:
       smft.data.commands.triangles] and attributes [ref:
-      smft.data.commands.attribute] have been received.
+      smft.data.commands.attribute] have been received. If the file does not
+      have metadata, the command may be omitted. If the file does have
+      metadata, the command must be specified exactly once.
 
 3.15 Data - meta [id: smft.data.commands.meta]
 
