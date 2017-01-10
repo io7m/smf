@@ -36,7 +36,6 @@ import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -35,7 +35,6 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;

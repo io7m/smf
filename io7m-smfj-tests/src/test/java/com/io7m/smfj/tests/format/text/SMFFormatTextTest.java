@@ -27,13 +27,11 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import com.io7m.smfj.format.text.SMFBase64Lines;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -1014,13 +1012,17 @@ public final class SMFFormatTextTest
     s.append(System.lineSeparator());
     s.append("meta 696F376D 0A0B0C0D 5");
     s.append(System.lineSeparator());
-    s.append("AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1");
+    s.append(
+      "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1");
     s.append(System.lineSeparator());
-    s.append("Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr");
+    s.append(
+      "Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr");
     s.append(System.lineSeparator());
-    s.append("bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch");
+    s.append(
+      "bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch");
     s.append(System.lineSeparator());
-    s.append("oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX");
+    s.append(
+      "oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX");
     s.append(System.lineSeparator());
     s.append("2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==");
     s.append(System.lineSeparator());
@@ -3065,7 +3067,8 @@ public final class SMFFormatTextTest
       events.onDataTriangle(0L, 0L, 0L);
       events.onDataTrianglesFinish();
       events.onError(this.withArgThat(
-        new ParseErrorMessageStartsWith("A metadata command has already been specified.")));
+        new ParseErrorMessageStartsWith(
+          "A metadata command has already been specified.")));
       events.onFinish();
     }};
 

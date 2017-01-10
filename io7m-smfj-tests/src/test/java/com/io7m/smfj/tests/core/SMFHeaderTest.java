@@ -25,7 +25,6 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import javaslang.collection.TreeMap;
 import org.junit.Assert;
