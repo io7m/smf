@@ -23,7 +23,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
-import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
@@ -39,18 +38,20 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Paths;
+import java.nio.file.FileSystem;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class SMFMemoryMeshFilterAttributeRenameTest
+public final class SMFMemoryMeshFilterAttributeRenameTest extends
+  SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeRenameTest.class);
   }
+
+  private FileSystem filesystem;
 
   @Test
   public void testParseWrong1()
@@ -130,7 +131,7 @@ public final class SMFMemoryMeshFilterAttributeRenameTest
       SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
@@ -157,7 +158,7 @@ public final class SMFMemoryMeshFilterAttributeRenameTest
       SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
@@ -185,7 +186,7 @@ public final class SMFMemoryMeshFilterAttributeRenameTest
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), mesh0).get();
+      filter.filter(this.createContext(), mesh0).get();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays0 = mesh0.arrays();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays1 = mesh1.arrays();
     final SMFHeader header0 = mesh0.header();

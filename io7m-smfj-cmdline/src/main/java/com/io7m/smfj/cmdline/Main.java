@@ -370,7 +370,10 @@ public final class Main implements Runnable
       }
 
       final SMFFilterCommandContext context =
-        SMFFilterCommandContext.of(Paths.get(this.source_directory));
+        SMFFilterCommandContext.of(
+          Paths.get(this.source_directory).toAbsolutePath(),
+          Paths.get(this.file_commands).toAbsolutePath());
+
       final Optional<SMFMemoryMesh> filtered_opt =
         this.runFilters(context, filters, mesh_opt.get());
 

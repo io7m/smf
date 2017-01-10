@@ -20,7 +20,6 @@ import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
@@ -34,17 +33,19 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.FileSystems;
-import java.nio.file.Paths;
+import java.nio.file.FileSystem;
 import java.util.Optional;
 
-public final class SMFMemoryMeshFilterSchemaCheckTest
+public final class SMFMemoryMeshFilterSchemaCheckTest extends
+  SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaCheckTest.class);
   }
+
+  private FileSystem filesystem;
 
   @Test
   public void testParseWrong1()
@@ -144,7 +145,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
     Assert.assertEquals(loader.mesh(), r.get());
   }
@@ -172,7 +173,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertFalse(r.isValid());
 
     r.getError().map(e -> {
@@ -204,7 +205,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertFalse(r.isValid());
 
     r.getError().map(e -> {
@@ -236,7 +237,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertFalse(r.isValid());
 
     r.getError().map(e -> {
@@ -268,7 +269,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest
       SMFMemoryMeshFilterSchemaCheck.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(SMFFilterCommandContext.of(Paths.get("")), loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertFalse(r.isValid());
 
     r.getError().map(e -> {
