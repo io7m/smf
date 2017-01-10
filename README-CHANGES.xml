@@ -9,6 +9,13 @@
     <c:item>
       <c:date>2017-01-09</c:date>
       <c:type-code-change/>
+      <c:ticket>29</c:ticket>
+      <c:summary>Allow redundant use of the metadata command.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-09</c:date>
+      <c:type-code-change/>
       <c:summary>Add context values to the filter interface. This is an API breaking change.</c:summary>
     </c:item>
 

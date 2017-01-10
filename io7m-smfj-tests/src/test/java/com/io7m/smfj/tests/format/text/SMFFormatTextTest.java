@@ -2896,6 +2896,182 @@ public final class SMFFormatTextTest
     serializer.serializeData(SMFAttributeName.of("y"));
   }
 
+  @Test
+  public void testMetaNoneNotOmitted(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
+    s.append(System.lineSeparator());
+    s.append("attribute a integer-unsigned 1 32");
+    s.append(System.lineSeparator());
+    s.append("vertices 1");
+    s.append(System.lineSeparator());
+    s.append("triangles 1 16");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+    s.append("attribute a");
+    s.append(System.lineSeparator());
+    s.append("0");
+    s.append(System.lineSeparator());
+    s.append("triangles");
+    s.append(System.lineSeparator());
+    s.append("0 0 0");
+    s.append(System.lineSeparator());
+    s.append("metadata");
+    s.append(System.lineSeparator());
+
+    final SMFAttribute attribute = SMFAttribute.of(
+      SMFAttributeName.of("a"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      32);
+
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(1L);
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onHeaderParsed(h);
+      events.onDataAttributeStart(attribute);
+      events.onDataAttributeValueIntegerUnsigned1(0L);
+      events.onDataAttributeFinish(attribute);
+      events.onDataTrianglesStart();
+      events.onDataTriangle(0L, 0L, 0L);
+      events.onDataTrianglesFinish();
+      events.onFinish();
+    }};
+
+    runForText(events, true, s);
+  }
+
+  @Test
+  public void testMetaNoneOmitted(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
+    s.append(System.lineSeparator());
+    s.append("attribute a integer-unsigned 1 32");
+    s.append(System.lineSeparator());
+    s.append("vertices 1");
+    s.append(System.lineSeparator());
+    s.append("triangles 1 16");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+    s.append("attribute a");
+    s.append(System.lineSeparator());
+    s.append("0");
+    s.append(System.lineSeparator());
+    s.append("triangles");
+    s.append(System.lineSeparator());
+    s.append("0 0 0");
+    s.append(System.lineSeparator());
+
+    final SMFAttribute attribute = SMFAttribute.of(
+      SMFAttributeName.of("a"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      32);
+
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(1L);
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onHeaderParsed(h);
+      events.onDataAttributeStart(attribute);
+      events.onDataAttributeValueIntegerUnsigned1(0L);
+      events.onDataAttributeFinish(attribute);
+      events.onDataTrianglesStart();
+      events.onDataTriangle(0L, 0L, 0L);
+      events.onDataTrianglesFinish();
+      events.onFinish();
+    }};
+
+    runForText(events, true, s);
+  }
+
+  @Test
+  public void testMetaTwice(
+    final @Mocked SMFParserEventsType events)
+  {
+    final StringBuilder s = new StringBuilder(128);
+    s.append("smf 1 0");
+    s.append(System.lineSeparator());
+    s.append("schema 696F376D A0B0C0D0 1 2");
+    s.append(System.lineSeparator());
+    s.append("coordinates +x +y -z counter-clockwise");
+    s.append(System.lineSeparator());
+    s.append("attribute a integer-unsigned 1 32");
+    s.append(System.lineSeparator());
+    s.append("vertices 1");
+    s.append(System.lineSeparator());
+    s.append("triangles 1 16");
+    s.append(System.lineSeparator());
+    s.append("data");
+    s.append(System.lineSeparator());
+    s.append("attribute a");
+    s.append(System.lineSeparator());
+    s.append("0");
+    s.append(System.lineSeparator());
+    s.append("triangles");
+    s.append(System.lineSeparator());
+    s.append("0 0 0");
+    s.append(System.lineSeparator());
+    s.append("metadata");
+    s.append(System.lineSeparator());
+    s.append("metadata");
+    s.append(System.lineSeparator());
+
+    final SMFAttribute attribute = SMFAttribute.of(
+      SMFAttributeName.of("a"),
+      SMFComponentType.ELEMENT_TYPE_INTEGER_UNSIGNED,
+      1,
+      32);
+
+    final SMFHeader.Builder header_b = baseHeader(List.of(attribute));
+    header_b.setTriangleCount(1L);
+    header_b.setVertexCount(1L);
+    final SMFHeader h = header_b.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      events.onHeaderParsed(h);
+      events.onDataAttributeStart(attribute);
+      events.onDataAttributeValueIntegerUnsigned1(0L);
+      events.onDataAttributeFinish(attribute);
+      events.onDataTrianglesStart();
+      events.onDataTriangle(0L, 0L, 0L);
+      events.onDataTrianglesFinish();
+      events.onError(this.withArgThat(
+        new ParseErrorMessageStartsWith("A metadata command has already been specified.")));
+      events.onFinish();
+    }};
+
+    runForText(events, true, s);
+  }
+
   private static class ParseErrorMessageStartsWith extends TypeSafeMatcher<SMFParseError>
   {
     private final String message;
