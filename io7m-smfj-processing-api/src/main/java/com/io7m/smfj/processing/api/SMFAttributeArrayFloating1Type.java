@@ -19,6 +19,7 @@ package com.io7m.smfj.processing.api;
 import com.io7m.jfunctional.PartialBiFunctionType;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import javaslang.collection.Vector;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 /**
@@ -26,6 +27,7 @@ import org.immutables.value.Value;
  */
 
 @SMFImmutableStyleType
+@JavaslangEncodingEnabled
 @Value.Immutable
 public interface SMFAttributeArrayFloating1Type extends SMFAttributeArrayType
 {

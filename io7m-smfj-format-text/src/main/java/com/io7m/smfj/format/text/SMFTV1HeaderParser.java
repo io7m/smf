@@ -52,7 +52,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
 
   private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
-  private Map<SMFAttributeName, SMFAttribute> attributes;
   private Map<SMFAttributeName, Integer> attribute_lines;
   private List<SMFAttribute> attributes_list;
   private long vertex_count;
@@ -76,7 +75,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     this.version = NullCheck.notNull(in_version, "Version");
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
-    this.attributes = HashMap.empty();
     this.ok_triangles = false;
     this.ok_vertices = false;
     this.schema_id = SMFSchemaIdentifier.of(0, 0, 0, 0);
@@ -150,7 +148,7 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
         return;
       }
 
-      this.log().debug("line: {}", line_opt.get());
+      this.log().trace("line: {}", line_opt.get());
       final List<String> line = line_opt.get();
       if (line.isEmpty()) {
         continue;
@@ -389,8 +387,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           this.attribute_lines.get(name).get().intValue(),
           "Duplicate attribute name: " + name.value(),
           Optional.empty());
-      } else {
-        this.attributes = this.attributes.put(name, attribute);
       }
       names.add(name);
     }
@@ -422,7 +418,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
             final SMFHeader.Builder header_b = SMFHeader.builder();
             header_b.setAttributesInOrder(this.attributes_list);
-            header_b.setAttributesByName(this.attributes);
             header_b.setTriangleIndexSizeBits(this.triangle_size);
             header_b.setTriangleCount(this.triangle_count);
             header_b.setVertexCount(this.vertex_count);

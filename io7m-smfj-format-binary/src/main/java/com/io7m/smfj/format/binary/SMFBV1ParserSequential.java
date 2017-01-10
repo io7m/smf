@@ -846,8 +846,8 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
     if (!this.parserHasFailed()) {
       this.header = SMFBV1.header(
         this.header_view,
-        this.attributes,
-        this.attributes_named);
+        this.attributes
+      );
       this.offsets = SMFBV1Offsets.fromHeader(this.header);
     }
   }

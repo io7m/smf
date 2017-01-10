@@ -18,7 +18,10 @@ package com.io7m.smfj.core;
 
 import javaslang.collection.List;
 import javaslang.collection.Map;
+import javaslang.collection.SortedMap;
+import javaslang.collection.TreeMap;
 import javaslang.control.Option;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 import java.util.Objects;
@@ -28,6 +31,7 @@ import java.util.Objects;
  */
 
 @Value.Immutable
+@JavaslangEncodingEnabled
 @SMFImmutableStyleType
 public interface SMFHeaderType
 {
@@ -89,8 +93,26 @@ public interface SMFHeaderType
    * @return The attributes by name
    */
 
-  @Value.Parameter
-  Map<SMFAttributeName, SMFAttribute> attributesByName();
+  @Value.Derived
+  default SortedMap<SMFAttributeName, SMFAttribute> attributesByName()
+  {
+    SortedMap<SMFAttributeName, SMFAttribute> m = TreeMap.empty();
+    final List<SMFAttribute> ordered = this.attributesInOrder();
+    for (int index = 0; index < ordered.size(); ++index) {
+      final SMFAttribute attr = ordered.get(index);
+      if (m.containsKey(attr.name())) {
+        final StringBuilder sb = new StringBuilder(128);
+        sb.append("Duplicate attribute name.");
+        sb.append(System.lineSeparator());
+        sb.append("  Attribute: ");
+        sb.append(attr.name().value());
+        sb.append(System.lineSeparator());
+        throw new IllegalArgumentException(sb.toString());
+      }
+      m = m.put(attr.name(), attr);
+    }
+    return m;
+  }
 
   /**
    * @return The number of metadata elements in the file

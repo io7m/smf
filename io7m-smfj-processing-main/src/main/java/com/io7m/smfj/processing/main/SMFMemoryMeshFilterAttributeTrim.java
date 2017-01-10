@@ -22,6 +22,8 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -78,11 +80,11 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
       try {
         return Validation.valid(create(text.map(SMFAttributeName::of).toSet()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
@@ -119,8 +121,10 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     final SMFHeader header = m.header();
@@ -134,20 +138,12 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
     }
 
     if (errors.isEmpty()) {
-      final Map<SMFAttributeName, SMFAttribute> new_by_name =
-        header.attributesByName().filter(p -> this.attributes.contains(p._1));
       final List<SMFAttribute> new_by_order =
         header.attributesInOrder().filter(a -> this.attributes.contains(a.name()));
       final Map<SMFAttributeName, SMFAttributeArrayType> new_arrays =
         m.arrays().filter(p -> this.attributes.contains(p._1));
-
       final SMFHeader new_header =
-        SMFHeader.builder()
-          .from(header)
-          .setAttributesByName(new_by_name)
-          .setAttributesInOrder(new_by_order)
-          .build();
-
+        header.withAttributesInOrder(new_by_order);
       return Validation.valid(
         SMFMemoryMesh.builder()
           .from(m)

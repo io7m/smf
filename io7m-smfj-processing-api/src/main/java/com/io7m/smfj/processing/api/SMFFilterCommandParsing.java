@@ -14,11 +14,11 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.processing.main;
+package com.io7m.smfj.processing.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
@@ -26,14 +26,54 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-final class SMFFilterCommandParsing
+/**
+ * Useful combinators for parsing.
+ */
+
+public final class SMFFilterCommandParsing
 {
   private SMFFilterCommandParsing()
   {
-
+    throw new UnreachableCodeException();
   }
 
-  static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> errorExpectedGot(
+  /**
+   * Construct an error message that indicates that one sort of input was
+   * expected but another was received.
+   *
+   * @param file     The file, if any
+   * @param line     The current line number
+   * @param expected The expected input
+   * @param text     The received input
+   *
+   * @return An error message
+   */
+
+  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
+  errorExpectedGotValidation(
+    final Optional<Path> file,
+    final int line,
+    final String expected,
+    final List<String> text)
+  {
+    return Validation.invalid(List.of(
+      errorExpectedGot(file, line, expected, text)));
+  }
+
+  /**
+   * Construct an error message that indicates that one sort of input was
+   * expected but another was received.
+   *
+   * @param file     The file, if any
+   * @param line     The current line number
+   * @param expected The expected input
+   * @param text     The received input
+   *
+   * @return An error message
+   */
+
+  public static SMFParseError
+  errorExpectedGot(
     final Optional<Path> file,
     final int line,
     final String expected,
@@ -49,9 +89,7 @@ final class SMFFilterCommandParsing
     sb.append(text.toJavaStream().collect(Collectors.joining(" ")));
     sb.append(System.lineSeparator());
 
-    final SMFParseError error =
-      SMFParseError.of(
-        LexicalPosition.of(line, 0, file), sb.toString(), Optional.empty());
-    return Validation.invalid(List.of(error));
+    return SMFParseError.of(
+      LexicalPosition.of(line, 0, file), sb.toString(), Optional.empty());
   }
 }

@@ -21,6 +21,8 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -125,11 +127,11 @@ public final class SMFMemoryMeshFilterCheck implements
             .setComponentType(type)
             .build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
@@ -152,8 +154,10 @@ public final class SMFMemoryMeshFilterCheck implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttribute> by_name =

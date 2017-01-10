@@ -28,7 +28,6 @@ import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -72,9 +71,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -137,9 +133,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -202,9 +195,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -267,9 +257,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -332,9 +319,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -397,9 +381,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -462,9 +443,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -527,9 +505,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -592,9 +567,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -657,9 +629,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -722,9 +691,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -787,9 +753,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -852,9 +815,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -917,9 +877,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -982,9 +939,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -1047,9 +1001,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(List.of(attr));
-    header_b.setAttributesByName(List.of(attr).toMap(p -> Tuple.of(
-      p.name(),
-      p)));
     header_b.setVertexCount(vertex_count);
     final SMFHeader header = header_b.build();
 
@@ -1121,7 +1072,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(2L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1155,7 +1105,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1188,7 +1137,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1221,7 +1169,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1254,7 +1201,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1287,7 +1233,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1320,7 +1265,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1353,7 +1297,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1386,7 +1329,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1420,7 +1362,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1453,7 +1394,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1486,7 +1426,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1519,7 +1458,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1567,7 +1505,6 @@ public final class SMFFormatBinarySequentialIntegerSignedTest extends
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

@@ -34,15 +34,19 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.file.FileSystem;
 import java.util.Optional;
 
-public final class SMFMemoryMeshFilterAttributeTrimTest
+public final class SMFMemoryMeshFilterAttributeTrimTest extends
+  SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeTrimTest.class);
   }
+
+  private FileSystem filesystem;
 
   @Test
   public void testParseWrong0()
@@ -117,7 +121,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest
       SMFMemoryMeshFilterAttributeTrim.create(HashSet.of(name_source));
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
@@ -145,7 +149,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(mesh0);
+      filter.filter(this.createContext(), mesh0);
     Assert.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();

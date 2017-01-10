@@ -29,8 +29,6 @@ import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -61,7 +59,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setAttributesByName(HashMap.empty());
     header_b.setTriangleCount(2L);
     header_b.setTriangleIndexSizeBits(8L);
     header_b.setVertexCount(0L);
@@ -110,7 +107,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setAttributesByName(HashMap.empty());
     header_b.setTriangleCount(2L);
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setVertexCount(0L);
@@ -159,7 +155,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setAttributesByName(HashMap.empty());
     header_b.setTriangleCount(2L);
     header_b.setTriangleIndexSizeBits(32L);
     header_b.setVertexCount(0L);
@@ -219,7 +214,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     header_b.setTriangleIndexSizeBits(8L);
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,
@@ -253,7 +247,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     header_b.setTriangleIndexSizeBits(16L);
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,
@@ -287,7 +280,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     header_b.setTriangleIndexSizeBits(32L);
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,
@@ -321,7 +313,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     header_b.setTriangleIndexSizeBits(64L);
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,
@@ -355,7 +346,6 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     header_b.setTriangleIndexSizeBits(8L);
     header_b.setTriangleCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
         CAxis.AXIS_POSITIVE_X,

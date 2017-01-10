@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,41 +14,16 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.core;
+package com.io7m.smfj.tests.processing;
 
-import org.immutables.value.Value;
+import java.nio.file.FileSystem;
 
-/**
- * An attribute name.
- */
-
-@Value.Immutable
-@SMFImmutableStyleType
-public interface SMFAttributeNameType extends Comparable<SMFAttributeNameType>
+public final class SMFFilterCommandContextDOSTest extends
+  SMFFilterCommandContextContract
 {
-  /**
-   * @return The actual name value
-   */
-
-  @Value.Parameter
-  String value();
-
-  /**
-   * Check the preconditions for the type.
-   */
-
-  @Value.Check
-  default void checkPreconditions()
-  {
-    if (!SMFAttributeNames.isValid(this.value())) {
-      throw new IllegalArgumentException(
-        "Attribute names must match the pattern: " + SMFAttributeNames.PATTERN.pattern());
-    }
-  }
-
   @Override
-  default int compareTo(final SMFAttributeNameType o)
+  protected FileSystem newFilesystem()
   {
-    return this.value().compareTo(o.value());
+    return SMFTestFilesystems.makeEmptyDOSFilesystem();
   }
 }

@@ -27,6 +27,17 @@ import java.util.List;
 
 public final class SMFBase64LinesTest
 {
+  public static void main(
+    final String[] args)
+  {
+    final byte[] data = new byte[256];
+    for (int index = 0; index < data.length; ++index) {
+      data[index] = (byte) index;
+    }
+
+    SMFBase64Lines.toBase64Lines(data).forEach(System.out::println);
+  }
+
   @Test
   public void testRoundTrip()
   {
@@ -43,16 +54,5 @@ public final class SMFBase64LinesTest
           Assert.assertArrayEquals(data, r_data);
         }
       });
-  }
-
-  public static void main(
-    final String[] args)
-  {
-    final byte[] data = new byte[256];
-    for (int index = 0; index < data.length; ++index) {
-      data[index] = (byte) index;
-    }
-
-    SMFBase64Lines.toBase64Lines(data).forEach(System.out::println);
   }
 }

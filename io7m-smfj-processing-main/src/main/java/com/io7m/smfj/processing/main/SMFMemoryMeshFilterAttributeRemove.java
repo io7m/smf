@@ -22,6 +22,8 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -93,11 +95,11 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
         return Validation.valid(create(attr));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
@@ -120,14 +122,17 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
+    final SMFHeader orig_header = m.header();
     if (!arrays.containsKey(this.source)) {
       return Validation.invalid(List.of(this.nonexistentAttribute(
-        m.header().attributesInOrder())));
+        orig_header.attributesInOrder())));
     }
 
     /*
@@ -142,23 +147,15 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
      */
 
     final List<SMFAttribute> orig_ordered =
-      m.header().attributesInOrder();
+      orig_header.attributesInOrder();
     final Map<SMFAttributeName, SMFAttribute> orig_by_name =
-      m.header().attributesByName();
+      orig_header.attributesByName();
     final SMFAttribute orig_attrib =
       orig_by_name.get(this.source).get();
-
     final List<SMFAttribute> new_ordered =
       orig_ordered.remove(orig_attrib);
-    final Map<SMFAttributeName, SMFAttribute> new_by_name =
-      orig_by_name.remove(this.source);
-
     final SMFHeader new_header =
-      SMFHeader.builder()
-        .from(m.header())
-        .setAttributesInOrder(new_ordered)
-        .setAttributesByName(new_by_name)
-        .build();
+      orig_header.withAttributesInOrder(new_ordered);
 
     return Validation.valid(
       SMFMemoryMesh.builder()

@@ -278,10 +278,9 @@ The command takes no arguments.
 [paragraph]
 The command may only appear in the file after all
 [link [target smft.data.commands.triangles] triangles] and
-[link [target smft.data.commands.attribute] attributes] have been received.
-
-
-
+[link [target smft.data.commands.attribute] attributes] have been received. If
+the file does not have metadata, the command may be omitted. If the file does
+have metadata, the command must be specified exactly once.
 
 [subsection [title Data - meta] [id smft.data.commands.meta]]
 [paragraph]

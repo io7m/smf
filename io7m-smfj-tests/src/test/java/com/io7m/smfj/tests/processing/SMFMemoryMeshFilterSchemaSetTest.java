@@ -34,7 +34,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public final class SMFMemoryMeshFilterSchemaSetTest
+public final class SMFMemoryMeshFilterSchemaSetTest extends
+  SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
@@ -160,7 +161,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest
       SMFMemoryMeshFilterSchemaSet.create(identifier);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
     Assert.assertEquals(identifier, r.get().header().schemaIdentifier());
 

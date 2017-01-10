@@ -19,6 +19,8 @@ package com.io7m.smfj.processing.main;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.VectorI3L;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -134,12 +136,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
         return Validation.valid(
           create(builder.build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
 
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
@@ -162,8 +164,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     List<SMFProcessingError> errors = List.empty();

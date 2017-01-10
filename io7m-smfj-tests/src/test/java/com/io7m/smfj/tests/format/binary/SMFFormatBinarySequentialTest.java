@@ -35,7 +35,6 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple;
 import javaslang.collection.List;
 import mockit.Mocked;
 import mockit.StrictExpectations;
@@ -281,7 +280,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(xs);
-    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -476,7 +474,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(xs);
-    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -689,7 +686,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(xs);
-    header_b.setAttributesByName(xs.toMap(x -> Tuple.of(x.name(), x)));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -815,7 +811,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
 
     final byte[] attribute_buffer =
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
@@ -871,7 +866,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
 
     final byte[] attribute_buffer =
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
@@ -927,7 +921,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
 
     final byte[] attribute_buffer =
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
@@ -987,7 +980,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
 
     final byte[] attribute_buffer =
       new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
@@ -1037,7 +1029,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     final SMFSerializerType serializer =
@@ -1091,7 +1082,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1123,7 +1113,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -1161,7 +1150,6 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFHeader.Builder header_b = header_s.headerBuilder();
     header_b.setVertexCount(1L);
     header_b.setAttributesInOrder(attributes);
-    header_b.setAttributesByName(attributes.toMap(a -> Tuple.of(a.name(), a)));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

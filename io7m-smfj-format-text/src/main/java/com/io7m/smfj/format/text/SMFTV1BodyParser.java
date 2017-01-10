@@ -51,7 +51,8 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   private Map<SMFAttributeName, Boolean> attributes_ok;
   private Map<SMFAttributeName, Boolean> attributes_attempted;
   private long parsed_triangles;
-  private long parsed_metas;
+  private long metas_parsed_count;
+  private boolean metas_started;
 
   SMFTV1BodyParser(
     final SMFTAbstractParser in_parent,
@@ -98,7 +99,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
             return;
           }
 
-          this.log().debug("line: {}", line_opt.get());
+          this.log().trace("line: {}", line_opt.get());
           final List<String> line = line_opt.get();
           if (line.isEmpty()) {
             continue;
@@ -131,7 +132,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
 
   private void failMissedMetadata()
   {
-    if (this.parsed_metas != this.header.metaCount()) {
+    if (this.metas_parsed_count != this.header.metaCount()) {
       this.fail("Too few metadata elements specified", Optional.empty());
     }
   }
@@ -536,7 +537,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
           return;
         }
 
-        this.log().debug("line: {}", line_opt.get());
+        this.log().trace("line: {}", line_opt.get());
         final List<String> line = line_opt.get();
         if (line.isEmpty()) {
           continue;
@@ -577,13 +578,16 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   {
     LOG.debug("parsing metadata values");
 
-    if (this.header.metaCount() == 0L) {
-      super.fail("No metadata was expected.", Optional.empty());
+    if (this.metas_started) {
+      super.fail(
+        "A metadata command has already been specified.",
+        Optional.empty());
       return;
     }
 
-    this.parsed_metas = 0L;
-    while (this.parsed_metas != this.header.metaCount()) {
+    this.metas_started = true;
+    this.metas_parsed_count = 0L;
+    while (this.metas_parsed_count != this.header.metaCount()) {
       if (this.parserHasFailed()) {
         return;
       }
@@ -594,7 +598,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         return;
       }
 
-      this.log().debug("line: {}", line_opt.get());
+      this.log().trace("line: {}", line_opt.get());
       final List<String> line = line_opt.get();
       if (line.isEmpty()) {
         continue;
@@ -614,7 +618,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         }
       }
 
-      this.parsed_metas = Math.addExact(this.parsed_metas, 1L);
+      this.metas_parsed_count = Math.addExact(this.metas_parsed_count, 1L);
     }
   }
 
@@ -653,7 +657,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         return;
       }
 
-      this.log().debug("line: {}", line_opt.get());
+      this.log().trace("line: {}", line_opt.get());
       final List<String> line = line_opt.get();
       if (line.isEmpty()) {
         super.failExpectedGot(
@@ -740,7 +744,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
           return;
         }
 
-        this.log().debug("line: {}", line_opt.get());
+        this.log().trace("line: {}", line_opt.get());
         final List<String> line = line_opt.get();
         if (line.isEmpty()) {
           continue;

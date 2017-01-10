@@ -39,7 +39,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
 
-public final class SMFMemoryMeshFilterAttributeRemoveTest
+public final class SMFMemoryMeshFilterAttributeRemoveTest extends
+  SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
@@ -110,7 +111,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest
       SMFMemoryMeshFilterAttributeRemove.create(name_source);
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
-      filter.filter(loader.mesh());
+      filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
@@ -136,7 +137,8 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest
       SMFMemoryMeshFilterAttributeRemove.create(name_source);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final SMFMemoryMesh mesh1 = filter.filter(mesh0).get();
+    final SMFMemoryMesh mesh1 =
+      filter.filter(this.createContext(), mesh0).get();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays0 = mesh0.arrays();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays1 = mesh1.arrays();
     final SMFHeader header0 = mesh0.header();

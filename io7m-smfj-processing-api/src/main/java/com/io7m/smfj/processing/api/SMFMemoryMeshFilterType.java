@@ -40,11 +40,14 @@ public interface SMFMemoryMeshFilterType
   /**
    * Evaluate the filter on the given mesh.
    *
-   * @param m A mesh
+   * @param context The filtering context
+   * @param m       A mesh
    *
    * @return A filtered mesh, or a list or reasons why the filtering did not
    * work
    */
 
-  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(SMFMemoryMesh m);
+  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    SMFFilterCommandContext context,
+    SMFMemoryMesh m);
 }

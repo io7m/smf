@@ -19,6 +19,8 @@ package com.io7m.smfj.processing.main;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -98,11 +100,11 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
             .setSchemaMajorVersion(major)
             .setSchemaMinorVersion(minor).build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGot(
+        return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGot(
+    return SMFFilterCommandParsing.errorExpectedGotValidation(
       file, line, makeSyntax(), text);
   }
 
@@ -125,8 +127,10 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
 
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+    final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
+    NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
     final SMFSchemaIdentifier received = m.header().schemaIdentifier();

@@ -58,6 +58,7 @@ public interface SMFAttributeType
    * @return The size of a single component in octets
    */
 
+  @Value.Derived
   default int componentSizeOctets()
   {
     return (int) Math.ceil((double) this.componentSizeBits() / 8.0);
@@ -67,6 +68,7 @@ public interface SMFAttributeType
    * @return The size of the attribute in octets
    */
 
+  @Value.Derived
   default int sizeOctets()
   {
     return Math.multiplyExact(

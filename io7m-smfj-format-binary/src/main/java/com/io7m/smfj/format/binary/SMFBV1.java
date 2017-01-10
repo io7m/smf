@@ -18,13 +18,11 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderReadableType;
 import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType;
 import javaslang.collection.List;
-import javaslang.collection.Map;
 
 /**
  * Shared binary parser code.
@@ -39,8 +37,7 @@ final class SMFBV1
 
   public static SMFHeader header(
     final SMFBV1HeaderReadableType header_view,
-    final List<SMFAttribute> attributes,
-    final Map<SMFAttributeName, SMFAttribute> attributes_named)
+    final List<SMFAttribute> attributes)
   {
     final SMFBV1SchemaIDReadableType schema_id_view =
       header_view.getSchemaReadable();
@@ -61,8 +58,6 @@ final class SMFBV1
       (long) header_view.getTriangleIndexSizeBits());
     header_b.setAttributesInOrder(
       attributes);
-    header_b.setAttributesByName(
-      attributes_named);
     header_b.setSchemaIdentifier(
       schema_b.build());
     header_b.setCoordinateSystem(

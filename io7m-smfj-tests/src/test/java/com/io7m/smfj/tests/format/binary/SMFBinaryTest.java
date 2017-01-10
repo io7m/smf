@@ -36,7 +36,6 @@ import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -166,7 +165,6 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
       this.header_builder.setTriangleIndexSizeBits(32L);
       this.header_builder.setTriangleCount(0L);
-      this.header_builder.setAttributesByName(HashMap.empty());
       this.header_builder.setAttributesInOrder(List.empty());
       this.header_builder.setSchemaIdentifier(
         SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
