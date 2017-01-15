@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,45 +14,32 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.core;
+package com.io7m.smfj.validation.api;
 
-import com.io7m.jcoords.core.conversion.CAxisSystem;
+import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFImmutableStyleType;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import javaslang.collection.SortedMap;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
-/**
- * The specification of a coordinate system and face winding order.
- */
+import java.util.Optional;
 
-@Value.Immutable
 @SMFImmutableStyleType
-public interface SMFCoordinateSystemType
+@JavaslangEncodingEnabled
+@Value.Immutable
+public interface SMFSchemaType
 {
-  /**
-   * @return The coordinate system axes
-   */
+  @Value.Parameter
+  SMFSchemaIdentifier schemaIdentifier();
 
   @Value.Parameter
-  CAxisSystem axes();
-
-  /**
-   * @return The winding order for triangles
-   */
+  SortedMap<SMFAttributeName, SMFSchemaAttribute> requiredAttributes();
 
   @Value.Parameter
-  SMFFaceWindingOrder windingOrder();
+  Optional<SMFCoordinateSystem> requiredCoordinateSystem();
 
-  /**
-   * @return A humanly-readable string such as "+x +y -z counter-clockwise"
-   */
-
-  @Value.Lazy
-  default String toHumanString()
-  {
-    return String.format(
-      "%s %s %s %s",
-      this.axes().right().axisSigned(),
-      this.axes().up().axisSigned(),
-      this.axes().forward().axisSigned(),
-      this.windingOrder().toName());
-  }
+  @Value.Parameter
+  boolean allowExtraAttributes();
 }

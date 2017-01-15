@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.core;
 
+import com.io7m.junreachable.UnreachableCodeException;
+
 /**
  * The face winding order for triangles.
  */
@@ -49,6 +51,23 @@ public enum SMFFaceWindingOrder
     final int in_index)
   {
     this.index = in_index;
+  }
+
+  /**
+   * @return The face winding order as a humanly readable name such as
+   * "counter-clockwise"
+   */
+
+  public String toName()
+  {
+    switch (this) {
+      case FACE_WINDING_ORDER_CLOCKWISE:
+        return "clockwise";
+      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
+        return "counter-clockwise";
+    }
+
+    throw new UnreachableCodeException();
   }
 
   /**

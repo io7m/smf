@@ -31,6 +31,8 @@
     <module>io7m-smfj-serializer-api</module>
     <module>io7m-smfj-specification</module>
     <module>io7m-smfj-tests</module>
+    <module>io7m-smfj-validation-api</module>
+    <module>io7m-smfj-validation-main</module>
   </modules>
 
   <properties>
@@ -138,7 +140,7 @@
       <dependency>
         <groupId>com.io7m.jcoords</groupId>
         <artifactId>io7m-jcoords-core</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jfsm</groupId>
