@@ -178,8 +178,12 @@ public final class SMFByteBufferPackedMeshes implements
     final long size_tri =
       Math.multiplyExact(header.triangleSizeOctets(), header.triangleCount());
 
-    this.buffer_attr = this.on_allocate_attribute.apply(size_attr);
-    this.buffer_tri = this.on_allocate_tri.apply(size_tri);
+    LOG.debug("allocating attribute buffer");
+    this.buffer_attr =
+      this.on_allocate_attribute.apply(size_attr);
+    LOG.debug("allocating triangle buffer");
+    this.buffer_tri =
+      this.on_allocate_tri.apply(size_tri);
 
     this.buffer_tri.ifPresent(
       buffer -> this.packer_tri =
