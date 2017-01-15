@@ -20,6 +20,7 @@ import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 import java.nio.ByteBuffer;
+import java.util.Optional;
 
 /**
  * A mesh that has been packed into a set of byte buffers.
@@ -41,12 +42,12 @@ public interface SMFByteBufferPackedMeshType
    */
 
   @Value.Parameter
-  ByteBuffer attributeData();
+  Optional<ByteBuffer> attributeData();
 
   /**
    * @return A byte buffer containing packed triangle data
    */
 
   @Value.Parameter
-  ByteBuffer triangleData();
+  Optional<ByteBuffer> triangleData();
 }

@@ -22,7 +22,6 @@ import com.io7m.jintegers.Signed32;
 import com.io7m.jintegers.Unsigned16;
 import com.io7m.jintegers.Unsigned32;
 import com.io7m.jintegers.Unsigned8;
-import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackedMesh;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackedMeshLoaderType;
@@ -47,6 +46,7 @@ import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class SMFByteBufferPackedMeshesTest
 {
@@ -1284,11 +1284,13 @@ public final class SMFByteBufferPackedMeshesTest
     throws IOException
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh(name);
-    checkType(type, component_count, component_size, mesh.attributeData());
-    
-    Assert.assertEquals(0L, (long) mesh.triangleData().get(0));
-    Assert.assertEquals(1L, (long) mesh.triangleData().get(1));
-    Assert.assertEquals(2L, (long) mesh.triangleData().get(2));
+    final ByteBuffer ab = mesh.attributeData().get();
+    checkType(type, component_count, component_size, ab);
+
+    final ByteBuffer tb = mesh.triangleData().get();
+    Assert.assertEquals(0L, (long) tb.get(0));
+    Assert.assertEquals(1L, (long) tb.get(1));
+    Assert.assertEquals(2L, (long) tb.get(2));
   }
 
   private SMFByteBufferPackedMesh parseMesh(
@@ -1326,9 +1328,10 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle8.smft");
-    Assert.assertEquals(0L, (long) mesh.triangleData().get(0));
-    Assert.assertEquals(1L, (long) mesh.triangleData().get(1));
-    Assert.assertEquals(2L, (long) mesh.triangleData().get(2));
+    final ByteBuffer b = mesh.triangleData().get();
+    Assert.assertEquals(0L, (long) b.get(0));
+    Assert.assertEquals(1L, (long) b.get(1));
+    Assert.assertEquals(2L, (long) b.get(2));
   }
 
   @Test
@@ -1336,9 +1339,10 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle16.smft");
-    Assert.assertEquals(0L, (long) mesh.triangleData().getChar(0));
-    Assert.assertEquals(1L, (long) mesh.triangleData().getChar(2));
-    Assert.assertEquals(2L, (long) mesh.triangleData().getChar(4));
+    final ByteBuffer b = mesh.triangleData().get();
+    Assert.assertEquals(0L, (long) b.getChar(0));
+    Assert.assertEquals(1L, (long) b.getChar(2));
+    Assert.assertEquals(2L, (long) b.getChar(4));
   }
 
   @Test
@@ -1346,9 +1350,10 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle32.smft");
-    Assert.assertEquals(0L, (long) mesh.triangleData().getInt(0));
-    Assert.assertEquals(1L, (long) mesh.triangleData().getInt(4));
-    Assert.assertEquals(2L, (long) mesh.triangleData().getInt(8));
+    final ByteBuffer b = mesh.triangleData().get();
+    Assert.assertEquals(0L, (long) b.getInt(0));
+    Assert.assertEquals(1L, (long) b.getInt(4));
+    Assert.assertEquals(2L, (long) b.getInt(8));
   }
 
   @Test
@@ -1356,9 +1361,10 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle64.smft");
-    Assert.assertEquals(0L, (long) mesh.triangleData().getLong(0));
-    Assert.assertEquals(1L, (long) mesh.triangleData().getLong(8));
-    Assert.assertEquals(2L, (long) mesh.triangleData().getLong(16));
+    final ByteBuffer b = mesh.triangleData().get();
+    Assert.assertEquals(0L, b.getLong(0));
+    Assert.assertEquals(1L, b.getLong(8));
+    Assert.assertEquals(2L, b.getLong(16));
   }
 
   @Test
@@ -1932,7 +1938,106 @@ public final class SMFByteBufferPackedMeshesTest
 
     this.check(type, component_count, component_size, vertex_count, name);
   }
-  
+
+  @Test
+  public void testLoadOptionalNothing()
+    throws Exception
+  {
+    final SMFAttributeName attr_name = SMFAttributeName.of("x");
+
+    final SMFByteBufferPackedMeshLoaderType loader =
+      SMFByteBufferPackedMeshes.newLoader(
+        new Meta(),
+        header -> {
+          final List<SMFAttribute> ordered =
+            header.attributesInOrder();
+          final List<SMFAttribute> filtered =
+            ordered.filter(a -> Objects.equals(a.name(), attr_name));
+          final SMFByteBufferPackingConfiguration config =
+            SMFByteBufferPackingConfiguration.of(filtered);
+          return config;
+        },
+        size -> Optional.empty(),
+        size -> Optional.empty());
+
+    try (final SMFParserSequentialType parser =
+           createParser(loader, "float64_4.smft")) {
+      // Nothing
+    }
+
+    Assert.assertTrue(loader.errors().isEmpty());
+
+    final SMFByteBufferPackedMesh mesh = loader.mesh();
+    Assert.assertFalse(mesh.attributeData().isPresent());
+    Assert.assertFalse(mesh.triangleData().isPresent());
+  }
+
+  @Test
+  public void testLoadOptionalTriangles()
+    throws Exception
+  {
+    final SMFAttributeName attr_name = SMFAttributeName.of("x");
+
+    final SMFByteBufferPackedMeshLoaderType loader =
+      SMFByteBufferPackedMeshes.newLoader(
+        new Meta(),
+        header -> {
+          final List<SMFAttribute> ordered =
+            header.attributesInOrder();
+          final List<SMFAttribute> filtered =
+            ordered.filter(a -> Objects.equals(a.name(), attr_name));
+          final SMFByteBufferPackingConfiguration config =
+            SMFByteBufferPackingConfiguration.of(filtered);
+          return config;
+        },
+        size -> Optional.empty(),
+        SMFByteBufferPackedMeshes.allocateByteBufferHeap());
+
+    try (final SMFParserSequentialType parser =
+           createParser(loader, "float64_4.smft")) {
+      // Nothing
+    }
+
+    Assert.assertTrue(loader.errors().isEmpty());
+
+    final SMFByteBufferPackedMesh mesh = loader.mesh();
+    Assert.assertFalse(mesh.attributeData().isPresent());
+    Assert.assertTrue(mesh.triangleData().isPresent());
+  }
+
+  @Test
+  public void testLoadOptionalAttributes()
+    throws Exception
+  {
+    final SMFAttributeName attr_name = SMFAttributeName.of("x");
+
+    final SMFByteBufferPackedMeshLoaderType loader =
+      SMFByteBufferPackedMeshes.newLoader(
+        new Meta(),
+        header -> {
+          final List<SMFAttribute> ordered =
+            header.attributesInOrder();
+          final List<SMFAttribute> filtered =
+            ordered.filter(a -> Objects.equals(a.name(), attr_name));
+          final SMFByteBufferPackingConfiguration config =
+            SMFByteBufferPackingConfiguration.of(filtered);
+          return config;
+        },
+        SMFByteBufferPackedMeshes.allocateByteBufferHeap(),
+        size -> Optional.empty());
+
+    try (final SMFParserSequentialType parser =
+           createParser(loader, "float64_4.smft")) {
+      // Nothing
+    }
+
+    Assert.assertTrue(loader.errors().isEmpty());
+
+    final SMFByteBufferPackedMesh mesh = loader.mesh();
+    Assert.assertTrue(mesh.attributeData().isPresent());
+    Assert.assertFalse(mesh.triangleData().isPresent());
+  }
+
   private final class Meta implements SMFParserEventsMetaType
   {
     @Override

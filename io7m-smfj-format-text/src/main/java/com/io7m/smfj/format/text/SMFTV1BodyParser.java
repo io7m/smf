@@ -812,6 +812,9 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
         }
       }
     } catch (final Exception e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("exception whilst parsing: ", e);
+      }
       this.fail(e.getMessage(), Optional.of(e));
     }
   }

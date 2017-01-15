@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.LongFunction;
 
@@ -49,13 +50,13 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   private final Function<SMFHeader, SMFByteBufferPackingConfiguration> on_config;
-  private final LongFunction<ByteBuffer> on_allocate_attribute;
-  private final LongFunction<ByteBuffer> on_allocate_tri;
+  private final LongFunction<Optional<ByteBuffer>> on_allocate_attribute;
+  private final LongFunction<Optional<ByteBuffer>> on_allocate_tri;
   private final SMFParserEventsMetaType meta;
   private List<SMFParseError> errors;
   private SMFByteBufferPackingConfiguration config;
-  private ByteBuffer buffer_attr;
-  private ByteBuffer buffer_tri;
+  private Optional<ByteBuffer> buffer_attr;
+  private Optional<ByteBuffer> buffer_tri;
   private SMFByteBufferPackedMesh mesh;
   private SMFByteBufferTrianglePacker packer_tri;
   private SMFByteBufferAttributePacker packer_attr;
@@ -63,8 +64,8 @@ public final class SMFByteBufferPackedMeshes implements
   private SMFByteBufferPackedMeshes(
     final SMFParserEventsMetaType in_meta,
     final Function<SMFHeader, SMFByteBufferPackingConfiguration> in_on_config,
-    final LongFunction<ByteBuffer> in_on_allocate_attribute,
-    final LongFunction<ByteBuffer> in_on_allocate_index)
+    final LongFunction<Optional<ByteBuffer>> in_on_allocate_attribute,
+    final LongFunction<Optional<ByteBuffer>> in_on_allocate_index)
   {
     this.meta =
       NullCheck.notNull(in_meta, "Meta");
@@ -83,13 +84,16 @@ public final class SMFByteBufferPackedMeshes implements
    * @return A function that will allocate a heap-based byte buffer
    */
 
-  public static LongFunction<ByteBuffer> allocateByteBufferHeap()
+  public static LongFunction<Optional<ByteBuffer>> allocateByteBufferHeap()
   {
     return size -> {
       if (LOG.isDebugEnabled()) {
         LOG.debug("allocating {} octets", Long.valueOf(size));
       }
-      return ByteBuffer.allocate(Math.toIntExact(size)).order(ByteOrder.nativeOrder());
+      final ByteBuffer b =
+        ByteBuffer.allocate(Math.toIntExact(size))
+          .order(ByteOrder.nativeOrder());
+      return Optional.of(b);
     };
   }
 
@@ -111,8 +115,8 @@ public final class SMFByteBufferPackedMeshes implements
   public static SMFByteBufferPackedMeshLoaderType newLoader(
     final SMFParserEventsMetaType in_meta,
     final Function<SMFHeader, SMFByteBufferPackingConfiguration> on_config,
-    final LongFunction<ByteBuffer> on_allocate_attribute,
-    final LongFunction<ByteBuffer> on_allocate_triangles)
+    final LongFunction<Optional<ByteBuffer>> on_allocate_attribute,
+    final LongFunction<Optional<ByteBuffer>> on_allocate_triangles)
   {
     return new SMFByteBufferPackedMeshes(
       in_meta, on_config, on_allocate_attribute, on_allocate_triangles);
@@ -177,9 +181,10 @@ public final class SMFByteBufferPackedMeshes implements
     this.buffer_attr = this.on_allocate_attribute.apply(size_attr);
     this.buffer_tri = this.on_allocate_tri.apply(size_tri);
 
-    this.packer_tri = new SMFByteBufferTrianglePacker(
-      this.buffer_tri,
-      Math.toIntExact(header.triangleIndexSizeBits()));
+    this.buffer_tri.ifPresent(
+      buffer -> this.packer_tri =
+        new SMFByteBufferTrianglePacker(
+          buffer, Math.toIntExact(header.triangleIndexSizeBits())));
   }
 
   @Override
@@ -220,7 +225,9 @@ public final class SMFByteBufferPackedMeshes implements
   @Override
   public void onDataTrianglesStart()
   {
-    this.packer_tri.onDataTrianglesStart();
+    if (this.packer_tri != null) {
+      this.packer_tri.onDataTrianglesStart();
+    }
   }
 
   @Override
@@ -229,13 +236,17 @@ public final class SMFByteBufferPackedMeshes implements
     final long v1,
     final long v2)
   {
-    this.packer_tri.onDataTriangle(v0, v1, v2);
+    if (this.packer_tri != null) {
+      this.packer_tri.onDataTriangle(v0, v1, v2);
+    }
   }
 
   @Override
   public void onDataTrianglesFinish()
   {
-    this.packer_tri.onDataTrianglesFinish();
+    if (this.packer_tri != null) {
+      this.packer_tri.onDataTrianglesFinish();
+    }
   }
 
   @Override
@@ -244,12 +255,12 @@ public final class SMFByteBufferPackedMeshes implements
   {
     final SortedMap<SMFAttributeName, SMFByteBufferPackedAttribute> by_name =
       this.config.packedAttributesByName();
-    if (by_name.containsKey(attribute.name())) {
+    if (by_name.containsKey(attribute.name()) && this.buffer_attr.isPresent()) {
       final SMFByteBufferPackedAttribute packed_attr =
         by_name.get(attribute.name()).get();
       this.packer_attr =
         new SMFByteBufferAttributePacker(
-          this.buffer_attr,
+          this.buffer_attr.get(),
           this.config,
           packed_attr);
     } else {
