@@ -17,6 +17,12 @@
       <c:type-code-change/>
       <c:summary>SMFParserEventsMetaType no longer extends SMFParserEventsErrorType.</c:summary>
     </c:item>
+
+    <c:item>
+      <c:date>2017-01-15</c:date>
+      <c:type-code-new/>
+      <c:summary>Add SMFParseErrorType#fullMessage()</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">
