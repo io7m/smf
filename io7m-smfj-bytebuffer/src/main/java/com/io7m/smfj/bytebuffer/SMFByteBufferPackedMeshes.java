@@ -152,7 +152,7 @@ public final class SMFByteBufferPackedMeshes implements
   public void onVersionReceived(
     final SMFFormatVersion version)
   {
-
+    // Nothing to be done here
   }
 
   @Override
@@ -398,6 +398,6 @@ public final class SMFByteBufferPackedMeshes implements
   public void onDataAttributeFinish(
     final SMFAttribute attribute)
   {
-
+    // Nothing to be done here
   }
 }

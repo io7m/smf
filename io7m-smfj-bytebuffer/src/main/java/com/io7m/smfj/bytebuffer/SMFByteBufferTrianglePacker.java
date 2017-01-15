@@ -64,7 +64,7 @@ public final class SMFByteBufferTrianglePacker implements
   @Override
   public void onDataTrianglesStart()
   {
-
+    // Nothing to be done here
   }
 
   @Override
@@ -109,6 +109,6 @@ public final class SMFByteBufferTrianglePacker implements
   @Override
   public void onDataTrianglesFinish()
   {
-
+    // Nothing to be done here
   }
 }
