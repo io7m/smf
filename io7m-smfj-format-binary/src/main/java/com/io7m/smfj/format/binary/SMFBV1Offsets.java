@@ -222,7 +222,7 @@ public final class SMFBV1Offsets
     }
 
     final long triangle_size_one =
-      Math.multiplyExact(3L, header.triangleIndexSizeBits() / 8L);
+      header.triangleSizeOctets();
     final long triangle_size_all =
       Math.multiplyExact(triangle_size_one, header.triangleCount());
 

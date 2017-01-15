@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,30 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.parser.api;
+package com.io7m.smfj.bytebuffer;
+
+import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParserEventsType;
+import javaslang.collection.List;
 
 /**
- * A receiver of parse events for mesh data. The expectation is that the methods
- * in this interface will be called by parsers after the call to {@link
- * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
+ * The type of packed meshes.
  */
 
-public interface SMFParserEventsDataType extends
-  SMFParserEventsDataTrianglesType, SMFParserEventsDataAttributesType
+public interface SMFByteBufferPackedMeshLoaderType extends SMFParserEventsType
 {
-  // No extra methods
+  /**
+   * @return The list of errors encountered during parsing, if any
+   */
+
+  List<SMFParseError> errors();
+
+  /**
+   * @return The packed mesh
+   *
+   * @throws IllegalStateException Iff {@link #errors()} is non-empty
+   */
+
+  SMFByteBufferPackedMesh mesh()
+    throws IllegalStateException;
 }

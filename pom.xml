@@ -16,6 +16,7 @@
 
   <modules>
     <module>io7m-smfj-blender</module>
+    <module>io7m-smfj-bytebuffer</module>
     <module>io7m-smfj-checkstyle</module>
     <module>io7m-smfj-cmdline</module>
     <module>io7m-smfj-core</module>

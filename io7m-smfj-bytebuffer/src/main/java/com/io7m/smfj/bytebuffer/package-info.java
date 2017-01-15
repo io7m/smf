@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,10 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.parser.api;
-
 /**
- * A receiver of parse events for mesh data. The expectation is that the methods
- * in this interface will be called by parsers after the call to {@link
- * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
+ * Functions for packing mesh data into Java ByteBuffers.
  */
 
-public interface SMFParserEventsDataType extends
-  SMFParserEventsDataTrianglesType, SMFParserEventsDataAttributesType
-{
-  // No extra methods
-}
+@com.io7m.jnull.NonNullByDefault
+package com.io7m.smfj.bytebuffer;
+

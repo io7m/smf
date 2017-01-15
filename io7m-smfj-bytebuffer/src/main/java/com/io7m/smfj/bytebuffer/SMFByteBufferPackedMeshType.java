@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,16 +14,39 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.parser.api;
+package com.io7m.smfj.bytebuffer;
+
+import com.io7m.smfj.core.SMFImmutableStyleType;
+import org.immutables.value.Value;
+
+import java.nio.ByteBuffer;
 
 /**
- * A receiver of parse events for mesh data. The expectation is that the methods
- * in this interface will be called by parsers after the call to {@link
- * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
+ * A mesh that has been packed into a set of byte buffers.
  */
 
-public interface SMFParserEventsDataType extends
-  SMFParserEventsDataTrianglesType, SMFParserEventsDataAttributesType
+@SMFImmutableStyleType
+@Value.Immutable
+public interface SMFByteBufferPackedMeshType
 {
-  // No extra methods
+  /**
+   * @return The packing configuration used to produce the packed mesh
+   */
+
+  @Value.Parameter
+  SMFByteBufferPackingConfiguration configuration();
+
+  /**
+   * @return A byte buffer containing packed attribute data
+   */
+
+  @Value.Parameter
+  ByteBuffer attributeData();
+
+  /**
+   * @return A byte buffer containing packed triangle data
+   */
+
+  @Value.Parameter
+  ByteBuffer triangleData();
 }

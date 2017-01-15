@@ -92,23 +92,18 @@ public interface SMFAttributeType
         "Component count must be in the range [1, 4]");
     }
 
-    switch (this.componentSizeBits()) {
-      case 8:
-      {
-        if (this.componentType() == SMFComponentType.ELEMENT_TYPE_FLOATING) {
-          throw new IllegalArgumentException(
-            "No 8-bit floating point formats are defined");
-        }
+    switch (this.componentType()) {
+      case ELEMENT_TYPE_INTEGER_SIGNED: {
+        SMFSupportedSizes.checkIntegerSignedSupported(this.componentSizeBits());
         break;
       }
-      case 16:
-      case 32:
-      case 64: {
+      case ELEMENT_TYPE_INTEGER_UNSIGNED: {
+        SMFSupportedSizes.checkIntegerUnsignedSupported(this.componentSizeBits());
         break;
       }
-      default: {
-        throw new IllegalArgumentException(
-          "Component size must be {8, 16, 32, 64}");
+      case ELEMENT_TYPE_FLOATING: {
+        SMFSupportedSizes.checkFloatSupported(this.componentSizeBits());
+        break;
       }
     }
   }

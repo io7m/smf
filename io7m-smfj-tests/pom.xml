@@ -26,6 +26,11 @@
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>io7m-smfj-bytebuffer</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>io7m-smfj-core</artifactId>
       <version>${project.version}</version>
     </dependency>
