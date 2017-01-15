@@ -35,6 +35,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+/**
+ * The default implementation of the {@link SMFSchemaValidatorType} interface.
+ */
+
 public final class SMFSchemaValidator implements SMFSchemaValidatorType
 {
   /**
@@ -186,7 +190,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     final SMFSchemaAttribute attr_schema,
     final SMFAttribute attr)
   {
-    final Optional<SMFComponentType> req_type_opt = attr_schema.requiredType();
+    final Optional<SMFComponentType> req_type_opt =
+      attr_schema.requiredComponentType();
     if (req_type_opt.isPresent()) {
       final SMFComponentType req_type = req_type_opt.get();
       if (attr.componentType() != req_type) {

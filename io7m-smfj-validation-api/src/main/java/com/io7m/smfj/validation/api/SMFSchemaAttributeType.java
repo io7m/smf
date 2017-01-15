@@ -25,19 +25,39 @@ import org.immutables.value.Value;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+/**
+ * A schema for a specific attribute.
+ */
+
 @SMFImmutableStyleType
 @JavaslangEncodingEnabled
 @Value.Immutable
 public interface SMFSchemaAttributeType
 {
+  /**
+   * @return The name of the attribute
+   */
+
   @Value.Parameter
   SMFAttributeName name();
 
+  /**
+   * @return The required component type, if any
+   */
+
   @Value.Parameter
-  Optional<SMFComponentType> requiredType();
+  Optional<SMFComponentType> requiredComponentType();
+
+  /**
+   * @return The required component count, if any
+   */
 
   @Value.Parameter
   OptionalInt requiredComponentCount();
+
+  /**
+   * @return The required component size in bits, if any
+   */
 
   @Value.Parameter
   OptionalInt requiredComponentSize();

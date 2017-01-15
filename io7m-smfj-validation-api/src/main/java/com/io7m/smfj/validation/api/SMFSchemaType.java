@@ -26,19 +26,40 @@ import org.immutables.value.Value;
 
 import java.util.Optional;
 
+/**
+ * The type of schemas.
+ */
+
 @SMFImmutableStyleType
 @JavaslangEncodingEnabled
 @Value.Immutable
 public interface SMFSchemaType
 {
+  /**
+   * @return The unique schema identifier
+   */
+
   @Value.Parameter
   SMFSchemaIdentifier schemaIdentifier();
+
+  /**
+   * @return The required attributes
+   */
 
   @Value.Parameter
   SortedMap<SMFAttributeName, SMFSchemaAttribute> requiredAttributes();
 
+  /**
+   * @return The required coordinate system, if any
+   */
+
   @Value.Parameter
   Optional<SMFCoordinateSystem> requiredCoordinateSystem();
+
+  /**
+   * @return {@code true} iff the mesh is allowed to contain attributes that are
+   * not given in {@link #requiredAttributes()}
+   */
 
   @Value.Parameter
   boolean allowExtraAttributes();

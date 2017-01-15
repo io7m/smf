@@ -81,7 +81,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(OptionalInt.empty())
             .setRequiredComponentSize(OptionalInt.empty())
-            .setRequiredType(Optional.empty())
+            .setRequiredComponentType(Optional.empty())
             .build())
         .build();
 
@@ -258,7 +258,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(OptionalInt.empty())
             .setRequiredComponentSize(OptionalInt.empty())
-            .setRequiredType(SMFComponentType.ELEMENT_TYPE_FLOATING)
+            .setRequiredComponentType(SMFComponentType.ELEMENT_TYPE_FLOATING)
             .build())
         .build();
 
@@ -301,7 +301,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(OptionalInt.empty())
             .setRequiredComponentSize(OptionalInt.empty())
-            .setRequiredType(SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED)
+            .setRequiredComponentType(SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED)
             .build())
         .build();
 
@@ -349,7 +349,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(3)
             .setRequiredComponentSize(OptionalInt.empty())
-            .setRequiredType(Optional.empty())
+            .setRequiredComponentType(Optional.empty())
             .build())
         .build();
 
@@ -397,7 +397,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(4)
             .setRequiredComponentSize(OptionalInt.empty())
-            .setRequiredType(Optional.empty())
+            .setRequiredComponentType(Optional.empty())
             .build())
         .build();
 
@@ -440,7 +440,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(OptionalInt.empty())
             .setRequiredComponentSize(16)
-            .setRequiredType(Optional.empty())
+            .setRequiredComponentType(Optional.empty())
             .build())
         .build();
 
@@ -488,7 +488,7 @@ public abstract class SMFSchemaValidatorContract
             .setName(attr_0.name())
             .setRequiredComponentCount(OptionalInt.empty())
             .setRequiredComponentSize(32)
-            .setRequiredType(Optional.empty())
+            .setRequiredComponentType(Optional.empty())
             .build())
         .build();
 
