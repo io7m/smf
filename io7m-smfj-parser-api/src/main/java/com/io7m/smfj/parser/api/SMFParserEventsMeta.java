@@ -40,6 +40,11 @@ public final class SMFParserEventsMeta
 
   private static final class Ignore implements SMFParserEventsMetaType
   {
+    private Ignore()
+    {
+      // Nothing
+    }
+
     @Override
     public boolean onMeta(
       final long vendor,
