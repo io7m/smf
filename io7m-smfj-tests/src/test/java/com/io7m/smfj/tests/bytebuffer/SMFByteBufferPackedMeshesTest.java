@@ -31,8 +31,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.format.text.SMFFormatText;
-import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsMeta;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -1253,18 +1252,15 @@ public final class SMFByteBufferPackedMeshesTest
       }
       case ELEMENT_TYPE_FLOATING: {
         switch (component_size) {
-          case 16:
-          {
+          case 16: {
             checkTypeFloat16(component_count, rb);
             break;
           }
-          case 32:
-          {
+          case 32: {
             checkTypeFloat32(component_count, rb);
             break;
           }
-          case 64:
-          {
+          case 64: {
             checkTypeFloat64(component_count, rb);
             break;
           }
@@ -1303,7 +1299,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        new Meta(),
+        SMFParserEventsMeta.ignore(),
         header -> {
           final List<SMFAttribute> ordered =
             header.attributesInOrder();
@@ -1378,7 +1374,7 @@ public final class SMFByteBufferPackedMeshesTest
     final int component_size = 8;
     final int vertex_count = 3;
     final String name = "integer8_1.smft";
-    
+
     this.check(type, component_count, component_size, vertex_count, name);
   }
 
@@ -1949,7 +1945,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        new Meta(),
+        SMFParserEventsMeta.ignore(),
         header -> {
           final List<SMFAttribute> ordered =
             header.attributesInOrder();
@@ -1982,7 +1978,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        new Meta(),
+        SMFParserEventsMeta.ignore(),
         header -> {
           final List<SMFAttribute> ordered =
             header.attributesInOrder();
@@ -2015,7 +2011,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        new Meta(),
+        SMFParserEventsMeta.ignore(),
         header -> {
           final List<SMFAttribute> ordered =
             header.attributesInOrder();
@@ -2050,7 +2046,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        new Meta(),
+        SMFParserEventsMeta.ignore(),
         header -> {
           final List<SMFAttribute> ordered =
             header.attributesInOrder();
@@ -2072,33 +2068,5 @@ public final class SMFByteBufferPackedMeshesTest
 
     this.expected.expect(IllegalStateException.class);
     loader.mesh();
-  }
-
-  private final class Meta implements SMFParserEventsMetaType
-  {
-    @Override
-    public boolean onMeta(
-      final long vendor,
-      final long schema,
-      final long length)
-    {
-      throw new UnreachableCodeException();
-    }
-
-    @Override
-    public void onMetaData(
-      final long vendor,
-      final long schema,
-      final byte[] data)
-    {
-      throw new UnreachableCodeException();
-    }
-
-    @Override
-    public void onError(
-      final SMFParseError e)
-    {
-      throw new UnreachableCodeException();
-    }
   }
 }
