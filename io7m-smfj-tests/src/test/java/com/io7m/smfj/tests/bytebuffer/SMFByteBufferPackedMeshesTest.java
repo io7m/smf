@@ -38,7 +38,9 @@ import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import javaslang.collection.List;
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -2036,6 +2038,40 @@ public final class SMFByteBufferPackedMeshesTest
     final SMFByteBufferPackedMesh mesh = loader.mesh();
     Assert.assertTrue(mesh.attributeData().isPresent());
     Assert.assertFalse(mesh.triangleData().isPresent());
+  }
+
+  @Rule public ExpectedException expected = ExpectedException.none();
+
+  @Test
+  public void testLoadError()
+    throws Exception
+  {
+    final SMFAttributeName attr_name = SMFAttributeName.of("x");
+
+    final SMFByteBufferPackedMeshLoaderType loader =
+      SMFByteBufferPackedMeshes.newLoader(
+        new Meta(),
+        header -> {
+          final List<SMFAttribute> ordered =
+            header.attributesInOrder();
+          final List<SMFAttribute> filtered =
+            ordered.filter(a -> Objects.equals(a.name(), attr_name));
+          final SMFByteBufferPackingConfiguration config =
+            SMFByteBufferPackingConfiguration.of(filtered);
+          return config;
+        },
+        size -> Optional.empty(),
+        size -> Optional.empty());
+
+    try (final SMFParserSequentialType parser =
+           createParser(loader, "broken.smft")) {
+      // Nothing
+    }
+
+    Assert.assertFalse(loader.errors().isEmpty());
+
+    this.expected.expect(IllegalStateException.class);
+    loader.mesh();
   }
 
   private final class Meta implements SMFParserEventsMetaType
