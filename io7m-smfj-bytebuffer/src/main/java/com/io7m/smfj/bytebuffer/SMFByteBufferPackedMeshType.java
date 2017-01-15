@@ -17,6 +17,7 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.smfj.core.SMFImmutableStyleType;
+import javaslang.collection.SortedMap;
 import org.immutables.value.Value;
 
 import java.nio.ByteBuffer;
@@ -31,23 +32,32 @@ import java.util.Optional;
 public interface SMFByteBufferPackedMeshType
 {
   /**
-   * @return The packing configuration used to produce the packed mesh
+   * The packing configurations used to produce the mesh. This is the value
+   * returned by {@link SMFByteBufferPackerEventsType#onHeader(com.io7m.smfj.core.SMFHeader)}.
+   *
+   * @return The packing configurations used to produce the packed mesh
    */
 
   @Value.Parameter
-  SMFByteBufferPackingConfiguration configuration();
+  SortedMap<Integer, SMFByteBufferPackingConfiguration> configurations();
 
   /**
+   * The set of produced byte buffers. Exactly one byte buffer is allocated
+   * per packing configuration and the buffers are keyed by the corresponding
+   * keys in the map of configurations.
+   *
    * @return A byte buffer containing packed attribute data
+   *
+   * @see #configurations()
    */
 
   @Value.Parameter
-  Optional<ByteBuffer> attributeData();
+  SortedMap<Integer, ByteBuffer> attributeBuffers();
 
   /**
    * @return A byte buffer containing packed triangle data
    */
 
   @Value.Parameter
-  Optional<ByteBuffer> triangleData();
+  Optional<ByteBuffer> triangleBuffer();
 }

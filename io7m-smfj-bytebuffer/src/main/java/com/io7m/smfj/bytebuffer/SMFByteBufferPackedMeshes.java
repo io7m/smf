@@ -24,8 +24,11 @@ import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
+import javaslang.Tuple;
+import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
+import javaslang.collection.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +36,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.LongFunction;
 
 /**
@@ -49,32 +51,23 @@ public final class SMFByteBufferPackedMeshes implements
     LOG = LoggerFactory.getLogger(SMFByteBufferPackedMeshes.class);
   }
 
-  private final Function<SMFHeader, SMFByteBufferPackingConfiguration> on_config;
-  private final LongFunction<Optional<ByteBuffer>> on_allocate_attribute;
-  private final LongFunction<Optional<ByteBuffer>> on_allocate_tri;
+  private final SMFByteBufferPackerEventsType events;
   private final SMFParserEventsMetaType meta;
+
   private List<SMFParseError> errors;
-  private SMFByteBufferPackingConfiguration config;
-  private Optional<ByteBuffer> buffer_attr;
-  private Optional<ByteBuffer> buffer_tri;
+  private SortedMap<Integer, ByteBuffer> buffers_attr;
+  private ByteBuffer buffer_tri;
   private SMFByteBufferPackedMesh mesh;
   private SMFByteBufferTrianglePacker packer_tri;
-  private SMFByteBufferAttributePacker packer_attr;
+  private SortedMap<Integer, SMFByteBufferPackingConfiguration> config;
+  private SortedMap<Integer, SMFByteBufferAttributePacker> attr_packers;
 
   private SMFByteBufferPackedMeshes(
     final SMFParserEventsMetaType in_meta,
-    final Function<SMFHeader, SMFByteBufferPackingConfiguration> in_on_config,
-    final LongFunction<Optional<ByteBuffer>> in_on_allocate_attribute,
-    final LongFunction<Optional<ByteBuffer>> in_on_allocate_index)
+    final SMFByteBufferPackerEventsType in_events)
   {
-    this.meta =
-      NullCheck.notNull(in_meta, "Meta");
-    this.on_config =
-      NullCheck.notNull(in_on_config, "On config");
-    this.on_allocate_attribute =
-      NullCheck.notNull(in_on_allocate_attribute, "On allocate attribute");
-    this.on_allocate_tri =
-      NullCheck.notNull(in_on_allocate_index, "On allocate index");
+    this.meta = NullCheck.notNull(in_meta, "Meta");
+    this.events = NullCheck.notNull(in_events, "Events");
   }
 
   /**
@@ -100,26 +93,17 @@ public final class SMFByteBufferPackedMeshes implements
   /**
    * Create a new mesh loader.
    *
-   * @param in_meta               A metadata listener
-   * @param on_config             A function that will produce a byte buffer
-   *                              packing configuration when given a parsed
-   *                              header
-   * @param on_allocate_attribute A function that will allocate a byte buffer of
-   *                              the given size for attribute data
-   * @param on_allocate_triangles A function that will allocate a byte buffer of
-   *                              the given size for triangle data
+   * @param in_meta   A metadata listener
+   * @param in_events A buffer packing event listener
    *
    * @return A new mesh loader
    */
 
   public static SMFByteBufferPackedMeshLoaderType newLoader(
     final SMFParserEventsMetaType in_meta,
-    final Function<SMFHeader, SMFByteBufferPackingConfiguration> on_config,
-    final LongFunction<Optional<ByteBuffer>> on_allocate_attribute,
-    final LongFunction<Optional<ByteBuffer>> on_allocate_triangles)
+    final SMFByteBufferPackerEventsType in_events)
   {
-    return new SMFByteBufferPackedMeshes(
-      in_meta, on_config, on_allocate_attribute, on_allocate_triangles);
+    return new SMFByteBufferPackedMeshes(in_meta, in_events);
   }
 
   @Override
@@ -140,12 +124,11 @@ public final class SMFByteBufferPackedMeshes implements
   public void onStart()
   {
     this.errors = List.empty();
-    this.config = null;
-    this.buffer_attr = null;
+    this.buffers_attr = TreeMap.empty();
+    this.attr_packers = TreeMap.empty();
     this.buffer_tri = null;
     this.mesh = null;
     this.packer_tri = null;
-    this.packer_attr = null;
   }
 
   @Override
@@ -160,7 +143,9 @@ public final class SMFByteBufferPackedMeshes implements
   {
     if (this.errors.isEmpty()) {
       this.mesh = SMFByteBufferPackedMesh.of(
-        this.config, this.buffer_attr, this.buffer_tri);
+        this.config,
+        this.buffers_attr,
+        Optional.ofNullable(this.buffer_tri));
     }
   }
 
@@ -168,27 +153,32 @@ public final class SMFByteBufferPackedMeshes implements
   public void onHeaderParsed(
     final SMFHeader header)
   {
-    this.config = this.on_config.apply(header);
+    this.config = this.events.onHeader(header);
 
-    final long size_attr =
-      Math.multiplyExact(
-        (long) this.config.vertexSizeOctets(),
-        header.vertexCount());
+    final boolean want_triangles = this.events.onShouldPackTriangles();
+    if (want_triangles) {
+      final long size_tri = Math.multiplyExact(
+        header.triangleSizeOctets(), header.triangleCount());
+      LOG.debug("allocating triangle buffer");
+      this.buffer_tri = this.events.onAllocateTriangleBuffer(size_tri);
+      this.packer_tri = new SMFByteBufferTrianglePacker(
+        this.buffer_tri,
+        Math.toIntExact(header.triangleIndexSizeBits()));
+    } else {
+      LOG.debug("no triangle buffer required");
+    }
 
-    final long size_tri =
-      Math.multiplyExact(header.triangleSizeOctets(), header.triangleCount());
+    this.buffers_attr = this.config.map((id, buffer_config) -> {
+      final long size_attr =
+        Math.multiplyExact(
+          (long) buffer_config.vertexSizeOctets(),
+          header.vertexCount());
 
-    LOG.debug("allocating attribute buffer");
-    this.buffer_attr =
-      this.on_allocate_attribute.apply(size_attr);
-    LOG.debug("allocating triangle buffer");
-    this.buffer_tri =
-      this.on_allocate_tri.apply(size_tri);
-
-    this.buffer_tri.ifPresent(
-      buffer -> this.packer_tri =
-        new SMFByteBufferTrianglePacker(
-          buffer, Math.toIntExact(header.triangleIndexSizeBits())));
+      LOG.debug("allocating attribute buffer for {}", id);
+      final ByteBuffer buffer =
+        this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
+      return Tuple.of(id, buffer);
+    });
   }
 
   @Override
@@ -257,27 +247,32 @@ public final class SMFByteBufferPackedMeshes implements
   public void onDataAttributeStart(
     final SMFAttribute attribute)
   {
-    final SortedMap<SMFAttributeName, SMFByteBufferPackedAttribute> by_name =
-      this.config.packedAttributesByName();
-    if (by_name.containsKey(attribute.name()) && this.buffer_attr.isPresent()) {
-      final SMFByteBufferPackedAttribute packed_attr =
-        by_name.get(attribute.name()).get();
-      this.packer_attr =
-        new SMFByteBufferAttributePacker(
-          this.buffer_attr.get(),
-          this.config,
-          packed_attr);
-    } else {
-      this.packer_attr = null;
+    TreeMap<Integer, SMFByteBufferAttributePacker> packers = TreeMap.empty();
+
+    final SMFAttributeName name = attribute.name();
+    for (final Tuple2<Integer, SMFByteBufferPackingConfiguration> p : this.config) {
+      final Integer id = p._1;
+      final SMFByteBufferPackingConfiguration bc = p._2;
+      final SortedMap<SMFAttributeName, SMFByteBufferPackedAttribute> by_name =
+        bc.packedAttributesByName();
+      if (by_name.containsKey(name)) {
+        final ByteBuffer b = this.buffers_attr.get(id).get();
+        final SMFByteBufferPackedAttribute pa = by_name.get(name).get();
+        final SMFByteBufferAttributePacker packer =
+          new SMFByteBufferAttributePacker(b, bc, pa);
+        packers = packers.put(id, packer);
+      }
     }
+
+    this.attr_packers = packers;
   }
 
   @Override
   public void onDataAttributeValueIntegerSigned1(
     final long x)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerSigned1(x);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerSigned1(x);
     }
   }
 
@@ -286,8 +281,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long x,
     final long y)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerSigned2(x, y);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerSigned2(x, y);
     }
   }
 
@@ -297,8 +292,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long y,
     final long z)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerSigned3(x, y, z);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerSigned3(x, y, z);
     }
   }
 
@@ -309,8 +304,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long z,
     final long w)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerSigned4(x, y, z, w);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerSigned4(x, y, z, w);
     }
   }
 
@@ -318,8 +313,8 @@ public final class SMFByteBufferPackedMeshes implements
   public void onDataAttributeValueIntegerUnsigned1(
     final long x)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerUnsigned1(x);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerUnsigned1(x);
     }
   }
 
@@ -328,8 +323,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long x,
     final long y)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerUnsigned2(x, y);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerUnsigned2(x, y);
     }
   }
 
@@ -339,8 +334,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long y,
     final long z)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerUnsigned3(x, y, z);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerUnsigned3(x, y, z);
     }
   }
 
@@ -351,8 +346,8 @@ public final class SMFByteBufferPackedMeshes implements
     final long z,
     final long w)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueIntegerUnsigned4(x, y, z, w);
     }
   }
 
@@ -360,8 +355,8 @@ public final class SMFByteBufferPackedMeshes implements
   public void onDataAttributeValueFloat1(
     final double x)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueFloat1(x);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueFloat1(x);
     }
   }
 
@@ -370,8 +365,8 @@ public final class SMFByteBufferPackedMeshes implements
     final double x,
     final double y)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueFloat2(x, y);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueFloat2(x, y);
     }
   }
 
@@ -381,8 +376,8 @@ public final class SMFByteBufferPackedMeshes implements
     final double y,
     final double z)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueFloat3(x, y, z);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueFloat3(x, y, z);
     }
   }
 
@@ -393,8 +388,8 @@ public final class SMFByteBufferPackedMeshes implements
     final double z,
     final double w)
   {
-    if (this.packer_attr != null) {
-      this.packer_attr.onDataAttributeValueFloat4(x, y, z, w);
+    for (final SMFByteBufferAttributePacker p : this.attr_packers.values()) {
+      p.onDataAttributeValueFloat4(x, y, z, w);
     }
   }
 
