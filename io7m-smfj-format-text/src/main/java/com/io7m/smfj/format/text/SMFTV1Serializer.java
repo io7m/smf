@@ -204,13 +204,8 @@ final class SMFTV1Serializer implements SMFSerializerType
       final SMFSchemaIdentifier schema_id =
         this.header.schemaIdentifier();
       if (schema_id.vendorID() != 0) {
-        this.writer.append(
-          String.format(
-            "schema %08x %08x %d %d",
-            Integer.valueOf(schema_id.vendorID()),
-            Integer.valueOf(schema_id.schemaID()),
-            Integer.valueOf(schema_id.schemaMajorVersion()),
-            Integer.valueOf(schema_id.schemaMinorVersion())));
+        this.writer.append("schema ");
+        this.writer.append(schema_id.toHumanString());
         this.writer.newLine();
       }
 

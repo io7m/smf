@@ -141,25 +141,11 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
     final StringBuilder sb = new StringBuilder(128);
     sb.append("Incorrect schema identifier.");
     sb.append(System.lineSeparator());
-
-    sb.append("Expected: vendor ");
-    sb.append(Integer.toUnsignedString(this.config.vendorID(), 16));
-    sb.append(" schema ");
-    sb.append(Integer.toUnsignedString(this.config.schemaID(), 16));
-    sb.append(" ");
-    sb.append(this.config.schemaMajorVersion());
-    sb.append(" ");
-    sb.append(this.config.schemaMinorVersion());
+    sb.append("Expected: ");
+    sb.append(this.config.toHumanString());
     sb.append(System.lineSeparator());
-
-    sb.append("Received: vendor ");
-    sb.append(Integer.toUnsignedString(received.vendorID(), 16));
-    sb.append(" schema ");
-    sb.append(Integer.toUnsignedString(received.schemaID(), 16));
-    sb.append(" ");
-    sb.append(received.schemaMajorVersion());
-    sb.append(" ");
-    sb.append(received.schemaMinorVersion());
+    sb.append("Received: ");
+    sb.append(received.toHumanString());
     sb.append(System.lineSeparator());
 
     return Validation.invalid(List.of(

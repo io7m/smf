@@ -812,4 +812,35 @@ public abstract class SMFSchemaValidatorContract
 
     Assert.assertTrue(r.isValid());
   }
+
+  @Test
+  public final void testWrongSchemaIdentifier()
+  {
+    final SMFHeader header =
+      SMFHeader.builder()
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374E, 0, 1, 0))
+        .setAllowExtraAttributes(true)
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isInvalid());
+
+    final List<SMFSchemaValidationError> errors = r.getError();
+    errors.forEach(e -> LOG.error("{}", e));
+    Assert.assertTrue(errors.exists(e -> e.message().contains(
+      "The mesh schema identifier does not match the identifier in the schema")));
+  }
 }

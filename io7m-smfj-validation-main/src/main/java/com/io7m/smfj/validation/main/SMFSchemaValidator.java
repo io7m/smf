@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaValidationError;
@@ -45,6 +46,12 @@ import static javaslang.control.Validation.valid;
 
 public final class SMFSchemaValidator implements SMFSchemaValidatorType
 {
+  private static final SMFSchemaIdentifier DEFAULT_IDENTIFIER;
+
+  static {
+    DEFAULT_IDENTIFIER = SMFSchemaIdentifier.builder().build();
+  }
+
   /**
    * Construct a validator.
    */
@@ -63,6 +70,14 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     NullCheck.notNull(schema, "Schema");
 
     List<SMFSchemaValidationError> errors = List.empty();
+
+    final SMFSchemaIdentifier file_id = header.schemaIdentifier();
+    if (!Objects.equals(file_id, DEFAULT_IDENTIFIER)) {
+      final SMFSchemaIdentifier schema_id = schema.schemaIdentifier();
+      if (!Objects.equals(schema_id, file_id)) {
+        errors = errors.append(errorWrongSchemaID(schema_id, file_id));
+      }
+    }
 
     final SortedMap<SMFAttributeName, SMFSchemaAttribute> optional_by_name =
       schema.optionalAttributes();
@@ -110,6 +125,22 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     }
 
     return invalid(errors);
+  }
+
+  private static SMFSchemaValidationError errorWrongSchemaID(
+    final SMFSchemaIdentifier schema_id,
+    final SMFSchemaIdentifier file_id)
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append("The mesh schema identifier does not match the identifier in the schema.");
+    sb.append(System.lineSeparator());
+    sb.append("  Expected: ");
+    sb.append(schema_id.toHumanString());
+    sb.append(System.lineSeparator());
+    sb.append("  Received: ");
+    sb.append(file_id.toHumanString());
+    sb.append(System.lineSeparator());
+    return SMFSchemaValidationError.of(sb.toString(), Optional.empty());
   }
 
   private static SMFSchemaValidationError errorWrongCoordinateSystem(
