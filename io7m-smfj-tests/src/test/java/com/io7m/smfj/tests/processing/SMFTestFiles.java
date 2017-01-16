@@ -33,15 +33,21 @@ public final class SMFTestFiles
 
   }
 
+  static InputStream resourceStream(
+    final String name)
+  {
+    final String rpath = "/com/io7m/smfj/tests/processing/" + name;
+    return SMFMemoryMeshProducerTest.class.getResourceAsStream(rpath);
+  }
+
   static SMFParserSequentialType createParser(
     final SMFParserEventsType loader,
     final String name)
     throws IOException
   {
-    final String rpath = "/com/io7m/smfj/tests/processing/" + name;
-    try (final InputStream stream =
-           SMFMemoryMeshProducerTest.class.getResourceAsStream(rpath)) {
+    try (final InputStream stream = resourceStream(name)) {
       final SMFParserProviderType fmt = new SMFFormatText();
+      final String rpath = "/com/io7m/smfj/tests/processing/" + name;
       final Path path = Paths.get(rpath);
       final SMFParserSequentialType parser =
         fmt.parserCreateSequential(loader, path, stream);
