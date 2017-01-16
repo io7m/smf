@@ -16,11 +16,13 @@
 
 package com.io7m.smfj.validation.api;
 
+import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import javaslang.collection.SortedMap;
+import javaslang.collection.SortedSet;
 import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
@@ -43,11 +45,24 @@ public interface SMFSchemaType
   SMFSchemaIdentifier schemaIdentifier();
 
   /**
+   * A schema may define required attributes. An attribute is not allowed to be
+   * both required and optional at the same time.
+   *
    * @return The required attributes
    */
 
   @Value.Parameter
   SortedMap<SMFAttributeName, SMFSchemaAttribute> requiredAttributes();
+
+  /**
+   * A schema may define optional attributes. An attribute is not allowed to be
+   * both required and optional at the same time.
+   *
+   * @return The optional attributes
+   */
+
+  @Value.Parameter
+  SortedMap<SMFAttributeName, SMFSchemaAttribute> optionalAttributes();
 
   /**
    * @return The required coordinate system, if any
@@ -63,4 +78,21 @@ public interface SMFSchemaType
 
   @Value.Parameter
   boolean allowExtraAttributes();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    final SortedSet<SMFAttributeName> both =
+      this.requiredAttributes().keySet().intersect(
+        this.optionalAttributes().keySet());
+
+    Preconditions.checkPrecondition(
+      both,
+      both.isEmpty(),
+      s -> "The intersection of the required and optional attributes must be empty");
+  }
 }

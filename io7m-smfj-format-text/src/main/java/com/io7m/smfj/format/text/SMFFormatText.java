@@ -104,7 +104,7 @@ public final class SMFFormatText implements SMFParserProviderType,
     NullCheck.notNull(in_stream, "Stream");
     return new Parser(
       in_events,
-      new SMFTLineReader(in_path, in_stream),
+      SMFTLineReaderStreamIO.create(in_path, in_stream),
       new AtomicReference<>(SMFTAbstractParser.ParserState.STATE_INITIAL));
   }
 
@@ -155,7 +155,7 @@ public final class SMFFormatText implements SMFParserProviderType,
 
     Parser(
       final SMFParserEventsType in_events,
-      final SMFTLineReader in_reader,
+      final SMFTLineReaderType in_reader,
       final AtomicReference<ParserState> in_state)
     {
       super(in_events, in_reader, in_state);

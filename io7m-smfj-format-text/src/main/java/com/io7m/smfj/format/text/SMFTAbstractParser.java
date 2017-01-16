@@ -29,13 +29,13 @@ import java.util.concurrent.atomic.AtomicReference;
 abstract class SMFTAbstractParser implements
   SMFParserSequentialType
 {
-  protected final SMFTLineReader reader;
+  protected final SMFTLineReaderType reader;
   protected final SMFParserEventsType events;
   protected final AtomicReference<ParserState> state;
 
   SMFTAbstractParser(
     final SMFParserEventsType in_events,
-    final SMFTLineReader in_reader,
+    final SMFTLineReaderType in_reader,
     final AtomicReference<ParserState> in_state)
   {
     this.events = NullCheck.notNull(in_events, "Events");
@@ -66,7 +66,7 @@ abstract class SMFTAbstractParser implements
     final String message,
     final Optional<Exception> exception)
   {
-    return SMFParseError.of(this.reader.position().toImmutable(), message, exception);
+    return SMFParseError.of(this.reader.position(), message, exception);
   }
 
   private SMFParseError makeErrorWithLine(
@@ -75,7 +75,7 @@ abstract class SMFTAbstractParser implements
     final Optional<Exception> exception)
   {
     return SMFParseError.of(
-      this.reader.position().toImmutable().withLine(line), message, exception);
+      this.reader.position().withLine(line), message, exception);
   }
 
   protected final void fail(

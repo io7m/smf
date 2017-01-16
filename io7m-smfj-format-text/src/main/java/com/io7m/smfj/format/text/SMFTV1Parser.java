@@ -38,7 +38,7 @@ final class SMFTV1Parser extends SMFTAbstractParser
   SMFTV1Parser(
     final SMFTAbstractParser in_parent,
     final SMFParserEventsType in_events,
-    final SMFTLineReader in_reader,
+    final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version)
   {
     super(in_events, in_reader, in_parent.state);

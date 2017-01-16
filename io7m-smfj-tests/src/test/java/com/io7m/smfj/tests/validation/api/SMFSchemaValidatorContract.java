@@ -50,7 +50,7 @@ public abstract class SMFSchemaValidatorContract
   protected abstract SMFSchemaValidatorType create();
 
   @Test
-  public final void testAttributeMissing()
+  public final void testRequiredAttributeMissing()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -226,7 +226,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testCorrectComponentType()
+  public final void testRequiredCorrectComponentType()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -269,7 +269,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testWrongComponentType()
+  public final void testRequiredWrongComponentType()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -317,7 +317,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testWrongComponentCount()
+  public final void testRequiredWrongComponentCount()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -365,7 +365,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testCorrectComponentCount()
+  public final void testRequiredCorrectComponentCount()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -408,7 +408,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testWrongComponentSize()
+  public final void testRequiredWrongComponentSize()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -456,7 +456,7 @@ public abstract class SMFSchemaValidatorContract
   }
 
   @Test
-  public final void testCorrectComponentSize()
+  public final void testRequiredCorrectComponentSize()
   {
     final SMFAttribute attr_0 =
       SMFAttribute.of(
@@ -483,6 +483,321 @@ public abstract class SMFSchemaValidatorContract
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(OptionalInt.empty())
+            .setRequiredComponentSize(32)
+            .setRequiredComponentType(Optional.empty())
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public final void testOptionalCorrectComponentType()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(OptionalInt.empty())
+            .setRequiredComponentSize(OptionalInt.empty())
+            .setRequiredComponentType(SMFComponentType.ELEMENT_TYPE_FLOATING)
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public final void testOptionalWrongComponentType()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(OptionalInt.empty())
+            .setRequiredComponentSize(OptionalInt.empty())
+            .setRequiredComponentType(SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED)
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isInvalid());
+
+    final List<SMFSchemaValidationError> errors = r.getError();
+    errors.forEach(e -> LOG.error("{}", e));
+    Assert.assertTrue(errors.exists(e -> e.message().contains(
+      "Attribute is not of the expected type")));
+  }
+
+  @Test
+  public final void testOptionalWrongComponentCount()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(3)
+            .setRequiredComponentSize(OptionalInt.empty())
+            .setRequiredComponentType(Optional.empty())
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isInvalid());
+
+    final List<SMFSchemaValidationError> errors = r.getError();
+    errors.forEach(e -> LOG.error("{}", e));
+    Assert.assertTrue(errors.exists(e -> e.message().contains(
+      "Attribute component count is not the expected count")));
+  }
+
+  @Test
+  public final void testOptionalCorrectComponentCount()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(4)
+            .setRequiredComponentSize(OptionalInt.empty())
+            .setRequiredComponentType(Optional.empty())
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public final void testOptionalWrongComponentSize()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(OptionalInt.empty())
+            .setRequiredComponentSize(16)
+            .setRequiredComponentType(Optional.empty())
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isInvalid());
+
+    final List<SMFSchemaValidationError> errors = r.getError();
+    errors.forEach(e -> LOG.error("{}", e));
+    Assert.assertTrue(errors.exists(e -> e.message().contains(
+      "Attribute component size is not the expected size")));
+  }
+
+  @Test
+  public final void testOptionalCorrectComponentSize()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .addAttributesInOrder(attr_0)
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
+          attr_0.name(),
+          SMFSchemaAttribute.builder()
+            .setName(attr_0.name())
+            .setRequiredComponentCount(OptionalInt.empty())
+            .setRequiredComponentSize(32)
+            .setRequiredComponentType(Optional.empty())
+            .build())
+        .build();
+
+    final Validation<List<SMFSchemaValidationError>, SMFHeader> r =
+      this.create().validate(header, schema);
+
+    Assert.assertTrue(r.isValid());
+  }
+
+  @Test
+  public final void testOptionalNotPresent()
+  {
+    final SMFAttribute attr_0 =
+      SMFAttribute.of(
+        SMFAttributeName.of("x"),
+        SMFComponentType.ELEMENT_TYPE_FLOATING,
+        4,
+        32);
+
+    final SMFHeader header =
+      SMFHeader.builder()
+        .setCoordinateSystem(SMFCoordinateSystem.of(
+          CAxisSystem.of(
+            CAxis.AXIS_POSITIVE_X,
+            CAxis.AXIS_POSITIVE_Y,
+            CAxis.AXIS_NEGATIVE_Z),
+          SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .build();
+
+    final SMFSchema schema =
+      SMFSchema.builder()
+        .setSchemaIdentifier(header.schemaIdentifier())
+        .setAllowExtraAttributes(false)
+        .setRequiredCoordinateSystem(Optional.empty())
+        .putOptionalAttributes(
           attr_0.name(),
           SMFSchemaAttribute.builder()
             .setName(attr_0.name())

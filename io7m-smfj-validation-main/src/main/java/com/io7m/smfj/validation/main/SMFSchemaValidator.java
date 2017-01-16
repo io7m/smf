@@ -29,11 +29,15 @@ import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
 import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
+import javaslang.collection.SortedSet;
 import javaslang.control.Validation;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
 
 /**
  * The default implementation of the {@link SMFSchemaValidatorType} interface.
@@ -60,32 +64,35 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
 
     List<SMFSchemaValidationError> errors = List.empty();
 
+    final SortedMap<SMFAttributeName, SMFSchemaAttribute> optional_by_name =
+      schema.optionalAttributes();
     final SortedMap<SMFAttributeName, SMFSchemaAttribute> required_by_name =
       schema.requiredAttributes();
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       header.attributesByName();
-    for (final Tuple2<SMFAttributeName, SMFSchemaAttribute> p : required_by_name) {
+
+    for (final Tuple2<SMFAttributeName, SMFAttribute> p : by_name) {
       final SMFAttributeName name = p._1;
-      final SMFSchemaAttribute attr_schema = p._2;
+      final SMFAttribute attribute = p._2;
 
-      if (by_name.containsKey(name)) {
-        final SMFAttribute attr = by_name.get(name).get();
-        errors = checkComponentType(errors, name, attr_schema, attr);
-        errors = checkComponentSize(errors, name, attr_schema, attr);
-        errors = checkComponentCount(errors, name, attr_schema, attr);
-      } else {
-        errors = errors.append(errorMissingAttribute(name));
+      if (required_by_name.containsKey(name)) {
+        final SMFSchemaAttribute attr_schema = required_by_name.get(name).get();
+        errors = checkComponentType(errors, name, attr_schema, attribute);
+        errors = checkComponentSize(errors, name, attr_schema, attribute);
+        errors = checkComponentCount(errors, name, attr_schema, attribute);
+      } else if (optional_by_name.containsKey(name)) {
+        final SMFSchemaAttribute attr_schema = optional_by_name.get(name).get();
+        errors = checkComponentType(errors, name, attr_schema, attribute);
+        errors = checkComponentSize(errors, name, attr_schema, attribute);
+        errors = checkComponentCount(errors, name, attr_schema, attribute);
+      } else if (!schema.allowExtraAttributes()) {
+        errors = errors.append(errorExtraAttribute(name));
       }
     }
 
-    if (!schema.allowExtraAttributes()) {
-      final SortedMap<SMFAttributeName, SMFAttribute> extras =
-        by_name.filterKeys(k -> !required_by_name.containsKey(k));
-      if (!extras.isEmpty()) {
-        errors = errors.appendAll(extras.keySet().toList().map(
-          SMFSchemaValidator::errorExtraAttribute));
-      }
-    }
+    final SortedSet<SMFAttributeName> missing =
+      required_by_name.keySet().diff(by_name.keySet());
+    errors = errors.appendAll(missing.map(SMFSchemaValidator::errorMissingAttribute));
 
     final Optional<SMFCoordinateSystem> coords_opt =
       schema.requiredCoordinateSystem();
@@ -99,10 +106,10 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     }
 
     if (errors.isEmpty()) {
-      return Validation.valid(header);
+      return valid(header);
     }
 
-    return Validation.invalid(errors);
+    return invalid(errors);
   }
 
   private static SMFSchemaValidationError errorWrongCoordinateSystem(

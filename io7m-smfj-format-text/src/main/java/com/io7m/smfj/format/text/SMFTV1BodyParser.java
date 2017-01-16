@@ -57,7 +57,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   SMFTV1BodyParser(
     final SMFTAbstractParser in_parent,
     final SMFParserEventsType in_events,
-    final SMFTLineReader in_reader,
+    final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version,
     final SMFHeader in_header)
   {
