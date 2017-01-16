@@ -172,7 +172,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
 
     final Path file = this.filesystem.getPath("/schema.smfs");
     Files.deleteIfExists(file);
-    
+
     final Path root = this.filesystem.getRootDirectories().iterator().next();
     final SMFFilterCommandContext context = SMFFilterCommandContext.of(root, root);
 
