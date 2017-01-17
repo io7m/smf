@@ -25,6 +25,7 @@ import javaslang.collection.HashMap;
 import javaslang.collection.Seq;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 /**
@@ -32,6 +33,7 @@ import org.immutables.value.Value;
  */
 
 @SMFImmutableStyleType
+@JavaslangEncodingEnabled
 @Value.Immutable
 public interface SMFByteBufferPackingConfigurationType
 {
