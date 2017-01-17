@@ -79,7 +79,7 @@
         <configuration>
           <instructions>
             <Export-Package>
-              com.io7m.smfj.validation.api
+              com.io7m.smfj.validation.main
             </Export-Package>
           </instructions>
         </configuration>
