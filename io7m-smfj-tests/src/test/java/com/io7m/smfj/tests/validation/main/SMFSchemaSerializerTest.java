@@ -1,0 +1,58 @@
+/*
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.smfj.tests.validation.main;
+
+import com.io7m.smfj.tests.validation.api.SMFSchemaSerializerContract;
+import com.io7m.smfj.validation.api.SMFSchemaParserType;
+import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
+import com.io7m.smfj.validation.api.SMFSchemaVersion;
+import com.io7m.smfj.validation.main.SMFSchemaParserProvider;
+import com.io7m.smfj.validation.main.SMFSchemaSerializerProvider;
+import javaslang.collection.SortedSet;
+
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Path;
+
+public final class SMFSchemaSerializerTest extends SMFSchemaSerializerContract
+{
+  @Override
+  protected SMFSchemaParserType createParser(
+    final Path path,
+    final InputStream stream)
+  {
+    return new SMFSchemaParserProvider().schemaParserCreate(path, stream);
+  }
+
+  @Override
+  protected SortedSet<SMFSchemaVersion> serializerVersions()
+  {
+    return new SMFSchemaSerializerProvider().schemaSupportedVersions();
+  }
+
+  @Override
+  protected SMFSchemaSerializerType createSerializer(
+    final SMFSchemaVersion version,
+    final Path path,
+    final OutputStream stream)
+  {
+    return new SMFSchemaSerializerProvider().schemaSerializerCreate(
+      version,
+      path,
+      stream);
+  }
+}
