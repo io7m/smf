@@ -111,12 +111,7 @@ public final class SMFByteBufferPackedMeshes implements
     final SMFParseError e)
   {
     final LexicalPosition<Path> lex = e.lexical();
-    LOG.error(
-      "parse error: {}:{}:{}: {}",
-      lex.file(),
-      Integer.valueOf(lex.line()),
-      Integer.valueOf(lex.column()),
-      e.message());
+    LOG.error("parse error: {}", e.fullMessage());
     this.errors = this.errors.append(e);
   }
 
