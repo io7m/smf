@@ -107,7 +107,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
 
     final SortedSet<SMFAttributeName> missing =
       required_by_name.keySet().diff(by_name.keySet());
-    errors = errors.appendAll(missing.map(SMFSchemaValidator::errorMissingAttribute));
+    errors = errors.appendAll(
+      missing.toList().map(SMFSchemaValidator::errorMissingAttribute));
 
     final Optional<SMFCoordinateSystem> coords_opt =
       schema.requiredCoordinateSystem();
