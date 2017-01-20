@@ -16,11 +16,8 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import com.io7m.jintegers.Unsigned16;
-import com.io7m.jintegers.Unsigned32;
-import com.io7m.jintegers.Unsigned8;
 import com.io7m.jnull.NullCheck;
-import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.smfj.core.SMFSupportedSizes;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 
@@ -33,32 +30,29 @@ import java.nio.ByteBuffer;
 public final class SMFByteBufferTrianglePacker implements
   SMFParserEventsDataTrianglesType
 {
-  private final ByteBuffer buffer;
-  private final int size;
-  private final int stride;
-  private int index;
+  private final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> cursor;
+  private final long triangles;
 
   /**
    * Construct a packer.
    *
    * @param in_triangle_buffer The byte buffer that will contain triangle data
    * @param in_size            The size in bits of a single triangle index
+   * @param in_triangles       The number of triangles that will be packed
    */
 
   public SMFByteBufferTrianglePacker(
     final ByteBuffer in_triangle_buffer,
-    final int in_size)
+    final int in_size,
+    final long in_triangles)
   {
-    this.buffer =
+    final ByteBuffer buffer =
       NullCheck.notNull(in_triangle_buffer, "Triangle Buffer");
-    this.size =
-      SMFSupportedSizes.checkIntegerUnsignedSupported(in_size);
-    this.stride = (this.size / 8) * 3;
-  }
-
-  private void next()
-  {
-    this.index = Math.addExact(this.index, this.stride);
+    final int size = SMFSupportedSizes.checkIntegerUnsignedSupported(in_size);
+    final int stride = Math.multiplyExact(size / 8, 3);
+    this.cursor = SMFByteBufferCursors.createUnsigned3Raw(
+      buffer, in_size, 0, stride);
+    this.triangles = in_triangles;
   }
 
   @Override
@@ -67,43 +61,24 @@ public final class SMFByteBufferTrianglePacker implements
     // Nothing to be done here
   }
 
+  private <T> void cursorNext(
+    final JPRACursor1DType<T> c)
+  {
+    final int next = Math.addExact(c.getElementIndex(), 1);
+    final long next_u = Integer.toUnsignedLong(next);
+    if (Long.compareUnsigned(next_u, this.triangles) < 0) {
+      c.setElementIndex(next);
+    }
+  }
+
   @Override
   public void onDataTriangle(
     final long v0,
     final long v1,
     final long v2)
   {
-    switch (this.size) {
-      case 8: {
-        Unsigned8.packToBuffer((int) v0, this.buffer, this.index);
-        Unsigned8.packToBuffer((int) v1, this.buffer, this.index + 1);
-        Unsigned8.packToBuffer((int) v2, this.buffer, this.index + 2);
-        break;
-      }
-      case 16: {
-        Unsigned16.packToBuffer((int) v0, this.buffer, this.index);
-        Unsigned16.packToBuffer((int) v1, this.buffer, this.index + 2);
-        Unsigned16.packToBuffer((int) v2, this.buffer, this.index + 4);
-        break;
-      }
-      case 32: {
-        Unsigned32.packToBuffer(v0, this.buffer, this.index);
-        Unsigned32.packToBuffer(v1, this.buffer, this.index + 4);
-        Unsigned32.packToBuffer(v2, this.buffer, this.index + 8);
-        break;
-      }
-      case 64: {
-        this.buffer.putLong(this.index, v0);
-        this.buffer.putLong(this.index + 8, v1);
-        this.buffer.putLong(this.index + 16, v2);
-        break;
-      }
-      default: {
-        throw new UnreachableCodeException();
-      }
-    }
-
-    this.next();
+    this.cursor.getElementView().set3UL(v0, v1, v2);
+    this.cursorNext(this.cursor);
   }
 
   @Override

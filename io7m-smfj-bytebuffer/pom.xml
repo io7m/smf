@@ -43,6 +43,10 @@
       <groupId>com.io7m.ieee754b16</groupId>
       <artifactId>io7m-ieee754b16-core</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.io7m.jpra</groupId>
+      <artifactId>io7m-jpra-runtime-java</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>io.javaslang</groupId>

@@ -22,10 +22,31 @@ import com.io7m.jintegers.Signed32;
 import com.io7m.jintegers.Unsigned16;
 import com.io7m.jintegers.Unsigned32;
 import com.io7m.jintegers.Unsigned8;
+import com.io7m.jpra.runtime.java.JPRACursor1DType;
+import com.io7m.jtensors.VectorM2D;
+import com.io7m.jtensors.VectorM2L;
+import com.io7m.jtensors.VectorM3D;
+import com.io7m.jtensors.VectorM3L;
+import com.io7m.jtensors.VectorM4D;
+import com.io7m.jtensors.VectorM4L;
 import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.smfj.bytebuffer.SMFByteBufferCursors;
+import com.io7m.smfj.bytebuffer.SMFByteBufferFloat1Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferFloat2Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferFloat3Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferFloat4Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerSigned1Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerSigned2Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerSigned3Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerSigned4Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerUnsigned1Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerUnsigned2Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerUnsigned3Type;
+import com.io7m.smfj.bytebuffer.SMFByteBufferIntegerUnsigned4Type;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackedMesh;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackedMeshLoaderType;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackedMeshes;
+import com.io7m.smfj.bytebuffer.SMFByteBufferPackedTriangles;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackerEventsType;
 import com.io7m.smfj.bytebuffer.SMFByteBufferPackingConfiguration;
 import com.io7m.smfj.core.SMFAttribute;
@@ -74,28 +95,250 @@ public final class SMFByteBufferPackedMeshesTest
     }
   }
 
-  private static void checkTypeUnsigned16(
+  private static void checkTypeUnsigned8(
     final int component_count,
     final ByteBuffer rb)
   {
     switch (component_count) {
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned1Type> c =
+          SMFByteBufferCursors.createUnsigned1Raw(rb, 8, 0, 1);
+        final SMFByteBufferIntegerUnsigned1Type v = c.getElementView();
+
+        {
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+
+          c.setElementIndex(0);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(0L, v.get1UL());
+
+          c.setElementIndex(1);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(128L, v.get1UL());
+
+          c.setElementIndex(2);
+          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(255L, v.get1UL());
+        }
+        break;
+      }
+
+      case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned2Type> c =
+          SMFByteBufferCursors.createUnsigned2Raw(rb, 8, 0, 2);
+        final SMFByteBufferIntegerUnsigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
+        {
+          c.setElementIndex(0);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(255L, vy);
+
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(255L, o.getYL());
+        }
+
+        {
+          c.setElementIndex(1);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 2);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 3);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(255L, vy);
+
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(255L, o.getYL());
+        }
+
+        {
+          c.setElementIndex(2);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 4);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(255L, vy);
+
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(255L, o.getYL());
+        }
+        break;
+      }
+
+      case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c =
+          SMFByteBufferCursors.createUnsigned3Raw(rb, 8, 0, 3);
+        final SMFByteBufferIntegerUnsigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
+        {
+          c.setElementIndex(0);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+        }
+
+        {
+          c.setElementIndex(1);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 3);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 4);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 5);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+        }
+
+        {
+          c.setElementIndex(2);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 6);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 7);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 8);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+        }
+        break;
+      }
+
+      case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned4Type> c =
+          SMFByteBufferCursors.createUnsigned4Raw(rb, 8, 0, 4);
+        final SMFByteBufferIntegerUnsigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
+        {
+          c.setElementIndex(0);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
+          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 3);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(128L, vw);
+
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+          Assert.assertEquals(128L, o.getWL());
+        }
+
+        {
+          c.setElementIndex(1);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 4);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 6);
+          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 7);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(128L, vw);
+
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+          Assert.assertEquals(128L, o.getWL());
+        }
+
+        {
+          c.setElementIndex(2);
+          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 8);
+          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 9);
+          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 10);
+          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 11);
+          Assert.assertEquals(0L, vx);
+          Assert.assertEquals(128L, vy);
+          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(128L, vw);
+
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(128L, o.getYL());
+          Assert.assertEquals(255L, o.getZL());
+          Assert.assertEquals(128L, o.getWL());
+        }
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private static void checkTypeUnsigned16(
+    final int component_count,
+    final ByteBuffer rb)
+  {
+    switch (component_count) {
+
+      case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned1Type> c =
+          SMFByteBufferCursors.createUnsigned1Raw(rb, 16, 0, 1 * 2);
+        final SMFByteBufferIntegerUnsigned1Type v = c.getElementView();
+
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 4);
+
           Assert.assertEquals(0L, vx);
+          c.setElementIndex(0);
+          Assert.assertEquals(0L, v.get1UL());
+
           Assert.assertEquals(32768L, vy);
+          c.setElementIndex(1);
+          Assert.assertEquals(32768L, v.get1UL());
+
           Assert.assertEquals(65535L, vz);
+          c.setElementIndex(2);
+          Assert.assertEquals(65535L, v.get1UL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned2Type> c =
+          SMFByteBufferCursors.createUnsigned2Raw(rb, 16, 0, 2 * 2);
+        final SMFByteBufferIntegerUnsigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(65535L, vy);
+
+          c.setElementIndex(0);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(65535L, o.getYL());
         }
 
         {
@@ -103,6 +346,11 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 6);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(65535L, vy);
+
+          c.setElementIndex(1);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(65535L, o.getYL());
         }
 
         {
@@ -110,10 +358,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 10);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(65535L, vy);
+
+          c.setElementIndex(2);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(65535L, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c =
+          SMFByteBufferCursors.createUnsigned3Raw(rb, 16, 0, 3 * 2);
+        final SMFByteBufferIntegerUnsigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
@@ -121,6 +380,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
+
+          c.setElementIndex(0);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
         }
 
         {
@@ -130,6 +395,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
+
+          c.setElementIndex(1);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
         }
 
         {
@@ -139,10 +410,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
+
+          c.setElementIndex(2);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned4Type> c =
+          SMFByteBufferCursors.createUnsigned4Raw(rb, 16, 0, 4 * 2);
+        final SMFByteBufferIntegerUnsigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
@@ -152,6 +435,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -163,6 +453,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -174,112 +471,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(32768L, vy);
           Assert.assertEquals(65535L, vz);
           Assert.assertEquals(1L, vw);
-        }
-        break;
-      }
-      default: {
-        throw new UnreachableCodeException();
-      }
-    }
-  }
 
-  private static void checkTypeUnsigned64(
-    final int component_count,
-    final ByteBuffer rb)
-  {
-    switch (component_count) {
-      case 1: {
-        {
-          Assert.assertEquals(0L, rb.getLong(0));
-          Assert.assertEquals(0x8000000000000000L, rb.getLong(8));
-          Assert.assertEquals(0xffffffffffffffffL, rb.getLong(16));
-        }
-        break;
-      }
-      case 2: {
-        {
-          final long vx = rb.getLong(0);
-          final long vy = rb.getLong(8);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
-        }
-
-        {
-          final long vx = rb.getLong(16);
-          final long vy = rb.getLong(24);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
-        }
-
-        {
-          final long vx = rb.getLong(32);
-          final long vy = rb.getLong(40);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
-        }
-        break;
-      }
-      case 3: {
-        {
-          final long vx = rb.getLong(0);
-          final long vy = rb.getLong(8);
-          final long vz = rb.getLong(16);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-        }
-
-        {
-          final long vx = rb.getLong(24);
-          final long vy = rb.getLong(32);
-          final long vz = rb.getLong(40);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-        }
-
-        {
-          final long vx = rb.getLong(48);
-          final long vy = rb.getLong(56);
-          final long vz = rb.getLong(64);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-        }
-        break;
-      }
-      case 4: {
-        {
-          final long vx = rb.getLong(0);
-          final long vy = rb.getLong(8);
-          final long vz = rb.getLong(16);
-          final long vw = rb.getLong(24);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
-        }
-
-        {
-          final long vx = rb.getLong(32);
-          final long vy = rb.getLong(40);
-          final long vz = rb.getLong(48);
-          final long vw = rb.getLong(56);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
-        }
-
-        {
-          final long vx = rb.getLong(64);
-          final long vy = rb.getLong(72);
-          final long vz = rb.getLong(80);
-          final long vw = rb.getLong(88);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
+          c.setElementIndex(2);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(32768L, o.getYL());
+          Assert.assertEquals(65535L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
         break;
       }
@@ -295,22 +493,46 @@ public final class SMFByteBufferPackedMeshesTest
   {
     switch (component_count) {
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned1Type> c =
+          SMFByteBufferCursors.createUnsigned1Raw(rb, 32, 0, 1 * 4);
+        final SMFByteBufferIntegerUnsigned1Type v = c.getElementView();
+
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
           final long vz = Unsigned32.unpackFromBuffer(rb, 8);
+
           Assert.assertEquals(0L, vx);
+          c.setElementIndex(0);
+          Assert.assertEquals(0L, v.get1UL());
+
           Assert.assertEquals(2147483648L, vy);
+          c.setElementIndex(1);
+          Assert.assertEquals(2147483648L, v.get1UL());
+
           Assert.assertEquals(4294967295L, vz);
+          c.setElementIndex(2);
+          Assert.assertEquals(4294967295L, v.get1UL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned2Type> c =
+          SMFByteBufferCursors.createUnsigned2Raw(rb, 32, 0, 2 * 4);
+        final SMFByteBufferIntegerUnsigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(4294967295L, vy);
+
+          c.setElementIndex(0);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(4294967295L, o.getYL());
         }
 
         {
@@ -318,6 +540,11 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 12);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(4294967295L, vy);
+
+          c.setElementIndex(1);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(4294967295L, o.getYL());
         }
 
         {
@@ -325,10 +552,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 20);
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(4294967295L, vy);
+
+          c.setElementIndex(2);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(4294967295L, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c =
+          SMFByteBufferCursors.createUnsigned3Raw(rb, 32, 0, 3 * 4);
+        final SMFByteBufferIntegerUnsigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
@@ -336,6 +574,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
+
+          c.setElementIndex(0);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
         }
 
         {
@@ -345,6 +589,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
+
+          c.setElementIndex(1);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
         }
 
         {
@@ -354,10 +604,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vx);
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
+
+          c.setElementIndex(2);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned4Type> c =
+          SMFByteBufferCursors.createUnsigned4Raw(rb, 32, 0, 4 * 4);
+        final SMFByteBufferIntegerUnsigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
@@ -367,6 +629,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -378,6 +647,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -389,6 +665,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(2147483648L, vy);
           Assert.assertEquals(4294967295L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(2);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(2147483648L, o.getYL());
+          Assert.assertEquals(4294967295L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
         break;
       }
@@ -398,107 +681,326 @@ public final class SMFByteBufferPackedMeshesTest
     }
   }
 
-  private static void checkTypeUnsigned8(
+  private static void checkTypeUnsigned64(
     final int component_count,
     final ByteBuffer rb)
   {
     switch (component_count) {
+
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned1Type> c =
+          SMFByteBufferCursors.createUnsigned1Raw(rb, 64, 0, 1 * 8);
+        final SMFByteBufferIntegerUnsigned1Type v = c.getElementView();
+
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(0L, rb.getLong(0));
+          c.setElementIndex(0);
+          Assert.assertEquals(0L, v.get1UL());
+
+          Assert.assertEquals(0x8000000000000000L, rb.getLong(8));
+          c.setElementIndex(1);
+          Assert.assertEquals(0x8000000000000000L, v.get1UL());
+
+          Assert.assertEquals(0xffffffffffffffffL, rb.getLong(16));
+          c.setElementIndex(2);
+          Assert.assertEquals(0xffffffffffffffffL, v.get1UL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned2Type> c =
+          SMFByteBufferCursors.createUnsigned2Raw(rb, 64, 0, 2 * 8);
+        final SMFByteBufferIntegerUnsigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
+          final long vx = rb.getLong(0);
+          final long vy = rb.getLong(8);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vy);
+
+          c.setElementIndex(0);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getYL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 2);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 3);
+          final long vx = rb.getLong(16);
+          final long vy = rb.getLong(24);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vy);
+
+          c.setElementIndex(1);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getYL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 4);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
+          final long vx = rb.getLong(32);
+          final long vy = rb.getLong(40);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vy);
+
+          c.setElementIndex(2);
+          v.get2UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c =
+          SMFByteBufferCursors.createUnsigned3Raw(rb, 64, 0, 3 * 8);
+        final SMFByteBufferIntegerUnsigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
+          final long vx = rb.getLong(0);
+          final long vy = rb.getLong(8);
+          final long vz = rb.getLong(16);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+
+          c.setElementIndex(0);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 3);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 4);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 5);
+          final long vx = rb.getLong(24);
+          final long vy = rb.getLong(32);
+          final long vz = rb.getLong(40);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+
+          c.setElementIndex(1);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 6);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 7);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 8);
+          final long vx = rb.getLong(48);
+          final long vy = rb.getLong(56);
+          final long vz = rb.getLong(64);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+
+          c.setElementIndex(2);
+          v.get3UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerUnsigned4Type> c =
+          SMFByteBufferCursors.createUnsigned4Raw(rb, 64, 0, 4 * 8);
+        final SMFByteBufferIntegerUnsigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
-          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 3);
+          final long vx = rb.getLong(0);
+          final long vy = rb.getLong(8);
+          final long vz = rb.getLong(16);
+          final long vw = rb.getLong(24);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 4);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 6);
-          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 7);
+          final long vx = rb.getLong(32);
+          final long vy = rb.getLong(40);
+          final long vz = rb.getLong(48);
+          final long vw = rb.getLong(56);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
-          final long vx = (long) Unsigned8.unpackFromBuffer(rb, 8);
-          final long vy = (long) Unsigned8.unpackFromBuffer(rb, 9);
-          final long vz = (long) Unsigned8.unpackFromBuffer(rb, 10);
-          final long vw = (long) Unsigned8.unpackFromBuffer(rb, 11);
+          final long vx = rb.getLong(64);
+          final long vy = rb.getLong(72);
+          final long vz = rb.getLong(80);
+          final long vw = rb.getLong(88);
           Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assert.assertEquals(0x8000000000000000L, vy);
+          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(2);
+          v.get4UL(o);
+          Assert.assertEquals(0L, o.getXL());
+          Assert.assertEquals(0x8000000000000000L, o.getYL());
+          Assert.assertEquals(0xffffffffffffffffL, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
+        break;
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private static void checkTypeSigned8(
+    final int component_count,
+    final ByteBuffer rb)
+  {
+    switch (component_count) {
+
+      case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned1Type> c =
+          SMFByteBufferCursors.createSigned1Raw(rb, 8, 0, 1);
+        final SMFByteBufferIntegerSigned1Type v = c.getElementView();
+
+        c.setElementIndex(0);
+        Assert.assertEquals(-127L, v.get1SL());
+        Assert.assertEquals(-127L, (long) rb.get(0));
+
+        c.setElementIndex(1);
+        Assert.assertEquals(0L, v.get1SL());
+        Assert.assertEquals(0L, (long) rb.get(1));
+
+        c.setElementIndex(2);
+        Assert.assertEquals(127L, v.get1SL());
+        Assert.assertEquals(127L, (long) rb.get(2));
+        break;
+      }
+
+      case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned2Type> c =
+          SMFByteBufferCursors.createSigned2Raw(rb, 8, 0, 2);
+        final SMFByteBufferIntegerSigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
+        c.setElementIndex(0);
+        Assert.assertEquals(-127L, (long) rb.get(0));
+        Assert.assertEquals(0L, (long) rb.get(1));
+        v.get2SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+
+        c.setElementIndex(1);
+        Assert.assertEquals(0L, (long) rb.get(2));
+        Assert.assertEquals(0L, (long) rb.get(3));
+        v.get2SL(o);
+        Assert.assertEquals(0L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+
+        c.setElementIndex(2);
+        Assert.assertEquals(127L, (long) rb.get(4));
+        Assert.assertEquals(0L, (long) rb.get(5));
+        v.get2SL(o);
+        Assert.assertEquals(127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        break;
+      }
+
+      case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned3Type> c =
+          SMFByteBufferCursors.createSigned3Raw(rb, 8, 0, 3);
+        final SMFByteBufferIntegerSigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
+        c.setElementIndex(0);
+        Assert.assertEquals(-127L, (long) rb.get(0));
+        Assert.assertEquals(0L, (long) rb.get(1));
+        Assert.assertEquals(127L, (long) rb.get(2));
+        v.get3SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+
+        c.setElementIndex(1);
+        Assert.assertEquals(-127L, (long) rb.get(3));
+        Assert.assertEquals(0L, (long) rb.get(4));
+        Assert.assertEquals(127L, (long) rb.get(5));
+        v.get3SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+
+        c.setElementIndex(2);
+        Assert.assertEquals(-127L, (long) rb.get(6));
+        Assert.assertEquals(0L, (long) rb.get(7));
+        Assert.assertEquals(127L, (long) rb.get(8));
+        v.get3SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+        break;
+      }
+
+      case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned4Type> c =
+          SMFByteBufferCursors.createSigned4Raw(rb, 8, 0, 4);
+        final SMFByteBufferIntegerSigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
+        c.setElementIndex(0);
+        Assert.assertEquals(-127L, (long) rb.get(0));
+        Assert.assertEquals(0L, (long) rb.get(1));
+        Assert.assertEquals(127L, (long) rb.get(2));
+        Assert.assertEquals(0L, (long) rb.get(3));
+        v.get4SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+        Assert.assertEquals(0L, o.getWL());
+
+        c.setElementIndex(1);
+        Assert.assertEquals(-127L, (long) rb.get(4));
+        Assert.assertEquals(0L, (long) rb.get(5));
+        Assert.assertEquals(127L, (long) rb.get(6));
+        Assert.assertEquals(0L, (long) rb.get(7));
+        v.get4SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+        Assert.assertEquals(0L, o.getWL());
+
+        c.setElementIndex(2);
+        Assert.assertEquals(-127L, (long) rb.get(8));
+        Assert.assertEquals(0L, (long) rb.get(9));
+        Assert.assertEquals(127L, (long) rb.get(10));
+        Assert.assertEquals(0L, (long) rb.get(11));
+        v.get4SL(o);
+        Assert.assertEquals(-127L, o.getXL());
+        Assert.assertEquals(0L, o.getYL());
+        Assert.assertEquals(127L, o.getZL());
+        Assert.assertEquals(0L, o.getWL());
+
         break;
       }
       default: {
@@ -513,22 +1015,46 @@ public final class SMFByteBufferPackedMeshesTest
   {
     switch (component_count) {
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned1Type> c =
+          SMFByteBufferCursors.createSigned1Raw(rb, 16, 0, 1 * 2);
+        final SMFByteBufferIntegerSigned1Type v = c.getElementView();
+
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 4);
+
           Assert.assertEquals(-32767L, vx);
+          c.setElementIndex(0);
+          Assert.assertEquals(-32767L, v.get1SL());
+
           Assert.assertEquals(0L, vy);
+          c.setElementIndex(1);
+          Assert.assertEquals(0L, v.get1SL());
+
           Assert.assertEquals(32767L, vz);
+          c.setElementIndex(2);
+          Assert.assertEquals(32767L, v.get1SL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned2Type> c =
+          SMFByteBufferCursors.createSigned2Raw(rb, 16, 0, 2 * 2);
+        final SMFByteBufferIntegerSigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(32767L, vy);
+
+          c.setElementIndex(0);
+          v.get2SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(32767L, o.getYL());
         }
 
         {
@@ -536,6 +1062,11 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 6);
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(32767L, vy);
+
+          c.setElementIndex(1);
+          v.get2SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(32767L, o.getYL());
         }
 
         {
@@ -543,10 +1074,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 10);
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(32767L, vy);
+
+          c.setElementIndex(2);
+          v.get2SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(32767L, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned3Type> c =
+          SMFByteBufferCursors.createSigned3Raw(rb, 16, 0, 3 * 2);
+        final SMFByteBufferIntegerSigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
@@ -554,6 +1096,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
+
+          c.setElementIndex(0);
+          v.get3SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
         }
 
         {
@@ -563,6 +1111,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
+
+          c.setElementIndex(1);
+          v.get3SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
         }
 
         {
@@ -572,10 +1126,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-32767L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
+
+          c.setElementIndex(2);
+          v.get3SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned4Type> c =
+          SMFByteBufferCursors.createSigned4Raw(rb, 16, 0, 4 * 2);
+        final SMFByteBufferIntegerSigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
@@ -585,6 +1151,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -596,6 +1169,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -607,6 +1187,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(32767L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(2);
+          v.get4SL(o);
+          Assert.assertEquals(-32767L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(32767L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
         break;
       }
@@ -622,19 +1209,42 @@ public final class SMFByteBufferPackedMeshesTest
   {
     switch (component_count) {
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned1Type> c =
+          SMFByteBufferCursors.createSigned1Raw(rb, 32, 0, 1 * 4);
+        final SMFByteBufferIntegerSigned1Type v = c.getElementView();
+
         {
           Assert.assertEquals(-2147483648L, (long) rb.getInt(0));
+          c.setElementIndex(0);
+          Assert.assertEquals(-2147483648L, v.get1SL());
+
           Assert.assertEquals(0L, (long) rb.getInt(4));
+          c.setElementIndex(1);
+          Assert.assertEquals(0L, v.get1SL());
+
           Assert.assertEquals(2147483647L, (long) rb.getInt(8));
+          c.setElementIndex(2);
+          Assert.assertEquals(2147483647L, v.get1SL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned2Type> c =
+          SMFByteBufferCursors.createSigned2Raw(rb, 32, 0, 2 * 4);
+        final SMFByteBufferIntegerSigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(2147483647L, vy);
+
+          c.setElementIndex(0);
+          v.get2SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(2147483647L, o.getYL());
         }
 
         {
@@ -642,6 +1252,11 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed32.unpackFromBuffer(rb, 12);
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(2147483647L, vy);
+
+          c.setElementIndex(1);
+          v.get2SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(2147483647L, o.getYL());
         }
 
         {
@@ -649,10 +1264,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed32.unpackFromBuffer(rb, 20);
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(2147483647L, vy);
+
+          c.setElementIndex(2);
+          v.get2SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(2147483647L, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned3Type> c =
+          SMFByteBufferCursors.createSigned3Raw(rb, 32, 0, 3 * 4);
+        final SMFByteBufferIntegerSigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
@@ -660,6 +1286,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
+
+          c.setElementIndex(0);
+          v.get3SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
         }
 
         {
@@ -669,6 +1301,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
+
+          c.setElementIndex(0);
+          v.get3SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
         }
 
         {
@@ -678,10 +1316,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-2147483648L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
+
+          c.setElementIndex(0);
+          v.get3SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned4Type> c =
+          SMFByteBufferCursors.createSigned4Raw(rb, 32, 0, 4 * 4);
+        final SMFByteBufferIntegerSigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
@@ -691,6 +1341,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -702,6 +1359,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -713,6 +1377,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(2147483647L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(2);
+          v.get4SL(o);
+          Assert.assertEquals(-2147483648L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(2147483647L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
         break;
       }
@@ -728,19 +1399,42 @@ public final class SMFByteBufferPackedMeshesTest
   {
     switch (component_count) {
       case 1: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned1Type> c =
+          SMFByteBufferCursors.createSigned1Raw(rb, 64, 0, 1 * 8);
+        final SMFByteBufferIntegerSigned1Type v = c.getElementView();
+
         {
           Assert.assertEquals(-9223372036854775808L, rb.getLong(0));
+          c.setElementIndex(0);
+          Assert.assertEquals(-9223372036854775808L, v.get1SL());
+
           Assert.assertEquals(0L, rb.getLong(8));
+          c.setElementIndex(1);
+          Assert.assertEquals(0L, v.get1SL());
+
           Assert.assertEquals(9223372036854775807L, rb.getLong(16));
+          c.setElementIndex(2);
+          Assert.assertEquals(9223372036854775807L, v.get1SL());
         }
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned2Type> c =
+          SMFByteBufferCursors.createSigned2Raw(rb, 64, 0, 2 * 8);
+        final SMFByteBufferIntegerSigned2Type v = c.getElementView();
+        final VectorM2L o = new VectorM2L();
+
         {
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(9223372036854775807L, vy);
+
+          c.setElementIndex(0);
+          v.get2SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(9223372036854775807L, o.getYL());
         }
 
         {
@@ -748,6 +1442,11 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(24);
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(9223372036854775807L, vy);
+
+          c.setElementIndex(1);
+          v.get2SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(9223372036854775807L, o.getYL());
         }
 
         {
@@ -755,10 +1454,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(40);
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(9223372036854775807L, vy);
+
+          c.setElementIndex(2);
+          v.get2SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(9223372036854775807L, o.getYL());
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned3Type> c =
+          SMFByteBufferCursors.createSigned3Raw(rb, 64, 0, 3 * 8);
+        final SMFByteBufferIntegerSigned3Type v = c.getElementView();
+        final VectorM3L o = new VectorM3L();
+
         {
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
@@ -766,6 +1476,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
+
+          c.setElementIndex(0);
+          v.get3SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
         }
 
         {
@@ -775,6 +1491,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
+
+          c.setElementIndex(1);
+          v.get3SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
         }
 
         {
@@ -784,10 +1506,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(-9223372036854775808L, vx);
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
+
+          c.setElementIndex(2);
+          v.get3SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferIntegerSigned4Type> c =
+          SMFByteBufferCursors.createSigned4Raw(rb, 64, 0, 4 * 8);
+        final SMFByteBufferIntegerSigned4Type v = c.getElementView();
+        final VectorM4L o = new VectorM4L();
+
         {
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
@@ -797,6 +1531,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(0);
+          v.get4SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -808,6 +1549,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
           Assert.assertEquals(1L, vw);
+
+          c.setElementIndex(1);
+          v.get4SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
 
         {
@@ -819,214 +1567,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(0L, vy);
           Assert.assertEquals(9223372036854775807L, vz);
           Assert.assertEquals(1L, vw);
-        }
-        break;
-      }
-      default: {
-        throw new UnreachableCodeException();
-      }
-    }
-  }
 
-  private static void checkTypeFloat32(
-    final int component_count,
-    final ByteBuffer rb)
-  {
-    switch (component_count) {
-      case 1: {
-        Assert.assertEquals(-1000.0f, rb.getFloat(0), 0.0f);
-        Assert.assertEquals(0.0f, rb.getFloat(4), 0.0f);
-        Assert.assertEquals(1000.0f, rb.getFloat(8), 0.0f);
-        break;
-      }
-      case 2: {
-        {
-          final double vx = (double) rb.getFloat(0);
-          final double vy = (double) rb.getFloat(4);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(8);
-          final double vy = (double) rb.getFloat(12);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(16);
-          final double vy = (double) rb.getFloat(20);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-        break;
-      }
-      case 3: {
-        {
-          final double vx = (double) rb.getFloat(0);
-          final double vy = (double) rb.getFloat(4);
-          final double vz = (double) rb.getFloat(8);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(12);
-          final double vy = (double) rb.getFloat(16);
-          final double vz = (double) rb.getFloat(20);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(24);
-          final double vy = (double) rb.getFloat(28);
-          final double vz = (double) rb.getFloat(32);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-        break;
-      }
-      case 4: {
-        {
-          final double vx = (double) rb.getFloat(0);
-          final double vy = (double) rb.getFloat(4);
-          final double vz = (double) rb.getFloat(8);
-          final double vw = (double) rb.getFloat(12);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(16);
-          final double vy = (double) rb.getFloat(20);
-          final double vz = (double) rb.getFloat(24);
-          final double vw = (double) rb.getFloat(28);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = (double) rb.getFloat(32);
-          final double vy = (double) rb.getFloat(36);
-          final double vz = (double) rb.getFloat(40);
-          final double vw = (double) rb.getFloat(44);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
-        }
-        break;
-      }
-      default: {
-        throw new UnreachableCodeException();
-      }
-    }
-  }
-
-  private static void checkTypeFloat64(
-    final int component_count,
-    final ByteBuffer rb)
-  {
-    switch (component_count) {
-      case 1: {
-        Assert.assertEquals(-1000.0, rb.getDouble(0), 0.0);
-        Assert.assertEquals(0.0, rb.getDouble(8), 0.0);
-        Assert.assertEquals(1000.0, rb.getDouble(16), 0.0);
-        break;
-      }
-      case 2: {
-        {
-          final double vx = rb.getDouble(0);
-          final double vy = rb.getDouble(8);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(16);
-          final double vy = rb.getDouble(24);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(32);
-          final double vy = rb.getDouble(40);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
-        }
-        break;
-      }
-      case 3: {
-        {
-          final double vx = rb.getDouble(0);
-          final double vy = rb.getDouble(8);
-          final double vz = rb.getDouble(16);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(24);
-          final double vy = rb.getDouble(32);
-          final double vz = rb.getDouble(40);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(48);
-          final double vy = rb.getDouble(56);
-          final double vz = rb.getDouble(64);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
-        }
-        break;
-      }
-      case 4: {
-        {
-          final double vx = rb.getDouble(0);
-          final double vy = rb.getDouble(8);
-          final double vz = rb.getDouble(16);
-          final double vw = rb.getDouble(24);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(32);
-          final double vy = rb.getDouble(40);
-          final double vz = rb.getDouble(48);
-          final double vw = rb.getDouble(56);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
-        }
-
-        {
-          final double vx = rb.getDouble(64);
-          final double vy = rb.getDouble(72);
-          final double vz = rb.getDouble(80);
-          final double vw = rb.getDouble(88);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          c.setElementIndex(2);
+          v.get4SL(o);
+          Assert.assertEquals(-9223372036854775808L, o.getXL());
+          Assert.assertEquals(0L, o.getYL());
+          Assert.assertEquals(9223372036854775807L, o.getZL());
+          Assert.assertEquals(1L, o.getWL());
         }
         break;
       }
@@ -1041,21 +1588,48 @@ public final class SMFByteBufferPackedMeshesTest
     final ByteBuffer rb)
   {
     switch (component_count) {
+
       case 1: {
+        final JPRACursor1DType<SMFByteBufferFloat1Type> c =
+          SMFByteBufferCursors.createFloat1Raw(rb, 16, 0, 1 * 2);
+        final SMFByteBufferFloat1Type v = c.getElementView();
+
         Assert.assertEquals(
           -1000.0, Binary16.unpackDouble(rb.getChar(0)), 0.0);
+        c.setElementIndex(0);
+        Assert.assertEquals(
+          -1000.0, v.get1D(), 0.0);
+
         Assert.assertEquals(
           0.0, Binary16.unpackDouble(rb.getChar(2)), 0.0);
+        c.setElementIndex(1);
+        Assert.assertEquals(
+          0.0, v.get1D(), 0.0);
+
         Assert.assertEquals(
           1000.0, Binary16.unpackDouble(rb.getChar(4)), 0.0);
+        c.setElementIndex(2);
+        Assert.assertEquals(
+          1000.0, v.get1D(), 0.0);
         break;
       }
+
       case 2: {
+        final JPRACursor1DType<SMFByteBufferFloat2Type> c =
+          SMFByteBufferCursors.createFloat2Raw(rb, 16, 0, 2 * 2);
+        final SMFByteBufferFloat2Type v = c.getElementView();
+        final VectorM2D o = new VectorM2D();
+
         {
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
         }
 
         {
@@ -1063,6 +1637,11 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(6));
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
         }
 
         {
@@ -1070,10 +1649,21 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(10));
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
         }
         break;
       }
+
       case 3: {
+        final JPRACursor1DType<SMFByteBufferFloat3Type> c =
+          SMFByteBufferCursors.createFloat3Raw(rb, 16, 0, 3 * 2);
+        final SMFByteBufferFloat3Type v = c.getElementView();
+        final VectorM3D o = new VectorM3D();
+
         {
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
@@ -1081,6 +1671,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
         }
 
         {
@@ -1090,6 +1686,12 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
         }
 
         {
@@ -1099,10 +1701,22 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vx, -1000.0, 0.0);
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
         }
         break;
       }
+
       case 4: {
+        final JPRACursor1DType<SMFByteBufferFloat4Type> c =
+          SMFByteBufferCursors.createFloat4Raw(rb, 16, 0, 4 * 2);
+        final SMFByteBufferFloat4Type v = c.getElementView();
+        final VectorM4D o = new VectorM4D();
+
         {
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
@@ -1112,6 +1726,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1.0, 0.0);
           Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
         }
 
         {
@@ -1123,6 +1744,13 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1.0, 0.0);
           Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
         }
 
         {
@@ -1134,66 +1762,400 @@ public final class SMFByteBufferPackedMeshesTest
           Assert.assertEquals(vy, 0.0, 0.0);
           Assert.assertEquals(vz, 1.0, 0.0);
           Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
         }
         break;
       }
+
       default: {
         throw new UnreachableCodeException();
       }
     }
   }
 
-  private static void checkTypeSigned8(
+  private static void checkTypeFloat32(
     final int component_count,
     final ByteBuffer rb)
   {
     switch (component_count) {
+
       case 1: {
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(127L, (long) rb.get(2));
+        final JPRACursor1DType<SMFByteBufferFloat1Type> c =
+          SMFByteBufferCursors.createFloat1Raw(rb, 32, 0, 1 * 4);
+        final SMFByteBufferFloat1Type v = c.getElementView();
+
+        Assert.assertEquals(-1000.0f, rb.getFloat(0), 0.0f);
+        c.setElementIndex(0);
+        Assert.assertEquals(-1000.0f, v.get1D(), 0.0f);
+
+        Assert.assertEquals(0.0f, rb.getFloat(4), 0.0f);
+        c.setElementIndex(1);
+        Assert.assertEquals(0.0f, v.get1D(), 0.0f);
+
+        Assert.assertEquals(1000.0f, rb.getFloat(8), 0.0f);
+        c.setElementIndex(2);
+        Assert.assertEquals(1000.0f, v.get1D(), 0.0f);
         break;
       }
+
       case 2: {
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(0L, (long) rb.get(2));
-        Assert.assertEquals(0L, (long) rb.get(3));
-        Assert.assertEquals(127L, (long) rb.get(4));
-        Assert.assertEquals(0L, (long) rb.get(5));
+        final JPRACursor1DType<SMFByteBufferFloat2Type> c =
+          SMFByteBufferCursors.createFloat2Raw(rb, 32, 0, 2 * 4);
+        final SMFByteBufferFloat2Type v = c.getElementView();
+        final VectorM2D o = new VectorM2D();
+
+        {
+          final double vx = (double) rb.getFloat(0);
+          final double vy = (double) rb.getFloat(4);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(8);
+          final double vy = (double) rb.getFloat(12);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(16);
+          final double vy = (double) rb.getFloat(20);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
         break;
       }
+
       case 3: {
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(127L, (long) rb.get(2));
+        final JPRACursor1DType<SMFByteBufferFloat3Type> c =
+          SMFByteBufferCursors.createFloat3Raw(rb, 32, 0, 3 * 4);
+        final SMFByteBufferFloat3Type v = c.getElementView();
+        final VectorM3D o = new VectorM3D();
 
-        Assert.assertEquals(-127L, (long) rb.get(3));
-        Assert.assertEquals(0L, (long) rb.get(4));
-        Assert.assertEquals(127L, (long) rb.get(5));
+        {
+          final double vx = (double) rb.getFloat(0);
+          final double vy = (double) rb.getFloat(4);
+          final double vz = (double) rb.getFloat(8);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
 
-        Assert.assertEquals(-127L, (long) rb.get(6));
-        Assert.assertEquals(0L, (long) rb.get(7));
-        Assert.assertEquals(127L, (long) rb.get(8));
+          c.setElementIndex(0);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(12);
+          final double vy = (double) rb.getFloat(16);
+          final double vz = (double) rb.getFloat(20);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(24);
+          final double vy = (double) rb.getFloat(28);
+          final double vz = (double) rb.getFloat(32);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
         break;
       }
+
       case 4: {
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(127L, (long) rb.get(2));
-        Assert.assertEquals(0L, (long) rb.get(3));
+        final JPRACursor1DType<SMFByteBufferFloat4Type> c =
+          SMFByteBufferCursors.createFloat4Raw(rb, 32, 0, 4 * 4);
+        final SMFByteBufferFloat4Type v = c.getElementView();
+        final VectorM4D o = new VectorM4D();
 
-        Assert.assertEquals(-127L, (long) rb.get(4));
-        Assert.assertEquals(0L, (long) rb.get(5));
-        Assert.assertEquals(127L, (long) rb.get(6));
-        Assert.assertEquals(0L, (long) rb.get(7));
+        {
+          final double vx = (double) rb.getFloat(0);
+          final double vy = (double) rb.getFloat(4);
+          final double vz = (double) rb.getFloat(8);
+          final double vw = (double) rb.getFloat(12);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
 
-        Assert.assertEquals(-127L, (long) rb.get(8));
-        Assert.assertEquals(0L, (long) rb.get(9));
-        Assert.assertEquals(127L, (long) rb.get(10));
-        Assert.assertEquals(0L, (long) rb.get(11));
+          c.setElementIndex(0);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(16);
+          final double vy = (double) rb.getFloat(20);
+          final double vz = (double) rb.getFloat(24);
+          final double vw = (double) rb.getFloat(28);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = (double) rb.getFloat(32);
+          final double vy = (double) rb.getFloat(36);
+          final double vz = (double) rb.getFloat(40);
+          final double vw = (double) rb.getFloat(44);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
         break;
       }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private static void checkTypeFloat64(
+    final int component_count,
+    final ByteBuffer rb)
+  {
+    switch (component_count) {
+
+      case 1: {
+        final JPRACursor1DType<SMFByteBufferFloat1Type> c =
+          SMFByteBufferCursors.createFloat1Raw(rb, 64, 0, 1 * 8);
+        final SMFByteBufferFloat1Type v = c.getElementView();
+
+        Assert.assertEquals(-1000.0, rb.getDouble(0), 0.0);
+        c.setElementIndex(0);
+        Assert.assertEquals(-1000.0, v.get1D(), 0.0);
+
+        Assert.assertEquals(0.0, rb.getDouble(8), 0.0);
+        c.setElementIndex(1);
+        Assert.assertEquals(0.0, v.get1D(), 0.0);
+
+        Assert.assertEquals(1000.0, rb.getDouble(16), 0.0);
+        c.setElementIndex(2);
+        Assert.assertEquals(1000.0, v.get1D(), 0.0);
+        break;
+      }
+
+      case 2: {
+
+        final JPRACursor1DType<SMFByteBufferFloat2Type> c =
+          SMFByteBufferCursors.createFloat2Raw(rb, 64, 0, 2 * 8);
+        final SMFByteBufferFloat2Type v = c.getElementView();
+        final VectorM2D o = new VectorM2D();
+
+        {
+          final double vx = rb.getDouble(0);
+          final double vy = rb.getDouble(8);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(16);
+          final double vy = rb.getDouble(24);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(32);
+          final double vy = rb.getDouble(40);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get2D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 1000.0, 0.0);
+        }
+        break;
+      }
+
+      case 3: {
+
+        final JPRACursor1DType<SMFByteBufferFloat3Type> c =
+          SMFByteBufferCursors.createFloat3Raw(rb, 64, 0, 3 * 8);
+        final SMFByteBufferFloat3Type v = c.getElementView();
+        final VectorM3D o = new VectorM3D();
+
+        {
+          final double vx = rb.getDouble(0);
+          final double vy = rb.getDouble(8);
+          final double vz = rb.getDouble(16);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(24);
+          final double vy = rb.getDouble(32);
+          final double vz = rb.getDouble(40);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(48);
+          final double vy = rb.getDouble(56);
+          final double vz = rb.getDouble(64);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get3D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1000.0, 0.0);
+        }
+        break;
+      }
+
+      case 4: {
+
+        final JPRACursor1DType<SMFByteBufferFloat4Type> c =
+          SMFByteBufferCursors.createFloat4Raw(rb, 64, 0, 4 * 8);
+        final SMFByteBufferFloat4Type v = c.getElementView();
+        final VectorM4D o = new VectorM4D();
+
+        {
+          final double vx = rb.getDouble(0);
+          final double vy = rb.getDouble(8);
+          final double vz = rb.getDouble(16);
+          final double vw = rb.getDouble(24);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(0);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(32);
+          final double vy = rb.getDouble(40);
+          final double vz = rb.getDouble(48);
+          final double vw = rb.getDouble(56);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(1);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
+
+        {
+          final double vx = rb.getDouble(64);
+          final double vy = rb.getDouble(72);
+          final double vz = rb.getDouble(80);
+          final double vw = rb.getDouble(88);
+          Assert.assertEquals(vx, -1000.0, 0.0);
+          Assert.assertEquals(vy, 0.0, 0.0);
+          Assert.assertEquals(vz, 1.0, 0.0);
+          Assert.assertEquals(vw, 1000.0, 0.0);
+
+          c.setElementIndex(2);
+          v.get4D(o);
+          Assert.assertEquals(o.getXD(), -1000.0, 0.0);
+          Assert.assertEquals(o.getYD(), 0.0, 0.0);
+          Assert.assertEquals(o.getZD(), 1.0, 0.0);
+          Assert.assertEquals(o.getWD(), 1000.0, 0.0);
+        }
+        break;
+      }
+
       default: {
         throw new UnreachableCodeException();
       }
@@ -1288,12 +2250,13 @@ public final class SMFByteBufferPackedMeshesTest
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh(name);
 
-    Assert.assertEquals(1L, mesh.attributeBuffers().size());
+    Assert.assertEquals(1L, mesh.attributeSets().size());
 
-    final ByteBuffer ab = mesh.attributeBuffers().iterator().next()._2;
+    final ByteBuffer ab = mesh.attributeSets().iterator().next().byteBuffer();
     checkType(type, component_count, component_size, ab);
 
-    final ByteBuffer tb = mesh.triangleBuffer().get();
+    final SMFByteBufferPackedTriangles t = mesh.triangles().get();
+    final ByteBuffer tb = t.byteBuffer();
     Assert.assertEquals(0L, (long) tb.get(0));
     Assert.assertEquals(1L, (long) tb.get(1));
     Assert.assertEquals(2L, (long) tb.get(2));
@@ -1363,7 +2326,8 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle8.smft");
-    final ByteBuffer b = mesh.triangleBuffer().get();
+    final SMFByteBufferPackedTriangles t = mesh.triangles().get();
+    final ByteBuffer b = t.byteBuffer();
     Assert.assertEquals(0L, (long) b.get(0));
     Assert.assertEquals(1L, (long) b.get(1));
     Assert.assertEquals(2L, (long) b.get(2));
@@ -1374,7 +2338,8 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle16.smft");
-    final ByteBuffer b = mesh.triangleBuffer().get();
+    final SMFByteBufferPackedTriangles t = mesh.triangles().get();
+    final ByteBuffer b = t.byteBuffer();
     Assert.assertEquals(0L, (long) b.getChar(0));
     Assert.assertEquals(1L, (long) b.getChar(2));
     Assert.assertEquals(2L, (long) b.getChar(4));
@@ -1385,7 +2350,8 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle32.smft");
-    final ByteBuffer b = mesh.triangleBuffer().get();
+    final SMFByteBufferPackedTriangles t = mesh.triangles().get();
+    final ByteBuffer b = t.byteBuffer();
     Assert.assertEquals(0L, (long) b.getInt(0));
     Assert.assertEquals(1L, (long) b.getInt(4));
     Assert.assertEquals(2L, (long) b.getInt(8));
@@ -1396,7 +2362,8 @@ public final class SMFByteBufferPackedMeshesTest
     throws Exception
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle64.smft");
-    final ByteBuffer b = mesh.triangleBuffer().get();
+    final SMFByteBufferPackedTriangles t = mesh.triangles().get();
+    final ByteBuffer b = t.byteBuffer();
     Assert.assertEquals(0L, b.getLong(0));
     Assert.assertEquals(1L, b.getLong(8));
     Assert.assertEquals(2L, b.getLong(16));
@@ -2025,8 +2992,8 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertTrue(mesh.attributeBuffers().isEmpty());
-    Assert.assertFalse(mesh.triangleBuffer().isPresent());
+    Assert.assertTrue(mesh.attributeSets().isEmpty());
+    Assert.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
@@ -2088,8 +3055,8 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertFalse(mesh.attributeBuffers().isEmpty());
-    Assert.assertFalse(mesh.triangleBuffer().isPresent());
+    Assert.assertFalse(mesh.attributeSets().isEmpty());
+    Assert.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
@@ -2143,8 +3110,8 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertTrue(mesh.attributeBuffers().isEmpty());
-    Assert.assertTrue(mesh.triangleBuffer().isPresent());
+    Assert.assertTrue(mesh.attributeSets().isEmpty());
+    Assert.assertTrue(mesh.triangles().isPresent());
   }
 
   @Rule public ExpectedException expected = ExpectedException.none();

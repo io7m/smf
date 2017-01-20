@@ -17,47 +17,59 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.smfj.core.SMFImmutableStyleType;
+import javaslang.collection.Seq;
 import javaslang.collection.SortedMap;
+import javaslang.collection.TreeMap;
+import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
-import java.nio.ByteBuffer;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * A mesh that has been packed into a set of byte buffers.
  */
 
 @SMFImmutableStyleType
+@JavaslangEncodingEnabled
 @Value.Immutable
 public interface SMFByteBufferPackedMeshType
 {
   /**
-   * The packing configurations used to produce the mesh. This is the value
-   * returned by {@link SMFByteBufferPackerEventsType#onHeader(com.io7m.smfj.core.SMFHeader)}.
-   *
-   * @return The packing configurations used to produce the packed mesh
+   * @return The sets of packed attributes
    */
 
   @Value.Parameter
-  SortedMap<Integer, SMFByteBufferPackingConfiguration> configurations();
+  Seq<SMFByteBufferPackedAttributeSet> attributeSets();
 
   /**
-   * The set of produced byte buffers. Exactly one byte buffer is allocated
-   * per packing configuration and the buffers are keyed by the corresponding
-   * keys in the map of configurations.
-   *
-   * @return A byte buffer containing packed attribute data
-   *
-   * @see #configurations()
+   * @return The packed triangles, if any
    */
 
   @Value.Parameter
-  SortedMap<Integer, ByteBuffer> attributeBuffers();
+  Optional<SMFByteBufferPackedTriangles> triangles();
 
   /**
-   * @return A byte buffer containing packed triangle data
+   * @return The sets of packed attributes, grouped by ID
    */
 
-  @Value.Parameter
-  Optional<ByteBuffer> triangleBuffer();
+  @Value.Derived
+  default SortedMap<Integer, SMFByteBufferPackedAttributeSet> attributeSetsByID()
+  {
+    return TreeMap.ofAll(
+      this.attributeSets().toJavaStream().collect(
+        Collectors.toMap(
+          attr -> Integer.valueOf(attr.id()),
+          Function.identity(),
+          (set0, set1) -> {
+            final StringBuilder sb = new StringBuilder(128);
+            sb.append("Duplicate packing set ID.");
+            sb.append(System.lineSeparator());
+            sb.append("  ID: ");
+            sb.append(set0.id());
+            sb.append(System.lineSeparator());
+            throw new IllegalArgumentException(sb.toString());
+          })));
+  }
 }
