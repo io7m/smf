@@ -61,10 +61,8 @@ public final class SMFByteBufferPackedMeshes implements
   private SMFByteBufferTrianglePacker tri_packer;
   private SortedMap<Integer, SMFByteBufferPackingConfiguration> config;
   private SortedMap<Integer, SMFByteBufferAttributePacker> attr_packers;
-  private SortedMap<Integer, ByteBuffer> buffers_attr;
-  private long vertices;
-  private long tri_count;
-  private long tri_size;
+  private SortedMap<Integer, ByteBuffer> attr_buffers;
+  private SMFHeader header;
 
   private SMFByteBufferPackedMeshes(
     final SMFParserEventsMetaType in_meta,
@@ -123,10 +121,11 @@ public final class SMFByteBufferPackedMeshes implements
   public void onStart()
   {
     this.errors = List.empty();
-    this.buffers_attr = TreeMap.empty();
+    this.attr_buffers = TreeMap.empty();
     this.attr_packers = TreeMap.empty();
-    this.tri_buffer = null;
     this.mesh = null;
+    this.header = null;
+    this.tri_buffer = null;
     this.tri_packer = null;
   }
 
@@ -142,13 +141,13 @@ public final class SMFByteBufferPackedMeshes implements
   {
     if (this.errors.isEmpty()) {
       Invariants.checkInvariantI(
-        this.buffers_attr.size(),
-        this.buffers_attr.size() == this.config.size(),
+        this.attr_buffers.size(),
+        this.attr_buffers.size() == this.config.size(),
         x -> "Must have correct number of buffers");
 
       final SMFByteBufferPackedMesh.Builder mb =
         SMFByteBufferPackedMesh.builder();
-      for (final Tuple2<Integer, ByteBuffer> p : this.buffers_attr) {
+      for (final Tuple2<Integer, ByteBuffer> p : this.attr_buffers) {
         mb.addAttributeSets(SMFByteBufferPackedAttributeSet.of(
           p._1.intValue(),
           this.config.get(p._1).get(),
@@ -158,50 +157,47 @@ public final class SMFByteBufferPackedMeshes implements
       if (this.tri_buffer != null) {
         mb.setTriangles(SMFByteBufferPackedTriangles.of(
           this.tri_buffer,
-          this.tri_count,
-          Math.toIntExact(this.tri_size)));
+          this.header.triangleCount(),
+          Math.toIntExact(this.header.triangleIndexSizeBits())));
       }
 
+      mb.setHeader(this.header);
       this.mesh = mb.build();
     }
   }
 
   @Override
   public void onHeaderParsed(
-    final SMFHeader header)
+    final SMFHeader in_header)
   {
-    this.config = this.events.onHeader(header);
+    this.header = in_header;
+    this.config = this.events.onHeader(this.header);
 
     final boolean want_triangles = this.events.onShouldPackTriangles();
     if (want_triangles) {
-      this.tri_count = header.triangleCount();
-      this.tri_size = header.triangleIndexSizeBits();
-
       final long size_tri = Math.multiplyExact(
-        header.triangleSizeOctets(), header.triangleCount());
+        this.header.triangleSizeOctets(), this.header.triangleCount());
       LOG.debug("allocating triangle buffer");
       this.tri_buffer = this.events.onAllocateTriangleBuffer(size_tri);
       this.tri_packer = new SMFByteBufferTrianglePacker(
         this.tri_buffer,
-        Math.toIntExact(header.triangleIndexSizeBits()),
-        header.triangleCount());
+        Math.toIntExact(this.header.triangleIndexSizeBits()),
+        this.header.triangleCount());
     } else {
       LOG.debug("no triangle buffer required");
     }
 
-    this.buffers_attr = this.config.map((id, buffer_config) -> {
+    this.attr_buffers = this.config.map((id, buffer_config) -> {
       final long size_attr =
         Math.multiplyExact(
           (long) buffer_config.vertexSizeOctets(),
-          header.vertexCount());
+          this.header.vertexCount());
 
       LOG.debug("allocating attribute buffer for {}", id);
       final ByteBuffer buffer =
         this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
       return Tuple.of(id, buffer);
     });
-
-    this.vertices = header.vertexCount();
   }
 
   @Override
@@ -279,10 +275,11 @@ public final class SMFByteBufferPackedMeshes implements
       final SortedMap<SMFAttributeName, SMFByteBufferPackedAttribute> by_name =
         bc.packedAttributesByName();
       if (by_name.containsKey(name)) {
-        final ByteBuffer b = this.buffers_attr.get(id).get();
+        final ByteBuffer b = this.attr_buffers.get(id).get();
         final SMFByteBufferPackedAttribute pa = by_name.get(name).get();
         final SMFByteBufferAttributePacker packer =
-          new SMFByteBufferAttributePacker(b, bc, pa, this.vertices);
+          new SMFByteBufferAttributePacker(
+            b, bc, pa, this.header.vertexCount());
         packers = packers.put(id, packer);
       }
     }

@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.bytebuffer;
 
+import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import javaslang.collection.Seq;
 import javaslang.collection.SortedMap;
@@ -49,6 +50,13 @@ public interface SMFByteBufferPackedMeshType
 
   @Value.Parameter
   Optional<SMFByteBufferPackedTriangles> triangles();
+
+  /**
+   * @return The parsed header
+   */
+
+  @Value.Parameter
+  SMFHeader header();
 
   /**
    * @return The sets of packed attributes, grouped by ID
