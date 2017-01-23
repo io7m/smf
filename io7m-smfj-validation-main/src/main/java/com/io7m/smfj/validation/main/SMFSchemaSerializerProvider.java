@@ -29,7 +29,6 @@ import javaslang.Tuple2;
 import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -45,7 +44,7 @@ import java.util.OptionalInt;
  * interface.
  */
 
-@Component(scope = ServiceScope.BUNDLE)
+@Component
 public final class SMFSchemaSerializerProvider implements
   SMFSchemaSerializerProviderType
 {
@@ -100,6 +99,46 @@ public final class SMFSchemaSerializerProvider implements
       this.stream = in_stream;
     }
 
+    private static void serializeAttribute(
+      final BufferedWriter writer,
+      final String requirement,
+      final Tuple2<SMFAttributeName, SMFSchemaAttribute> p)
+      throws IOException
+    {
+      final SMFAttributeName name = p._1;
+      final SMFSchemaAttribute attr = p._2;
+
+      writer.append("attribute ");
+      writer.append(requirement);
+      writer.append(" \"");
+      writer.append(name.value());
+      writer.append("\" ");
+
+      final Optional<SMFComponentType> opt_type = attr.requiredComponentType();
+      if (opt_type.isPresent()) {
+        writer.append(opt_type.get().getName());
+      } else {
+        writer.append("-");
+      }
+      writer.append(" ");
+
+      final OptionalInt opt_count = attr.requiredComponentCount();
+      if (opt_count.isPresent()) {
+        writer.append(Integer.toUnsignedString(opt_count.getAsInt()));
+      } else {
+        writer.append("-");
+      }
+      writer.append(" ");
+
+      final OptionalInt opt_size = attr.requiredComponentSize();
+      if (opt_size.isPresent()) {
+        writer.append(Integer.toUnsignedString(opt_size.getAsInt()));
+      } else {
+        writer.append("-");
+      }
+      writer.newLine();
+    }
+
     @Override
     public void close()
       throws IOException
@@ -142,46 +181,6 @@ public final class SMFSchemaSerializerProvider implements
       }
 
       writer.flush();
-    }
-
-    private static void serializeAttribute(
-      final BufferedWriter writer,
-      final String requirement,
-      final Tuple2<SMFAttributeName, SMFSchemaAttribute> p)
-      throws IOException
-    {
-      final SMFAttributeName name = p._1;
-      final SMFSchemaAttribute attr = p._2;
-
-      writer.append("attribute ");
-      writer.append(requirement);
-      writer.append(" \"");
-      writer.append(name.value());
-      writer.append("\" ");
-
-      final Optional<SMFComponentType> opt_type = attr.requiredComponentType();
-      if (opt_type.isPresent()) {
-        writer.append(opt_type.get().getName());
-      } else {
-        writer.append("-");
-      }
-      writer.append(" ");
-
-      final OptionalInt opt_count = attr.requiredComponentCount();
-      if (opt_count.isPresent()) {
-        writer.append(Integer.toUnsignedString(opt_count.getAsInt()));
-      } else {
-        writer.append("-");
-      }
-      writer.append(" ");
-
-      final OptionalInt opt_size = attr.requiredComponentSize();
-      if (opt_size.isPresent()) {
-        writer.append(Integer.toUnsignedString(opt_size.getAsInt()));
-      } else {
-        writer.append("-");
-      }
-      writer.newLine();
     }
   }
 }

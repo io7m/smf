@@ -17,8 +17,8 @@
 package com.io7m.smfj.parser.api;
 
 /**
- * A receiver of parse events for triangle data. The expectation is that the methods
- * in this interface will be called by parsers after the call to {@link
+ * A receiver of parse events for triangle data. The expectation is that the
+ * methods in this interface will be called by parsers after the call to {@link
  * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
  */
 

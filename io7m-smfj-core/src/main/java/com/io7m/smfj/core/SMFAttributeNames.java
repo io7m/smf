@@ -47,6 +47,11 @@ public final class SMFAttributeNames
       Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS));
   }
 
+  private SMFAttributeNames()
+  {
+    throw new UnreachableCodeException();
+  }
+
   /**
    * @param text The text
    *
@@ -57,10 +62,5 @@ public final class SMFAttributeNames
     final CharSequence text)
   {
     return PATTERN.matcher(text).matches();
-  }
-
-  private SMFAttributeNames()
-  {
-    throw new UnreachableCodeException();
   }
 }

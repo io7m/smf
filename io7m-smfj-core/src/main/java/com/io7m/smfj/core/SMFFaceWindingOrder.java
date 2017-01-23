@@ -36,38 +36,12 @@ public enum SMFFaceWindingOrder
 
   FACE_WINDING_ORDER_COUNTER_CLOCKWISE(1);
 
-  /**
-   * @return The integer index of the value
-   */
-
-  public int index()
-  {
-    return this.index;
-  }
-
   private final int index;
 
   SMFFaceWindingOrder(
     final int in_index)
   {
     this.index = in_index;
-  }
-
-  /**
-   * @return The face winding order as a humanly readable name such as
-   * "counter-clockwise"
-   */
-
-  public String toName()
-  {
-    switch (this) {
-      case FACE_WINDING_ORDER_CLOCKWISE:
-        return "clockwise";
-      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
-        return "counter-clockwise";
-    }
-
-    throw new UnreachableCodeException();
   }
 
   /**
@@ -115,5 +89,31 @@ public enum SMFFaceWindingOrder
           "Unrecognized face winding order: " + in_index);
       }
     }
+  }
+
+  /**
+   * @return The integer index of the value
+   */
+
+  public int index()
+  {
+    return this.index;
+  }
+
+  /**
+   * @return The face winding order as a humanly readable name such as
+   * "counter-clockwise"
+   */
+
+  public String toName()
+  {
+    switch (this) {
+      case FACE_WINDING_ORDER_CLOCKWISE:
+        return "clockwise";
+      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
+        return "counter-clockwise";
+    }
+
+    throw new UnreachableCodeException();
   }
 }

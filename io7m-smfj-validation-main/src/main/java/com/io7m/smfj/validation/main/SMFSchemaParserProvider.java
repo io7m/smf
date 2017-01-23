@@ -42,7 +42,6 @@ import javaslang.collection.TreeSet;
 import javaslang.control.Validation;
 import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +60,7 @@ import static javaslang.control.Validation.valid;
  * interface.
  */
 
-@Component(scope = ServiceScope.BUNDLE)
+@Component
 public final class SMFSchemaParserProvider implements
   SMFSchemaParserProviderType
 {
@@ -78,6 +77,12 @@ public final class SMFSchemaParserProvider implements
   public SMFSchemaParserProvider()
   {
     // Nothing required
+  }
+
+  private static <E, T> Validation<List<E>, T> flatten(
+    final Validation<List<List<E>>, T> v)
+  {
+    return v.mapError(xs -> xs.fold(List.empty(), List::appendAll));
   }
 
   @Override
@@ -134,7 +139,10 @@ public final class SMFSchemaParserProvider implements
         }
       } catch (final IOException e) {
         errors = errors.append(
-          SMFParseError.of(this.reader.position(), "I/O error", Optional.of(e)));
+          SMFParseError.of(
+            this.reader.position(),
+            "I/O error",
+            Optional.of(e)));
       }
 
       if (errors.isEmpty()) {
@@ -239,7 +247,8 @@ public final class SMFSchemaParserProvider implements
           sb.append("  Error: ");
           sb.append(e.getMessage());
           sb.append(System.lineSeparator());
-          sb.append("  Expected: coordinates <axis> <axis> <axis> <winding-order>");
+          sb.append(
+            "  Expected: coordinates <axis> <axis> <axis> <winding-order>");
           sb.append(System.lineSeparator());
           sb.append("  Received: ");
           sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
@@ -414,7 +423,9 @@ public final class SMFSchemaParserProvider implements
         return flatten(
           Validation.combine(v_req, v_name, v_type, v_count, v_size)
             .ap((req, name, type, count, size) ->
-                  Tuple.of(req, SMFSchemaAttribute.of(name, type, count, size))));
+                  Tuple.of(
+                    req,
+                    SMFSchemaAttribute.of(name, type, count, size))));
       }
 
       final StringBuilder sb = new StringBuilder(128);
@@ -438,12 +449,6 @@ public final class SMFSchemaParserProvider implements
     {
       // Nothing required
     }
-  }
-
-  private static <E, T> Validation<List<E>, T> flatten(
-    final Validation<List<List<E>>, T> v)
-  {
-    return v.mapError(xs -> xs.fold(List.empty(), List::appendAll));
   }
 
   private static final class Parser implements SMFSchemaParserType

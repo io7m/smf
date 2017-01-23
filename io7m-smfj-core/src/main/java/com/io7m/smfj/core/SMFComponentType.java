@@ -52,15 +52,6 @@ public enum SMFComponentType
   }
 
   /**
-   * @return The unique name of the type
-   */
-
-  public String getName()
-  {
-    return this.name;
-  }
-
-  /**
    * Return a component type for the given name.
    *
    * @param name The name
@@ -91,12 +82,6 @@ public enum SMFComponentType
     }
   }
 
-  @Override
-  public String toString()
-  {
-    return this.name;
-  }
-
   /**
    * Return a component type for the given integer value.
    *
@@ -123,6 +108,21 @@ public enum SMFComponentType
           "Unrecognized type for integer index: " + x);
       }
     }
+  }
+
+  /**
+   * @return The unique name of the type
+   */
+
+  public String getName()
+  {
+    return this.name;
+  }
+
+  @Override
+  public String toString()
+  {
+    return this.name;
   }
 
   /**

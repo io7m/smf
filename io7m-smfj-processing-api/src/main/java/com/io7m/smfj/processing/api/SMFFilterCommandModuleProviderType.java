@@ -17,11 +17,13 @@
 package com.io7m.smfj.processing.api;
 
 import javaslang.collection.SortedMap;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The type of filter command module providers.
  */
 
+@ProviderType
 public interface SMFFilterCommandModuleProviderType
 {
   /**

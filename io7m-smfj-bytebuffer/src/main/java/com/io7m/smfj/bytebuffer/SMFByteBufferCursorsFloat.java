@@ -445,20 +445,20 @@ final class SMFByteBufferCursorsFloat
     }
 
     @Override
+    public double get1D()
+    {
+      final long index = this.currentOffset();
+      final int index_0 = Math.toIntExact(index);
+      return this.buffer.getDouble(index_0);
+    }
+
+    @Override
     public void set1D(
       final double x)
     {
       final long index = this.currentOffset();
       final int index_0 = Math.toIntExact(index);
       this.buffer.putDouble(index_0, x);
-    }
-
-    @Override
-    public double get1D()
-    {
-      final long index = this.currentOffset();
-      final int index_0 = Math.toIntExact(index);
-      return this.buffer.getDouble(index_0);
     }
   }
 
@@ -478,20 +478,20 @@ final class SMFByteBufferCursorsFloat
     }
 
     @Override
+    public double get1D()
+    {
+      final long index = this.currentOffset();
+      final int index_0 = Math.toIntExact(index);
+      return (double) this.buffer.getFloat(index_0);
+    }
+
+    @Override
     public void set1D(
       final double x)
     {
       final long index = this.currentOffset();
       final int index_0 = Math.toIntExact(index);
       this.buffer.putFloat(index_0, (float) x);
-    }
-
-    @Override
-    public double get1D()
-    {
-      final long index = this.currentOffset();
-      final int index_0 = Math.toIntExact(index);
-      return (double) this.buffer.getFloat(index_0);
     }
   }
 
@@ -511,20 +511,20 @@ final class SMFByteBufferCursorsFloat
     }
 
     @Override
+    public double get1D()
+    {
+      final long index = this.currentOffset();
+      final int index_0 = Math.toIntExact(index);
+      return Binary16.unpackDouble(this.buffer.getChar(index_0));
+    }
+
+    @Override
     public void set1D(
       final double x)
     {
       final long index = this.currentOffset();
       final int index_0 = Math.toIntExact(index);
       this.buffer.putChar(index_0, Binary16.packDouble(x));
-    }
-
-    @Override
-    public double get1D()
-    {
-      final long index = this.currentOffset();
-      final int index_0 = Math.toIntExact(index);
-      return Binary16.unpackDouble(this.buffer.getChar(index_0));
     }
   }
 }
