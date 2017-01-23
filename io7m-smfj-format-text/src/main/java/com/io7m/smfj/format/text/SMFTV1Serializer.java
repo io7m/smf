@@ -43,6 +43,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Objects;
 
 final class SMFTV1Serializer implements SMFSerializerType
 {
@@ -287,7 +288,7 @@ final class SMFTV1Serializer implements SMFSerializerType
 
     if (!this.attribute_queue.isEmpty()) {
       final SMFAttribute next = this.attribute_queue.head();
-      if (name.equals(next.name())) {
+      if (Objects.equals(name, next.name())) {
         this.attribute_queue = this.attribute_queue.tail();
         this.attribute_values_remaining = this.header.vertexCount();
         this.attribute_current = next;

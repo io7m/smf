@@ -18,6 +18,8 @@ package com.io7m.smfj.cmdline;
 
 import com.beust.jcommander.IStringConverter;
 
+import java.util.Objects;
+
 /**
  * A converter for {@link SMFLogLevel} values.
  */
@@ -38,7 +40,7 @@ public final class SMFLogLevelConverter implements
   public SMFLogLevel convert(final String value)
   {
     for (final SMFLogLevel v : SMFLogLevel.values()) {
-      if (value.equals(v.getName())) {
+      if (Objects.equals(value, v.getName())) {
         return v;
       }
     }

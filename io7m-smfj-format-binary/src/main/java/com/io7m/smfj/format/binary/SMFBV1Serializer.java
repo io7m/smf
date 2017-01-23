@@ -51,6 +51,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Objects;
 
 final class SMFBV1Serializer implements SMFSerializerType
 {
@@ -280,7 +281,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
     if (!this.attribute_queue.isEmpty()) {
       final SMFAttribute next = this.attribute_queue.head();
-      if (name.equals(next.name())) {
+      if (Objects.equals(name, next.name())) {
         this.attribute_queue = this.attribute_queue.tail();
         this.attribute_values_remaining = this.header.vertexCount();
         this.attribute_current = next;
