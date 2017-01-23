@@ -176,6 +176,7 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
           }
           case ELEMENT_TYPE_FLOATING: {
             this.parseAttributeDataFloating(attribute, name_opt);
+            break;
           }
         }
       }

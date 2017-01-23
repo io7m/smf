@@ -614,6 +614,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
             "Expected a meta command.",
             "meta <vendor-id> <schema-id> <integer-unsigned>",
             line.toJavaStream().collect(Collectors.joining(" ")));
+          break;
         }
       }
 

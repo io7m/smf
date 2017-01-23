@@ -180,6 +180,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
           }
           case ELEMENT_TYPE_FLOATING: {
             this.parseAttributeDataFloating(attribute, name_opt, offset);
+            break;
           }
         }
 
