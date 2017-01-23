@@ -483,13 +483,12 @@ public final class SMFSchemaParserProvider implements
             }
 
             throw new UnimplementedCodeException();
-          } else {
-            final SMFParseError error = SMFParseError.of(
-              reader.position(),
-              "Empty file: Must begin with an smf-schema version declaration",
-              Optional.empty());
-            return invalid(List.of(error));
           }
+          final SMFParseError error = SMFParseError.of(
+            reader.position(),
+            "Empty file: Must begin with an smf-schema version declaration",
+            Optional.empty());
+          return invalid(List.of(error));
         } catch (final IOException e) {
           final SMFParseError error =
             SMFParseError.of(reader.position(), "I/O error", Optional.of(e));
