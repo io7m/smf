@@ -1,4 +1,4 @@
-io7m-smfj 0.6.0 Documentation
+io7m-smfj 0.7.0 Documentation
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents

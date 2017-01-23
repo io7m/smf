@@ -1,4 +1,4 @@
-io7m-smfj 0.6.0 Specification
+io7m-smfj 0.7.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents
@@ -339,8 +339,14 @@ io7m-smfj 0.6.0 Specification
       3.7.2 attribute
       ───────────────
 
-      attribute_name =
+      attribute_name_raw =
         ? [\p{IsAlphabetic}\p{IsDigit}_\-\.:]{1,64} ? ;
+
+      attribute_name_quoted =
+        """ , attribute_name_raw , """ ;
+
+      attribute_name =
+        attribute_name_raw | attribute_name_quoted ;
 
       attribute_type =
         "integer-signed" | "integer-unsigned" | "float" ;
