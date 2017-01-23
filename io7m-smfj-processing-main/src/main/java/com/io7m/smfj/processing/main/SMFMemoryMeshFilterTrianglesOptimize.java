@@ -200,7 +200,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
       max = Math.max(max, v2);
     }
 
-    final long triangle_size = this.optimize(m, optimize_opt, max);
+    final long triangle_size = optimize(m, optimize_opt, max);
 
     if (errors.isEmpty()) {
       return Validation.valid(
@@ -209,7 +209,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     return Validation.invalid(errors);
   }
 
-  private long optimize(
+  private static long optimize(
     final SMFMemoryMesh m,
     final OptionalInt optimize_opt,
     final long max)
