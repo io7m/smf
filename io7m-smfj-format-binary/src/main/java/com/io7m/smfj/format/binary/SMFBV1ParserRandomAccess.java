@@ -58,7 +58,6 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
   private List<SMFAttribute> attributes;
   private SMFHeader header;
   private SMFBV1Offsets offsets;
-  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
   private SMFBV1HeaderType header_view;
 
   SMFBV1ParserRandomAccess(
@@ -104,12 +103,12 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
         Optional.of("header"),
         this.header_buffer,
         SMFBV1Offsets.offsetHeader());
-      this.header_cursor =
+      final JPRACursor1DType<SMFBV1HeaderType> header_cursor =
         JPRACursor1DByteBufferedChecked.newCursor(
           this.header_buffer_wrap,
           SMFBV1HeaderByteBuffered::newValueWithOffset);
       this.header_view =
-        this.header_cursor.getElementView();
+        header_cursor.getElementView();
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(
@@ -181,6 +180,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
           }
           case ELEMENT_TYPE_FLOATING: {
             this.parseAttributeDataFloating(attribute, name_opt, offset);
+            break;
           }
         }
 
@@ -966,7 +966,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     long offset = SMFBV1Offsets.offsetHeaderAttributesData();
     for (long index = 0L;
          Long.compareUnsigned(
-           index, (long) this.header_view.getAttributeCount()) < 0;
+           index, this.header_view.getAttributeCount()) < 0;
          index = Math.addExact(index, 1L)) {
 
       if (LOG.isDebugEnabled()) {

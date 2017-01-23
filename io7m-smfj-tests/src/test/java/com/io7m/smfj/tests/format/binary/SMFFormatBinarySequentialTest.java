@@ -180,7 +180,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
       events.onError(this.withArgThat(
-        new ParseErrorMessageStartsWith("Invalid triangle index size")));
+        new ParseErrorMessageStartsWith("Unsupported unsigned integer size")));
       events.onFinish();
     }};
 

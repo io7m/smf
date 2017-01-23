@@ -21,7 +21,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.io7m.jfunctional.Unit;
-import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -397,6 +396,8 @@ public final class Main implements Runnable
         final SMFSerializerProviderType provider_serializer =
           provider_serializer_opt.get();
         final Path path_out = Paths.get(this.file_out);
+
+        LOG.debug("serializing to {}", path_out);
         try (final OutputStream os = Files.newOutputStream(path_out)) {
           try (final SMFSerializerType serializer =
                  provider_serializer.serializerCreate(
@@ -458,16 +459,7 @@ public final class Main implements Runnable
           }
         }
         if (!loader.errors().isEmpty()) {
-          loader.errors().map(e -> {
-            final LexicalPosition<Path> lex = e.lexical();
-            LOG.error(
-              "{}:{}:{}: {}",
-              this.file_in,
-              Integer.valueOf(lex.line()),
-              Integer.valueOf(lex.column()),
-              e.message());
-            return unit();
-          });
+          loader.errors().forEach(e -> LOG.error(e.fullMessage()));
           Main.this.exit_code = 1;
           return Optional.empty();
         }
@@ -492,17 +484,7 @@ public final class Main implements Runnable
           return Optional.of(r.get());
         }
 
-        r.getError().map(e -> {
-          final LexicalPosition<Path> lex = e.lexical();
-          LOG.error(
-            "{}:{}:{}: {}",
-            path_commands,
-            Integer.valueOf(lex.line()),
-            Integer.valueOf(lex.column()),
-            e.message());
-          return unit();
-        });
-
+        r.getError().forEach(e -> LOG.error(e.fullMessage()));
         return Optional.empty();
       }
     }

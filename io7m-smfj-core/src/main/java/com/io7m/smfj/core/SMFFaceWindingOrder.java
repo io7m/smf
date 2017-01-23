@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.core;
 
+import com.io7m.junreachable.UnreachableCodeException;
+
 /**
  * The face winding order for triangles.
  */
@@ -52,13 +54,56 @@ public enum SMFFaceWindingOrder
   }
 
   /**
+   * @return The face winding order as a humanly readable name such as
+   * "counter-clockwise"
+   */
+
+  public String toName()
+  {
+    switch (this) {
+      case FACE_WINDING_ORDER_CLOCKWISE:
+        return "clockwise";
+      case FACE_WINDING_ORDER_COUNTER_CLOCKWISE:
+        return "counter-clockwise";
+    }
+
+    throw new UnreachableCodeException();
+  }
+
+  /**
+   * @param name An order name such as "clockwise" or "counter-clockwise"
+   *
+   * @return A face winding order for the given name
+   *
+   * @throws IllegalArgumentException On unrecognized names
+   */
+
+  public static SMFFaceWindingOrder fromName(
+    final String name)
+    throws IllegalArgumentException
+  {
+    switch (name) {
+      case "clockwise":
+        return FACE_WINDING_ORDER_CLOCKWISE;
+      case "counter-clockwise":
+        return FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
+      default: {
+        throw new IllegalArgumentException("Unrecognized winding order: " + name);
+      }
+    }
+  }
+
+  /**
    * @param in_index An order index
    *
    * @return A face winding order for the given index
+   *
+   * @throws IllegalArgumentException On unrecognized indices
    */
 
   public static SMFFaceWindingOrder fromIndex(
     final int in_index)
+    throws IllegalArgumentException
   {
     switch (in_index) {
       case 0:

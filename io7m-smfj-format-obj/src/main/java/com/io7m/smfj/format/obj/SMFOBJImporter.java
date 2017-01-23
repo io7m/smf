@@ -666,9 +666,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
   private static final class OriginalVertexIdentifier
   {
-    protected final int v;
-    protected final int vn;
-    protected final int vt;
+    private final int v;
+    private final int vn;
+    private final int vt;
 
     OriginalVertexIdentifier(
       final int in_v,
@@ -718,9 +718,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
   private static final class Vertex
   {
-    protected final @Nullable VectorI3D position;
-    protected final @Nullable VectorI3D normal;
-    protected final @Nullable VectorI2D uv;
+    private final @Nullable VectorI3D position;
+    private final @Nullable VectorI3D normal;
+    private final @Nullable VectorI2D uv;
 
     Vertex(
       final VectorI3D in_position,
@@ -735,9 +735,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
   private static final class Triangle
   {
-    protected final int v0;
-    protected final int v1;
-    protected final int v2;
+    private final int v0;
+    private final int v1;
+    private final int v2;
 
     Triangle(
       final int in_v0,

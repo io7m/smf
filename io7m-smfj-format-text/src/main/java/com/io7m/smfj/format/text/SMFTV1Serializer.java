@@ -43,6 +43,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Objects;
 
 final class SMFTV1Serializer implements SMFSerializerType
 {
@@ -204,13 +205,8 @@ final class SMFTV1Serializer implements SMFSerializerType
       final SMFSchemaIdentifier schema_id =
         this.header.schemaIdentifier();
       if (schema_id.vendorID() != 0) {
-        this.writer.append(
-          String.format(
-            "schema %08x %08x %d %d",
-            Integer.valueOf(schema_id.vendorID()),
-            Integer.valueOf(schema_id.schemaID()),
-            Integer.valueOf(schema_id.schemaMajorVersion()),
-            Integer.valueOf(schema_id.schemaMinorVersion())));
+        this.writer.append("schema ");
+        this.writer.append(schema_id.toHumanString());
         this.writer.newLine();
       }
 
@@ -292,7 +288,7 @@ final class SMFTV1Serializer implements SMFSerializerType
 
     if (!this.attribute_queue.isEmpty()) {
       final SMFAttribute next = this.attribute_queue.head();
-      if (name.equals(next.name())) {
+      if (Objects.equals(name, next.name())) {
         this.attribute_queue = this.attribute_queue.tail();
         this.attribute_values_remaining = this.header.vertexCount();
         this.attribute_current = next;

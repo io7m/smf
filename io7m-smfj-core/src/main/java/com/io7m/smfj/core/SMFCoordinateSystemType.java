@@ -40,4 +40,19 @@ public interface SMFCoordinateSystemType
 
   @Value.Parameter
   SMFFaceWindingOrder windingOrder();
+
+  /**
+   * @return A humanly-readable string such as "+x +y -z counter-clockwise"
+   */
+
+  @Value.Lazy
+  default String toHumanString()
+  {
+    return String.format(
+      "%s %s %s %s",
+      this.axes().right().axisSigned(),
+      this.axes().up().axisSigned(),
+      this.axes().forward().axisSigned(),
+      this.windingOrder().toName());
+  }
 }

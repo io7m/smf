@@ -58,6 +58,24 @@ public interface SMFHeaderType
   }
 
   /**
+   * @return The size in octets of each triangle index
+   */
+
+  @Value.Derived
+  default long triangleIndexSizeOctets() {
+    return this.triangleIndexSizeBits() / 8L;
+  }
+
+  /**
+   * @return The size in octets of each triangle
+   */
+
+  @Value.Derived
+  default long triangleSizeOctets() {
+    return Math.multiplyExact(this.triangleIndexSizeOctets(), 3L);
+  }
+
+  /**
    * @return The number of vertices in the file
    */
 
@@ -173,26 +191,7 @@ public interface SMFHeaderType
       }
     }
 
-    {
-      switch ((int) this.triangleIndexSizeBits()) {
-        case 8:
-        case 16:
-        case 32:
-        case 64: {
-          break;
-        }
-        default: {
-          final StringBuilder sb = new StringBuilder(128);
-          sb.append("Invalid triangle index size.");
-          sb.append(System.lineSeparator());
-          sb.append("  Expected: One of {8 | 16 | 32 | 64}");
-          sb.append(System.lineSeparator());
-          sb.append("  Received: ");
-          sb.append(this.triangleIndexSizeBits());
-          sb.append(System.lineSeparator());
-          throw new IllegalArgumentException(sb.toString());
-        }
-      }
-    }
+    SMFSupportedSizes.checkIntegerUnsignedSupported(
+      Math.toIntExact(this.triangleIndexSizeBits()));
   }
 }

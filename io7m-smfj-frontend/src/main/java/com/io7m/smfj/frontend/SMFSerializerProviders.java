@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
@@ -68,7 +69,9 @@ public final class SMFSerializerProviders
         while (providers.hasNext()) {
           final SMFSerializerProviderType current_provider =
             providers.next();
-          if (current_provider.serializerFormat().suffix().equals(suffix)) {
+          if (Objects.equals(
+            current_provider.serializerFormat().suffix(),
+            suffix)) {
             LOG.debug("using provider: {}", current_provider);
             return Optional.of(current_provider);
           }
@@ -84,7 +87,7 @@ public final class SMFSerializerProviders
       while (providers.hasNext()) {
         final SMFSerializerProviderType current_provider =
           providers.next();
-        if (current_provider.serializerFormat().name().equals(format)) {
+        if (Objects.equals(current_provider.serializerFormat().name(), format)) {
           LOG.debug("using provider: {}", current_provider);
           return Optional.of(current_provider);
         }

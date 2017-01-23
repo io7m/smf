@@ -69,4 +69,19 @@ public interface SMFSchemaIdentifierType
   {
     return 0x0;
   }
+
+  /**
+   * @return A humanly-readable string describing the schema identifier
+   */
+
+  @Value.Lazy
+  default String toHumanString()
+  {
+    return String.format(
+      "%08x %08x %d %d",
+      Integer.valueOf(this.vendorID()),
+      Integer.valueOf(this.schemaID()),
+      Integer.valueOf(this.schemaMajorVersion()),
+      Integer.valueOf(this.schemaMinorVersion()));
+  }
 }

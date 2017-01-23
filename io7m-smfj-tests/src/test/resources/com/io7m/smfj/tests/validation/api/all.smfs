@@ -1,0 +1,14 @@
+smf-schema 1 0
+
+schema 696f376d 0 1 2
+coordinates +x +y -z counter-clockwise
+
+attribute required "f16_4" float 4 16
+attribute required "f16_3" - 3 16
+attribute required "f16_2" float - 16
+attribute required "f16_1" float 1 -
+
+attribute optional "f32_4" float 4 32
+attribute optional "f32_3" - 3 32
+attribute optional "f32_2" float - 32
+attribute optional "f32_1" float 1 -

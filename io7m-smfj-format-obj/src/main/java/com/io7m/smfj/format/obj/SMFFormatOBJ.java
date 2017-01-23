@@ -24,6 +24,8 @@ import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.io.InputStream;
 import java.nio.channels.FileChannel;
@@ -34,6 +36,7 @@ import java.util.Optional;
  * A provider for the Wavefront OBJ format.
  */
 
+@Component(scope = ServiceScope.BUNDLE)
 public final class SMFFormatOBJ implements SMFParserProviderType
 {
   private static final SMFFormatDescription FORMAT;

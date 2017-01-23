@@ -1,0 +1,12 @@
+smf 1 0
+vertices 3
+triangles 1 8
+coordinates +x +y -z counter-clockwise
+attribute "x" integer-signed 1 32
+data
+attribute "x"
+-2147483648
+0
+2147483647
+triangles
+0 1 2

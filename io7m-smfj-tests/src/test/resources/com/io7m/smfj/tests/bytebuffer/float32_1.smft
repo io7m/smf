@@ -1,0 +1,12 @@
+smf 1 0
+vertices 3
+triangles 1 8
+coordinates +x +y -z counter-clockwise
+attribute "x" float 1 32
+data
+attribute "x"
+-1000.0
+0
+1000.0
+triangles
+0 1 2

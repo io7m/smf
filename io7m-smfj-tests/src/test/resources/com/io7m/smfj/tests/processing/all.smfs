@@ -1,0 +1,59 @@
+smf-schema 1 0
+
+schema 696f376d 0 1 2
+coordinates +x +y -z counter-clockwise
+
+attribute required "f16_4" float 4 16
+attribute required "f16_3" float 3 16
+attribute required "f16_2" float 2 16
+attribute required "f16_1" float 1 16
+
+attribute required "f32_4" float 4 32
+attribute required "f32_3" float 3 32
+attribute required "f32_2" float 2 32
+attribute required "f32_1" float 1 32
+
+attribute required "f64_4" float 4 64
+attribute required "f64_3" float 3 64
+attribute required "f64_2" float 2 64
+attribute required "f64_1" float 1 64
+
+attribute required "i64_4" integer-signed 4 64
+attribute required "i64_3" integer-signed 3 64
+attribute required "i64_2" integer-signed 2 64
+attribute required "i64_1" integer-signed 1 64
+
+attribute required "i32_4" integer-signed 4 32
+attribute required "i32_3" integer-signed 3 32
+attribute required "i32_2" integer-signed 2 32
+attribute required "i32_1" integer-signed 1 32
+
+attribute required "i16_4" integer-signed 4 16
+attribute required "i16_3" integer-signed 3 16
+attribute required "i16_2" integer-signed 2 16
+attribute required "i16_1" integer-signed 1 16
+
+attribute required "i8_4" integer-signed 4 8
+attribute required "i8_3" integer-signed 3 8
+attribute required "i8_2" integer-signed 2 8
+attribute required "i8_1" integer-signed 1 8
+
+attribute required "u64_4" integer-unsigned 4 64
+attribute required "u64_3" integer-unsigned 3 64
+attribute required "u64_2" integer-unsigned 2 64
+attribute required "u64_1" integer-unsigned 1 64
+
+attribute required "u32_4" integer-unsigned 4 32
+attribute required "u32_3" integer-unsigned 3 32
+attribute required "u32_2" integer-unsigned 2 32
+attribute required "u32_1" integer-unsigned 1 32
+
+attribute required "u16_4" integer-unsigned 4 16
+attribute required "u16_3" integer-unsigned 3 16
+attribute required "u16_2" integer-unsigned 2 16
+attribute required "u16_1" integer-unsigned 1 16
+
+attribute required "u8_4" integer-unsigned 4 8
+attribute required "u8_3" integer-unsigned 3 8
+attribute required "u8_2" integer-unsigned 2 8
+attribute required "u8_1" integer-unsigned 1 8

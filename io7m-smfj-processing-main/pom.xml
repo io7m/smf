@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>io7m-smfj</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
   </parent>
   <artifactId>io7m-smfj-processing-main</artifactId>
 
@@ -43,6 +43,16 @@
       <groupId>com.io7m.smfj</groupId>
       <artifactId>io7m-smfj-processing-api</artifactId>
       <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.smfj</groupId>
+      <artifactId>io7m-smfj-validation-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
     </dependency>
 
     <dependency>

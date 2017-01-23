@@ -20,7 +20,7 @@ package com.io7m.smfj.parser.api;
  * Events related to the parsing of metadata.
  */
 
-public interface SMFParserEventsMetaType extends SMFParserEventsErrorType
+public interface SMFParserEventsMetaType
 {
   /**
    * Metadata was encountered.

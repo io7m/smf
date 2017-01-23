@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,43 +16,45 @@
 
 package com.io7m.smfj.format.text;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionMutable;
-import com.io7m.jnull.NullCheck;
 import javaslang.collection.List;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 
-final class SMFTLineReader
+/**
+ * An abstract line reader implementation.
+ */
+
+abstract class SMFTLineReaderAbstract implements SMFTLineReaderType
 {
-  private final BufferedReader reader;
   private final LexicalPositionMutable<Path> position;
   private final SMFLineLexer lexer;
 
-  SMFTLineReader(
+  SMFTLineReaderAbstract(
     final Path in_path,
-    final InputStream in_stream)
+    final int in_start)
   {
-    this.reader = new BufferedReader(
-      new InputStreamReader(
-        NullCheck.notNull(in_stream, "stream"), StandardCharsets.UTF_8));
-    this.position = LexicalPositionMutable.create(0, 0, Optional.of(in_path));
     this.lexer = new SMFLineLexer();
+    this.position = LexicalPositionMutable.create(
+      in_start - 1,
+      0,
+      Optional.of(in_path));
   }
 
-  LexicalPositionMutable<Path> position()
+  @Override
+  public final LexicalPosition<Path> position()
   {
-    return this.position;
+    return LexicalPosition.copyOf(this.position);
   }
 
-  public Optional<List<String>> line()
-    throws Exception
+  @Override
+  public final Optional<List<String>> line()
+    throws IOException
   {
-    final String line = this.reader.readLine();
+    final String line = this.lineNextRaw();
     this.position.setLine(Math.addExact(this.position.line(), 1));
 
     if (line == null) {
@@ -70,4 +72,7 @@ final class SMFTLineReader
 
     return Optional.of(this.lexer.lex(trimmed));
   }
+
+  protected abstract String lineNextRaw()
+    throws IOException;
 }

@@ -50,8 +50,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     LOG = LoggerFactory.getLogger(SMFTV1HeaderParser.class);
   }
 
-  private final SMFTAbstractParser parent;
-  private final SMFFormatVersion version;
   private Map<SMFAttributeName, Integer> attribute_lines;
   private List<SMFAttribute> attributes_list;
   private long vertex_count;
@@ -67,53 +65,17 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   SMFTV1HeaderParser(
     final SMFTAbstractParser in_parent,
     final SMFParserEventsType in_events,
-    final SMFTLineReader in_reader,
+    final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version)
   {
-    super(in_events, in_reader, in_parent.state);
-    this.parent = NullCheck.notNull(in_parent, "Parent");
-    this.version = NullCheck.notNull(in_version, "Version");
+    super(in_events,
+          in_reader,
+          NullCheck.notNull(in_parent, "Parent").state);
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
     this.ok_triangles = false;
     this.ok_vertices = false;
     this.schema_id = SMFSchemaIdentifier.of(0, 0, 0, 0);
-  }
-
-  private static SMFFaceWindingOrder parseWindingOrder(
-    final String name)
-  {
-    switch (name) {
-      case "clockwise":
-        return SMFFaceWindingOrder.FACE_WINDING_ORDER_CLOCKWISE;
-      case "counter-clockwise":
-        return SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
-      default: {
-        throw new IllegalArgumentException("Unrecognized winding order: " + name);
-      }
-    }
-  }
-
-  private static CAxis parseAxis(
-    final String name)
-  {
-    switch (name) {
-      case "+x":
-        return CAxis.AXIS_POSITIVE_X;
-      case "+y":
-        return CAxis.AXIS_POSITIVE_Y;
-      case "+z":
-        return CAxis.AXIS_POSITIVE_Z;
-      case "-x":
-        return CAxis.AXIS_NEGATIVE_X;
-      case "-y":
-        return CAxis.AXIS_NEGATIVE_Y;
-      case "-z":
-        return CAxis.AXIS_NEGATIVE_Z;
-      default: {
-        throw new IllegalArgumentException("Unrecognized axis name: " + name);
-      }
-    }
   }
 
   private void parseHeaderCheckAll()
@@ -213,10 +175,11 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
   {
     if (line.size() == 5) {
       try {
-        final CAxis axis_right = parseAxis(line.get(1));
-        final CAxis axis_up = parseAxis(line.get(2));
-        final CAxis axis_forward = parseAxis(line.get(3));
-        final SMFFaceWindingOrder order = parseWindingOrder(line.get(4));
+        final CAxis axis_right = CAxis.of(line.get(1));
+        final CAxis axis_up = CAxis.of(line.get(2));
+        final CAxis axis_forward = CAxis.of(line.get(3));
+        final SMFFaceWindingOrder order =
+          SMFFaceWindingOrder.fromName(line.get(4));
 
         boolean bad = false;
         bad = bad || axis_right.axis() == axis_up.axis();
