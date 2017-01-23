@@ -9,6 +9,14 @@
     <c:item>
       <c:date>2017-01-23</c:date>
       <c:type-code-new/>
+      <c:ticket>20</c:ticket>
+      <c:ticket>34</c:ticket>
+      <c:summary>Add metadata-add and metadata-remove commands.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-23</c:date>
+      <c:type-code-new/>
       <c:ticket>33</c:ticket>
       <c:summary>Add OSGi annotations.</c:summary>
     </c:item>

@@ -38,6 +38,12 @@ public final class SMFProcessingMainCommands extends
       "com.io7m.smf",
       TreeMap.ofEntries(
         Tuple.of(
+          SMFMemoryMeshFilterMetadataAdd.NAME,
+          SMFMemoryMeshFilterMetadataAdd::parse),
+        Tuple.of(
+          SMFMemoryMeshFilterMetadataRemove.NAME,
+          SMFMemoryMeshFilterMetadataRemove::parse),
+        Tuple.of(
           SMFMemoryMeshFilterSchemaValidate.NAME,
           SMFMemoryMeshFilterSchemaValidate::parse),
         Tuple.of(

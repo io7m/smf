@@ -18,3 +18,5 @@ com.io7m.smf:schema-set a0a0a0a0 b0 3 2
 com.io7m.smf:schema-check a0a0a0a0 b0 3 2
 
 com.io7m.smf:schema-validate schema.smfs
+
+com.io7m.smf:metadata-add 494F374D 0 schema.smfs

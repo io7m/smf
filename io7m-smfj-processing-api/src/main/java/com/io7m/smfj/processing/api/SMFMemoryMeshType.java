@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
+import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jtensors.VectorI3L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -59,4 +60,41 @@ public interface SMFMemoryMeshType
 
   @Value.Parameter
   Vector<VectorI3L> triangles();
+
+  /**
+   * Check preconditions for the type.
+   */
+
+  @Value.Check
+  default void checkPreconditions()
+  {
+    {
+      final long tri_lsize = (long) this.triangles().size();
+      final long tri_hcount = this.header().triangleCount();
+      Preconditions.checkPreconditionL(
+        tri_lsize,
+        tri_lsize == tri_hcount,
+        x -> "Triangle list size must match header count");
+    }
+
+    {
+      final long meta_lsize = (long) this.metadata().size();
+      final long meta_hcount = this.header().metaCount();
+      Preconditions.checkPreconditionL(
+        meta_lsize,
+        meta_lsize == meta_hcount,
+        x -> "Metadata list size must match header count");
+    }
+
+    {
+      this.arrays().forEach(p -> {
+        final long array_lsize = (long) p._2.size();
+        final long array_hcount = this.header().vertexCount();
+        Preconditions.checkPreconditionL(
+          array_lsize,
+          array_lsize == array_hcount,
+          x -> "Attribute array size must match header count");
+      });
+    }
+  }
 }

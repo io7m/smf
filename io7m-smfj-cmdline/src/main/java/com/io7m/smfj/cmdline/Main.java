@@ -396,6 +396,8 @@ public final class Main implements Runnable
         final SMFSerializerProviderType provider_serializer =
           provider_serializer_opt.get();
         final Path path_out = Paths.get(this.file_out);
+
+        LOG.debug("serializing to {}", path_out);
         try (final OutputStream os = Files.newOutputStream(path_out)) {
           try (final SMFSerializerType serializer =
                  provider_serializer.serializerCreate(
