@@ -58,7 +58,6 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
   private List<SMFAttribute> attributes;
   private SMFHeader header;
   private SMFBV1Offsets offsets;
-  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
   private SMFBV1HeaderType header_view;
 
   SMFBV1ParserRandomAccess(
@@ -104,12 +103,12 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
         Optional.of("header"),
         this.header_buffer,
         SMFBV1Offsets.offsetHeader());
-      this.header_cursor =
+      final JPRACursor1DType<SMFBV1HeaderType> header_cursor =
         JPRACursor1DByteBufferedChecked.newCursor(
           this.header_buffer_wrap,
           SMFBV1HeaderByteBuffered::newValueWithOffset);
       this.header_view =
-        this.header_cursor.getElementView();
+        header_cursor.getElementView();
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(

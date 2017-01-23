@@ -50,8 +50,6 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     LOG = LoggerFactory.getLogger(SMFTV1HeaderParser.class);
   }
 
-  private final SMFTAbstractParser parent;
-  private final SMFFormatVersion version;
   private Map<SMFAttributeName, Integer> attribute_lines;
   private List<SMFAttribute> attributes_list;
   private long vertex_count;
@@ -70,9 +68,9 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version)
   {
-    super(in_events, in_reader, in_parent.state);
-    this.parent = NullCheck.notNull(in_parent, "Parent");
-    this.version = NullCheck.notNull(in_version, "Version");
+    super(in_events,
+          in_reader,
+          NullCheck.notNull(in_parent, "Parent").state);
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
     this.ok_triangles = false;

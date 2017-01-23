@@ -58,7 +58,6 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
   private Map<SMFAttributeName, SMFAttribute> attributes_named;
   private List<SMFAttribute> attributes;
   private SMFBV1Offsets offsets;
-  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
   private SMFBV1HeaderType header_view;
   private SMFHeader header;
 
@@ -100,12 +99,12 @@ final class SMFBV1ParserSequential extends SMFBAbstractParserSequential
 
     try {
       super.reader.readBytes(Optional.of("header"), this.header_buffer);
-      this.header_cursor =
+      final JPRACursor1DType<SMFBV1HeaderType> header_cursor =
         JPRACursor1DByteBufferedChecked.newCursor(
           this.header_buffer_wrap,
           SMFBV1HeaderByteBuffered::newValueWithOffset);
       this.header_view =
-        this.header_cursor.getElementView();
+        header_cursor.getElementView();
 
       if (LOG.isDebugEnabled()) {
         LOG.debug(

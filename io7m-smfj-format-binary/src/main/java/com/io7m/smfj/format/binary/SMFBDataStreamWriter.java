@@ -39,7 +39,6 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
   private final ByteBuffer buffer2;
-  private final ByteBuffer buffer1;
   private final byte[] byte8;
   private final byte[] byte4;
   private final byte[] byte2;
@@ -63,8 +62,6 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
     this.buffer2 = ByteBuffer.wrap(this.byte2);
     this.buffer2.order(ByteOrder.BIG_ENDIAN);
     this.byte1 = new byte[1];
-    this.buffer1 = ByteBuffer.wrap(this.byte1);
-    this.buffer1.order(ByteOrder.BIG_ENDIAN);
   }
 
   /**

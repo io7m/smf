@@ -39,7 +39,6 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
   private final ByteBuffer buffer2;
-  private final ByteBuffer buffer1;
   private final byte[] byte1;
   private final byte[] byte2;
   private final byte[] byte4;
@@ -64,8 +63,6 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
     this.buffer4.order(ByteOrder.BIG_ENDIAN);
     this.buffer2 = ByteBuffer.wrap(this.byte2);
     this.buffer2.order(ByteOrder.BIG_ENDIAN);
-    this.buffer1 = ByteBuffer.wrap(this.byte1);
-    this.buffer1.order(ByteOrder.BIG_ENDIAN);
   }
 
   /**

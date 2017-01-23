@@ -73,8 +73,6 @@ final class SMFBV1Serializer implements SMFSerializerType
   private SMFAttribute attribute_current;
   private long triangle_values_remaining;
   private SMFBV1Offsets offsets;
-  private JPRACursor1DType<SMFBV1HeaderType> header_cursor;
-  private SMFBV1HeaderType header_view;
   private long meta_values_remaining;
 
   SMFBV1Serializer(
@@ -173,15 +171,14 @@ final class SMFBV1Serializer implements SMFSerializerType
       this.writer.putU32((long) this.version.major());
       this.writer.putU32((long) this.version.minor());
 
-      this.header_cursor =
+      final JPRACursor1DType<SMFBV1HeaderType> header_cursor =
         JPRACursor1DByteBufferedChecked.newCursor(
           this.header_buffer_wrap,
           SMFBV1HeaderByteBuffered::newValueWithOffset);
-      this.header_view =
-        this.header_cursor.getElementView();
+      final SMFBV1HeaderType header_view = header_cursor.getElementView();
 
       final SMFBV1SchemaIDWritableType header_schema_id =
-        this.header_view.getSchemaWritable();
+        header_view.getSchemaWritable();
 
       final SMFSchemaIdentifier schema_id = in_header.schemaIdentifier();
       header_schema_id.setVendorId(
@@ -193,19 +190,19 @@ final class SMFBV1Serializer implements SMFSerializerType
       header_schema_id.setSchemaVersionMinor(
         schema_id.schemaMinorVersion());
 
-      this.header_view.setVertexCount(
+      header_view.setVertexCount(
         in_header.vertexCount());
-      this.header_view.setTriangleCount(
+      header_view.setTriangleCount(
         in_header.triangleCount());
-      this.header_view.setTriangleIndexSizeBits(
+      header_view.setTriangleIndexSizeBits(
         (int) in_header.triangleIndexSizeBits());
-      this.header_view.setAttributeCount(
+      header_view.setAttributeCount(
         attribute_count);
-      this.header_view.setMetaCount(
+      header_view.setMetaCount(
         (int) in_header.metaCount());
 
       final SMFBV1CoordinateSystemsWritableType coords =
-        this.header_view.getCoordinateSystemWritable();
+        header_view.getCoordinateSystemWritable();
       SMFBCoordinateSystems.pack(in_header.coordinateSystem(), coords);
 
       this.writer.putBytes(this.header_buffer);

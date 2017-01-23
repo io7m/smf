@@ -31,7 +31,6 @@ final class SMFTV1Parser extends SMFTAbstractParser
     LOG = LoggerFactory.getLogger(SMFTV1Parser.class);
   }
 
-  private final SMFTAbstractParser parent;
   private final SMFFormatVersion version;
   private final SMFTV1HeaderParser header_parser;
 
@@ -41,8 +40,10 @@ final class SMFTV1Parser extends SMFTAbstractParser
     final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version)
   {
-    super(in_events, in_reader, in_parent.state);
-    this.parent = NullCheck.notNull(in_parent, "Parent");
+    super(
+      in_events,
+      in_reader,
+      NullCheck.notNull(in_parent, "Parent").state);
     this.version = NullCheck.notNull(in_version, "Version");
     this.header_parser =
       new SMFTV1HeaderParser(this, in_events, in_reader, in_version);
