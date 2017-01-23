@@ -41,6 +41,8 @@ import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
 import javaslang.control.Validation;
 import org.apache.commons.io.IOUtils;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,6 +61,7 @@ import static javaslang.control.Validation.valid;
  * interface.
  */
 
+@Component(scope = ServiceScope.BUNDLE)
 public final class SMFSchemaParserProvider implements
   SMFSchemaParserProviderType
 {

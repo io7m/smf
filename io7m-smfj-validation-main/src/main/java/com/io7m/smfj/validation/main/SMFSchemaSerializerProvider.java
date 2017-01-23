@@ -28,6 +28,8 @@ import com.io7m.smfj.validation.api.SMFSchemaVersion;
 import javaslang.Tuple2;
 import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -43,6 +45,7 @@ import java.util.OptionalInt;
  * interface.
  */
 
+@Component(scope = ServiceScope.BUNDLE)
 public final class SMFSchemaSerializerProvider implements
   SMFSchemaSerializerProviderType
 {

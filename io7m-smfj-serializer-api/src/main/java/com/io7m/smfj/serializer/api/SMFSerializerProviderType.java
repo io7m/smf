@@ -19,6 +19,7 @@ package com.io7m.smfj.serializer.api;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import javaslang.collection.SortedSet;
+import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.OutputStream;
 import java.nio.file.Path;
@@ -27,6 +28,7 @@ import java.nio.file.Path;
  * The type of serializer providers.
  */
 
+@ProviderType
 public interface SMFSerializerProviderType
 {
   /**

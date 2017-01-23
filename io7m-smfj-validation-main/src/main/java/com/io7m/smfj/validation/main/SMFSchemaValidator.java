@@ -32,6 +32,8 @@ import javaslang.collection.List;
 import javaslang.collection.SortedMap;
 import javaslang.collection.SortedSet;
 import javaslang.control.Validation;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ServiceScope;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -44,6 +46,7 @@ import static javaslang.control.Validation.valid;
  * The default implementation of the {@link SMFSchemaValidatorType} interface.
  */
 
+@Component(scope = ServiceScope.BUNDLE)
 public final class SMFSchemaValidator implements SMFSchemaValidatorType
 {
   private static final SMFSchemaIdentifier DEFAULT_IDENTIFIER;

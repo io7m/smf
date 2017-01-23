@@ -3,8 +3,15 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
-    <c:date>2017-01-15</c:date>
+    <c:date>2017-01-23</c:date>
     <c:version>0.7.0</c:version>
+
+    <c:item>
+      <c:date>2017-01-23</c:date>
+      <c:type-code-new/>
+      <c:ticket>33</c:ticket>
+      <c:summary>Add OSGi annotations.</c:summary>
+    </c:item>
 
     <c:item>
       <c:date>2017-01-15</c:date>
