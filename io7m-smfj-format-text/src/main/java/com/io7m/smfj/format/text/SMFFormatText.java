@@ -31,7 +31,6 @@ import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
 import javaslang.control.Validation;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ import static javaslang.control.Validation.valid;
  * The implementation of the text format.
  */
 
-@Component(scope = ServiceScope.BUNDLE)
+@Component
 public final class SMFFormatText implements SMFParserProviderType,
   SMFSerializerProviderType
 {

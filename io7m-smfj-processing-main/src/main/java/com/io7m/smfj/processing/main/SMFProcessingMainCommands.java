@@ -20,11 +20,13 @@ import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
 import javaslang.Tuple;
 import javaslang.collection.TreeMap;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * A module provider for the core commands.
  */
 
+@Component
 public final class SMFProcessingMainCommands extends
   SMFFilterCommandModuleProviderAbstract
 {

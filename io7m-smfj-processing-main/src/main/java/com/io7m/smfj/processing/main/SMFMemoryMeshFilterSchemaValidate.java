@@ -50,19 +50,17 @@ import java.util.ServiceLoader;
 public final class SMFMemoryMeshFilterSchemaValidate implements
   SMFMemoryMeshFilterType
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
-  }
-
   /**
    * The command name.
    */
 
   public static final String NAME = "schema-validate";
-
+  private static final Logger LOG;
   private static final String SYNTAX = "<file>";
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
+  }
 
   private final Path schema_file;
 
@@ -121,6 +119,32 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     return NAME + " " + SYNTAX;
   }
 
+  private static SMFSchemaValidatorType findValidator()
+  {
+    final ServiceLoader<SMFSchemaValidatorType> loader =
+      ServiceLoader.load(SMFSchemaValidatorType.class);
+    final Iterator<SMFSchemaValidatorType> providers =
+      loader.iterator();
+    if (providers.hasNext()) {
+      return providers.next();
+    }
+
+    throw new UnsupportedOperationException("No available validator");
+  }
+
+  private static SMFSchemaParserProviderType findParserProvider()
+  {
+    final ServiceLoader<SMFSchemaParserProviderType> loader =
+      ServiceLoader.load(SMFSchemaParserProviderType.class);
+    final Iterator<SMFSchemaParserProviderType> providers =
+      loader.iterator();
+    if (providers.hasNext()) {
+      return providers.next();
+    }
+
+    throw new UnsupportedOperationException("No available schema parser");
+  }
+
   @Override
   public String name()
   {
@@ -174,31 +198,5 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
       return Validation.invalid(List.of(
         SMFProcessingError.of(e.getMessage(), Optional.of(e))));
     }
-  }
-
-  private static SMFSchemaValidatorType findValidator()
-  {
-    final ServiceLoader<SMFSchemaValidatorType> loader =
-      ServiceLoader.load(SMFSchemaValidatorType.class);
-    final Iterator<SMFSchemaValidatorType> providers =
-      loader.iterator();
-    if (providers.hasNext()) {
-      return providers.next();
-    }
-
-    throw new UnsupportedOperationException("No available validator");
-  }
-
-  private static SMFSchemaParserProviderType findParserProvider()
-  {
-    final ServiceLoader<SMFSchemaParserProviderType> loader =
-      ServiceLoader.load(SMFSchemaParserProviderType.class);
-    final Iterator<SMFSchemaParserProviderType> providers =
-      loader.iterator();
-    if (providers.hasNext()) {
-      return providers.next();
-    }
-
-    throw new UnsupportedOperationException("No available schema parser");
   }
 }

@@ -42,19 +42,17 @@ import java.util.OptionalLong;
 public final class SMFMemoryMeshFilterMetadataRemove implements
   SMFMemoryMeshFilterType
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataRemove.class);
-  }
-
   /**
    * The command name.
    */
 
   public static final String NAME = "metadata-remove";
-
+  private static final Logger LOG;
   private static final String SYNTAX = "(<vendor-id> | '-') (<schema-id> | '-')";
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataRemove.class);
+  }
 
   private final OptionalLong vendor_id;
   private final OptionalLong schema_id;

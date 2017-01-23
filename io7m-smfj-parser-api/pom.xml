@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>io7m-smfj</artifactId>
-    <version>0.7.0</version>
+    <version>0.7.1</version>
   </parent>
   <artifactId>io7m-smfj-parser-api</artifactId>
 
@@ -52,16 +52,6 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.annotation</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.service.component.annotations</artifactId>
       <scope>provided</scope>
     </dependency>
 

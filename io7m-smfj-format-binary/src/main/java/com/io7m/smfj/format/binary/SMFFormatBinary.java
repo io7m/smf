@@ -31,7 +31,6 @@ import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * The implementation of the binary format.
  */
 
-@Component(scope = ServiceScope.BUNDLE)
+@Component
 public final class SMFFormatBinary implements SMFParserProviderType,
   SMFSerializerProviderType
 {

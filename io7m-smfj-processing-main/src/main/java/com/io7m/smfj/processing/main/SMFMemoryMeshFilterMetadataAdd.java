@@ -45,19 +45,17 @@ import java.util.Optional;
 public final class SMFMemoryMeshFilterMetadataAdd implements
   SMFMemoryMeshFilterType
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataAdd.class);
-  }
-
   /**
    * The command name.
    */
 
   public static final String NAME = "metadata-add";
-
+  private static final Logger LOG;
   private static final String SYNTAX = "<vendor-id> <schema-id> <file>";
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataAdd.class);
+  }
 
   private final long vendor_id;
   private final long schema_id;

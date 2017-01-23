@@ -68,9 +68,10 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
     final SMFTLineReaderType in_reader,
     final SMFFormatVersion in_version)
   {
-    super(in_events,
-          in_reader,
-          NullCheck.notNull(in_parent, "Parent").state);
+    super(
+      in_events,
+      in_reader,
+      NullCheck.notNull(in_parent, "Parent").state);
     this.attribute_lines = HashMap.empty();
     this.attributes_list = List.empty();
     this.ok_triangles = false;

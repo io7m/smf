@@ -62,7 +62,8 @@ public interface SMFHeaderType
    */
 
   @Value.Derived
-  default long triangleIndexSizeOctets() {
+  default long triangleIndexSizeOctets()
+  {
     return this.triangleIndexSizeBits() / 8L;
   }
 
@@ -71,7 +72,8 @@ public interface SMFHeaderType
    */
 
   @Value.Derived
-  default long triangleSizeOctets() {
+  default long triangleSizeOctets()
+  {
     return Math.multiplyExact(this.triangleIndexSizeOctets(), 3L);
   }
 

@@ -150,6 +150,32 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     return NAME + " " + SYNTAX;
   }
 
+  private static long optimize(
+    final SMFMemoryMesh m,
+    final OptionalInt optimize_opt,
+    final long max)
+  {
+    long triangle_size = m.header().triangleIndexSizeBits();
+    if (optimize_opt.isPresent()) {
+      if (max < (long) (StrictMath.pow(2.0, 64.0) - 1.0)) {
+        triangle_size = 64L;
+      }
+      if (max < (long) (StrictMath.pow(2.0, 32.0) - 1.0)) {
+        triangle_size = 32L;
+      }
+      if (max < (long) (StrictMath.pow(2.0, 16.0) - 1.0)) {
+        triangle_size = 16L;
+      }
+      if (max < (long) (StrictMath.pow(2.0, 8.0) - 1.0)) {
+        triangle_size = 8L;
+      }
+
+      final int smallest_allowed = optimize_opt.getAsInt();
+      triangle_size = Math.max(triangle_size, (long) smallest_allowed);
+    }
+    return triangle_size;
+  }
+
   @Override
   public String name()
   {
@@ -207,31 +233,5 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
         m.withHeader(m.header().withTriangleIndexSizeBits(triangle_size)));
     }
     return Validation.invalid(errors);
-  }
-
-  private static long optimize(
-    final SMFMemoryMesh m,
-    final OptionalInt optimize_opt,
-    final long max)
-  {
-    long triangle_size = m.header().triangleIndexSizeBits();
-    if (optimize_opt.isPresent()) {
-      if (max < (long) (StrictMath.pow(2.0, 64.0) - 1.0)) {
-        triangle_size = 64L;
-      }
-      if (max < (long) (StrictMath.pow(2.0, 32.0) - 1.0)) {
-        triangle_size = 32L;
-      }
-      if (max < (long) (StrictMath.pow(2.0, 16.0) - 1.0)) {
-        triangle_size = 16L;
-      }
-      if (max < (long) (StrictMath.pow(2.0, 8.0) - 1.0)) {
-        triangle_size = 8L;
-      }
-
-      final int smallest_allowed = optimize_opt.getAsInt();
-      triangle_size = Math.max(triangle_size, (long) smallest_allowed);
-    }
-    return triangle_size;
   }
 }
