@@ -8,6 +8,12 @@
 
     <c:item>
       <c:date>2017-01-23</c:date>
+      <c:type-code-fix/>
+      <c:summary>Use jcoords 0.1.3 to fix OSGi.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-01-23</c:date>
       <c:type-code-new/>
       <c:ticket>20</c:ticket>
       <c:ticket>34</c:ticket>
