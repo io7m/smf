@@ -965,7 +965,7 @@ final class SMFBV1ParserRandomAccess extends SMFBAbstractParserRandomAccess
     long offset = SMFBV1Offsets.offsetHeaderAttributesData();
     for (long index = 0L;
          Long.compareUnsigned(
-           index, (long) this.header_view.getAttributeCount()) < 0;
+           index, this.header_view.getAttributeCount()) < 0;
          index = Math.addExact(index, 1L)) {
 
       if (LOG.isDebugEnabled()) {
