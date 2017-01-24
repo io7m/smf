@@ -16,8 +16,11 @@
 
 package com.io7m.smfj.bytebuffer;
 
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import javaslang.collection.List;
 import javaslang.collection.SortedMap;
+import javaslang.control.Validation;
 
 import java.nio.ByteBuffer;
 
@@ -34,11 +37,12 @@ public interface SMFByteBufferPackerEventsType
    *
    * @param header The parsed header
    *
-   * @return A set of packing configurations
+   * @return A set of packing configurations, or a list of reasons why packing
+   * could not proceed
    */
 
-  SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
-    SMFHeader header);
+  Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>>
+  onHeader(SMFHeader header);
 
   /**
    * @return {@code true} iff triangles should be packed

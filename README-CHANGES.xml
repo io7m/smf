@@ -3,6 +3,18 @@
   <c:project>io7m-smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2017-01-24</c:date>
+    <c:version>0.8.0</c:version>
+
+    <c:item>
+      <c:date>2017-01-24</c:date>
+      <c:type-code-change/>
+      <c:ticket>37</c:ticket>
+      <c:summary>Change bytebuffer API to allow failures; introduce a codebase-wide general error type.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2017-01-23</c:date>
     <c:version>0.7.1</c:version>
 

@@ -52,6 +52,7 @@ import com.io7m.smfj.bytebuffer.SMFByteBufferPackingConfiguration;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsMeta;
@@ -62,6 +63,7 @@ import javaslang.Tuple;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
+import javaslang.control.Validation;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,6 +76,8 @@ import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+import static javaslang.control.Validation.valid;
 
 public final class SMFByteBufferPackedMeshesTest
 {
@@ -2274,7 +2278,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -2283,7 +2287,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override
@@ -2951,10 +2955,10 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
-            return TreeMap.empty();
+            return valid(TreeMap.empty());
           }
 
           @Override
@@ -3008,7 +3012,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -3017,7 +3021,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override
@@ -3069,10 +3073,10 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
-            return TreeMap.empty();
+            return valid(TreeMap.empty());
           }
 
           @Override
@@ -3128,7 +3132,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -3137,7 +3141,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override

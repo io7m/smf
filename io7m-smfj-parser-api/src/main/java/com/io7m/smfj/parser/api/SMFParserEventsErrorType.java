@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.smfj.core.SMFErrorType;
+
 /**
  * A receiver of parse error events.
  */
@@ -30,5 +32,5 @@ public interface SMFParserEventsErrorType
    */
 
   void onError(
-    SMFParseError e);
+    SMFErrorType e);
 }

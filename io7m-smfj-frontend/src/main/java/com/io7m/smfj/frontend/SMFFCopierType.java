@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.frontend;
 
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.List;
 
@@ -30,5 +30,5 @@ public interface SMFFCopierType extends SMFParserEventsType
    * @return The list of errors encountered, if any
    */
 
-  List<SMFParseError> errors();
+  List<SMFErrorType> errors();
 }

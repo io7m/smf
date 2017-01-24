@@ -17,25 +17,24 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.jaffirm.core.Invariants;
-import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
+import javaslang.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.LongFunction;
 
@@ -55,7 +54,7 @@ public final class SMFByteBufferPackedMeshes implements
   private final SMFByteBufferPackerEventsType events;
   private final SMFParserEventsMetaType meta;
 
-  private List<SMFParseError> errors;
+  private List<SMFErrorType> errors;
   private ByteBuffer tri_buffer;
   private SMFByteBufferPackedMesh mesh;
   private SMFByteBufferTrianglePacker tri_packer;
@@ -101,7 +100,8 @@ public final class SMFByteBufferPackedMeshes implements
    * @return A new mesh loader
    */
 
-  public static SMFByteBufferPackedMeshLoaderType newLoader(
+  public static SMFByteBufferPackedMeshLoaderType
+  newLoader(
     final SMFParserEventsMetaType in_meta,
     final SMFByteBufferPackerEventsType in_events)
   {
@@ -110,9 +110,8 @@ public final class SMFByteBufferPackedMeshes implements
 
   @Override
   public void onError(
-    final SMFParseError e)
+    final SMFErrorType e)
   {
-    final LexicalPosition<Path> lex = e.lexical();
     LOG.error("parse error: {}", e.fullMessage());
     this.errors = this.errors.append(e);
   }
@@ -171,7 +170,15 @@ public final class SMFByteBufferPackedMeshes implements
     final SMFHeader in_header)
   {
     this.header = in_header;
-    this.config = this.events.onHeader(this.header);
+
+    final Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> result =
+      this.events.onHeader(this.header);
+    if (result.isInvalid()) {
+      this.errors = this.errors.appendAll(result.getError());
+      return;
+    }
+
+    this.config = result.get();
 
     final boolean want_triangles = this.events.onShouldPackTriangles();
     if (want_triangles) {
@@ -201,7 +208,7 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   @Override
-  public List<SMFParseError> errors()
+  public List<SMFErrorType> errors()
   {
     return this.errors;
   }

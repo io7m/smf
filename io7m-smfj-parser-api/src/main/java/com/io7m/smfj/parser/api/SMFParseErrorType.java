@@ -17,6 +17,7 @@
 package com.io7m.smfj.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
@@ -29,7 +30,7 @@ import java.util.Optional;
 
 @Value.Immutable
 @SMFImmutableStyleType
-public interface SMFParseErrorType
+public interface SMFParseErrorType extends SMFErrorType
 {
   /**
    * @return Lexical information
@@ -38,24 +39,15 @@ public interface SMFParseErrorType
   @Value.Parameter
   LexicalPosition<Path> lexical();
 
-  /**
-   * @return The error message
-   */
-
+  @Override
   @Value.Parameter
   String message();
 
-  /**
-   * @return The exception raised, if any
-   */
-
+  @Override
   @Value.Parameter
   Optional<Exception> exception();
 
-  /**
-   * @return A humanly-readable formatted error message
-   */
-
+  @Override
   @Value.Lazy
   default String fullMessage()
   {
