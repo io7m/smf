@@ -21,6 +21,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.validation.api.SMFSchema;
@@ -121,8 +122,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     return SMFSchemaValidationError.of(sb.toString(), Optional.empty());
   }
 
-  private static List<SMFSchemaValidationError> checkComponentCount(
-    final List<SMFSchemaValidationError> errors,
+  private static List<SMFErrorType> checkComponentCount(
+    final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
     final SMFAttribute attr)
@@ -140,8 +141,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     return errors;
   }
 
-  private static List<SMFSchemaValidationError> checkComponentSize(
-    final List<SMFSchemaValidationError> errors,
+  private static List<SMFErrorType> checkComponentSize(
+    final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
     final SMFAttribute attr)
@@ -159,8 +160,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     return errors;
   }
 
-  private static List<SMFSchemaValidationError> checkComponentType(
-    final List<SMFSchemaValidationError> errors,
+  private static List<SMFErrorType> checkComponentType(
+    final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
     final SMFAttribute attr)
@@ -240,14 +241,14 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
   }
 
   @Override
-  public Validation<List<SMFSchemaValidationError>, SMFHeader> validate(
+  public Validation<List<SMFErrorType>, SMFHeader> validate(
     final SMFHeader header,
     final SMFSchema schema)
   {
     NullCheck.notNull(header, "Header");
     NullCheck.notNull(schema, "Schema");
 
-    List<SMFSchemaValidationError> errors = List.empty();
+    List<SMFErrorType> errors = List.empty();
 
     final SMFSchemaIdentifier file_id = header.schemaIdentifier();
     if (!Objects.equals(file_id, DEFAULT_IDENTIFIER)) {

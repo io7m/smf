@@ -17,6 +17,7 @@
 package com.io7m.smfj.processing.main;
 
 import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
@@ -27,7 +28,6 @@ import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
-import com.io7m.smfj.validation.api.SMFSchemaValidationError;
 import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
 import javaslang.collection.List;
 import javaslang.control.Validation;
@@ -172,13 +172,12 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     final SMFSchemaValidatorType validator = findValidator();
 
     try (final InputStream stream = Files.newInputStream(file)) {
-      try (final SMFSchemaParserType parser = parser_provider.schemaParserCreate(
-        file,
-        stream)) {
-        final Validation<List<SMFParseError>, SMFSchema> result_schema = parser.parseSchema();
+      try (final SMFSchemaParserType parser =
+             parser_provider.schemaParserCreate(file, stream)) {
+        final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
         if (result_schema.isValid()) {
           final SMFSchema schema = result_schema.get();
-          final Validation<List<SMFSchemaValidationError>, SMFHeader> result_valid =
+          final Validation<List<SMFErrorType>, SMFHeader> result_valid =
             validator.validate(m.header(), schema);
 
           if (result_valid.isValid()) {
