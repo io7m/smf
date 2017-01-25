@@ -29,6 +29,7 @@ import com.io7m.jtensors.VectorM3D;
 import com.io7m.jtensors.VectorM3L;
 import com.io7m.jtensors.VectorM4D;
 import com.io7m.jtensors.VectorM4L;
+import com.io7m.jtensors.VectorWritable3LType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.bytebuffer.SMFByteBufferCursors;
 import com.io7m.smfj.bytebuffer.SMFByteBufferFloat1Type;
@@ -2335,6 +2336,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.get(0));
     Assert.assertEquals(1L, (long) b.get(1));
     Assert.assertEquals(2L, (long) b.get(2));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2347,6 +2355,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.getChar(0));
     Assert.assertEquals(1L, (long) b.getChar(2));
     Assert.assertEquals(2L, (long) b.getChar(4));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2359,6 +2374,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.getInt(0));
     Assert.assertEquals(1L, (long) b.getInt(4));
     Assert.assertEquals(2L, (long) b.getInt(8));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2371,6 +2393,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, b.getLong(0));
     Assert.assertEquals(1L, b.getLong(8));
     Assert.assertEquals(2L, b.getLong(16));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
