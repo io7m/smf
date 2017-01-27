@@ -36,46 +36,11 @@ import java.util.Objects;
 public interface SMFHeaderType
 {
   /**
-   * @return The number of triangles in the file
+   * @return The triangle information for the file
    */
 
   @Value.Parameter
-  @Value.Default
-  default long triangleCount()
-  {
-    return 0L;
-  }
-
-  /**
-   * @return The size in bits of each triangle index
-   */
-
-  @Value.Parameter
-  @Value.Default
-  default long triangleIndexSizeBits()
-  {
-    return 32L;
-  }
-
-  /**
-   * @return The size in octets of each triangle index
-   */
-
-  @Value.Derived
-  default long triangleIndexSizeOctets()
-  {
-    return this.triangleIndexSizeBits() / 8L;
-  }
-
-  /**
-   * @return The size in octets of each triangle
-   */
-
-  @Value.Derived
-  default long triangleSizeOctets()
-  {
-    return Math.multiplyExact(this.triangleIndexSizeOctets(), 3L);
-  }
+  SMFTriangles triangles();
 
   /**
    * @return The number of vertices in the file
@@ -192,8 +157,5 @@ public interface SMFHeaderType
         throw new IllegalArgumentException(sb.toString());
       }
     }
-
-    SMFSupportedSizes.checkIntegerUnsignedSupported(
-      Math.toIntExact(this.triangleIndexSizeBits()));
   }
 }

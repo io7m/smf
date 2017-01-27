@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -154,10 +155,11 @@ public final class SMFByteBufferPackedMeshes implements
       }
 
       if (this.tri_buffer != null) {
+        final SMFTriangles triangles = this.header.triangles();
         mb.setTriangles(SMFByteBufferPackedTriangles.of(
           this.tri_buffer,
-          this.header.triangleCount(),
-          Math.toIntExact(this.header.triangleIndexSizeBits())));
+          triangles.triangleCount(),
+          Math.toIntExact(triangles.triangleIndexSizeBits())));
       }
 
       mb.setHeader(this.header);
@@ -182,14 +184,17 @@ public final class SMFByteBufferPackedMeshes implements
 
     final boolean want_triangles = this.events.onShouldPackTriangles();
     if (want_triangles) {
-      final long size_tri = Math.multiplyExact(
-        this.header.triangleSizeOctets(), this.header.triangleCount());
+      final SMFTriangles triangles = this.header.triangles();
+      final long size_tri =
+        Math.multiplyExact(
+          triangles.triangleSizeOctets(),
+          triangles.triangleCount());
       LOG.debug("allocating triangle buffer");
       this.tri_buffer = this.events.onAllocateTriangleBuffer(size_tri);
       this.tri_packer = new SMFByteBufferTrianglePacker(
         this.tri_buffer,
-        Math.toIntExact(this.header.triangleIndexSizeBits()),
-        this.header.triangleCount());
+        Math.toIntExact(triangles.triangleIndexSizeBits()),
+        triangles.triangleCount());
     } else {
       LOG.debug("no triangle buffer required");
     }

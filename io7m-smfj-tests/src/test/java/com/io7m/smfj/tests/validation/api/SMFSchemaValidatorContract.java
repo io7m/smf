@@ -26,6 +26,7 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaValidationError;
@@ -62,6 +63,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFHeader header =
       SMFHeader.builder()
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -110,6 +112,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -167,6 +170,7 @@ public abstract class SMFSchemaValidatorContract
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
         .setCoordinateSystem(coords_rec)
+        .setTriangles(SMFTriangles.builder().build())
         .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
         .build();
 
@@ -209,6 +213,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(coords_exp)
         .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
         .build();
@@ -239,6 +244,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -282,6 +288,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -330,6 +337,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -378,6 +386,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -421,6 +430,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -469,6 +479,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -512,6 +523,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -555,6 +567,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -603,6 +616,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -651,6 +665,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -694,6 +709,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -742,6 +758,7 @@ public abstract class SMFSchemaValidatorContract
     final SMFHeader header =
       SMFHeader.builder()
         .addAttributesInOrder(attr_0)
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -790,6 +807,7 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
+        .setTriangles(SMFTriangles.builder().build())
         .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
         .build();
 
@@ -819,6 +837,7 @@ public abstract class SMFSchemaValidatorContract
   {
     final SMFHeader header =
       SMFHeader.builder()
+        .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,

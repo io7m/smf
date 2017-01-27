@@ -70,7 +70,7 @@ public interface SMFMemoryMeshType
   {
     {
       final long tri_lsize = (long) this.triangles().size();
-      final long tri_hcount = this.header().triangleCount();
+      final long tri_hcount = this.header().triangles().triangleCount();
       Preconditions.checkPreconditionL(
         tri_lsize,
         tri_lsize == tri_hcount,

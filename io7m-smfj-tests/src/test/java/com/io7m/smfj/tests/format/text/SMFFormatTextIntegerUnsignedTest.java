@@ -28,6 +28,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -62,8 +63,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.of(attr));
     header_b.setVertexCount(3L);
-    header_b.setTriangleIndexSizeBits(32L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 32L));
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
@@ -1045,8 +1045,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(2L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1087,8 +1086,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1128,8 +1126,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1169,8 +1166,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1210,8 +1206,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1251,8 +1246,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1292,8 +1286,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1333,8 +1326,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1374,8 +1366,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1416,8 +1407,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1457,8 +1447,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1498,8 +1487,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1539,8 +1527,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -1595,8 +1582,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(0L);
+    header_b.setTriangles(SMFTriangles.of(0L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));

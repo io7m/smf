@@ -32,6 +32,7 @@ import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeType;
 import com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType;
@@ -193,10 +194,11 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       header_view.setVertexCount(
         in_header.vertexCount());
+      final SMFTriangles triangles = in_header.triangles();
       header_view.setTriangleCount(
-        in_header.triangleCount());
+        triangles.triangleCount());
       header_view.setTriangleIndexSizeBits(
-        (int) in_header.triangleIndexSizeBits());
+        (int) triangles.triangleIndexSizeBits());
       header_view.setAttributeCount(
         attribute_count);
       header_view.setMetaCount(
@@ -230,7 +232,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
       this.attribute_queue = Queue.ofAll(attributes);
       this.attribute_values_remaining = 0L;
-      this.triangle_values_remaining = in_header.triangleCount();
+      this.triangle_values_remaining = triangles.triangleCount();
       this.meta_values_remaining = in_header.metaCount();
 
       this.header = in_header;
@@ -1027,14 +1029,15 @@ final class SMFBV1Serializer implements SMFSerializerType
     final long v2)
     throws IOException
   {
-    if (this.triangle_values_remaining == this.header.triangleCount()) {
+    final SMFTriangles triangles = this.header.triangles();
+    if (this.triangle_values_remaining == triangles.triangleCount()) {
       Invariants.checkInvariantL(
         this.writer.position(),
         this.writer.position() == this.offsets.trianglesDataOffset(),
         off -> "Writer must be at correct offset for first triangle");
     }
 
-    switch ((int) this.header.triangleIndexSizeBits()) {
+    switch ((int) triangles.triangleIndexSizeBits()) {
       case 8: {
         this.writer.putU8(v0);
         this.writer.putU8(v1);

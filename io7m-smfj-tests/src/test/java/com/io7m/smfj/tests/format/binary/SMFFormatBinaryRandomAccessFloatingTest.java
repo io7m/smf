@@ -28,6 +28,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -61,8 +62,7 @@ public final class SMFFormatBinaryRandomAccessFloatingTest extends SMFBinaryTest
     final SMFHeader.Builder hb = SMFHeader.builder();
     hb.setAttributesInOrder(List.of(attr));
     hb.setVertexCount(3L);
-    hb.setTriangleIndexSizeBits(32L);
-    hb.setTriangleCount(0L);
+    hb.setTriangles(SMFTriangles.of(0L, 32L));
     hb.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
     hb.setCoordinateSystem(SMFCoordinateSystem.of(

@@ -138,7 +138,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
 
   private void failMissedTriangles()
   {
-    if (this.parsed_triangles != this.header.triangleCount()) {
+    if (this.parsed_triangles != this.header.triangles().triangleCount()) {
       this.fail("Too few triangles specified", Optional.empty());
     }
   }
@@ -529,7 +529,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
       super.events.onDataTrianglesStart();
 
       this.parsed_triangles = 0L;
-      while (this.parsed_triangles != this.header.triangleCount()) {
+      while (this.parsed_triangles != this.header.triangles().triangleCount()) {
         final Optional<List<String>> line_opt = super.reader.line();
         if (!line_opt.isPresent()) {
           this.onEOF();
@@ -679,7 +679,7 @@ final class SMFTV1BodyParser extends SMFTAbstractParser
   private boolean isBodyDone()
   {
     final boolean ok_triangles =
-      this.header.triangleCount() == this.parsed_triangles;
+      this.header.triangles().triangleCount() == this.parsed_triangles;
 
     final boolean attribute_size_ok =
       this.attributes_ok.size() == this.header.attributesByName().size();

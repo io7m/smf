@@ -29,6 +29,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
@@ -382,8 +383,9 @@ final class SMFTV1HeaderParser extends SMFTAbstractParser
           if (super.state.get() == ParserState.STATE_HEADER_PARSING) {
             final SMFHeader.Builder header_b = SMFHeader.builder();
             header_b.setAttributesInOrder(this.attributes_list);
-            header_b.setTriangleIndexSizeBits(this.triangle_size);
-            header_b.setTriangleCount(this.triangle_count);
+            header_b.setTriangles(SMFTriangles.of(
+              this.triangle_count,
+              this.triangle_size));
             header_b.setVertexCount(this.vertex_count);
             header_b.setSchemaIdentifier(this.schema_id);
             header_b.setCoordinateSystem(this.coords);

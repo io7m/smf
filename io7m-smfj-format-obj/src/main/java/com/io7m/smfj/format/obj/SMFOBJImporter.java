@@ -35,6 +35,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import org.slf4j.Logger;
@@ -257,8 +258,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
         CAxis.AXIS_NEGATIVE_Z),
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
 
-    header_b.setTriangleIndexSizeBits((long) triangle_bits);
-    header_b.setTriangleCount((long) this.triangles.size());
+    header_b.setTriangles(SMFTriangles.of(
+      (long) this.triangles.size(),
+      (long) triangle_bits));
     final SMFHeader header = header_b.build();
     this.events.onHeaderParsed(header);
   }

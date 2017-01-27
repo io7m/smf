@@ -25,6 +25,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -59,8 +60,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangles(SMFTriangles.of(2L, 8L));
     header_b.setVertexCount(0L);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -107,8 +107,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangles(SMFTriangles.of(2L, 16L));
     header_b.setVertexCount(0L);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -155,8 +154,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setAttributesInOrder(List.empty());
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangles(SMFTriangles.of(2L, 32L));
     header_b.setVertexCount(0L);
     header_b.setSchemaIdentifier(
       SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -211,8 +209,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(8L);
-    header_b.setTriangleCount(1L);
+    header_b.setTriangles(SMFTriangles.of(1L, 8L));
     header_b.setAttributesInOrder(attributes);
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
@@ -244,8 +241,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(16L);
-    header_b.setTriangleCount(1L);
+    header_b.setTriangles(SMFTriangles.of(1L, 16L));
     header_b.setAttributesInOrder(attributes);
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
@@ -277,8 +273,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(32L);
-    header_b.setTriangleCount(1L);
+    header_b.setTriangles(SMFTriangles.of(1L, 32L));
     header_b.setAttributesInOrder(attributes);
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
@@ -310,8 +305,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(64L);
-    header_b.setTriangleCount(1L);
+    header_b.setTriangles(SMFTriangles.of(1L, 64L));
     header_b.setAttributesInOrder(attributes);
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(
@@ -343,8 +337,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(0L);
-    header_b.setTriangleIndexSizeBits(8L);
-    header_b.setTriangleCount(1L);
+    header_b.setTriangles(SMFTriangles.of(1L, 8L));
     header_b.setAttributesInOrder(attributes);
     header_b.setCoordinateSystem(SMFCoordinateSystem.of(
       CAxisSystem.of(

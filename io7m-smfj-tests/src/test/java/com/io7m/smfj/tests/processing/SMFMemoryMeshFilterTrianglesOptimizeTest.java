@@ -217,8 +217,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(8L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(8L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      8L, mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -251,8 +253,11 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(8L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(16L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 16);
   }
@@ -285,8 +290,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(8L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(32L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 32);
   }
@@ -319,8 +326,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(8L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(64L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 64);
   }
@@ -353,8 +362,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(16L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(8L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -387,8 +398,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(16L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(16L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 16);
   }
@@ -421,8 +436,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(16L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(32L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 32);
   }
@@ -455,8 +474,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(16L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(64L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 64);
   }
@@ -489,8 +512,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(32L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(8L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -523,8 +548,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(32L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(16L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 16);
   }
@@ -557,8 +586,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(32L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(32L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 32);
   }
@@ -591,8 +624,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(32L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(64L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 64);
   }
@@ -625,8 +662,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(64L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(8L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -659,8 +698,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(64L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(16L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      16L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 16);
   }
@@ -693,8 +736,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(64L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(32L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      32L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 32);
   }
@@ -727,8 +774,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assert.assertEquals(64L, mesh0.header().triangleIndexSizeBits());
-    Assert.assertEquals(64L, mesh1.header().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh0.header().triangles().triangleIndexSizeBits());
+    Assert.assertEquals(
+      64L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 64);
   }
