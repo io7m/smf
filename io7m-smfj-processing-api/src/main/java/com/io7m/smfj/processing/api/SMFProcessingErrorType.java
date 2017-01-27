@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
@@ -27,19 +28,13 @@ import java.util.Optional;
 
 @Value.Immutable
 @SMFImmutableStyleType
-public interface SMFProcessingErrorType
+public interface SMFProcessingErrorType extends SMFErrorType
 {
-  /**
-   * @return The error message
-   */
-
+  @Override
   @Value.Parameter
   String message();
 
-  /**
-   * @return The exception raised, if any
-   */
-
+  @Override
   @Value.Parameter
   Optional<Exception> exception();
 }

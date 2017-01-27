@@ -17,25 +17,25 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.jaffirm.core.Invariants;
-import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
+import javaslang.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.function.LongFunction;
 
@@ -55,7 +55,7 @@ public final class SMFByteBufferPackedMeshes implements
   private final SMFByteBufferPackerEventsType events;
   private final SMFParserEventsMetaType meta;
 
-  private List<SMFParseError> errors;
+  private List<SMFErrorType> errors;
   private ByteBuffer tri_buffer;
   private SMFByteBufferPackedMesh mesh;
   private SMFByteBufferTrianglePacker tri_packer;
@@ -101,7 +101,8 @@ public final class SMFByteBufferPackedMeshes implements
    * @return A new mesh loader
    */
 
-  public static SMFByteBufferPackedMeshLoaderType newLoader(
+  public static SMFByteBufferPackedMeshLoaderType
+  newLoader(
     final SMFParserEventsMetaType in_meta,
     final SMFByteBufferPackerEventsType in_events)
   {
@@ -110,9 +111,8 @@ public final class SMFByteBufferPackedMeshes implements
 
   @Override
   public void onError(
-    final SMFParseError e)
+    final SMFErrorType e)
   {
-    final LexicalPosition<Path> lex = e.lexical();
     LOG.error("parse error: {}", e.fullMessage());
     this.errors = this.errors.append(e);
   }
@@ -155,10 +155,11 @@ public final class SMFByteBufferPackedMeshes implements
       }
 
       if (this.tri_buffer != null) {
+        final SMFTriangles triangles = this.header.triangles();
         mb.setTriangles(SMFByteBufferPackedTriangles.of(
           this.tri_buffer,
-          this.header.triangleCount(),
-          Math.toIntExact(this.header.triangleIndexSizeBits())));
+          triangles.triangleCount(),
+          Math.toIntExact(triangles.triangleIndexSizeBits())));
       }
 
       mb.setHeader(this.header);
@@ -171,18 +172,37 @@ public final class SMFByteBufferPackedMeshes implements
     final SMFHeader in_header)
   {
     this.header = in_header;
-    this.config = this.events.onHeader(this.header);
+
+    final Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> result =
+      this.events.onHeader(this.header);
+    if (result.isInvalid()) {
+      this.errors = this.errors.appendAll(result.getError());
+      return;
+    }
+
+    this.config = result.get();
 
     final boolean want_triangles = this.events.onShouldPackTriangles();
     if (want_triangles) {
-      final long size_tri = Math.multiplyExact(
-        this.header.triangleSizeOctets(), this.header.triangleCount());
+      final SMFTriangles triangles = this.header.triangles();
+      final long size_tri =
+        Math.multiplyExact(
+          triangles.triangleSizeOctets(),
+          triangles.triangleCount());
+
       LOG.debug("allocating triangle buffer");
-      this.tri_buffer = this.events.onAllocateTriangleBuffer(size_tri);
+      this.tri_buffer =
+        this.events.onAllocateTriangleBuffer(triangles, size_tri);
+
+      Invariants.checkInvariantL(
+        (long) this.tri_buffer.capacity(),
+        (long) this.tri_buffer.capacity() == size_tri,
+        x -> "Triangle buffer size must be " + size_tri);
+
       this.tri_packer = new SMFByteBufferTrianglePacker(
         this.tri_buffer,
-        Math.toIntExact(this.header.triangleIndexSizeBits()),
-        this.header.triangleCount());
+        Math.toIntExact(triangles.triangleIndexSizeBits()),
+        triangles.triangleCount());
     } else {
       LOG.debug("no triangle buffer required");
     }
@@ -196,12 +216,18 @@ public final class SMFByteBufferPackedMeshes implements
       LOG.debug("allocating attribute buffer for {}", id);
       final ByteBuffer buffer =
         this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
+
+      Invariants.checkInvariantL(
+        (long) buffer.capacity(),
+        (long) buffer.capacity() == size_attr,
+        x -> "Attribute buffer size must be " + size_attr);
+
       return Tuple.of(id, buffer);
     });
   }
 
   @Override
-  public List<SMFParseError> errors()
+  public List<SMFErrorType> errors()
   {
     return this.errors;
   }

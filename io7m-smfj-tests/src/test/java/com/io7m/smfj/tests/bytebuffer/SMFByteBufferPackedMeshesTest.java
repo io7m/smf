@@ -52,7 +52,9 @@ import com.io7m.smfj.bytebuffer.SMFByteBufferPackingConfiguration;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsMeta;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -62,6 +64,7 @@ import javaslang.Tuple;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
+import javaslang.control.Validation;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -74,6 +77,8 @@ import java.nio.ByteOrder;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+
+import static javaslang.control.Validation.valid;
 
 public final class SMFByteBufferPackedMeshesTest
 {
@@ -2274,7 +2279,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -2283,7 +2288,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override
@@ -2294,6 +2299,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -2331,6 +2337,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.get(0));
     Assert.assertEquals(1L, (long) b.get(1));
     Assert.assertEquals(2L, (long) b.get(2));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2343,6 +2356,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.getChar(0));
     Assert.assertEquals(1L, (long) b.getChar(2));
     Assert.assertEquals(2L, (long) b.getChar(4));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2355,6 +2375,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, (long) b.getInt(0));
     Assert.assertEquals(1L, (long) b.getInt(4));
     Assert.assertEquals(2L, (long) b.getInt(8));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2367,6 +2394,13 @@ public final class SMFByteBufferPackedMeshesTest
     Assert.assertEquals(0L, b.getLong(0));
     Assert.assertEquals(1L, b.getLong(8));
     Assert.assertEquals(2L, b.getLong(16));
+
+    final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
+    final VectorM3L out = new VectorM3L();
+    c.getElementView().get3UL(out);
+    Assert.assertEquals(0L, out.getXL());
+    Assert.assertEquals(1L, out.getYL());
+    Assert.assertEquals(2L, out.getZL());
   }
 
   @Test
@@ -2951,10 +2985,10 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
-            return TreeMap.empty();
+            return valid(TreeMap.empty());
           }
 
           @Override
@@ -2965,6 +2999,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3008,7 +3043,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -3017,7 +3052,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override
@@ -3028,6 +3063,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3069,10 +3105,10 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
-            return TreeMap.empty();
+            return valid(TreeMap.empty());
           }
 
           @Override
@@ -3083,6 +3119,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3128,7 +3165,7 @@ public final class SMFByteBufferPackedMeshesTest
         new SMFByteBufferPackerEventsType()
         {
           @Override
-          public SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
+          public Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> onHeader(
             final SMFHeader header)
           {
             final List<SMFAttribute> ordered =
@@ -3137,7 +3174,7 @@ public final class SMFByteBufferPackedMeshesTest
               ordered.filter(a -> Objects.equals(a.name(), attr_name));
             final SMFByteBufferPackingConfiguration config =
               SMFByteBufferPackingConfiguration.of(filtered);
-            return TreeMap.of(Tuple.of(Integer.valueOf(0), config));
+            return valid(TreeMap.of(Tuple.of(Integer.valueOf(0), config)));
           }
 
           @Override
@@ -3148,6 +3185,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer

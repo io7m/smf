@@ -56,6 +56,16 @@ public interface SMFByteBufferPackedTrianglesType
   int triangleIndexSizeBits();
 
   /**
+   * @return The size in octets of a single triangle index
+   */
+
+  @Value.Lazy
+  default int triangleIndexSizeOctets()
+  {
+    return this.triangleIndexSizeBits() / 8;
+  }
+
+  /**
    * @return The size in bits of a single triangle
    */
 
@@ -72,17 +82,7 @@ public interface SMFByteBufferPackedTrianglesType
   @Value.Lazy
   default int triangleSizeOctets()
   {
-    return this.triangleSizeBits() / 8;
-  }
-
-  /**
-   * @return The size in octets of a single triangle index
-   */
-
-  @Value.Lazy
-  default int triangleIndexSizeOctets()
-  {
-    return this.triangleIndexSizeBits() / 8;
+    return Math.multiplyExact(this.triangleIndexSizeOctets(), 3);
   }
 
   /**
@@ -101,7 +101,7 @@ public interface SMFByteBufferPackedTrianglesType
       this.byteBuffer(),
       this.triangleIndexSizeBits(),
       0,
-      Math.multiplyExact(this.triangleSizeOctets(), 3));
+      this.triangleSizeOctets());
   }
 
   /**

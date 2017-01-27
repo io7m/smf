@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.List;
 
@@ -30,7 +30,7 @@ public interface SMFByteBufferPackedMeshLoaderType extends SMFParserEventsType
    * @return The list of errors encountered during parsing, if any
    */
 
-  List<SMFParseError> errors();
+  List<SMFErrorType> errors();
 
   /**
    * @return The packed mesh

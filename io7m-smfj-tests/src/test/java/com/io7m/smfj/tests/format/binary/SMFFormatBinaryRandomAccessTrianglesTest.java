@@ -19,6 +19,7 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -53,8 +54,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
   {
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangles(SMFTriangles.of(2L, 8L));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -95,8 +95,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
   {
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangles(SMFTriangles.of(2L, 16L));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -137,8 +136,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
   {
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(2L);
-    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangles(SMFTriangles.of(2L, 32L));
     final SMFHeader header = header_b.build();
 
     new StrictExpectations()
@@ -186,8 +184,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
 
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(1L);
-    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangles(SMFTriangles.of(1L, 8L));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -209,8 +206,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
 
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(1L);
-    header_b.setTriangleIndexSizeBits(16L);
+    header_b.setTriangles(SMFTriangles.of(1L, 16L));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -232,8 +228,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
 
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(1L);
-    header_b.setTriangleIndexSizeBits(32L);
+    header_b.setTriangles(SMFTriangles.of(1L, 32L));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -255,8 +250,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
 
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(1L);
-    header_b.setTriangleIndexSizeBits(64L);
+    header_b.setTriangles(SMFTriangles.of(1L, 64L));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);
@@ -278,8 +272,7 @@ public final class SMFFormatBinaryRandomAccessTrianglesTest extends
 
     final SerializedHeader header_s = new SerializedHeader();
     final SMFHeader.Builder header_b = header_s.headerBuilder();
-    header_b.setTriangleCount(1L);
-    header_b.setTriangleIndexSizeBits(8L);
+    header_b.setTriangles(SMFTriangles.of(1L, 8L));
     final SMFHeader header = header_b.build();
 
     serializer.serializeHeader(header);

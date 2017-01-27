@@ -16,8 +16,12 @@
 
 package com.io7m.smfj.bytebuffer;
 
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
+import javaslang.collection.List;
 import javaslang.collection.SortedMap;
+import javaslang.control.Validation;
 
 import java.nio.ByteBuffer;
 
@@ -34,11 +38,12 @@ public interface SMFByteBufferPackerEventsType
    *
    * @param header The parsed header
    *
-   * @return A set of packing configurations
+   * @return A set of packing configurations, or a list of reasons why packing
+   * could not proceed
    */
 
-  SortedMap<Integer, SMFByteBufferPackingConfiguration> onHeader(
-    SMFHeader header);
+  Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>>
+  onHeader(SMFHeader header);
 
   /**
    * @return {@code true} iff triangles should be packed
@@ -50,12 +55,14 @@ public interface SMFByteBufferPackerEventsType
    * A function that will allocate a {@link ByteBuffer} to hold triangle
    * data.
    *
-   * @param size The required size in octets of the allocated buffer
+   * @param triangles Information about the triangles
+   * @param size      The required size in octets of the allocated buffer
    *
    * @return A buffer of {@code size} octets
    */
 
   ByteBuffer onAllocateTriangleBuffer(
+    SMFTriangles triangles,
     long size);
 
   /**

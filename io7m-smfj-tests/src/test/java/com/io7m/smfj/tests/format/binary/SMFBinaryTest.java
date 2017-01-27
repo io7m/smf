@@ -25,6 +25,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFBCoordinateSystems;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriter;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
@@ -163,8 +164,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
-      this.header_builder.setTriangleIndexSizeBits(32L);
-      this.header_builder.setTriangleCount(0L);
+      this.header_builder.setTriangles(SMFTriangles.of(0L, 32L));
       this.header_builder.setAttributesInOrder(List.empty());
       this.header_builder.setSchemaIdentifier(
         SMFSchemaIdentifier.of(0x696F376D, 0xA0B0C0D0, 1, 2));
@@ -207,8 +207,10 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
         schema_id.schemaMinorVersion());
 
       this.view.setVertexCount(header.vertexCount());
-      this.view.setTriangleCount(header.triangleCount());
-      this.view.setTriangleIndexSizeBits((int) header.triangleIndexSizeBits());
+      this.view.setTriangleCount(
+        header.triangles().triangleCount());
+      this.view.setTriangleIndexSizeBits(
+        (int) header.triangles().triangleIndexSizeBits());
       this.view.setAttributeCount(header.attributesInOrder().size());
       this.view.setMetaCount(0);
 

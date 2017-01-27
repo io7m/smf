@@ -26,7 +26,8 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
- * Convenience functions to locate serializer providers via {@link ServiceLoader}.
+ * Convenience functions to locate serializer providers via {@link
+ * ServiceLoader}.
  */
 
 public final class SMFSerializerProviders
@@ -87,7 +88,9 @@ public final class SMFSerializerProviders
       while (providers.hasNext()) {
         final SMFSerializerProviderType current_provider =
           providers.next();
-        if (Objects.equals(current_provider.serializerFormat().name(), format)) {
+        if (Objects.equals(
+          current_provider.serializerFormat().name(),
+          format)) {
           LOG.debug("using provider: {}", current_provider);
           return Optional.of(current_provider);
         }

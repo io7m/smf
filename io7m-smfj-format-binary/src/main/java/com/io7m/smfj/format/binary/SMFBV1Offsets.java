@@ -22,6 +22,7 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered;
 import javaslang.collection.HashMap;
@@ -221,10 +222,11 @@ public final class SMFBV1Offsets
         Long.toUnsignedString(triangles_data_offset));
     }
 
+    final SMFTriangles triangles = header.triangles();
     final long triangle_size_one =
-      header.triangleSizeOctets();
+      triangles.triangleSizeOctets();
     final long triangle_size_all =
-      Math.multiplyExact(triangle_size_one, header.triangleCount());
+      Math.multiplyExact(triangle_size_one, triangles.triangleCount());
 
     final long meta_data_offset =
       Math.addExact(triangles_data_offset, triangle_size_all);

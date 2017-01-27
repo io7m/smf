@@ -69,7 +69,9 @@ public final class SMFParserProviders
         while (providers.hasNext()) {
           final SMFParserProviderType current_provider =
             providers.next();
-          if (Objects.equals(current_provider.parserFormat().suffix(), suffix)) {
+          if (Objects.equals(
+            current_provider.parserFormat().suffix(),
+            suffix)) {
             LOG.debug("using provider: {}", current_provider);
             return Optional.of(current_provider);
           }

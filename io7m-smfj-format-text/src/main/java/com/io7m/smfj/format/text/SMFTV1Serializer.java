@@ -31,6 +31,7 @@ import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 import javaslang.collection.Queue;
@@ -192,7 +193,8 @@ final class SMFTV1Serializer implements SMFSerializerType
       final List<SMFAttribute> attributes = in_header.attributesInOrder();
       this.header = in_header;
       this.attribute_queue = Queue.ofAll(attributes);
-      this.triangle_values_remaining = in_header.triangleCount();
+      final SMFTriangles triangles = in_header.triangles();
+      this.triangle_values_remaining = triangles.triangleCount();
       this.meta_values_remaining = in_header.metaCount();
 
       this.writer.append(
@@ -225,8 +227,8 @@ final class SMFTV1Serializer implements SMFSerializerType
       this.writer.append(
         String.format(
           "triangles %s %s",
-          Long.toUnsignedString(this.header.triangleCount()),
-          Long.toUnsignedString(this.header.triangleIndexSizeBits())));
+          Long.toUnsignedString(triangles.triangleCount()),
+          Long.toUnsignedString(triangles.triangleIndexSizeBits())));
       this.writer.newLine();
 
       this.writer.append(serializeAxes(this.header.coordinateSystem()));

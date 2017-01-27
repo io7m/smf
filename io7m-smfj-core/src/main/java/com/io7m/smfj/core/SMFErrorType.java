@@ -14,27 +14,51 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.validation.api;
+package com.io7m.smfj.core;
 
-import com.io7m.smfj.core.SMFErrorType;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 import java.util.Optional;
 
 /**
- * The type of validation errors.
+ * The type of errors.
  */
 
-@SMFImmutableStyleType
-@Value.Immutable
-public interface SMFSchemaValidationErrorType extends SMFErrorType
+public interface SMFErrorType
 {
-  @Override
+  /**
+   * @return The error message
+   */
+
   @Value.Parameter
   String message();
 
-  @Override
+  /**
+   * @return The exception raised, if any
+   */
+
   @Value.Parameter
   Optional<Exception> exception();
+
+  /**
+   * @return A humanly-readable formatted error message
+   */
+
+  @Value.Lazy
+  default String fullMessage()
+  {
+    final StringBuilder sb = new StringBuilder(128);
+    sb.append(this.message());
+
+    if (this.exception().isPresent()) {
+      final Exception ex = this.exception().get();
+      sb.append(" (");
+      sb.append(ex.getClass().getCanonicalName());
+      sb.append(": ");
+      sb.append(ex.getMessage());
+      sb.append(")");
+    }
+
+    return sb.toString();
+  }
 }

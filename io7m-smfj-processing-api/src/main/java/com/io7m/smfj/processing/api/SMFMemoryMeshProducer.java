@@ -27,9 +27,9 @@ import com.io7m.jtensors.VectorI4L;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import javaslang.collection.Map;
@@ -44,7 +44,7 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
 {
   private Vector<SMFMetadata> metadata;
   private boolean started;
-  private List<SMFParseError> errors;
+  private List<SMFErrorType> errors;
   private SMFHeader header;
   private Vector<Object> elements;
   private Map<SMFAttributeName, SMFAttributeArrayType> arrays;
@@ -72,7 +72,7 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
 
   @Override
   public void onError(
-    final SMFParseError e)
+    final SMFErrorType e)
   {
     this.errors = this.errors.append(e);
   }
@@ -115,7 +115,7 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
   }
 
   @Override
-  public List<SMFParseError> errors()
+  public List<SMFErrorType> errors()
   {
     return this.errors;
   }

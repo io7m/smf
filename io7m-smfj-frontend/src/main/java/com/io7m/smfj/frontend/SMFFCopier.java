@@ -18,9 +18,9 @@ package com.io7m.smfj.frontend;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 
@@ -34,7 +34,7 @@ import java.io.UncheckedIOException;
 public final class SMFFCopier implements SMFFCopierType
 {
   private final SMFSerializerType serializer;
-  private List<SMFParseError> errors;
+  private List<SMFErrorType> errors;
 
   private SMFFCopier(
     final SMFSerializerType in_serializer)
@@ -78,7 +78,7 @@ public final class SMFFCopier implements SMFFCopierType
 
   @Override
   public void onError(
-    final SMFParseError e)
+    final SMFErrorType e)
   {
     this.errors = this.errors.append(e);
   }
@@ -284,7 +284,7 @@ public final class SMFFCopier implements SMFFCopierType
   }
 
   @Override
-  public List<SMFParseError> errors()
+  public List<SMFErrorType> errors()
   {
     return this.errors;
   }

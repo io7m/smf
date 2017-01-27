@@ -18,6 +18,7 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.VectorI3L;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
@@ -155,7 +156,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     final OptionalInt optimize_opt,
     final long max)
   {
-    long triangle_size = m.header().triangleIndexSizeBits();
+    long triangle_size = m.header().triangles().triangleIndexSizeBits();
     if (optimize_opt.isPresent()) {
       if (max < (long) (StrictMath.pow(2.0, 64.0) - 1.0)) {
         triangle_size = 64L;
@@ -229,8 +230,10 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     final long triangle_size = optimize(m, optimize_opt, max);
 
     if (errors.isEmpty()) {
+      final SMFTriangles new_triangles =
+        m.header().triangles().withTriangleIndexSizeBits(triangle_size);
       return Validation.valid(
-        m.withHeader(m.header().withTriangleIndexSizeBits(triangle_size)));
+        m.withHeader(m.header().withTriangles(new_triangles)));
     }
     return Validation.invalid(errors);
   }

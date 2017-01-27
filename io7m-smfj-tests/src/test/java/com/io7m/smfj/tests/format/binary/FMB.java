@@ -19,8 +19,10 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -107,24 +109,9 @@ public final class FMB
 
           @Override
           public void onError(
-            final SMFParseError e)
+            final SMFErrorType e)
           {
-            final LexicalPosition<Path> lexical = e.lexical();
-            final Optional<Path> opt = lexical.file();
-            if (opt.isPresent()) {
-              LOG.error(
-                "{}:{}:{}: {}",
-                opt.get(),
-                Integer.valueOf(lexical.line()),
-                Integer.valueOf(lexical.column()),
-                e.message());
-            } else {
-              LOG.error(
-                "{}:{}: {}",
-                Integer.valueOf(lexical.line()),
-                Integer.valueOf(lexical.column()),
-                e.message());
-            }
+            LOG.error(e.fullMessage());
           }
 
           @Override
@@ -350,8 +337,7 @@ public final class FMB
 
         final SMFHeader.Builder hb = SMFHeader.builder();
         hb.setVertexCount(vertex_count.get());
-        hb.setTriangleIndexSizeBits(triangle_size.get());
-        hb.setTriangleCount(triangle_count.get());
+        hb.setTriangles(SMFTriangles.of(triangle_count.get(), triangle_size.get()));
         hb.setAttributesInOrder(
           javaslang.collection.List.ofAll(attributes_ordered));
         serial.serializeHeader(hb.build());

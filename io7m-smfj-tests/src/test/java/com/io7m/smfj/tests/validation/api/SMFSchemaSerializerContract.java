@@ -17,6 +17,7 @@
 package com.io7m.smfj.tests.validation.api;
 
 import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
@@ -74,7 +75,7 @@ public abstract class SMFSchemaSerializerContract
   {
     final SMFSchema schema;
     try (final SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       Assert.assertTrue(r.isValid());
       schema = r.get();
     }
@@ -89,7 +90,7 @@ public abstract class SMFSchemaSerializerContract
 
       try (final InputStream in = new ByteArrayInputStream(out.toByteArray())) {
         try (SMFSchemaParserType parser = this.createParser(out_path, in)) {
-          final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+          final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
           Assert.assertTrue(r.isValid());
           final SMFSchema written_schema = r.get();
           Assert.assertEquals(schema, written_schema);

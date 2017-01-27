@@ -22,6 +22,7 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -53,7 +54,7 @@ public abstract class SMFSchemaParserContract
   }
 
   private static void showErrors(
-    final Validation<List<SMFParseError>, SMFSchema> r)
+    final Validation<List<SMFErrorType>, SMFSchema> r)
   {
     if (r.isInvalid()) {
       r.getError().forEach(e -> LOG.error("{}", e.fullMessage()));
@@ -81,7 +82,7 @@ public abstract class SMFSchemaParserContract
   {
     boolean caught = false;
     try (final SMFSchemaParserType parser = this.create(Paths.get("/invalid"), new BrokenInputStream())) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains("I/O error")));
@@ -98,7 +99,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-unknown-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -112,7 +113,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -126,7 +127,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-1.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -140,7 +141,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-2.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -154,7 +155,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-3.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -168,7 +169,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-4.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -182,7 +183,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-5.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -195,7 +196,7 @@ public abstract class SMFSchemaParserContract
     throws Exception
   {
     try (final SMFSchemaParserType parser = this.resourceParser("empty.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -209,7 +210,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "missing-ident.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -223,7 +224,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -237,7 +238,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
@@ -251,7 +252,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-1.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
@@ -265,7 +266,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-2.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
@@ -279,7 +280,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-1.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
@@ -293,7 +294,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -307,7 +308,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-1.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -321,7 +322,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-2.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -335,7 +336,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-3.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
       Assert.assertTrue(r.getError().exists(e -> e.message().contains(
@@ -349,7 +350,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "valid-minimal.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
@@ -367,7 +368,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
@@ -388,7 +389,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-1.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
@@ -409,7 +410,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-2.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
@@ -430,7 +431,7 @@ public abstract class SMFSchemaParserContract
   {
     try (final SMFSchemaParserType parser = this.resourceParser(
       "valid-coords-0.smfs")) {
-      final Validation<List<SMFParseError>, SMFSchema> r = parser.parseSchema();
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();

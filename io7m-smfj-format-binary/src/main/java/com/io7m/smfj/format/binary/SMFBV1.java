@@ -20,6 +20,7 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.v1.SMFBV1HeaderReadableType;
 import com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType;
 import javaslang.collection.List;
@@ -49,13 +50,15 @@ final class SMFBV1
     schema_b.setSchemaMajorVersion(schema_id_view.getSchemaVersionMajor());
     schema_b.setSchemaMinorVersion(schema_id_view.getSchemaVersionMinor());
 
+    final SMFTriangles triangles =
+      SMFTriangles.of(
+        header_view.getTriangleCount(),
+        (long) header_view.getTriangleIndexSizeBits());
+
     final SMFHeader.Builder header_b = SMFHeader.builder();
     header_b.setVertexCount(
       header_view.getVertexCount());
-    header_b.setTriangleCount(
-      header_view.getTriangleCount());
-    header_b.setTriangleIndexSizeBits(
-      (long) header_view.getTriangleIndexSizeBits());
+    header_b.setTriangles(triangles);
     header_b.setAttributesInOrder(
       attributes);
     header_b.setSchemaIdentifier(

@@ -24,6 +24,7 @@ import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
@@ -118,12 +119,12 @@ public final class SMFSchemaParserProvider implements
     }
 
     @Override
-    public Validation<List<SMFParseError>, SMFSchema> parseSchema()
+    public Validation<List<SMFErrorType>, SMFSchema> parseSchema()
     {
       final SMFSchema.Builder builder = SMFSchema.builder();
       builder.setAllowExtraAttributes(false);
 
-      List<SMFParseError> errors = List.empty();
+      List<SMFErrorType> errors = List.empty();
 
       try {
         while (true) {
@@ -158,9 +159,9 @@ public final class SMFSchemaParserProvider implements
       return invalid(errors);
     }
 
-    private List<SMFParseError> parseStatement(
+    private List<SMFErrorType> parseStatement(
       final SMFSchema.Builder builder,
-      final List<SMFParseError> errors,
+      final List<SMFErrorType> errors,
       final List<String> line)
     {
       final String name = line.get(0);
@@ -465,7 +466,7 @@ public final class SMFSchemaParserProvider implements
     }
 
     @Override
-    public Validation<List<SMFParseError>, SMFSchema> parseSchema()
+    public Validation<List<SMFErrorType>, SMFSchema> parseSchema()
     {
       try {
         final List<String> lines =
@@ -476,7 +477,7 @@ public final class SMFSchemaParserProvider implements
         try {
           final Optional<List<String>> line = reader.line();
           if (line.isPresent()) {
-            final Validation<List<SMFParseError>, SMFSchemaVersion> r_version =
+            final Validation<List<SMFErrorType>, SMFSchemaVersion> r_version =
               this.parseVersion(reader.position(), line.get());
             if (r_version.isInvalid()) {
               return invalid(r_version.getError());
@@ -509,7 +510,7 @@ public final class SMFSchemaParserProvider implements
       }
     }
 
-    private Validation<List<SMFParseError>, SMFSchemaVersion> parseVersion(
+    private Validation<List<SMFErrorType>, SMFSchemaVersion> parseVersion(
       final LexicalPosition<Path> position,
       final List<String> line)
     {

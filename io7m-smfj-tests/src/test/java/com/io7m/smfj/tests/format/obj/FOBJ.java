@@ -18,6 +18,7 @@ package com.io7m.smfj.tests.format.obj;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFAttribute;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.obj.SMFFormatOBJ;
@@ -92,24 +93,9 @@ public final class FOBJ
 
         @Override
         public void onError(
-          final SMFParseError e)
+          final SMFErrorType e)
         {
-          final LexicalPosition<Path> lexical = e.lexical();
-          final Optional<Path> opt = lexical.file();
-          if (opt.isPresent()) {
-            LOG.error(
-              "{}:{}:{}: {}",
-              opt.get(),
-              Integer.valueOf(lexical.line()),
-              Integer.valueOf(lexical.column()),
-              e.message());
-          } else {
-            LOG.error(
-              "{}:{}: {}",
-              Integer.valueOf(lexical.line()),
-              Integer.valueOf(lexical.column()),
-              e.message());
-          }
+          LOG.error(e.fullMessage());
         }
 
         @Override

@@ -16,8 +16,8 @@
 
 package com.io7m.smfj.processing.api;
 
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import javaslang.collection.List;
 
@@ -29,10 +29,10 @@ import javaslang.collection.List;
 public interface SMFMemoryMeshProducerType extends SMFParserEventsType
 {
   /**
-   * @return The list of parse errors encountered, if any
+   * @return The list of errors encountered, if any
    */
 
-  List<SMFParseError> errors();
+  List<SMFErrorType> errors();
 
   /**
    * The parsed header, if no parse errors were encountered.
