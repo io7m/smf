@@ -29,7 +29,6 @@ import com.io7m.jtensors.VectorM3D;
 import com.io7m.jtensors.VectorM3L;
 import com.io7m.jtensors.VectorM4D;
 import com.io7m.jtensors.VectorM4L;
-import com.io7m.jtensors.VectorWritable3LType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.bytebuffer.SMFByteBufferCursors;
 import com.io7m.smfj.bytebuffer.SMFByteBufferFloat1Type;
@@ -55,6 +54,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsMeta;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -2299,6 +2299,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -2998,6 +2999,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3061,6 +3063,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3116,6 +3119,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer
@@ -3181,6 +3185,7 @@ public final class SMFByteBufferPackedMeshesTest
 
           @Override
           public ByteBuffer onAllocateTriangleBuffer(
+            final SMFTriangles triangles,
             final long size)
           {
             return ByteBuffer

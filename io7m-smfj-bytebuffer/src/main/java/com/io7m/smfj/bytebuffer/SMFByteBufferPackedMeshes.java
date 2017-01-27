@@ -190,7 +190,8 @@ public final class SMFByteBufferPackedMeshes implements
           triangles.triangleSizeOctets(),
           triangles.triangleCount());
       LOG.debug("allocating triangle buffer");
-      this.tri_buffer = this.events.onAllocateTriangleBuffer(size_tri);
+      this.tri_buffer =
+        this.events.onAllocateTriangleBuffer(triangles, size_tri);
       this.tri_packer = new SMFByteBufferTrianglePacker(
         this.tri_buffer,
         Math.toIntExact(triangles.triangleIndexSizeBits()),

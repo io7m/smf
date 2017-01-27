@@ -25,6 +25,12 @@
       <c:type-code-change/>
       <c:summary>Abstract header triangle information into its own SMFTriangles type.</c:summary>
     </c:item>
+
+    <c:item>
+      <c:date>2017-01-27</c:date>
+      <c:type-code-change/>
+      <c:summary>The byte buffer event method onAllocateTriangleBuffer() now takes an SMFTriangles value.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">
