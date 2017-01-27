@@ -189,9 +189,16 @@ public final class SMFByteBufferPackedMeshes implements
         Math.multiplyExact(
           triangles.triangleSizeOctets(),
           triangles.triangleCount());
+
       LOG.debug("allocating triangle buffer");
       this.tri_buffer =
         this.events.onAllocateTriangleBuffer(triangles, size_tri);
+
+      Invariants.checkInvariantL(
+        (long) this.tri_buffer.capacity(),
+        (long) this.tri_buffer.capacity() == size_tri,
+        x -> "Triangle buffer size must be " + size_tri);
+
       this.tri_packer = new SMFByteBufferTrianglePacker(
         this.tri_buffer,
         Math.toIntExact(triangles.triangleIndexSizeBits()),
@@ -209,6 +216,12 @@ public final class SMFByteBufferPackedMeshes implements
       LOG.debug("allocating attribute buffer for {}", id);
       final ByteBuffer buffer =
         this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
+
+      Invariants.checkInvariantL(
+        (long) buffer.capacity(),
+        (long) buffer.capacity() == size_attr,
+        x -> "Attribute buffer size must be " + size_attr);
+
       return Tuple.of(id, buffer);
     });
   }
