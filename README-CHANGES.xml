@@ -11,6 +11,13 @@
       <c:type-code-new/>
       <c:summary>Enable Javaslang encodings for memory meshes.</c:summary>
     </c:item>
+
+    <c:item>
+      <c:date>2017-01-29</c:date>
+      <c:type-code-new/>
+      <c:ticket>39</c:ticket>
+      <c:summary>Add a delegating metadata listener.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">

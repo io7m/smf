@@ -16,7 +16,9 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
+import javaslang.collection.List;
 
 /**
  * Convenient metadata listener implementations.
@@ -61,6 +63,68 @@ public final class SMFParserEventsMeta
       final byte[] data)
     {
       throw new UnreachableCodeException();
+    }
+  }
+
+  /**
+   * A metadata listener that delegates to a list of listeners. Each delegate
+   * will be asked in turn (via {@link SMFParserEventsMetaType#onMeta(long,
+   * long, long)}) whether or not it wants a particular piece of metadata. Each
+   * delegate that wanted a piece of metadata will receive it via {@link
+   * SMFParserEventsMetaType#onMetaData(long, long, byte[])}. If any delegate
+   * raises an exception, the exception is propagated and the rest of the
+   * delegates are not called.
+   *
+   * @param in_delegates A list of delegates
+   *
+   * @return A metadata listener that delegates to a list of listeners
+   */
+
+  public static SMFParserEventsMetaType delegating(
+    final List<SMFParserEventsMetaType> in_delegates)
+  {
+    return new Delegating(in_delegates);
+  }
+
+  private static final class Delegating implements SMFParserEventsMetaType
+  {
+    private final List<SMFParserEventsMetaType> delegates;
+    private final boolean[] want;
+
+    private Delegating(
+      final List<SMFParserEventsMetaType> in_delegates)
+    {
+      this.delegates = NullCheck.notNull(in_delegates, "Delegates");
+      this.want = new boolean[this.delegates.size()];
+    }
+
+    @Override
+    public boolean onMeta(
+      final long vendor,
+      final long schema,
+      final long length)
+    {
+      boolean any = false;
+      for (int index = 0; index < this.want.length; ++index) {
+        final boolean want_now =
+          this.delegates.get(index).onMeta(vendor, schema, length);
+        this.want[index] = want_now;
+        any = any || want_now;
+      }
+      return any;
+    }
+
+    @Override
+    public void onMetaData(
+      final long vendor,
+      final long schema,
+      final byte[] data)
+    {
+      for (int index = 0; index < this.want.length; ++index) {
+        if (this.want[index]) {
+          this.delegates.get(index).onMetaData(vendor, schema, data);
+        }
+      }
     }
   }
 }
