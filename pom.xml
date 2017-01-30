@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.io7m.smfj</groupId>
   <artifactId>io7m-smfj</artifactId>
-  <version>0.9.0</version>
+  <version>0.10.0-SNAPSHOT</version>
 
   <packaging>pom</packaging>
   <name>io7m-smfj</name>
@@ -120,7 +120,7 @@
       <dependency>
         <groupId>com.io7m.jtensors</groupId>
         <artifactId>io7m-jtensors-core</artifactId>
-        <version>7.0.0-beta0012</version>
+        <version>[7.0.0, 8.0.0)</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jlexing</groupId>
