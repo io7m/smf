@@ -1,4 +1,4 @@
-io7m-smfj 0.9.0 Documentation
+com.io7m.smfj 0.10.0 Documentation
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents
@@ -57,7 +57,7 @@ io7m-smfj 0.9.0 Documentation
 
 1.4 License [id: pkg.license]
 
-1     All files distributed with the io7m-smfj package are placed under the
+1     All files distributed with the com.io7m.smfj package are placed under the
       following license:
 
       1.4.2.2 License

@@ -1,6 +1,6 @@
 [section [title License] [id pkg.license]]
 [paragraph]
-All files distributed with the [term [type package] io7m-smfj]
+All files distributed with the [term [type package] com.io7m.smfj]
 package are placed under the following license:
 
 [formal-item [title License]]
