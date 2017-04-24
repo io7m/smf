@@ -47,6 +47,7 @@
     <io7m.checkstyle.artifact>com.io7m.smfj.checkstyle</io7m.checkstyle.artifact>
     <io7m.checkstyle.path>/com/io7m/smfj/checkstyle/checkstyle.xml</io7m.checkstyle.path>
     <io7m.api.previousVersion>0.10.0-SNAPSHOT</io7m.api.previousVersion>
+    <com.io7m.smfj.jtensors.versionRange>8.0.0</com.io7m.smfj.jtensors.versionRange>
   </properties>
 
   <licenses>
@@ -132,12 +133,12 @@
       <dependency>
         <groupId>com.io7m.jtensors</groupId>
         <artifactId>com.io7m.jtensors.core</artifactId>
-        <version>8.0.0-beta0001</version>
+        <version>${com.io7m.smfj.jtensors.versionRange}</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jtensors</groupId>
         <artifactId>com.io7m.jtensors.storage.heap</artifactId>
-        <version>8.0.0-beta0001</version>
+        <version>${com.io7m.smfj.jtensors.versionRange}</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jlexing</groupId>
@@ -167,7 +168,7 @@
       <dependency>
         <groupId>com.io7m.mutable.numbers</groupId>
         <artifactId>com.io7m.mutable.numbers.core</artifactId>
-        <version>0.0.2</version>
+        <version>[1.0.0, 2.0.0)</version>
       </dependency>
 
       <dependency>
@@ -183,7 +184,7 @@
       <dependency>
         <groupId>org.immutables.javaslang</groupId>
         <artifactId>javaslang-encodings</artifactId>
-        <version>0.2.0</version>
+        <version>0.3.0</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -198,7 +199,7 @@
       <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
-        <version>1.64</version>
+        <version>1.69</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -225,12 +226,12 @@
       <dependency>
         <groupId>com.github.marschall</groupId>
         <artifactId>memoryfilesystem</artifactId>
-        <version>0.9.0</version>
+        <version>0.9.1</version>
       </dependency>
       <dependency>
         <groupId>org.jmockit</groupId>
         <artifactId>jmockit</artifactId>
-        <version>1.30</version>
+        <version>1.31</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
