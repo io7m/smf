@@ -17,7 +17,7 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jfunctional.Unit;
-import com.io7m.jlexing.core.LexicalPosition;
+import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
@@ -362,11 +362,8 @@ public final class SMFMemoryMeshParser
       final Exception e)
     {
       this.failed = true;
-      this.events.onError(
-        SMFParseError.of(
-          LexicalPosition.of(0, 0, Optional.empty()),
-          e.getMessage(),
-          Optional.of(e)));
+      this.events.onError(SMFParseError.of(
+        LexicalPositions.zero(), e.getMessage(), Optional.of(e)));
     }
 
     protected final Unit sendSigned1(

@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.format.text;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
@@ -23,11 +24,11 @@ import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import org.slf4j.Logger;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
-abstract class SMFTAbstractParser implements
-  SMFParserSequentialType
+abstract class SMFTAbstractParser implements SMFParserSequentialType
 {
   protected final SMFTLineReaderType reader;
   protected final SMFParserEventsType events;
@@ -43,12 +44,11 @@ abstract class SMFTAbstractParser implements
     this.state = NullCheck.notNull(in_state, "state");
   }
 
-  protected abstract Logger log();
-
-  protected final SMFParseError makeErrorExpectedGot(
+  static SMFParseError makeErrorExpectedGot(
     final String message,
     final String expected,
-    final String received)
+    final String received,
+    final LexicalPosition<Path> position)
   {
     final StringBuilder sb = new StringBuilder(128);
     sb.append(message);
@@ -59,30 +59,32 @@ abstract class SMFTAbstractParser implements
     sb.append("  Received: ");
     sb.append(received);
     sb.append(System.lineSeparator());
-    return this.makeError(sb.toString(), Optional.empty());
+    return makeError(sb.toString(), Optional.empty(), position);
   }
 
-  private SMFParseError makeError(
+  static SMFParseError makeError(
     final String message,
-    final Optional<Exception> exception)
+    final Optional<Exception> exception,
+    final LexicalPosition<Path> position)
   {
-    return SMFParseError.of(this.reader.position(), message, exception);
+    return SMFParseError.of(position, message, exception);
   }
+
+  protected abstract Logger log();
 
   private SMFParseError makeErrorWithLine(
     final int line,
     final String message,
     final Optional<Exception> exception)
   {
-    return SMFParseError.of(
-      this.reader.position().withLine(line), message, exception);
+    return makeError(message, exception, this.reader.position().withLine(line));
   }
 
   protected final void fail(
     final String message,
     final Optional<Exception> exception)
   {
-    this.onFailure(this.makeError(message, exception));
+    this.onFailure(makeError(message, exception, this.reader.position()));
   }
 
   protected final void failExpectedGot(
@@ -90,7 +92,8 @@ abstract class SMFTAbstractParser implements
     final String expected,
     final String received)
   {
-    this.onFailure(this.makeErrorExpectedGot(message, expected, received));
+    this.onFailure(makeErrorExpectedGot(
+      message, expected, received, this.reader.position()));
   }
 
   protected final void failErrors(

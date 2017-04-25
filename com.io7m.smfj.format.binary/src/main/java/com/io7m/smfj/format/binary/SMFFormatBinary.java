@@ -22,14 +22,21 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.probe.api.SMFVersionProbeProviderType;
+import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
+import javaslang.collection.Seq;
 import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
+import javaslang.collection.Vector;
+import javaslang.control.Validation;
+import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,19 +45,28 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
+import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
+import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
+
 /**
  * The implementation of the binary format.
  */
 
 @Component
-public final class SMFFormatBinary implements SMFParserProviderType,
-  SMFSerializerProviderType
+public final class SMFFormatBinary
+  implements SMFParserProviderType,
+  SMFSerializerProviderType,
+  SMFVersionProbeProviderType
 {
   private static final Logger LOG;
   private static final SMFFormatDescription FORMAT;
@@ -113,6 +129,15 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       data.length == 8,
       len -> String.format("Length %d must be 8 bytes", Integer.valueOf(len)));
     return Arrays.equals(MAGIC_NUMBER, data);
+  }
+
+  private static String notSupported(
+    final SMFFormatVersion version)
+  {
+    return String.format(
+      "Version %d.%d is not supported",
+      Integer.valueOf(version.major()),
+      Integer.valueOf(version.minor()));
   }
 
   @Override
@@ -183,11 +208,56 @@ public final class SMFFormatBinary implements SMFParserProviderType,
       return new SMFBV1Serializer(version, path, stream);
     }
 
-    throw new UnsupportedOperationException(
-      String.format(
-        "Version %d.%d is not supported",
-        Integer.valueOf(version.major()),
-        Integer.valueOf(version.minor())));
+    throw new UnsupportedOperationException(notSupported(version));
+  }
+
+  @Override
+  public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+    final InputStream stream)
+  {
+    NullCheck.notNull(stream, "stream");
+
+    try {
+      final byte[] data =
+        IOUtils.toByteArray(stream, MAGIC_NUMBER.length + 4 + 4);
+
+      final byte[] magic = Arrays.copyOf(data, 8);
+      if (magicNumberIsValid(magic)) {
+        final ByteBuffer data_major =
+          ByteBuffer.wrap(Arrays.copyOfRange(data, 8, 8 + 4))
+            .order(ByteOrder.BIG_ENDIAN);
+        final ByteBuffer data_minor =
+          ByteBuffer.wrap(Arrays.copyOfRange(data, 8 + 4, 8 + 4 + 4))
+            .order(ByteOrder.BIG_ENDIAN);
+
+        final long major =
+          (long) data_major.getInt(0) & 0xFFFFFFFFL;
+        final long minor =
+          (long) data_minor.getInt(0) & 0xFFFFFFFFL;
+        final SMFFormatVersion version =
+          SMFFormatVersion.of((int) major, (int) minor);
+
+        if (SUPPORTED_VERSIONS.contains(version)) {
+          return valid(SMFVersionProbed.of(this, version));
+        }
+
+        return invalid(
+          Vector.of(errorWithMessage(notSupported(version))));
+      }
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append("Bad magic number.");
+      sb.append(System.lineSeparator());
+      sb.append("  Expected: ");
+      sb.append(DatatypeConverter.printHexBinary(MAGIC_NUMBER));
+      sb.append(System.lineSeparator());
+      sb.append("  Received: ");
+      sb.append(DatatypeConverter.printHexBinary(magic));
+      sb.append(System.lineSeparator());
+      return invalid(Vector.of(errorWithMessage(sb.toString())));
+    } catch (final Exception e) {
+      return invalid(Vector.of(errorException(e)));
+    }
   }
 
   private static final class ParserRandom extends SMFBAbstractParserRandomAccess

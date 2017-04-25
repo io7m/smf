@@ -32,6 +32,7 @@
     <module>com.io7m.smfj.format.text</module>
     <module>com.io7m.smfj.frontend</module>
     <module>com.io7m.smfj.parser.api</module>
+    <module>com.io7m.smfj.probe.api</module>
     <module>com.io7m.smfj.processing.api</module>
     <module>com.io7m.smfj.processing.main</module>
     <module>com.io7m.smfj.serializer.api</module>
@@ -143,7 +144,7 @@
       <dependency>
         <groupId>com.io7m.jlexing</groupId>
         <artifactId>com.io7m.jlexing.core</artifactId>
-        <version>0.2.1</version>
+        <version>[1.1.0, 2.0.0)</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jaffirm</groupId>
