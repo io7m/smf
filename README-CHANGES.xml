@@ -3,6 +3,18 @@
   <c:project>com.io7m.smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2017-04-25</c:date>
+    <c:version>0.11.0</c:version>
+
+    <c:item>
+      <c:date>2017-04-25</c:date>
+      <c:type-code-new/>
+      <c:ticket>42</c:ticket>
+      <c:summary>Implement version probing.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2017-04-09</c:date>
     <c:version>0.10.0</c:version>
 
