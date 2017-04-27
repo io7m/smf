@@ -23,7 +23,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -31,10 +30,16 @@ import javaslang.Tuple;
 import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.collection.Seq;
+import javaslang.collection.SortedMap;
 import javaslang.control.Validation;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeExists;
+import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeNonexistent;
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
 
 /**
  * A filter that renames a mesh attribute.
@@ -87,12 +92,10 @@ public final class SMFMemoryMeshFilterAttributeRename implements
         return Validation.valid(
           create(source, target));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -128,54 +131,6 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     return makeSyntax();
   }
 
-  private SMFProcessingError nonexistentAttribute(
-    final Seq<SMFAttribute> ordered)
-  {
-    final StringBuilder sb = new StringBuilder(128);
-    sb.append("Mesh does not contain the given attribute.");
-    sb.append(System.lineSeparator());
-    sb.append("  Attribute: ");
-    sb.append(this.source.value());
-    sb.append(System.lineSeparator());
-    sb.append("  Existing:  ");
-    sb.append(System.lineSeparator());
-
-    for (int index = 0; index < ordered.size(); ++index) {
-      final SMFAttribute attr = ordered.get(index);
-      sb.append("    [");
-      sb.append(index);
-      sb.append("] ");
-      sb.append(attr.name().value());
-      sb.append(System.lineSeparator());
-    }
-
-    return SMFProcessingError.of(sb.toString(), Optional.empty());
-  }
-
-  private SMFProcessingError collidingAttribute(
-    final Seq<SMFAttribute> ordered)
-  {
-    final StringBuilder sb = new StringBuilder(128);
-    sb.append("Mesh already contains the target attribute.");
-    sb.append(System.lineSeparator());
-    sb.append("  Attribute: ");
-    sb.append(this.target.value());
-    sb.append(System.lineSeparator());
-    sb.append("  Existing:  ");
-    sb.append(System.lineSeparator());
-
-    for (int index = 0; index < ordered.size(); ++index) {
-      final SMFAttribute attr = ordered.get(index);
-      sb.append("    [");
-      sb.append(index);
-      sb.append("] ");
-      sb.append(attr.name().value());
-      sb.append(System.lineSeparator());
-    }
-
-    return SMFProcessingError.of(sb.toString(), Optional.empty());
-  }
-
   @Override
   public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
@@ -184,16 +139,18 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
+    final SortedMap<SMFAttributeName, SMFAttribute> by_name =
+      m.header().attributesByName();
+    Seq<SMFProcessingError> errors =
+      checkAttributeExists(List.empty(), by_name, this.source);
+    errors = checkAttributeNonexistent(errors, by_name, this.target);
+
+    if (!errors.isEmpty()) {
+      return invalid(List.ofAll(errors));
+    }
+
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
     final SMFHeader orig_header = m.header();
-    if (!arrays.containsKey(this.source)) {
-      return Validation.invalid(List.of(
-        this.nonexistentAttribute(orig_header.attributesInOrder())));
-    }
-    if (arrays.containsKey(this.target)) {
-      return Validation.invalid(List.of(
-        this.collidingAttribute(orig_header.attributesInOrder())));
-    }
 
     /*
      * Rename array.

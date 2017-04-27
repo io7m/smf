@@ -19,7 +19,6 @@ package com.io7m.smfj.processing.main;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
@@ -34,6 +33,9 @@ import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that removes matching metadata from a mesh.
@@ -115,14 +117,12 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
           schema_id = OptionalLong.of(Long.parseUnsignedLong(text.get(1), 16));
         }
 
-        return Validation.valid(create(vendor_id, schema_id));
+        return valid(create(vendor_id, schema_id));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -187,7 +187,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
       return match;
     });
 
-    return Validation.valid(
+    return valid(
       SMFMemoryMesh.builder()
         .from(m)
         .setMetadata(filtered)

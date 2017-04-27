@@ -20,7 +20,6 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -30,6 +29,10 @@ import javaslang.control.Validation;
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -93,19 +96,17 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
         final int schema = Integer.parseUnsignedInt(text.get(1), 16);
         final int major = Integer.parseUnsignedInt(text.get(2));
         final int minor = Integer.parseUnsignedInt(text.get(3));
-        return Validation.valid(create(
+        return valid(create(
           SMFSchemaIdentifier.builder()
             .setVendorID(vendor)
             .setSchemaID(schema)
             .setSchemaMajorVersion(major)
             .setSchemaMinorVersion(minor).build()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -135,7 +136,7 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
 
     final SMFSchemaIdentifier received = m.header().schemaIdentifier();
     if (Objects.equals(received, this.config)) {
-      return Validation.valid(m);
+      return valid(m);
     }
 
     final StringBuilder sb = new StringBuilder(128);
@@ -148,7 +149,7 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
     sb.append(received.toHumanString());
     sb.append(System.lineSeparator());
 
-    return Validation.invalid(List.of(
+    return invalid(List.of(
       SMFProcessingError.of(sb.toString(), Optional.empty())));
   }
 }

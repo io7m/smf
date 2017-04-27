@@ -23,17 +23,23 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import javaslang.collection.List;
 import javaslang.collection.Map;
+import javaslang.collection.Seq;
 import javaslang.collection.Set;
+import javaslang.collection.SortedMap;
 import javaslang.control.Validation;
 
 import java.nio.file.Path;
 import java.util.Optional;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeExists;
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that renames a mesh attribute.
@@ -78,14 +84,12 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
 
     if (text.length() >= 1) {
       try {
-        return Validation.valid(create(text.map(SMFAttributeName::of).toSet()));
+        return valid(create(text.map(SMFAttributeName::of).toSet()));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -129,12 +133,11 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
 
     final SMFHeader header = m.header();
 
-    List<SMFProcessingError> errors = List.empty();
+    final SortedMap<SMFAttributeName, SMFAttribute> by_name =
+      m.header().attributesByName();
+    Seq<SMFProcessingError> errors = List.empty();
     for (final SMFAttributeName name : this.attributes) {
-      if (!header.attributesByName().containsKey(name)) {
-        errors = errors.append(SMFProcessingError.of(
-          "Nonexistent attribute: " + name.value(), Optional.empty()));
-      }
+      errors = checkAttributeExists(errors, by_name, name);
     }
 
     if (errors.isEmpty()) {
@@ -144,7 +147,7 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
         m.arrays().filter(p -> this.attributes.contains(p._1));
       final SMFHeader new_header =
         header.withAttributesInOrder(new_by_order);
-      return Validation.valid(
+      return valid(
         SMFMemoryMesh.builder()
           .from(m)
           .setArrays(new_arrays)
@@ -152,6 +155,6 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
           .build());
     }
 
-    return Validation.invalid(errors);
+    return invalid(List.ofAll(errors));
   }
 }

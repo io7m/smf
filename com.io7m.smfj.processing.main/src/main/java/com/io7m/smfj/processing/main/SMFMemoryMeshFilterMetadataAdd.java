@@ -19,7 +19,6 @@ package com.io7m.smfj.processing.main;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
@@ -37,6 +36,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that adds metadata to a mesh.
@@ -113,14 +116,12 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
         final long vendor_id = Long.parseUnsignedLong(text.get(0), 16);
         final long schema_id = Long.parseUnsignedLong(text.get(1), 16);
         final Path path = Paths.get(text.get(2));
-        return Validation.valid(create(vendor_id, schema_id, path));
+        return valid(create(vendor_id, schema_id, path));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -159,14 +160,14 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
       final Vector<SMFMetadata> new_meta =
         m.metadata().append(meta);
 
-      return Validation.valid(
+      return valid(
         SMFMemoryMesh.builder()
           .from(m)
           .setMetadata(new_meta)
           .setHeader(m.header().withMetaCount((long) new_meta.size()))
           .build());
     } catch (final IOException e) {
-      return Validation.invalid(List.of(
+      return invalid(List.of(
         SMFProcessingError.of(e.getMessage(), Optional.of(e))));
     }
   }

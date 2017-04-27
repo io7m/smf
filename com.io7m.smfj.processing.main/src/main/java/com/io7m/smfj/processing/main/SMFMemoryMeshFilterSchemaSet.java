@@ -30,6 +30,8 @@ import javaslang.control.Validation;
 import java.nio.file.Path;
 import java.util.Optional;
 
+import static javaslang.control.Validation.valid;
+
 /**
  * A filter that checks the existence and type of an attribute.
  */
@@ -92,7 +94,7 @@ public final class SMFMemoryMeshFilterSchemaSet implements
         final int schema = Integer.parseUnsignedInt(text.get(1), 16);
         final int major = Integer.parseUnsignedInt(text.get(2));
         final int minor = Integer.parseUnsignedInt(text.get(3));
-        return Validation.valid(create(
+        return valid(create(
           SMFSchemaIdentifier.builder()
             .setVendorID(vendor)
             .setSchemaID(schema)
@@ -132,7 +134,6 @@ public final class SMFMemoryMeshFilterSchemaSet implements
   {
     NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
-    return Validation.valid(
-      m.withHeader(m.header().withSchemaIdentifier(this.config)));
+    return valid(m.withHeader(m.header().withSchemaIdentifier(this.config)));
   }
 }

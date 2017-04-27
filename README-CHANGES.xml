@@ -12,6 +12,11 @@
       <c:ticket>42</c:ticket>
       <c:summary>Implement version probing.</c:summary>
     </c:item>
+    <c:item>
+      <c:date>2017-04-27</c:date>
+      <c:type-code-new/>
+      <c:summary>Add convenient SMFFilterCommandChecks class for developing filters.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">
