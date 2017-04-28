@@ -28,6 +28,12 @@
       <c:ticket>43</c:ticket>
       <c:summary>Make parsers use URIs instead of Paths for diagnostic messages.</c:summary>
     </c:item>
+    <c:item>
+      <c:date>2017-04-28</c:date>
+      <c:type-code-fix/>
+      <c:ticket>44</c:ticket>
+      <c:summary>Fail in the correct way when failing to parse files during mesh processing.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">

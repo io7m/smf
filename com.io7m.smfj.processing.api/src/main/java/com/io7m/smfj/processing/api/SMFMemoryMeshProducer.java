@@ -96,13 +96,15 @@ public final class SMFMemoryMeshProducer implements SMFMemoryMeshProducerType
   @Override
   public void onFinish()
   {
-    this.mesh =
-      SMFMemoryMesh.builder()
-        .setArrays(this.arrays)
-        .setHeader(this.header)
-        .setTriangles(this.triangles)
-        .setMetadata(this.metadata)
-        .build();
+    if (this.errors.isEmpty()) {
+      this.mesh =
+        SMFMemoryMesh.builder()
+          .setArrays(this.arrays)
+          .setHeader(this.header)
+          .setTriangles(this.triangles)
+          .setMetadata(this.metadata)
+          .build();
+    }
 
     this.finished = true;
   }
