@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.binary;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -27,10 +27,10 @@ import java.util.Optional;
 public interface SMFBDataStreamReaderType
 {
   /**
-   * @return The path referred to by the stream
+   * @return The URI referred to by the stream
    */
 
-  Path path();
+  URI uri();
 
   /**
    * Read exactly {@code b.length} octets from the stream, raising an error

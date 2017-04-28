@@ -38,6 +38,22 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     LOG = LoggerFactory.getLogger(SMFVersionProbeControllerServiceLoaderTest.class);
   }
 
+  private static InputStream resource(
+    final String name)
+  {
+    return SMFVersionProbeControllerServiceLoader.class.getResourceAsStream(name);
+  }
+
+  private static void dumpValidation(
+    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
+  {
+    if (r.isValid()) {
+      LOG.debug("{}", r.get());
+    } else {
+      r.getError().forEach(c -> LOG.error("{}", c));
+    }
+  }
+
   @Test
   public void testEmptyFile()
   {
@@ -140,21 +156,5 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     dumpValidation(r);
     Assert.assertTrue(r.isInvalid());
     Assert.assertTrue(r.getError().size() >= 1);
-  }
-
-  private static InputStream resource(
-    final String name)
-  {
-    return SMFVersionProbeControllerServiceLoader.class.getResourceAsStream(name);
-  }
-
-  private static void dumpValidation(
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
-  {
-    if (r.isValid()) {
-      LOG.debug("{}", r.get());
-    } else {
-      r.getError().forEach(c -> LOG.error("{}", c));
-    }
   }
 }

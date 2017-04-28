@@ -43,12 +43,12 @@ public final class SMFParseErrorTest
         LexicalPosition.of(
           23,
           127,
-          Optional.of(Paths.get("/x/y.txt"))),
+          Optional.of(Paths.get("/x/y.txt").toUri())),
         "Failed",
         Optional.empty());
 
     LOG.error(e.fullMessage());
-    Assert.assertEquals("/x/y.txt:23:127: Failed", e.fullMessage());
+    Assert.assertEquals("file:///x/y.txt:23:127: Failed", e.fullMessage());
   }
 
   @Test
@@ -59,13 +59,13 @@ public final class SMFParseErrorTest
         LexicalPosition.of(
           23,
           127,
-          Optional.of(Paths.get("/x/y.txt"))),
+          Optional.of(Paths.get("/x/y.txt").toUri())),
         "Failed",
         Optional.of(new IOException("Printer on fire")));
 
     LOG.error(e.fullMessage());
     Assert.assertEquals(
-      "/x/y.txt:23:127: Failed (java.io.IOException: Printer on fire)",
+      "file:///x/y.txt:23:127: Failed (java.io.IOException: Printer on fire)",
       e.fullMessage());
   }
 

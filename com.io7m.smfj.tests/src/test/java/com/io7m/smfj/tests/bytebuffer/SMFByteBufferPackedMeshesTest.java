@@ -95,7 +95,7 @@ public final class SMFByteBufferPackedMeshesTest
       final SMFParserProviderType fmt = new SMFFormatText();
       final Path path = Paths.get(rpath);
       final SMFParserSequentialType parser =
-        fmt.parserCreateSequential(loader, path, stream);
+        fmt.parserCreateSequential(loader, path.toUri(), stream);
       parser.parseHeader();
       parser.parseData();
       return parser;

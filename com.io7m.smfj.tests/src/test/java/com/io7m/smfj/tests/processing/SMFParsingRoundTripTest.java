@@ -71,7 +71,7 @@ public final class SMFParsingRoundTripTest
     try (final OutputStream out = Files.newOutputStream(tmp)) {
       try (final SMFSerializerType s = fmt.serializerCreate(SMFFormatVersion.of(
         1,
-        0), tmp, out)) {
+        0), tmp.toUri(), out)) {
         SMFMemoryMeshSerializer.serialize(loader0.mesh(), s);
       }
     }
@@ -83,7 +83,7 @@ public final class SMFParsingRoundTripTest
       StandardOpenOption.READ)) {
       try (final SMFParserRandomAccessType p = fmt.parserCreateRandomAccess(
         loader1,
-        tmp,
+        tmp.toUri(),
         channel)) {
         p.parseHeader();
 
@@ -135,7 +135,7 @@ public final class SMFParsingRoundTripTest
     try (final OutputStream out = Files.newOutputStream(tmp)) {
       try (final SMFSerializerType s = fmt.serializerCreate(SMFFormatVersion.of(
         1,
-        0), tmp, out)) {
+        0), tmp.toUri(), out)) {
         SMFMemoryMeshSerializer.serialize(loader0.mesh(), s);
       }
     }
@@ -147,7 +147,7 @@ public final class SMFParsingRoundTripTest
       StandardOpenOption.READ)) {
       try (final SMFParserSequentialType p = fmt.parserCreateSequential(
         loader1,
-        tmp,
+        tmp.toUri(),
         stream)) {
         p.parseHeader();
         p.parseData();

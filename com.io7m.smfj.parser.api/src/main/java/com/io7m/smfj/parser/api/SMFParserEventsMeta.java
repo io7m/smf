@@ -40,6 +40,26 @@ public final class SMFParserEventsMeta
     return new Ignore();
   }
 
+  /**
+   * A metadata listener that delegates to a list of listeners. Each delegate
+   * will be asked in turn (via {@link SMFParserEventsMetaType#onMeta(long,
+   * long, long)}) whether or not it wants a particular piece of metadata. Each
+   * delegate that wanted a piece of metadata will receive it via {@link
+   * SMFParserEventsMetaType#onMetaData(long, long, byte[])}. If any delegate
+   * raises an exception, the exception is propagated and the rest of the
+   * delegates are not called.
+   *
+   * @param in_delegates A list of delegates
+   *
+   * @return A metadata listener that delegates to a list of listeners
+   */
+
+  public static SMFParserEventsMetaType delegating(
+    final List<SMFParserEventsMetaType> in_delegates)
+  {
+    return new Delegating(in_delegates);
+  }
+
   private static final class Ignore implements SMFParserEventsMetaType
   {
     private Ignore()
@@ -64,26 +84,6 @@ public final class SMFParserEventsMeta
     {
       throw new UnreachableCodeException();
     }
-  }
-
-  /**
-   * A metadata listener that delegates to a list of listeners. Each delegate
-   * will be asked in turn (via {@link SMFParserEventsMetaType#onMeta(long,
-   * long, long)}) whether or not it wants a particular piece of metadata. Each
-   * delegate that wanted a piece of metadata will receive it via {@link
-   * SMFParserEventsMetaType#onMetaData(long, long, byte[])}. If any delegate
-   * raises an exception, the exception is propagated and the rest of the
-   * delegates are not called.
-   *
-   * @param in_delegates A list of delegates
-   *
-   * @return A metadata listener that delegates to a list of listeners
-   */
-
-  public static SMFParserEventsMetaType delegating(
-    final List<SMFParserEventsMetaType> in_delegates)
-  {
-    return new Delegating(in_delegates);
   }
 
   private static final class Delegating implements SMFParserEventsMetaType

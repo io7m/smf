@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -104,7 +105,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {

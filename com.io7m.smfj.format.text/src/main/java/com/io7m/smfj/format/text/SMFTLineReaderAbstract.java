@@ -21,7 +21,7 @@ import com.io7m.jlexing.core.LexicalPositionMutable;
 import javaslang.collection.List;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -30,22 +30,22 @@ import java.util.Optional;
 
 abstract class SMFTLineReaderAbstract implements SMFTLineReaderType
 {
-  private final LexicalPositionMutable<Path> position;
+  private final LexicalPositionMutable<URI> position;
   private final SMFLineLexer lexer;
 
   SMFTLineReaderAbstract(
-    final Path in_path,
+    final URI in_uri,
     final int in_start)
   {
     this.lexer = new SMFLineLexer();
     this.position = LexicalPositionMutable.create(
       in_start - 1,
       0,
-      Optional.of(in_path));
+      Optional.of(in_uri));
   }
 
   @Override
-  public final LexicalPosition<Path> position()
+  public final LexicalPosition<URI> position()
   {
     return LexicalPosition.copyOf(this.position);
   }

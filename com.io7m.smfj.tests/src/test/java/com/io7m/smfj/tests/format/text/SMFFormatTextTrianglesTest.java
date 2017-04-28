@@ -204,7 +204,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -236,7 +236,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -268,7 +268,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -300,7 +300,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -332,7 +332,7 @@ public final class SMFFormatTextTrianglesTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.empty();
     final SMFHeader.Builder header_b = SMFHeader.builder();

@@ -312,7 +312,7 @@ public final class FMB
           {
             LOG.debug("parser finished");
           }
-        }, path, file_channel);
+        }, path.toUri(), file_channel);
 
       p.parseHeader();
 
@@ -329,7 +329,7 @@ public final class FMB
         final SMFSerializerType serial =
           fmt.serializerCreate(
             SMFFormatVersion.of(1, 0),
-            out_path,
+            out_path.toUri(),
             out);
 
         final SMFHeader.Builder hb = SMFHeader.builder();

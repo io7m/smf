@@ -45,8 +45,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -98,7 +98,7 @@ public final class SMFFormatText
 
   private static Validation<List<SMFParseError>, SMFFormatVersion> parseSMFVersion(
     final List<String> line,
-    final LexicalPosition<Path> position)
+    final LexicalPosition<URI> position)
   {
     if (line.isEmpty()) {
       return invalid(List.of(SMFTAbstractParser.makeErrorExpectedGot(
@@ -164,22 +164,22 @@ public final class SMFFormatText
   @Override
   public SMFParserSequentialType parserCreateSequential(
     final SMFParserEventsType in_events,
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
     NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_path, "Path");
+    NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_stream, "Stream");
     return new Parser(
       in_events,
-      SMFTLineReaderStreamIO.create(in_path, in_stream),
+      SMFTLineReaderStreamIO.create(in_uri, in_stream),
       new AtomicReference<>(SMFTAbstractParser.ParserState.STATE_INITIAL));
   }
 
   @Override
   public SMFParserRandomAccessType parserCreateRandomAccess(
     final SMFParserEventsType events,
-    final Path path,
+    final URI uri,
     final FileChannel file)
     throws UnsupportedOperationException
   {
@@ -202,12 +202,12 @@ public final class SMFFormatText
   @Override
   public SMFSerializerType serializerCreate(
     final SMFFormatVersion version,
-    final Path path,
+    final URI uri,
     final OutputStream stream)
     throws UnsupportedOperationException
   {
     if (SUPPORTED.contains(version)) {
-      return new SMFTV1Serializer(version, path, stream);
+      return new SMFTV1Serializer(version, uri, stream);
     }
 
     throw new UnsupportedOperationException(notSupported(version));

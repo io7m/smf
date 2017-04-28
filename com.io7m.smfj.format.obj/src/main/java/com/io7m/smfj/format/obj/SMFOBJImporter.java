@@ -157,7 +157,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   {
     this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
-      LexicalPosition.copyOf(p),
+      LexicalPosition.of(p.line(), p.column(), p.file().map(Path::toUri)),
       e + ": " + message,
       e.map(Exception::new)));
   }
@@ -170,7 +170,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   {
     this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
-      LexicalPosition.copyOf(p),
+      LexicalPosition.of(p.line(), p.column(), p.file().map(Path::toUri)),
       e + ": " + message,
       Optional.empty()));
   }

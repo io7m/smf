@@ -21,7 +21,7 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -37,7 +37,7 @@ public interface SMFParseErrorType extends SMFErrorType
    */
 
   @Value.Parameter
-  LexicalPosition<Path> lexical();
+  LexicalPosition<URI> lexical();
 
   @Override
   @Value.Parameter
@@ -51,11 +51,11 @@ public interface SMFParseErrorType extends SMFErrorType
   @Value.Lazy
   default String fullMessage()
   {
-    final LexicalPosition<Path> lex = this.lexical();
+    final LexicalPosition<URI> lex = this.lexical();
 
     final StringBuilder sb = new StringBuilder(128);
     if (lex.file().isPresent()) {
-      final Path file = lex.file().get();
+      final URI file = lex.file().get();
       sb.append(file);
       sb.append(":");
     }

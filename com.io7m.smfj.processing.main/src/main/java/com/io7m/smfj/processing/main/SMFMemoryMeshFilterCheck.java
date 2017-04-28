@@ -29,7 +29,7 @@ import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -87,7 +87,7 @@ public final class SMFMemoryMeshFilterCheck implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {

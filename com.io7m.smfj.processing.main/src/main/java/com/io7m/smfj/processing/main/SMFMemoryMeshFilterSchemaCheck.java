@@ -26,7 +26,7 @@ import com.io7m.smfj.processing.api.SMFProcessingError;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -83,7 +83,7 @@ public final class SMFMemoryMeshFilterSchemaCheck implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {

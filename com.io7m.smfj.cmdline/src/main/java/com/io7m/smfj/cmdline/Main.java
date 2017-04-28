@@ -83,7 +83,7 @@ public final class Main implements Runnable
 
   private Main(final String[] in_args)
   {
-    this.args = NullCheck.notNull(in_args);
+    this.args = NullCheck.notNull(in_args, "Arguments");
 
     final CommandRoot r = new CommandRoot();
     final CommandFormats formats = new CommandFormats();
@@ -402,7 +402,7 @@ public final class Main implements Runnable
           try (final SMFSerializerType serializer =
                  provider_serializer.serializerCreate(
                    provider_serializer.serializerSupportedVersions().last(),
-                   path_out,
+                   path_out.toUri(),
                    os)) {
             SMFMemoryMeshSerializer.serialize(filtered, serializer);
           }
@@ -452,7 +452,8 @@ public final class Main implements Runnable
 
       try (final InputStream is = Files.newInputStream(path_in)) {
         try (final SMFParserSequentialType parser =
-               provider_parser.parserCreateSequential(loader, path_in, is)) {
+               provider_parser.parserCreateSequential(
+                 loader, path_in.toUri(), is)) {
           parser.parseHeader();
           if (!parser.parserHasFailed()) {
             parser.parseData();
@@ -478,7 +479,7 @@ public final class Main implements Runnable
         final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
             resolver,
-            Optional.of(path_commands),
+            Optional.of(path_commands.toUri()),
             stream);
         if (r.isValid()) {
           return Optional.of(r.get());

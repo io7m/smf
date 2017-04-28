@@ -20,7 +20,6 @@ import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerOSGi;
-import com.io7m.smfj.probe.api.SMFVersionProbeControllerServiceLoader;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
 import javaslang.collection.Seq;
 import javaslang.control.Validation;
@@ -39,6 +38,22 @@ public final class SMFVersionProbeControllerOSGiTest
 
   static {
     LOG = LoggerFactory.getLogger(SMFVersionProbeControllerOSGiTest.class);
+  }
+
+  private static InputStream resource(
+    final String name)
+  {
+    return SMFVersionProbeControllerOSGiTest.class.getResourceAsStream(name);
+  }
+
+  private static void dumpValidation(
+    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
+  {
+    if (r.isValid()) {
+      LOG.debug("{}", r.get());
+    } else {
+      r.getError().forEach(c -> LOG.error("{}", c));
+    }
   }
 
   @Test
@@ -157,21 +172,5 @@ public final class SMFVersionProbeControllerOSGiTest
     dumpValidation(r);
     Assert.assertTrue(r.isInvalid());
     Assert.assertTrue(r.getError().size() >= 1);
-  }
-
-  private static InputStream resource(
-    final String name)
-  {
-    return SMFVersionProbeControllerOSGiTest.class.getResourceAsStream(name);
-  }
-
-  private static void dumpValidation(
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
-  {
-    if (r.isValid()) {
-      LOG.debug("{}", r.get());
-    } else {
-      r.getError().forEach(c -> LOG.error("{}", c));
-    }
   }
 }

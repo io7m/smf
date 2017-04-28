@@ -45,10 +45,10 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -155,33 +155,33 @@ public final class SMFFormatBinary
   @Override
   public SMFParserSequentialType parserCreateSequential(
     final SMFParserEventsType in_events,
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
     NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_path, "Path");
+    NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_stream, "Stream");
 
     return new ParserSequential(
       in_events,
-      SMFBDataStreamReader.create(in_path, in_stream),
+      SMFBDataStreamReader.create(in_uri, in_stream),
       new AtomicReference<>(SMFBAbstractParserSequential.ParserState.STATE_INITIAL));
   }
 
   @Override
   public SMFParserRandomAccessType parserCreateRandomAccess(
     final SMFParserEventsType in_events,
-    final Path in_path,
+    final URI in_uri,
     final FileChannel in_channel)
     throws UnsupportedOperationException
   {
     NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_path, "Path");
+    NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_channel, "Channel");
 
     return new ParserRandom(
       in_events,
-      new SMFBDataFileChannelReader(in_path, in_channel),
+      new SMFBDataFileChannelReader(in_uri, in_channel),
       new AtomicReference<>(SMFBAbstractParserRandomAccess.ParserState.STATE_INITIAL));
   }
 
@@ -200,12 +200,12 @@ public final class SMFFormatBinary
   @Override
   public SMFSerializerType serializerCreate(
     final SMFFormatVersion version,
-    final Path path,
+    final URI uri,
     final OutputStream stream)
     throws UnsupportedOperationException
   {
     if (SUPPORTED_VERSIONS.contains(version)) {
-      return new SMFBV1Serializer(version, path, stream);
+      return new SMFBV1Serializer(version, uri, stream);
     }
 
     throw new UnsupportedOperationException(notSupported(version));

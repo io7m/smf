@@ -275,7 +275,7 @@ public final class FMT
           {
             LOG.debug("parser finished");
           }
-        }, path, stream);
+        }, path.toUri(), stream);
       p.parseHeader();
       p.parseData();
     }

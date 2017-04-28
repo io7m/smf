@@ -20,7 +20,7 @@ import com.io7m.jlexing.core.LexicalPosition;
 import javaslang.collection.List;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -33,7 +33,7 @@ public interface SMFTLineReaderType
    * @return The current position
    */
 
-  LexicalPosition<Path> position();
+  LexicalPosition<URI> position();
 
   /**
    * Get the next line.

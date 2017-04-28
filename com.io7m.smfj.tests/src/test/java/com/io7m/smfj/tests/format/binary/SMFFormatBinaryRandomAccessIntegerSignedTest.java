@@ -1083,7 +1083,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1121,7 +1121,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1153,7 +1153,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1185,7 +1185,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1217,7 +1217,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1249,7 +1249,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1281,7 +1281,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1313,7 +1313,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1345,7 +1345,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1378,7 +1378,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1410,7 +1410,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1442,7 +1442,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1474,7 +1474,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1506,7 +1506,7 @@ public final class SMFFormatBinaryRandomAccessIntegerSignedTest extends
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     List<SMFAttribute> attributes = List.empty();
     for (final int size : List.of(

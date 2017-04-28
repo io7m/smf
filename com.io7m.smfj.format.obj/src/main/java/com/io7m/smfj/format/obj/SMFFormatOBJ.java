@@ -27,8 +27,9 @@ import javaslang.collection.TreeSet;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -82,17 +83,17 @@ public final class SMFFormatOBJ implements SMFParserProviderType
   @Override
   public SMFParserSequentialType parserCreateSequential(
     final SMFParserEventsType events,
-    final Path path,
+    final URI uri,
     final InputStream stream)
     throws UnsupportedOperationException
   {
-    return SMFOBJImporter.create(Optional.of(path), stream, events);
+    return SMFOBJImporter.create(Optional.of(Paths.get(uri)), stream, events);
   }
 
   @Override
   public SMFParserRandomAccessType parserCreateRandomAccess(
     final SMFParserEventsType events,
-    final Path path,
+    final URI path,
     final FileChannel file)
     throws UnsupportedOperationException
   {

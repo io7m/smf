@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -98,7 +99,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {
@@ -174,7 +175,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
 
     try (final InputStream stream = Files.newInputStream(file)) {
       try (final SMFSchemaParserType parser =
-             parser_provider.schemaParserCreate(file, stream)) {
+             parser_provider.schemaParserCreate(file.toUri(), stream)) {
         final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
         if (result_schema.isValid()) {
           final SMFSchema schema = result_schema.get();

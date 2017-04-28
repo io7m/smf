@@ -59,7 +59,7 @@ abstract class SMFBAbstractParserSequential implements
     this.log().debug("onFailure: {}", message);
     this.state.set(ParserState.STATE_FAILED);
     this.events.onError(SMFParseError.of(
-      LexicalPosition.of(-1, -1, Optional.of(this.reader.path())),
+      LexicalPosition.of(-1, -1, Optional.of(this.reader.uri())),
       message,
       exception));
     return message;

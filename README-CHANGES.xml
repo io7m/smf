@@ -22,6 +22,12 @@
       <c:type-code-change/>
       <c:summary>Move SMFSchemaValidator into the API package as it defines the semantics of validation.</c:summary>
     </c:item>
+    <c:item>
+      <c:date>2017-04-28</c:date>
+      <c:type-code-change/>
+      <c:ticket>43</c:ticket>
+      <c:summary>Make parsers use URIs instead of Paths for diagnostic messages.</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">

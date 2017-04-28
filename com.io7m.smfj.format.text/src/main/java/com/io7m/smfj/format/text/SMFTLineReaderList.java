@@ -21,7 +21,7 @@ import javaslang.collection.Iterator;
 import javaslang.collection.List;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 
 /**
  * A line reader based on a list of strings.
@@ -32,18 +32,18 @@ public final class SMFTLineReaderList extends SMFTLineReaderAbstract
   private final Iterator<String> lines;
 
   private SMFTLineReaderList(
-    final Path in_path,
+    final URI in_uri,
     final List<String> in_lines,
     final int in_start)
   {
-    super(in_path, in_start);
+    super(in_uri, in_start);
     this.lines = NullCheck.notNull(in_lines, "Lines").iterator();
   }
 
   /**
    * Construct a new line reader.
    *
-   * @param in_path  The file path, for diagnostic messages
+   * @param in_uri   The file path, for diagnostic messages
    * @param in_lines The stream of lines
    * @param in_start The number of the starting line, for diagnostic messages
    *
@@ -51,11 +51,11 @@ public final class SMFTLineReaderList extends SMFTLineReaderAbstract
    */
 
   public static SMFTLineReaderType create(
-    final Path in_path,
+    final URI in_uri,
     final List<String> in_lines,
     final int in_start)
   {
-    return new SMFTLineReaderList(in_path, in_lines, in_start);
+    return new SMFTLineReaderList(in_uri, in_lines, in_start);
   }
 
   @Override

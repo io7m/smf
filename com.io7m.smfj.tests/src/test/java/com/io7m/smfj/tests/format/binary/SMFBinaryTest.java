@@ -77,7 +77,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
                target,
                StandardOpenOption.CREATE,
                StandardOpenOption.TRUNCATE_EXISTING)) {
-        o.accept(SMFBDataStreamWriter.create(target, os));
+        o.accept(SMFBDataStreamWriter.create(target.toUri(), os));
         os.flush();
       }
 
@@ -97,7 +97,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
       }
 
       return new SMFFormatBinary().parserCreateSequential(
-        events, target, Files.newInputStream(target));
+        events, target.toUri(), Files.newInputStream(target));
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -119,7 +119,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
                target,
                StandardOpenOption.CREATE,
                StandardOpenOption.TRUNCATE_EXISTING)) {
-        o.accept(SMFBDataStreamWriter.create(target, os));
+        o.accept(SMFBDataStreamWriter.create(target.toUri(), os));
         os.flush();
       }
 
@@ -140,7 +140,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
 
       final FileChannel channel = FileChannel.open(target);
       return new SMFFormatBinary()
-        .parserCreateRandomAccess(events, target, channel);
+        .parserCreateRandomAccess(events, target.toUri(), channel);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }

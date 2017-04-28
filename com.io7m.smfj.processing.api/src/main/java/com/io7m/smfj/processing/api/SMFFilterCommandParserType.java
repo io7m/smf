@@ -20,7 +20,7 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -40,7 +40,7 @@ public interface SMFFilterCommandParserType
    */
 
   Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text);
 }

@@ -29,7 +29,7 @@ import javaslang.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalLong;
@@ -94,7 +94,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {

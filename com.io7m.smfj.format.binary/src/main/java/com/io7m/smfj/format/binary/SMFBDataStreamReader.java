@@ -23,9 +23,9 @@ import org.apache.commons.io.input.CountingInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -34,7 +34,7 @@ import java.util.Optional;
 
 public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
 {
-  private final Path path;
+  private final URI uri;
   private final CountingInputStream stream;
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
@@ -45,10 +45,10 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   private final byte[] byte8;
 
   private SMFBDataStreamReader(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    this.path = NullCheck.notNull(in_path, "Path");
+    this.uri = NullCheck.notNull(in_uri, "URI");
     this.stream = new CountingInputStream(NullCheck.notNull(
       in_stream,
       "Stream"));
@@ -68,23 +68,23 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   /**
    * Create a data stream reader.
    *
-   * @param in_path   The path
+   * @param in_uri    The uri
    * @param in_stream The stream
    *
    * @return A new data stream reader
    */
 
   public static SMFBDataStreamReaderType create(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    return new SMFBDataStreamReader(in_path, in_stream);
+    return new SMFBDataStreamReader(in_uri, in_stream);
   }
 
   @Override
-  public Path path()
+  public URI uri()
   {
-    return this.path;
+    return this.uri;
   }
 
   @Override

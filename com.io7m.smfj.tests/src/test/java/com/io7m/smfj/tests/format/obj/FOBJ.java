@@ -290,7 +290,7 @@ public final class FOBJ
         {
           LOG.debug("parser finished");
         }
-      }, path, is)) {
+      }, path.toUri(), is)) {
         p.parseHeader();
         p.parseData();
       }

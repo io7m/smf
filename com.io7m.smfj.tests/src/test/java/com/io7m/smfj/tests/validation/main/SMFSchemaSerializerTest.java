@@ -35,7 +35,9 @@ public final class SMFSchemaSerializerTest extends SMFSchemaSerializerContract
     final Path path,
     final InputStream stream)
   {
-    return new SMFSchemaParserProvider().schemaParserCreate(path, stream);
+    return new SMFSchemaParserProvider().schemaParserCreate(
+      path.toUri(),
+      stream);
   }
 
   @Override

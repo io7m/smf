@@ -74,7 +74,7 @@ public final class SMFFormatTextTest
 
       final SMFFormatText format = new SMFFormatText();
       final SMFParserSequentialType parser =
-        format.parserCreateSequential(events, PATH, stream);
+        format.parserCreateSequential(events, PATH.toUri(), stream);
       parser.parseHeader();
       if (data) {
         parser.parseData();
@@ -2687,7 +2687,7 @@ public final class SMFFormatTextTest
     final SMFHeader header = header_b.build();
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     serializer.serializeHeader(header);
     serializer.serializeDataStart();
@@ -2705,7 +2705,7 @@ public final class SMFFormatTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     this.expected.expect(FSMTransitionException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
@@ -2720,7 +2720,7 @@ public final class SMFFormatTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -2754,7 +2754,7 @@ public final class SMFFormatTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -2865,7 +2865,7 @@ public final class SMFFormatTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(

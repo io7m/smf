@@ -258,7 +258,10 @@ public final class SMFMemoryMeshSerializerTest
              StandardOpenOption.CREATE,
              StandardOpenOption.TRUNCATE_EXISTING)) {
       try (final SMFSerializerType serial =
-             fmt.serializerCreate(SMFFormatVersion.of(1, 0), tmp, stream)) {
+             fmt.serializerCreate(
+               SMFFormatVersion.of(1, 0),
+               tmp.toUri(),
+               stream)) {
         SMFMemoryMeshSerializer.serialize(mesh0, serial);
       }
     }
@@ -266,7 +269,7 @@ public final class SMFMemoryMeshSerializerTest
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
     try (final InputStream stream = Files.newInputStream(tmp)) {
       try (final SMFParserSequentialType parser1 =
-             fmt.parserCreateSequential(loader1, tmp, stream)) {
+             fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
         parser1.parseHeader();
         parser1.parseData();
       }

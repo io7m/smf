@@ -22,8 +22,8 @@ import javaslang.collection.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
 
 /**
  * The type of parser providers.
@@ -46,7 +46,7 @@ public interface SMFParserProviderType
 
   /**
    * @param events The event receiver
-   * @param path   The path referred to by the input stream, for diagnostic
+   * @param uri    The URI referred to by the input stream, for diagnostic
    *               messages
    * @param stream An input stream
    *
@@ -59,13 +59,13 @@ public interface SMFParserProviderType
 
   SMFParserSequentialType parserCreateSequential(
     SMFParserEventsType events,
-    Path path,
+    URI uri,
     InputStream stream)
     throws UnsupportedOperationException;
 
   /**
    * @param events The event receiver
-   * @param path   The path referred to by the input stream, for diagnostic
+   * @param uri    The URI referred to by the input stream, for diagnostic
    *               messages
    * @param file   A file channel
    *
@@ -78,7 +78,7 @@ public interface SMFParserProviderType
 
   SMFParserRandomAccessType parserCreateRandomAccess(
     SMFParserEventsType events,
-    Path path,
+    URI uri,
     FileChannel file)
     throws UnsupportedOperationException;
 }

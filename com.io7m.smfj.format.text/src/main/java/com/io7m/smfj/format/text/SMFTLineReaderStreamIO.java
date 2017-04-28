@@ -22,8 +22,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 /**
  * A line reader based on blocking stream IO.
@@ -34,10 +34,10 @@ public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
   private final BufferedReader reader;
 
   private SMFTLineReaderStreamIO(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    super(in_path, 1);
+    super(in_uri, 1);
     this.reader = new BufferedReader(
       new InputStreamReader(
         NullCheck.notNull(in_stream, "stream"), StandardCharsets.UTF_8));
@@ -46,17 +46,17 @@ public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
   /**
    * Construct a new line reader.
    *
-   * @param in_path   The file path, for diagnostic messages
+   * @param in_uri    The file URI, for diagnostic messages
    * @param in_stream The input stream
    *
    * @return A line reader
    */
 
   public static SMFTLineReaderType create(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    return new SMFTLineReaderStreamIO(in_path, in_stream);
+    return new SMFTLineReaderStreamIO(in_uri, in_stream);
   }
 
   @Override

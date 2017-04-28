@@ -24,7 +24,6 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandChecks;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -33,9 +32,10 @@ import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
 import static javaslang.control.Validation.invalid;
 
 /**
@@ -86,7 +86,7 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {
@@ -98,12 +98,10 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
         return Validation.valid(create(attr));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()

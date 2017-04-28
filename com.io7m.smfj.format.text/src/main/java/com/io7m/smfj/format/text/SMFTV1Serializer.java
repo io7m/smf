@@ -42,8 +42,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Objects;
 
 final class SMFTV1Serializer implements SMFSerializerType
@@ -66,7 +66,7 @@ final class SMFTV1Serializer implements SMFSerializerType
 
   SMFTV1Serializer(
     final SMFFormatVersion in_version,
-    final Path in_path,
+    final URI in_uri,
     final OutputStream in_stream)
   {
     this.version = NullCheck.notNull(in_version, "Version");

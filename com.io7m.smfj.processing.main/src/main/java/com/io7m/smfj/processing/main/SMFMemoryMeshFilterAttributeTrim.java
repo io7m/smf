@@ -33,7 +33,7 @@ import javaslang.collection.Set;
 import javaslang.collection.SortedMap;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeExists;
@@ -75,7 +75,7 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {

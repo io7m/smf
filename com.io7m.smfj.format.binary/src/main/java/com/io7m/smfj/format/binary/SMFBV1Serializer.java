@@ -48,9 +48,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -79,7 +79,7 @@ final class SMFBV1Serializer implements SMFSerializerType
 
   SMFBV1Serializer(
     final SMFFormatVersion in_version,
-    final Path in_path,
+    final URI in_uri,
     final OutputStream in_stream)
   {
     this.version = NullCheck.notNull(in_version, "Version");
@@ -93,7 +93,7 @@ final class SMFBV1Serializer implements SMFSerializerType
     this.header_buffer_wrap =
       ByteBuffer.wrap(this.header_buffer);
 
-    this.writer = SMFBDataStreamWriter.create(in_path, in_stream);
+    this.writer = SMFBDataStreamWriter.create(in_uri, in_stream);
     this.attribute_bytes = new byte[SMFBV1AttributeByteBuffered.sizeInOctets()];
     this.attribute_buffer = ByteBuffer.wrap(this.attribute_bytes);
     this.attribute_buffer.order(ByteOrder.BIG_ENDIAN);

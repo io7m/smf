@@ -20,7 +20,7 @@ import javaslang.collection.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.InputStream;
-import java.nio.file.Path;
+import java.net.URI;
 
 /**
  * The type of schema parser providers.
@@ -36,7 +36,7 @@ public interface SMFSchemaParserProviderType
   SortedSet<SMFSchemaVersion> schemaSupportedVersions();
 
   /**
-   * @param path   The path referred to by the input stream, for diagnostic
+   * @param uri    The URI referred to by the input stream, for diagnostic
    *               messages
    * @param stream An input stream
    *
@@ -44,6 +44,6 @@ public interface SMFSchemaParserProviderType
    */
 
   SMFSchemaParserType schemaParserCreate(
-    Path path,
+    URI uri,
     InputStream stream);
 }

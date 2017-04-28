@@ -1032,7 +1032,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFHeader header = header_b.build();
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     serializer.serializeHeader(header);
     serializer.serializeDataStart();
@@ -1050,7 +1050,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     this.expected.expect(FSMTransitionException.class);
     serializer.serializeData(SMFAttributeName.of("unknown"));
@@ -1065,7 +1065,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1101,7 +1101,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1132,7 +1132,7 @@ public final class SMFFormatBinarySequentialTest extends SMFBinaryTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatBinary().serializerCreate(version, path, out);
+      new SMFFormatBinary().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(

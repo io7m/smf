@@ -1029,7 +1029,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1075,7 +1075,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1115,7 +1115,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1155,7 +1155,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1195,7 +1195,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1235,7 +1235,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1275,7 +1275,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1315,7 +1315,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1355,7 +1355,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1396,7 +1396,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1436,7 +1436,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1476,7 +1476,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1516,7 +1516,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     final List<SMFAttribute> attributes = List.of(
       SMFAttribute.of(
@@ -1557,7 +1557,7 @@ public final class SMFFormatTextIntegerUnsignedTest extends SMFTextTest
     final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
 
     final SMFSerializerType serializer =
-      new SMFFormatText().serializerCreate(version, path, out);
+      new SMFFormatText().serializerCreate(version, path.toUri(), out);
 
     List<SMFAttribute> attributes = List.empty();
     for (final int size : List.of(

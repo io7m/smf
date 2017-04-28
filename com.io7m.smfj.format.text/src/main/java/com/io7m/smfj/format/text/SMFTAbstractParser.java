@@ -24,7 +24,7 @@ import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -48,7 +48,7 @@ abstract class SMFTAbstractParser implements SMFParserSequentialType
     final String message,
     final String expected,
     final String received,
-    final LexicalPosition<Path> position)
+    final LexicalPosition<URI> position)
   {
     final StringBuilder sb = new StringBuilder(128);
     sb.append(message);
@@ -65,7 +65,7 @@ abstract class SMFTAbstractParser implements SMFParserSequentialType
   static SMFParseError makeError(
     final String message,
     final Optional<Exception> exception,
-    final LexicalPosition<Path> position)
+    final LexicalPosition<URI> position)
   {
     return SMFParseError.of(position, message, exception);
   }
