@@ -186,6 +186,12 @@
                   </includes>
                 </filter>
                 <filter>
+                  <artifact>com.io7m.mutable.numbers:*</artifact>
+                  <includes>
+                    <include>**</include>
+                  </includes>
+                </filter>
+                <filter>
                   <artifact>io.javaslang:*</artifact>
                   <includes>
                     <include>**</include>
