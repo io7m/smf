@@ -14,7 +14,7 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.validation.main;
+package com.io7m.smfj.validation.api;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
@@ -24,10 +24,6 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import com.io7m.smfj.validation.api.SMFSchema;
-import com.io7m.smfj.validation.api.SMFSchemaAttribute;
-import com.io7m.smfj.validation.api.SMFSchemaValidationError;
-import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
 import javaslang.Tuple2;
 import javaslang.collection.List;
 import javaslang.collection.SortedMap;

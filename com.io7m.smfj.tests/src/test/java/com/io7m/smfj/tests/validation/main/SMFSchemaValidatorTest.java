@@ -18,7 +18,7 @@ package com.io7m.smfj.tests.validation.main;
 
 import com.io7m.smfj.tests.validation.api.SMFSchemaValidatorContract;
 import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
-import com.io7m.smfj.validation.main.SMFSchemaValidator;
+import com.io7m.smfj.validation.api.SMFSchemaValidator;
 
 public final class SMFSchemaValidatorTest extends SMFSchemaValidatorContract
 {
