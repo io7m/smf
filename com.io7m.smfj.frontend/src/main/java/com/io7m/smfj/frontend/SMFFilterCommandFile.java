@@ -19,7 +19,7 @@ package com.io7m.smfj.frontend;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jnull.NullCheck;
-import com.io7m.smfj.format.text.SMFLineLexer;
+import com.io7m.smfj.format.text.SMFTLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
@@ -81,7 +81,7 @@ public final class SMFFilterCommandFile
     NullCheck.notNull(path_opt, "Path");
     NullCheck.notNull(stream, "Stream");
 
-    final SMFLineLexer lexer = new SMFLineLexer();
+    final SMFTLineLexer lexer = new SMFTLineLexer();
 
     final SortedMap<String, SMFFilterCommandModuleType> modules =
       resolver.available();

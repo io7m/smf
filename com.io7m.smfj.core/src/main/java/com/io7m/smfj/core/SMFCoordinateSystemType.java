@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.core;
 
+import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
 import org.immutables.value.Value;
 
@@ -31,15 +32,24 @@ public interface SMFCoordinateSystemType
    * @return The coordinate system axes
    */
 
+  @Value.Default
   @Value.Parameter
-  CAxisSystem axes();
+  default CAxisSystem axes()
+  {
+    return CAxisSystem.of(
+      CAxis.AXIS_POSITIVE_X, CAxis.AXIS_POSITIVE_Y, CAxis.AXIS_NEGATIVE_Z);
+  }
 
   /**
    * @return The winding order for triangles
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFFaceWindingOrder windingOrder();
+  default SMFFaceWindingOrder windingOrder()
+  {
+    return SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
+  }
 
   /**
    * @return A humanly-readable string such as "+x +y -z counter-clockwise"

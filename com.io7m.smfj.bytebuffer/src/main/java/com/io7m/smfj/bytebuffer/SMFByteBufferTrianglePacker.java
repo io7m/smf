@@ -18,8 +18,11 @@ package com.io7m.smfj.bytebuffer;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFSupportedSizes;
+import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
 
 import java.nio.ByteBuffer;
 
@@ -32,16 +35,19 @@ public final class SMFByteBufferTrianglePacker implements
 {
   private final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> cursor;
   private final long triangles;
+  private final SMFParserEventsErrorType events;
 
   /**
    * Construct a packer.
    *
+   * @param in_events          A receiver of errors and warnings
    * @param in_triangle_buffer The byte buffer that will contain triangle data
    * @param in_size            The size in bits of a single triangle index
    * @param in_triangles       The number of triangles that will be packed
    */
 
   public SMFByteBufferTrianglePacker(
+    final SMFParserEventsErrorType in_events,
     final ByteBuffer in_triangle_buffer,
     final int in_size,
     final long in_triangles)
@@ -53,12 +59,7 @@ public final class SMFByteBufferTrianglePacker implements
     this.cursor = SMFByteBufferCursors.createUnsigned3Raw(
       buffer, in_size, 0, stride);
     this.triangles = in_triangles;
-  }
-
-  @Override
-  public void onDataTrianglesStart()
-  {
-    // Nothing to be done here
+    this.events = NullCheck.notNull(in_events, "in_events");
   }
 
   private <T> void cursorNext(
@@ -85,5 +86,19 @@ public final class SMFByteBufferTrianglePacker implements
   public void onDataTrianglesFinish()
   {
     // Nothing to be done here
+  }
+
+  @Override
+  public void onError(
+    final SMFErrorType e)
+  {
+    this.events.onError(e);
+  }
+
+  @Override
+  public void onWarning(
+    final SMFWarningType w)
+  {
+    this.events.onWarning(w);
   }
 }

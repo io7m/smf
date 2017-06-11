@@ -17,6 +17,8 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jnull.NullCheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,6 +33,12 @@ import java.nio.charset.StandardCharsets;
 
 public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFTLineReaderStreamIO.class);
+  }
+
   private final BufferedReader reader;
 
   private SMFTLineReaderStreamIO(
@@ -57,6 +65,12 @@ public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
     final InputStream in_stream)
   {
     return new SMFTLineReaderStreamIO(in_uri, in_stream);
+  }
+
+  @Override
+  protected Logger log()
+  {
+    return LOG;
   }
 
   @Override

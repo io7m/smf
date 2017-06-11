@@ -3,10 +3,15 @@ vertices 3
 triangles 1 8
 coordinates +x +y -z counter-clockwise
 attribute "x" integer-unsigned 4 32
-data
+end
+
+vertices noninterleaved
 attribute "x"
 0 2147483648 4294967295 1
 0 2147483648 4294967295 1
 0 2147483648 4294967295 1
+end
+
 triangles
 0 1 2
+end

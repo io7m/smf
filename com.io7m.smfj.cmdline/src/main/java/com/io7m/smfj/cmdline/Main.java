@@ -454,10 +454,7 @@ public final class Main implements Runnable
         try (final SMFParserSequentialType parser =
                provider_parser.parserCreateSequential(
                  loader, path_in.toUri(), is)) {
-          parser.parseHeader();
-          if (!parser.parserHasFailed()) {
-            parser.parseData();
-          }
+          parser.parse();
         }
         if (!loader.errors().isEmpty()) {
           loader.errors().forEach(e -> LOG.error(e.fullMessage()));

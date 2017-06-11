@@ -39,8 +39,12 @@ public interface SMFHeaderType
    * @return The triangle information for the file
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFTriangles triangles();
+  default SMFTriangles triangles()
+  {
+    return SMFTriangles.builder().build();
+  }
 
   /**
    * @return The number of vertices in the file
@@ -57,15 +61,23 @@ public interface SMFHeaderType
    * @return The schema ID in the file
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFSchemaIdentifier schemaIdentifier();
+  default SMFSchemaIdentifier schemaIdentifier()
+  {
+    return SMFSchemaIdentifier.builder().build();
+  }
 
   /**
    * @return The coordinate system of the mesh data
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFCoordinateSystem coordinateSystem();
+  default SMFCoordinateSystem coordinateSystem()
+  {
+    return SMFCoordinateSystem.builder().build();
+  }
 
   /**
    * @return The attributes in the order that they appeared in the file

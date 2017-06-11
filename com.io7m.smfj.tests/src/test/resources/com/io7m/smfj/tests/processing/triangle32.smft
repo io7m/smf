@@ -2,14 +2,16 @@ smf 1 0
 vertices 3
 triangles 1 32
 coordinates +x +y -z counter-clockwise
-
 attribute "i8_1" integer-signed 1 8
+end
 
-data
+vertices noninterleaved
 attribute "i8_1"
 127
 127
 127
+end
 
 triangles
 0 1 2
+end

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.serializer.api;
 
-import com.io7m.jfsm.core.FSMTransitionException;
-import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 
 import java.io.Closeable;
@@ -34,13 +32,14 @@ public interface SMFSerializerType extends Closeable
    *
    * @param header The header
    *
-   * @throws FSMTransitionException If the header has already been serialized
-   * @throws FSMTransitionException If the serializer has previously failed
+   * @throws IOException           On I/O errors
+   * @throws IllegalStateException If the header has already been serialized
+   * @throws IllegalStateException If the serializer has previously failed
    */
 
   void serializeHeader(
     SMFHeader header)
-    throws FSMTransitionException;
+    throws IllegalStateException, IOException;
 
   /**
    * <p>Start serializing data.</p>
@@ -51,269 +50,15 @@ public interface SMFSerializerType extends Closeable
    * <i>failed</i> and all subsequent method calls will raise {@link
    * IllegalArgumentException}.</p>
    *
-   * @throws FSMTransitionException If the header has not yet been serialized
-   * @throws FSMTransitionException If the serializer has previously failed
-   * @throws IOException            On I/O errors
+   * @return A serializer for non-interleaved vertex data values
+   *
+   * @throws IllegalStateException If the header has not yet been serialized
+   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IOException           On I/O errors
    */
 
-  void serializeDataStart()
-    throws FSMTransitionException, IOException;
-
-  /**
-   * <p>Start serializing data for a single attribute.</p>
-   *
-   * <p>This method must be called once for each attribute in the header passed
-   * to {@link #serializeHeader(SMFHeader)} in the order the attributes are
-   * specified by {@link SMFHeader#attributesInOrder()}.</p>
-   *
-   * <p>If the method raises an exception, the serializer is considered to have
-   * <i>failed</i> and all subsequent method calls will raise {@link
-   * IllegalArgumentException}.</p>
-   *
-   * @param name The attribute name
-   *
-   * @throws IllegalArgumentException Iff the given attribute is not the next
-   *                                  expected attribute
-   * @throws FSMTransitionException   If too few values have been serialized for
-   *                                  the attribute previously passed to this
-   *                                  method
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeData(
-    SMFAttributeName name)
-    throws IllegalArgumentException, FSMTransitionException, IOException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   * @param w The w value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueFloat4(
-    double x,
-    double y,
-    double z,
-    double w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueFloat3(
-    double x,
-    double y,
-    double z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueFloat2(
-    double x,
-    double y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueFloat1(
-    double x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   * @param w The w value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerSigned4(
-    long x,
-    long y,
-    long z,
-    long w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerSigned3(
-    long x,
-    long y,
-    long z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerSigned2(
-    long x,
-    long y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerSigned1(
-    long x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   * @param w The w value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerUnsigned4(
-    long x,
-    long y,
-    long z,
-    long w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   * @param z The z value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerUnsigned3(
-    long x,
-    long y,
-    long z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   * @param y The y value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerUnsigned2(
-    long x,
-    long y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
-
-  /**
-   * Serialize a value.
-   *
-   * @param x The x value
-   *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
-   * @throws IllegalArgumentException If the current attribute is not of a type
-   *                                  appropriate to this method call
-   * @throws IOException              On I/O errors
-   */
-
-  void serializeValueIntegerUnsigned1(
-    long x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+  SMFSerializerDataAttributesNonInterleavedType serializeVertexDataNonInterleavedStart()
+    throws IllegalStateException, IOException;
 
   /**
    * <p>Start serializing triangles.</p>
@@ -322,38 +67,18 @@ public interface SMFSerializerType extends Closeable
    *
    * <p>If the method raises an exception, the serializer is considered to have
    * <i>failed</i> and all subsequent method calls will raise {@link
-   * FSMTransitionException}.</p>
+   * IllegalStateException}.</p>
    *
-   * @throws FSMTransitionException If the attribute data has not yet been
-   *                                serialized
-   * @throws FSMTransitionException If the serializer has previously failed
-   * @throws IOException            On I/O errors
+   * @return A serializer for triangles
+   *
+   * @throws IllegalStateException If the attribute data has not yet been
+   *                               serialized
+   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IOException           On I/O errors
    */
 
-  void serializeTrianglesStart()
-    throws FSMTransitionException, IOException;
-
-  /**
-   * Serialize a triangle.
-   *
-   * @param v0 The first vertex index
-   * @param v1 The second vertex index
-   * @param v2 The third vertex index
-   *
-   * @throws FSMTransitionException If the header has not yet been serialized
-   * @throws FSMTransitionException If the attribute has not yet been
-   *                                serialized
-   * @throws FSMTransitionException If the required number of triangles have
-   *                                already been serialized
-   * @throws FSMTransitionException If the serializer has previously failed
-   * @throws IOException            On I/O errors
-   */
-
-  void serializeTriangle(
-    long v0,
-    long v1,
-    long v2)
-    throws IOException, FSMTransitionException;
+  SMFSerializerDataTrianglesType serializeTrianglesStart()
+    throws IllegalStateException, IOException;
 
   /**
    * <p>Start serializing metadata.</p>
@@ -364,38 +89,14 @@ public interface SMFSerializerType extends Closeable
    * <i>failed</i> and all subsequent method calls will raise {@link
    * IllegalArgumentException}.</p>
    *
-   * @throws FSMTransitionException If the triangle data has not yet been
-   *                                serialized
-   * @throws FSMTransitionException If the serializer has previously failed
-   * @throws IOException            On I/O errors
+   * @return A serializer for metadata values
+   *
+   * @throws IllegalStateException If the triangle data has not yet been
+   *                               serialized
+   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IOException           On I/O errors
    */
 
-  void serializeMetadataStart()
-    throws FSMTransitionException, IOException;
-
-  /**
-   * <p>Serialize one item of metadata.</p>
-   *
-   * <p>Metadata is serialized after all other data in the file has been
-   * serialized.</p>
-   *
-   * @param vendor The vendor ID
-   * @param schema The schema ID
-   * @param data   The data
-   *
-   * @throws FSMTransitionException If the header has not yet been serialized
-   * @throws FSMTransitionException If the mesh data has not yet been
-   *                                serialized
-   * @throws FSMTransitionException If the triangle data has not yet been
-   *                                serialized
-   * @throws FSMTransitionException If no metadata was specified by the header
-   * @throws FSMTransitionException If the serializer has previously failed
-   * @throws IOException            On I/O errors
-   */
-
-  void serializeMetadata(
-    long vendor,
-    long schema,
-    byte[] data)
-    throws IOException, FSMTransitionException;
+  SMFSerializerDataMetaType serializeMetadataStart()
+    throws IllegalStateException, IOException;
 }

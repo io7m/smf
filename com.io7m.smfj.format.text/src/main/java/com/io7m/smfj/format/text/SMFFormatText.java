@@ -21,6 +21,8 @@ import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.format.text.v1.SMFTV1Parser;
+import com.io7m.smfj.format.text.v1.SMFTV1Serializer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
@@ -48,10 +50,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
+import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javaslang.control.Validation.invalid;
@@ -101,7 +103,7 @@ public final class SMFFormatText
     final LexicalPosition<URI> position)
   {
     if (line.isEmpty()) {
-      return invalid(List.of(SMFTAbstractParser.makeErrorExpectedGot(
+      return invalid(List.of(errorExpectedGot(
         "The first line must be a version declaration.",
         "smf <version-major> <version-minor>",
         line.toJavaStream().collect(Collectors.joining(" ")),
@@ -111,7 +113,7 @@ public final class SMFFormatText
     switch (line.get(0)) {
       case "smf": {
         if (line.length() != 3) {
-          return invalid(List.of(SMFTAbstractParser.makeErrorExpectedGot(
+          return invalid(List.of(errorExpectedGot(
             "Incorrect number of arguments.",
             "smf <version-major> <version-minor>",
             line.toJavaStream().collect(Collectors.joining(" ")),
@@ -123,7 +125,7 @@ public final class SMFFormatText
           final int minor = Integer.parseUnsignedInt(line.get(2));
           return valid(SMFFormatVersion.of(major, minor));
         } catch (final NumberFormatException e) {
-          return invalid(List.of(SMFTAbstractParser.makeErrorExpectedGot(
+          return invalid(List.of(errorExpectedGot(
             "Cannot parse number: " + e.getMessage(),
             "smf <version-major> <version-minor>",
             line.toJavaStream().collect(Collectors.joining(" ")),
@@ -131,7 +133,7 @@ public final class SMFFormatText
         }
       }
       default: {
-        return invalid(List.of(SMFTAbstractParser.makeErrorExpectedGot(
+        return invalid(List.of(errorExpectedGot(
           "Unrecognized command.",
           "smf <version-major> <version-minor>",
           line.toJavaStream().collect(Collectors.joining(" ")),
@@ -144,9 +146,9 @@ public final class SMFFormatText
     final SMFFormatVersion version)
   {
     return String.format(
-      "Version %d.%d is not supported",
-      Integer.valueOf(version.major()),
-      Integer.valueOf(version.minor()));
+      "Version %s.%s is not supported",
+      Integer.toUnsignedString(version.major()),
+      Integer.toUnsignedString(version.minor()));
   }
 
   @Override
@@ -170,10 +172,9 @@ public final class SMFFormatText
     NullCheck.notNull(in_events, "Events");
     NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_stream, "Stream");
+
     return new Parser(
-      in_events,
-      SMFTLineReaderStreamIO.create(in_uri, in_stream),
-      new AtomicReference<>(SMFTAbstractParser.ParserState.STATE_INITIAL));
+      in_events, SMFTLineReaderStreamIO.create(in_uri, in_stream));
   }
 
   @Override
@@ -224,7 +225,7 @@ public final class SMFFormatText
 
       final String line = reader.readLine();
       if (line != null) {
-        final SMFLineLexer lexer = new SMFLineLexer();
+        final SMFTLineLexer lexer = new SMFTLineLexer();
         final List<String> line_tokens = lexer.lex(line);
 
         final Validation<List<SMFParseError>, SMFFormatVersion> result =
@@ -245,90 +246,75 @@ public final class SMFFormatText
     }
   }
 
-  private static final class Parser extends SMFTAbstractParser
+  private static final class Parser implements SMFParserSequentialType
   {
-    private SMFTV1Parser v1;
+    private final SMFParserEventsType events;
+    private final SMFTLineReaderType reader;
 
     Parser(
       final SMFParserEventsType in_events,
-      final SMFTLineReaderType in_reader,
-      final AtomicReference<ParserState> in_state)
+      final SMFTLineReaderType in_reader)
     {
-      super(in_events, in_reader, in_state);
-    }
-
-    @Override
-    protected Logger log()
-    {
-      return LOG;
-    }
-
-    private Validation<List<SMFParseError>, SMFFormatVersion> onParseVersion(
-      final List<String> line)
-    {
-      return parseSMFVersion(line, this.reader.position());
+      this.events = NullCheck.notNull(in_events, "Events");
+      this.reader = NullCheck.notNull(in_reader, "Reader");
     }
 
     @Override
     public void close()
       throws IOException
     {
-      LOG.debug("closing parser");
-      super.events.onFinish();
+
     }
 
     @Override
-    public void parseHeader()
+    public void parse()
     {
-      if (super.state.get() != ParserState.STATE_INITIAL) {
-        throw new IllegalStateException("Parser has already executed");
-      }
-
       try {
-        super.events.onStart();
+        this.events.onStart();
 
-        final Optional<List<String>> line = super.reader.line();
-        if (line.isPresent()) {
-          final Validation<List<SMFParseError>, SMFFormatVersion> v_version =
-            this.onParseVersion(line.get());
-
-          if (v_version.isValid()) {
-            final SMFFormatVersion version = v_version.get();
-            super.events.onVersionReceived(version);
-            switch (version.major()) {
-              case 1: {
-                LOG.debug("instantiating 1.* parser");
-                this.v1 =
-                  new SMFTV1Parser(this, super.events, super.reader, version);
-                this.v1.parseHeader();
-                return;
-              }
-              default: {
-                LOG.debug("no parser for version {}", version);
-                this.fail("Unsupported version", Optional.empty());
-                return;
-              }
-            }
-          }
-
-          this.failErrors(v_version.getError());
+        final Optional<List<String>> initial_opt = this.reader.line();
+        if (!initial_opt.isPresent()) {
+          this.events.onError(SMFParseError.of(
+            this.reader.position(),
+            "Unexpected EOF",
+            Optional.empty()));
           return;
         }
-        this.fail("Unexpected EOF", Optional.empty());
+
+        final List<String> initial = initial_opt.get();
+        final Validation<List<SMFParseError>, SMFFormatVersion> result =
+          parseSMFVersion(initial, LexicalPositions.zero());
+
+        if (!result.isValid()) {
+          result.getError().forEach(this.events::onError);
+          return;
+        }
+
+        final SMFFormatVersion version = result.get();
+        switch (version.major()) {
+          case 1: {
+            try (final SMFParserSequentialType p =
+                   new SMFTV1Parser(version, this.events, this.reader)) {
+              p.parse();
+            }
+            break;
+          }
+
+          default: {
+            this.events.onError(SMFParseError.of(
+              this.reader.position(),
+              notSupported(version),
+              Optional.empty()));
+            break;
+          }
+        }
+
       } catch (final Exception e) {
-        this.fail(e.getMessage(), Optional.of(e));
+        this.events.onError(SMFParseError.of(
+          this.reader.position(), e.getMessage(), Optional.of(e)));
+      } finally {
+        this.events.onFinish();
       }
-    }
-
-    @Override
-    public void parseData()
-      throws IllegalStateException
-    {
-      if (super.state.get() != ParserState.STATE_HEADER_PARSED) {
-        throw new IllegalStateException("Header has not been parsed");
-      }
-
-      this.v1.parseData();
     }
   }
 }

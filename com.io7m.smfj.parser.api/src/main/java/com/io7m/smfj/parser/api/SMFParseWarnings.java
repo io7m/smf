@@ -1,0 +1,66 @@
+/*
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any
+ * purpose with or without fee is hereby granted, provided that the above
+ * copyright notice and this permission notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+ * WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+ * MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+ * SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR
+ * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ */
+
+package com.io7m.smfj.parser.api;
+
+import com.io7m.jlexing.core.LexicalPosition;
+import com.io7m.junreachable.UnreachableCodeException;
+
+import java.net.URI;
+import java.util.Optional;
+
+/**
+ * Convenient functions for constructing parse warnings.
+ */
+
+public final class SMFParseWarnings
+{
+  private SMFParseWarnings()
+  {
+    throw new UnreachableCodeException();
+  }
+
+  /**
+   * Construct a parse warning that indicates the expected and actual input.
+   *
+   * @param message  An warning message
+   * @param expected The expected input
+   * @param received The received input
+   * @param position The current position
+   *
+   * @return A parse warning
+   */
+
+  public static SMFParseWarning warningExpectedGot(
+    final String message,
+    final String expected,
+    final String received,
+    final LexicalPosition<URI> position)
+  {
+    final String text =
+      new StringBuilder(128)
+        .append(message)
+        .append(System.lineSeparator())
+        .append("  Expected: ")
+        .append(expected)
+        .append(System.lineSeparator())
+        .append("  Received: ")
+        .append(received)
+        .append(System.lineSeparator())
+        .toString();
+    return SMFParseWarning.of(position, text, Optional.empty());
+  }
+}

@@ -24,7 +24,14 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
-import com.io7m.smfj.parser.api.SMFParserEventsMetaType;
+import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import javaslang.Tuple;
 import javaslang.Tuple2;
 import javaslang.collection.List;
@@ -43,8 +50,13 @@ import java.util.function.LongFunction;
  * Functions for loading and packing meshes.
  */
 
-public final class SMFByteBufferPackedMeshes implements
-  SMFByteBufferPackedMeshLoaderType
+public final class SMFByteBufferPackedMeshes
+  implements SMFByteBufferPackedMeshLoaderType,
+  SMFParserEventsHeaderType,
+  SMFParserEventsBodyType,
+  SMFParserEventsDataAttributesNonInterleavedType,
+  SMFParserEventsDataTrianglesType,
+  SMFParserEventsDataAttributeValuesType
 {
   private static final Logger LOG;
 
@@ -53,8 +65,8 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   private final SMFByteBufferPackerEventsType events;
-  private final SMFParserEventsMetaType meta;
-
+  private final SMFParserEventsDataMetaOptionalSupplierType meta;
+  private List<SMFWarningType> warnings;
   private List<SMFErrorType> errors;
   private ByteBuffer tri_buffer;
   private SMFByteBufferPackedMesh mesh;
@@ -65,11 +77,13 @@ public final class SMFByteBufferPackedMeshes implements
   private SMFHeader header;
 
   private SMFByteBufferPackedMeshes(
-    final SMFParserEventsMetaType in_meta,
+    final SMFParserEventsDataMetaOptionalSupplierType in_meta,
     final SMFByteBufferPackerEventsType in_events)
   {
     this.meta = NullCheck.notNull(in_meta, "Meta");
     this.events = NullCheck.notNull(in_events, "Events");
+    this.errors = List.empty();
+    this.warnings = List.empty();
   }
 
   /**
@@ -95,7 +109,7 @@ public final class SMFByteBufferPackedMeshes implements
   /**
    * Create a new mesh loader.
    *
-   * @param in_meta   A metadata listener
+   * @param in_meta   A metadata supplier
    * @param in_events A buffer packing event listener
    *
    * @return A new mesh loader
@@ -103,7 +117,7 @@ public final class SMFByteBufferPackedMeshes implements
 
   public static SMFByteBufferPackedMeshLoaderType
   newLoader(
-    final SMFParserEventsMetaType in_meta,
+    final SMFParserEventsDataMetaOptionalSupplierType in_meta,
     final SMFByteBufferPackerEventsType in_events)
   {
     return new SMFByteBufferPackedMeshes(in_meta, in_events);
@@ -115,6 +129,14 @@ public final class SMFByteBufferPackedMeshes implements
   {
     LOG.error("parse error: {}", e.fullMessage());
     this.errors = this.errors.append(e);
+  }
+
+  @Override
+  public void onWarning(
+    final SMFWarningType w)
+  {
+    LOG.warn("parse warning: {}", w.fullMessage());
+    this.warnings = this.warnings.append(w);
   }
 
   @Override
@@ -130,10 +152,10 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   @Override
-  public void onVersionReceived(
+  public Optional<SMFParserEventsHeaderType> onVersionReceived(
     final SMFFormatVersion version)
   {
-    // Nothing to be done here
+    return Optional.of(this);
   }
 
   @Override
@@ -168,68 +190,15 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   @Override
-  public void onHeaderParsed(
-    final SMFHeader in_header)
-  {
-    this.header = in_header;
-
-    final Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> result =
-      this.events.onHeader(this.header);
-    if (result.isInvalid()) {
-      this.errors = this.errors.appendAll(result.getError());
-      return;
-    }
-
-    this.config = result.get();
-
-    final boolean want_triangles = this.events.onShouldPackTriangles();
-    if (want_triangles) {
-      final SMFTriangles triangles = this.header.triangles();
-      final long size_tri =
-        Math.multiplyExact(
-          triangles.triangleSizeOctets(),
-          triangles.triangleCount());
-
-      LOG.debug("allocating triangle buffer");
-      this.tri_buffer =
-        this.events.onAllocateTriangleBuffer(triangles, size_tri);
-
-      Invariants.checkInvariantL(
-        (long) this.tri_buffer.capacity(),
-        (long) this.tri_buffer.capacity() == size_tri,
-        x -> "Triangle buffer size must be " + size_tri);
-
-      this.tri_packer = new SMFByteBufferTrianglePacker(
-        this.tri_buffer,
-        Math.toIntExact(triangles.triangleIndexSizeBits()),
-        triangles.triangleCount());
-    } else {
-      LOG.debug("no triangle buffer required");
-    }
-
-    this.attr_buffers = this.config.map((id, buffer_config) -> {
-      final long size_attr =
-        Math.multiplyExact(
-          (long) buffer_config.vertexSizeOctets(),
-          this.header.vertexCount());
-
-      LOG.debug("allocating attribute buffer for {}", id);
-      final ByteBuffer buffer =
-        this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
-
-      Invariants.checkInvariantL(
-        (long) buffer.capacity(),
-        (long) buffer.capacity() == size_attr,
-        x -> "Attribute buffer size must be " + size_attr);
-
-      return Tuple.of(id, buffer);
-    });
-  }
-
-  @Override
   public List<SMFErrorType> errors()
   {
     return this.errors;
+  }
+
+  @Override
+  public List<SMFWarningType> warnings()
+  {
+    return this.warnings;
   }
 
   @Override
@@ -243,31 +212,6 @@ public final class SMFByteBufferPackedMeshes implements
     throw new IllegalStateException("Buffer packer has failed");
   }
 
-  @Override
-  public boolean onMeta(
-    final long vendor,
-    final long schema,
-    final long length)
-  {
-    return this.meta.onMeta(vendor, schema, length);
-  }
-
-  @Override
-  public void onMetaData(
-    final long vendor,
-    final long schema,
-    final byte[] data)
-  {
-    this.meta.onMetaData(vendor, schema, data);
-  }
-
-  @Override
-  public void onDataTrianglesStart()
-  {
-    if (this.tri_packer != null) {
-      this.tri_packer.onDataTrianglesStart();
-    }
-  }
 
   @Override
   public void onDataTriangle(
@@ -289,7 +233,7 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   @Override
-  public void onDataAttributeStart(
+  public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
     final SMFAttribute attribute)
   {
     TreeMap<Integer, SMFByteBufferAttributePacker> packers = TreeMap.empty();
@@ -304,13 +248,23 @@ public final class SMFByteBufferPackedMeshes implements
         final ByteBuffer b = this.attr_buffers.get(id).get();
         final SMFByteBufferPackedAttribute pa = by_name.get(name).get();
         final SMFByteBufferAttributePacker packer =
-          new SMFByteBufferAttributePacker(
-            b, bc, pa, this.header.vertexCount());
+          new SMFByteBufferAttributePacker(this,
+                                           b,
+                                           bc,
+                                           pa,
+                                           this.header.vertexCount());
         packers = packers.put(id, packer);
       }
     }
 
     this.attr_packers = packers;
+    return Optional.of(this);
+  }
+
+  @Override
+  public void onDataAttributesNonInterleavedFinish()
+  {
+    // Nothing
   }
 
   @Override
@@ -440,9 +394,94 @@ public final class SMFByteBufferPackedMeshes implements
   }
 
   @Override
-  public void onDataAttributeFinish(
-    final SMFAttribute attribute)
+  public void onDataAttributeValueFinish()
   {
-    // Nothing to be done here
+    // Nothing
+  }
+
+  @Override
+  public Optional<SMFParserEventsBodyType> onHeaderParsed(
+    final SMFHeader in_header)
+  {
+    this.header = NullCheck.notNull(in_header, "Header");
+
+    final Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> result =
+      this.events.onHeader(this.header);
+    if (result.isInvalid()) {
+      this.errors = this.errors.appendAll(result.getError());
+      return Optional.empty();
+    }
+
+    this.config = result.get();
+
+    final boolean want_triangles = this.events.onShouldPackTriangles();
+    if (want_triangles) {
+      final SMFTriangles triangles = this.header.triangles();
+      final long size_tri =
+        Math.multiplyExact(
+          triangles.triangleSizeOctets(),
+          triangles.triangleCount());
+
+      LOG.debug("allocating triangle buffer");
+      this.tri_buffer =
+        this.events.onAllocateTriangleBuffer(triangles, size_tri);
+
+      Invariants.checkInvariantL(
+        (long) this.tri_buffer.capacity(),
+        (long) this.tri_buffer.capacity() == size_tri,
+        x -> "Triangle buffer size must be " + size_tri);
+
+      this.tri_packer = new SMFByteBufferTrianglePacker(
+        this,
+        this.tri_buffer,
+        Math.toIntExact(triangles.triangleIndexSizeBits()),
+        triangles.triangleCount());
+    } else {
+      LOG.debug("no triangle buffer required");
+    }
+
+    this.attr_buffers = this.config.map((id, buffer_config) -> {
+      final long size_attr =
+        Math.multiplyExact(
+          (long) buffer_config.vertexSizeOctets(),
+          this.header.vertexCount());
+
+      LOG.debug("allocating attribute buffer for {}", id);
+      final ByteBuffer buffer =
+        this.events.onAllocateAttributeBuffer(id, buffer_config, size_attr);
+
+      Invariants.checkInvariantL(
+        (long) buffer.capacity(),
+        (long) buffer.capacity() == size_attr,
+        x -> "Attribute buffer size must be " + size_attr);
+
+      return Tuple.of(id, buffer);
+    });
+
+    return Optional.of(this);
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataMetaType> onMeta(
+    final long vendor,
+    final long schema)
+  {
+    return this.meta.onMeta(vendor, schema);
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataAttributesNonInterleavedType> onAttributesNonInterleaved()
+  {
+    return Optional.of(this);
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataTrianglesType> onTriangles()
+  {
+    if (this.tri_packer != null) {
+      return Optional.of(this);
+    }
+
+    return Optional.empty();
   }
 }

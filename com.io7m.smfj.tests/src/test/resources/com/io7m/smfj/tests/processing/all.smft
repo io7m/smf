@@ -60,7 +60,9 @@ attribute "u8_3" integer-unsigned 3 8
 attribute "u8_2" integer-unsigned 2 8
 attribute "u8_1" integer-unsigned 1 8
 
-data
+end
+
+vertices noninterleaved
 attribute "f16_4"
 -127.0 0 1 127.0
 -127.0 0 1 127.0
@@ -247,17 +249,17 @@ attribute "u8_1"
 127
 127
 127
+end
 
 triangles
 0 1 2
+end
 
 metadata
-
 meta 696f376d 0 1
 aGVsbG8=
-
 meta 696f376d 1 1
 b2xsZWg=
-
 meta 696f376d 2 1
 dGhlIGVuZA==
+end

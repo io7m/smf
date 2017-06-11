@@ -16,10 +16,9 @@
 
 package com.io7m.smfj.format.binary;
 
-import com.io7m.jaffirm.core.Invariants;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jnull.NullCheck;
-import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -42,7 +41,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -50,8 +48,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
@@ -162,10 +158,7 @@ public final class SMFFormatBinary
     NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_stream, "Stream");
 
-    return new ParserSequential(
-      in_events,
-      SMFBDataStreamReader.create(in_uri, in_stream),
-      new AtomicReference<>(SMFBAbstractParserSequential.ParserState.STATE_INITIAL));
+    throw new UnimplementedCodeException();
   }
 
   @Override
@@ -179,10 +172,7 @@ public final class SMFFormatBinary
     NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_channel, "Channel");
 
-    return new ParserRandom(
-      in_events,
-      new SMFBDataFileChannelReader(in_uri, in_channel),
-      new AtomicReference<>(SMFBAbstractParserRandomAccess.ParserState.STATE_INITIAL));
+    throw new UnimplementedCodeException();
   }
 
   @Override
@@ -204,11 +194,7 @@ public final class SMFFormatBinary
     final OutputStream stream)
     throws UnsupportedOperationException
   {
-    if (SUPPORTED_VERSIONS.contains(version)) {
-      return new SMFBV1Serializer(version, uri, stream);
-    }
-
-    throw new UnsupportedOperationException(notSupported(version));
+    throw new UnimplementedCodeException();
   }
 
   @Override
@@ -260,330 +246,4 @@ public final class SMFFormatBinary
     }
   }
 
-  private static final class ParserRandom extends SMFBAbstractParserRandomAccess
-  {
-    private Optional<SMFBAbstractParserRandomAccess> parser;
-
-    ParserRandom(
-      final SMFParserEventsType in_events,
-      final SMFBDataFileChannelReader in_reader,
-      final AtomicReference<ParserState> in_state)
-    {
-      super(in_events, in_reader, in_state);
-      this.parser = Optional.empty();
-    }
-
-    @Override
-    protected Logger log()
-    {
-      return LOG;
-    }
-
-    @Override
-    public void parseHeader()
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          super.events.onStart();
-
-          try {
-            this.parser = this.parseMagicNumberAndVersion();
-
-            if (this.parser.isPresent()) {
-              this.parser.get().parseHeader();
-            } else {
-              Invariants.checkInvariant(
-                super.state.get(),
-                super.state.get() == ParserState.STATE_FAILED,
-                s -> String.format(
-                  "State %s must be %s", s, ParserState.STATE_FAILED));
-            }
-
-          } catch (final Exception e) {
-            super.fail(e.getMessage(), Optional.of(e));
-          }
-          break;
-        }
-        case STATE_PARSED_HEADER: {
-          throw new IllegalStateException("Header has already been parsed");
-        }
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-      }
-    }
-
-    @Override
-    public void parseAttributeData(
-      final SMFAttributeName name)
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          throw new IllegalStateException("Header has not yet been parsed");
-        }
-        case STATE_PARSED_HEADER: {
-          Preconditions.checkPrecondition(
-            this.parser.isPresent(), "Parser must be present");
-
-          this.parser.get().parseAttributeData(name);
-          break;
-        }
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-      }
-    }
-
-    @Override
-    public void parseTriangles()
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          throw new IllegalStateException("Header has not yet been parsed");
-        }
-        case STATE_PARSED_HEADER: {
-          Preconditions.checkPrecondition(
-            this.parser.isPresent(), "Parser must be present");
-
-          this.parser.get().parseTriangles();
-          break;
-        }
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-      }
-    }
-
-    @Override
-    public void parseMetadata()
-      throws IllegalStateException
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          throw new IllegalStateException("Header has not yet been parsed");
-        }
-        case STATE_PARSED_HEADER: {
-          Preconditions.checkPrecondition(
-            this.parser.isPresent(), "Parser must be present");
-
-          this.parser.get().parseMetadata();
-          break;
-        }
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-      }
-    }
-
-    private Optional<SMFBAbstractParserRandomAccess> parseMagicNumberAndVersion()
-    {
-      try {
-        final byte[] buffer8 = new byte[8];
-        super.reader.readBytes(
-          Optional.of("magic number"),
-          buffer8,
-          SMFBV1Offsets.offsetMagicNumber());
-        if (magicNumberIsValid(buffer8)) {
-          return this.parseVersion();
-        }
-
-        super.failExpectedGot(
-          "Bad magic number.",
-          DatatypeConverter.printHexBinary(MAGIC_NUMBER),
-          DatatypeConverter.printHexBinary(buffer8));
-        return Optional.empty();
-      } catch (final IOException e) {
-        super.fail("I/O error: " + e.getMessage(), Optional.of(e));
-        return Optional.empty();
-      }
-    }
-
-    @Override
-    public void close()
-      throws IOException
-    {
-      LOG.debug("closing parser");
-      super.events.onFinish();
-    }
-
-    private Optional<SMFBAbstractParserRandomAccess> parseVersion()
-      throws IOException
-    {
-      final long major = super.reader.readUnsigned32(
-        Optional.of("major version"), SMFBV1Offsets.offsetVersionMajor());
-      final long minor = super.reader.readUnsigned32(
-        Optional.of("minor version"), SMFBV1Offsets.offsetVersionMinor());
-
-      final SMFFormatVersion version =
-        SMFFormatVersion.of((int) major, (int) minor);
-
-      super.events.onVersionReceived(version);
-
-      switch ((int) major) {
-        case 1: {
-          LOG.debug("instantiating parser for 1.*");
-          return Optional.of(
-            new SMFBV1ParserRandomAccess(
-              super.events,
-              super.reader,
-              super.state));
-        }
-
-        default: {
-          LOG.debug("no parser for version {}", version);
-          super.fail("Unsupported version", Optional.empty());
-          return Optional.empty();
-        }
-      }
-    }
-  }
-
-  private static final class ParserSequential extends
-    SMFBAbstractParserSequential
-  {
-    private Optional<SMFBAbstractParserSequential> parser;
-
-    ParserSequential(
-      final SMFParserEventsType in_events,
-      final SMFBDataStreamReaderType in_reader,
-      final AtomicReference<ParserState> in_state)
-    {
-      super(in_events, in_reader, in_state);
-      this.parser = Optional.empty();
-    }
-
-    @Override
-    protected Logger log()
-    {
-      return LOG;
-    }
-
-    private Optional<SMFBAbstractParserSequential> parseMagicNumberAndVersion()
-    {
-      try {
-        final byte[] buffer8 = new byte[8];
-        super.reader.readBytes(Optional.of("magic number"), buffer8);
-        if (magicNumberIsValid(buffer8)) {
-          return this.parseVersion();
-        }
-
-        super.failExpectedGot(
-          "Bad magic number.",
-          DatatypeConverter.printHexBinary(MAGIC_NUMBER),
-          DatatypeConverter.printHexBinary(buffer8));
-        return Optional.empty();
-      } catch (final IOException e) {
-        super.fail("I/O error: " + e.getMessage(), Optional.of(e));
-        return Optional.empty();
-      }
-    }
-
-    @Override
-    public void close()
-      throws IOException
-    {
-      LOG.debug("closing parser");
-      super.events.onFinish();
-    }
-
-    private Optional<SMFBAbstractParserSequential> parseVersion()
-      throws IOException
-    {
-      final long major =
-        super.reader.readU32(Optional.of("major version"));
-      final long minor =
-        super.reader.readU32(Optional.of("minor version"));
-
-      final SMFFormatVersion version =
-        SMFFormatVersion.of((int) major, (int) minor);
-
-      super.events.onVersionReceived(version);
-
-      switch ((int) major) {
-        case 1: {
-          LOG.debug("instantiating parser for 1.*");
-          return Optional.of(
-            new SMFBV1ParserSequential(
-              super.events,
-              super.reader,
-              super.state));
-        }
-
-        default: {
-          LOG.debug("no parser for version {}", version);
-          super.fail("Unsupported version", Optional.empty());
-          return Optional.empty();
-        }
-      }
-    }
-
-    @Override
-    public void parseHeader()
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          super.events.onStart();
-
-          try {
-            this.parser = this.parseMagicNumberAndVersion();
-
-            if (this.parser.isPresent()) {
-              this.parser.get().parseHeader();
-            } else {
-              Invariants.checkInvariant(
-                super.state.get(),
-                super.state.get() == ParserState.STATE_FAILED,
-                s -> String.format(
-                  "State %s must be %s", s, ParserState.STATE_FAILED));
-            }
-
-          } catch (final Exception e) {
-            super.fail(e.getMessage(), Optional.of(e));
-          }
-          break;
-        }
-
-        case STATE_PARSED_HEADER: {
-          throw new IllegalStateException("Header has already been parsed");
-        }
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-        case STATE_FINISHED: {
-          throw new IllegalStateException("Parser has already finished");
-        }
-      }
-    }
-
-    @Override
-    public void parseData()
-      throws IllegalStateException
-    {
-      switch (super.state.get()) {
-        case STATE_INITIAL: {
-          throw new IllegalStateException("Header has not been parsed");
-        }
-
-        case STATE_PARSED_HEADER: {
-          if (this.parser.isPresent()) {
-            this.parser.get().parseData();
-          } else {
-            Invariants.checkInvariant(
-              super.state.get(),
-              super.state.get() == ParserState.STATE_FAILED,
-              s -> String.format(
-                "State %s must be %s", s, ParserState.STATE_FAILED));
-          }
-          break;
-        }
-
-        case STATE_FAILED: {
-          throw new IllegalStateException("Parser has already failed");
-        }
-        case STATE_FINISHED: {
-          throw new IllegalStateException("Parser has already finished");
-        }
-      }
-    }
-  }
 }

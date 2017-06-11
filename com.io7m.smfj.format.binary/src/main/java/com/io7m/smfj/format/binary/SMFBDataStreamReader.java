@@ -48,10 +48,10 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
     final URI in_uri,
     final InputStream in_stream)
   {
-    this.uri = NullCheck.notNull(in_uri, "URI");
-    this.stream = new CountingInputStream(NullCheck.notNull(
-      in_stream,
-      "Stream"));
+    this.uri =
+      NullCheck.notNull(in_uri, "URI");
+    this.stream =
+      new CountingInputStream(NullCheck.notNull(in_stream, "Stream"));
 
     this.byte1 = new byte[1];
     this.byte2 = new byte[2];
