@@ -58,10 +58,6 @@
       <artifactId>com.io7m.jcoords.core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.io7m.jlexing</groupId>
-      <artifactId>com.io7m.jlexing.core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.io7m.jaffirm</groupId>
       <artifactId>com.io7m.jaffirm.core</artifactId>
     </dependency>
@@ -72,10 +68,6 @@
     <dependency>
       <groupId>com.io7m.ieee754b16</groupId>
       <artifactId>com.io7m.ieee754b16.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.jfsm</groupId>
-      <artifactId>com.io7m.jfsm.core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.io7m.mutable.numbers</groupId>
