@@ -34,7 +34,6 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import org.slf4j.Logger;
@@ -67,7 +66,6 @@ public final class SMFB
   private SMFSerializerDataAttributesNonInterleavedType serial_ni;
   private SMFSerializerDataAttributesValuesType serial_values;
   private SMFSerializerDataTrianglesType serial_tri;
-  private SMFSerializerDataMetaType serial_meta;
   private long meta_vendor;
   private long meta_schema;
 
@@ -419,8 +417,7 @@ public final class SMFB
     final byte[] data)
   {
     try {
-      this.serial_meta.serializeMetadata(schema, data);
-      this.serial_meta.close();
+      this.serial.serializeMetadata(schema, data);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -430,12 +427,6 @@ public final class SMFB
   public Optional<SMFParserEventsDataMetaType> onMeta(
     final SMFSchemaIdentifier schema)
   {
-    try {
-      this.serial_meta = this.serial.serializeMetadataStart();
-    } catch (final IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
     return Optional.of(this);
   }
 }

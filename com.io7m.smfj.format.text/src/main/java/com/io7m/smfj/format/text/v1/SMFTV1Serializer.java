@@ -29,7 +29,6 @@ import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFBase64Lines;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 
@@ -62,7 +61,6 @@ public final class SMFTV1Serializer implements SMFSerializerType
   private boolean done_vertices;
   private @Nullable SMFHeader header;
   private boolean done_triangles;
-  private boolean done_meta;
 
   /**
    * Construct a serializer.
@@ -129,12 +127,6 @@ public final class SMFTV1Serializer implements SMFSerializerType
         this.writer.append(Long.toUnsignedString(triangles.triangleCount()));
         this.writer.append(" ");
         this.writer.append(Long.toUnsignedString(triangles.triangleIndexSizeBits()));
-        this.writer.newLine();
-      }
-
-      {
-        this.writer.append("meta ");
-        this.writer.append(Long.toUnsignedString(in_header.metaCount()));
         this.writer.newLine();
       }
 
@@ -218,24 +210,41 @@ public final class SMFTV1Serializer implements SMFSerializerType
   }
 
   @Override
-  public SMFSerializerDataMetaType serializeMetadataStart()
-    throws IOException
+  public void serializeMetadata(
+    final SMFSchemaIdentifier schema,
+    final byte[] data)
+    throws IllegalStateException, IOException
   {
     if (!this.done_header) {
       throw new IllegalStateException("Header has not yet been serialized");
     }
-    if (this.done_meta) {
-      throw new IllegalStateException(
-        "Metadata elements have already been serialized");
-    }
+
+    final List<String> lines = SMFBase64Lines.toBase64Lines(data);
+    this.writer.append("metadata ");
+    this.writer.append(schema.name().value());
+    this.writer.append(" ");
+    this.writer.append(Integer.toUnsignedString(schema.versionMajor()));
+    this.writer.append(" ");
+    this.writer.append(Integer.toUnsignedString(schema.versionMinor()));
+    this.writer.append(" ");
+    this.writer.append(Integer.toUnsignedString(lines.size()));
+    this.writer.newLine();
 
     try {
-      this.writer.append("metadata");
-      this.writer.newLine();
-      return new Metadata(this.header, this.writer);
-    } finally {
-      this.done_meta = true;
+      lines.forEach(line -> {
+        try {
+          this.writer.append(line);
+          this.writer.newLine();
+        } catch (final IOException e) {
+          throw new UncheckedIOException(e);
+        }
+      });
+    } catch (final UncheckedIOException e) {
+      throw e.getCause();
     }
+
+    this.writer.append("end");
+    this.writer.newLine();
   }
 
   @Override
@@ -662,87 +671,6 @@ public final class SMFTV1Serializer implements SMFSerializerType
             .append("Attempted to serialize too few triangles.")
             .append(System.lineSeparator())
             .append("  Remaining triangles: ")
-            .append(this.remaining)
-            .append(System.lineSeparator())
-            .toString();
-        throw new IllegalStateException(text);
-      }
-
-      this.writer.append("end");
-      this.writer.newLine();
-    }
-  }
-
-  private static final class Metadata implements SMFSerializerDataMetaType
-  {
-    private final BufferedWriter writer;
-    private final SMFHeader header;
-    private long remaining;
-
-    Metadata(
-      final SMFHeader in_header,
-      final BufferedWriter in_writer)
-    {
-      this.header = NullCheck.notNull(in_header, "Header");
-      this.writer = NullCheck.notNull(in_writer, "Writer");
-      this.remaining = this.header.metaCount();
-    }
-
-    @Override
-    public void serializeMetadata(
-      final SMFSchemaIdentifier schema,
-      final byte[] data)
-      throws IOException, IllegalStateException
-    {
-      if (Long.compareUnsigned(this.remaining, 0L) <= 0) {
-        final String text =
-          new StringBuilder(128)
-            .append("Attempted to serialize too many metadata elements.")
-            .append(System.lineSeparator())
-            .append("  Remaining metadata elements: ")
-            .append(this.remaining)
-            .append(System.lineSeparator())
-            .toString();
-        throw new IllegalStateException(text);
-      }
-
-      this.remaining = Math.subtractExact(this.remaining, 1L);
-
-      final List<String> lines = SMFBase64Lines.toBase64Lines(data);
-      this.writer.append("meta ");
-      this.writer.append(schema.name().value());
-      this.writer.append(" ");
-      this.writer.append(Integer.toUnsignedString(schema.versionMajor()));
-      this.writer.append(" ");
-      this.writer.append(Integer.toUnsignedString(schema.versionMinor()));
-      this.writer.append(" ");
-      this.writer.append(Integer.toUnsignedString(lines.size()));
-      this.writer.newLine();
-
-      try {
-        lines.forEach(line -> {
-          try {
-            this.writer.append(line);
-            this.writer.newLine();
-          } catch (final IOException e) {
-            throw new UncheckedIOException(e);
-          }
-        });
-      } catch (final UncheckedIOException e) {
-        throw e.getCause();
-      }
-    }
-
-    @Override
-    public void close()
-      throws IOException
-    {
-      if (Long.compareUnsigned(this.remaining, 0L) > 0) {
-        final String text =
-          new StringBuilder(128)
-            .append("Attempted to serialize too few metadata elements.")
-            .append(System.lineSeparator())
-            .append("  Remaining metadata elements: ")
             .append(this.remaining)
             .append(System.lineSeparator())
             .toString();

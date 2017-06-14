@@ -55,8 +55,6 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
     Assert.assertEquals(
       mesh0.header().coordinateSystem(), mesh1.header().coordinateSystem());
     Assert.assertEquals(
-      mesh0.header().metaCount(), mesh1.header().metaCount());
-    Assert.assertEquals(
       mesh0.metadata(), mesh1.metadata());
     Assert.assertEquals(
       mesh0.arrays(), mesh1.arrays());

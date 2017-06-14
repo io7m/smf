@@ -112,17 +112,6 @@ public interface SMFHeaderType
   }
 
   /**
-   * @return The number of metadata elements in the file
-   */
-
-  @Value.Parameter
-  @Value.Default
-  default long metaCount()
-  {
-    return 0L;
-  }
-
-  /**
    * Check preconditions for the type.
    */
 

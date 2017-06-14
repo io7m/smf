@@ -162,7 +162,6 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
         SMFMemoryMesh.builder()
           .from(m)
           .setMetadata(new_meta)
-          .setHeader(m.header().withMetaCount((long) new_meta.size()))
           .build());
     } catch (final IOException e) {
       return invalid(List.of(

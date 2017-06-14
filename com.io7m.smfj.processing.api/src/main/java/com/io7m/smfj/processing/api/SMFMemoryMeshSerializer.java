@@ -30,7 +30,6 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 
@@ -78,10 +77,8 @@ public final class SMFMemoryMeshSerializer
     final SMFSerializerType s)
     throws IOException
   {
-    try (final SMFSerializerDataMetaType sm = s.serializeMetadataStart()) {
-      for (final SMFMetadata m : mesh.metadata()) {
-        sm.serializeMetadata(m.schema(), m.data());
-      }
+    for (final SMFMetadata m : mesh.metadata()) {
+      s.serializeMetadata(m.schema(), m.data());
     }
   }
 

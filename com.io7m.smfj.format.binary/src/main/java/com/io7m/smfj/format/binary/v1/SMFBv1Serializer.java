@@ -25,6 +25,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBCoordinateSystems;
@@ -37,7 +38,6 @@ import com.io7m.smfj.format.binary.SMFBSectionTriangles;
 import com.io7m.smfj.format.binary.SMFBSectionVerticesNonInterleaved;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 
@@ -154,6 +154,8 @@ public final class SMFBv1Serializer implements SMFSerializerType
       }
     }
 
+    final byte[] zero_buffer =
+      new byte[SMFBv1AttributeByteBuffered.sizeInOctets()];
     final byte[] buffer =
       new byte[SMFBv1AttributeByteBuffered.sizeInOctets()];
     final SMFBv1AttributeType view =
@@ -162,6 +164,8 @@ public final class SMFBv1Serializer implements SMFSerializerType
         SMFBv1AttributeByteBuffered::newValueWithOffset).getElementView();
 
     for (final SMFAttribute attribute : in_header.attributesInOrder()) {
+      System.arraycopy(zero_buffer, 0, buffer, 0, buffer.length);
+
       view.setComponentCount(attribute.componentCount());
       view.setComponentKind(attribute.componentType().toInteger());
       view.setComponentSize(attribute.componentSizeBits());
@@ -172,7 +176,7 @@ public final class SMFBv1Serializer implements SMFSerializerType
 
     this.writer.padTo(
       SMFBAlignment.alignNext(this.writer.position(), 16),
-      (byte) 0x0);
+      (byte) 0);
   }
 
   @Override
@@ -231,11 +235,13 @@ public final class SMFBv1Serializer implements SMFSerializerType
   }
 
   @Override
-  public SMFSerializerDataMetaType serializeMetadataStart()
+  public void serializeMetadata(
+    final SMFSchemaIdentifier schema,
+    final byte[] data)
     throws IllegalStateException, IOException
   {
     checkAlignment(this.writer);
-    return new Metadata(this.writer);
+    Metadata.serializeMetadata(this.writer, schema, data);
   }
 
   @Override
@@ -248,5 +254,4 @@ public final class SMFBv1Serializer implements SMFSerializerType
     this.writer.putU64(0L);
     this.stream.flush();
   }
-
 }

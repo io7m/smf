@@ -153,9 +153,6 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
       (long) header0.attributesInOrder().size() - 1L,
       (long) header1.attributesInOrder().size());
     Assert.assertEquals(
-      header0.metaCount(),
-      header1.metaCount());
-    Assert.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
     Assert.assertEquals(

@@ -21,6 +21,7 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
@@ -408,6 +409,8 @@ final class NonInterleaved
   public void close()
     throws IOException
   {
-
+    this.writer.padTo(
+      SMFBAlignment.alignNext(this.writer.position(), 16),
+      (byte) 0);
   }
 }

@@ -50,6 +50,6 @@ abstract class Triangles implements SMFSerializerDataTrianglesType
     final long position = this.writer.position();
     this.writer.padTo(
       SMFBAlignment.alignNext(position, SMFBSection.SECTION_ALIGNMENT),
-      (byte) 0x0);
+      (byte) 0);
   }
 }

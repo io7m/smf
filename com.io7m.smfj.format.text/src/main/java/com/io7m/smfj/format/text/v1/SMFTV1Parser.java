@@ -103,8 +103,6 @@ public final class SMFTV1Parser implements SMFParserSequentialType
     this.registerHeaderCommand(
       new SMFTV1HeaderCommandCoordinates(this.reader, this.header_builder));
     this.registerHeaderCommand(
-      new SMFTV1HeaderCommandMeta(this.reader, this.header_builder));
-    this.registerHeaderCommand(
       new SMFTV1HeaderCommandSchema(this.reader, this.header_builder));
     this.registerHeaderCommand(
       new SMFTV1HeaderCommandTriangles(this.reader, this.header_builder));

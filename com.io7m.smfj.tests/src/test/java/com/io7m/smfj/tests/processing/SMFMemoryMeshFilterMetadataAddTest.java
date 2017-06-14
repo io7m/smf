@@ -200,10 +200,6 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(mesh0.metadata(), mesh1.metadata().dropRight(1));
 
-    Assert.assertEquals(
-      mesh0.header().metaCount() + 1L,
-      mesh1.header().metaCount());
-
     final SMFMetadata meta = mesh1.metadata().last();
     Assert.assertEquals(schema_id, meta.schema());
     Assert.assertArrayEquals(data, meta.data());

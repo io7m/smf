@@ -204,7 +204,6 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
       SMFMemoryMesh.builder()
         .from(m)
         .setMetadata(filtered)
-        .setHeader(m.header().withMetaCount((long) filtered.size()))
         .build());
   }
 

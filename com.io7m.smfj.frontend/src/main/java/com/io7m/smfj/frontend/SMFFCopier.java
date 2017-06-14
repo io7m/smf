@@ -31,7 +31,6 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
@@ -56,7 +55,6 @@ public final class SMFFCopier
   private final SMFSerializerType serializer;
   private List<SMFWarningType> warnings;
   private List<SMFErrorType> errors;
-  private SMFSerializerDataMetaType serializer_meta;
   private SMFSerializerDataAttributesNonInterleavedType serializer_data_noninterleaved;
   private SMFSerializerDataTrianglesType serializer_triangles;
   private SMFSerializerDataAttributesValuesType serializer_attribute;
@@ -384,8 +382,7 @@ public final class SMFFCopier
     final byte[] data)
   {
     try {
-      this.serializer_meta.serializeMetadata(schema, data);
-      this.serializer_meta.close();
+      this.serializer.serializeMetadata(schema, data);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -395,12 +392,6 @@ public final class SMFFCopier
   public Optional<SMFParserEventsDataMetaType> onMeta(
     final SMFSchemaIdentifier schema)
   {
-    try {
-      this.serializer_meta = this.serializer.serializeMetadataStart();
-    } catch (final IOException e) {
-      throw new UncheckedIOException(e);
-    }
-
     return Optional.of(this);
   }
 }

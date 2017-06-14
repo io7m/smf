@@ -16,52 +16,53 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRAStringTruncation;
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionMetadata;
-import com.io7m.smfj.serializer.api.SMFSerializerDataMetaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-final class Metadata implements SMFSerializerDataMetaType
+final class Metadata
 {
-  private final SMFBDataStreamWriterType writer;
+  private static final Logger LOG;
 
-  Metadata(
-    final SMFBDataStreamWriterType in_writer)
-  {
-    this.writer = NullCheck.notNull(in_writer, "Writer");
+  static {
+    LOG = LoggerFactory.getLogger(Metadata.class);
   }
 
-  @Override
-  public void close()
-    throws IOException
+  private Metadata()
   {
-    final long position = this.writer.position();
-    this.writer.padTo(
-      SMFBAlignment.alignNext(position, SMFBSection.SECTION_ALIGNMENT),
-      (byte) 0x0);
+    throw new UnreachableCodeException();
   }
 
-  @Override
-  public void serializeMetadata(
+  public static void serializeMetadata(
+    final SMFBDataStreamWriterType writer,
     final SMFSchemaIdentifier schema,
     final byte[] data)
     throws IOException
   {
-    final byte[] buffer =
+    if (LOG.isDebugEnabled()) {
+      LOG.debug(
+        "serializeMetadata: {} ({} octets)",
+        schema.toHumanString(),
+        Integer.valueOf(data.length));
+    }
+
+    final byte[] meta_header_buffer =
       new byte[SMFBv1MetadataIDByteBuffered.sizeInOctets()];
 
     final SMFBv1MetadataIDType view =
       JPRACursor1DByteBufferedChecked.newCursor(
-        ByteBuffer.wrap(buffer).order(ByteOrder.BIG_ENDIAN),
+        ByteBuffer.wrap(meta_header_buffer).order(ByteOrder.BIG_ENDIAN),
         SMFBv1MetadataIDByteBuffered::newValueWithOffset)
         .getElementView();
 
@@ -71,23 +72,27 @@ final class Metadata implements SMFSerializerDataMetaType
     view.setMetaSchemaVersionMinor(schema.versionMinor());
     view.setMetaSize(data.length);
 
-    final long header_size =
+    final long meta_header_size =
       SMFBAlignment.alignNext(
-        Integer.toUnsignedLong(buffer.length), SMFBSection.SECTION_ALIGNMENT);
-    final long data_size =
+        Integer.toUnsignedLong(meta_header_buffer.length), SMFBSection.SECTION_ALIGNMENT);
+    final long meta_data_size =
       SMFBAlignment.alignNext(
         Integer.toUnsignedLong(data.length), SMFBSection.SECTION_ALIGNMENT);
-    final long size_padded =
-      Math.addExact(header_size, data_size);
+    final long size_total =
+      Math.addExact(meta_header_size, meta_data_size);
 
-    this.writer.putU64(SMFBSectionMetadata.MAGIC);
-    this.writer.putU64(size_padded);
-    this.writer.putBytes(buffer);
+    writer.putU64(SMFBSectionMetadata.MAGIC);
+    writer.putU64(size_total);
 
-    this.writer.padTo(
-      Math.addExact(this.writer.position(), header_size),
-      (byte) 0x0);
+    final long position_header = writer.position();
+    writer.putBytes(meta_header_buffer);
+    writer.padTo(
+      Math.addExact(position_header, meta_header_size),
+      (byte) 'h');
 
-    this.writer.putBytes(data);
+    writer.putBytes(data);
+    writer.padTo(
+      SMFBAlignment.alignNext(writer.position(), SMFBSection.SECTION_ALIGNMENT),
+      (byte) 'm');
   }
 }

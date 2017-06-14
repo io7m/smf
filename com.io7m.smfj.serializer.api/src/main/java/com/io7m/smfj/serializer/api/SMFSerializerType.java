@@ -17,6 +17,7 @@
 package com.io7m.smfj.serializer.api;
 
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -34,7 +35,6 @@ public interface SMFSerializerType extends Closeable
    *
    * @throws IOException           On I/O errors
    * @throws IllegalStateException If the header has already been serialized
-   * @throws IllegalStateException If the serializer has previously failed
    */
 
   void serializeHeader(
@@ -42,9 +42,7 @@ public interface SMFSerializerType extends Closeable
     throws IllegalStateException, IOException;
 
   /**
-   * <p>Start serializing data.</p>
-   *
-   * <p>This method must be called exactly once.</p>
+   * <p>Start serializing non-interleaved vertex data.</p>
    *
    * <p>If the method raises an exception, the serializer is considered to have
    * <i>failed</i> and all subsequent method calls will raise {@link
@@ -53,7 +51,6 @@ public interface SMFSerializerType extends Closeable
    * @return A serializer for non-interleaved vertex data values
    *
    * @throws IllegalStateException If the header has not yet been serialized
-   * @throws IllegalStateException If the serializer has previously failed
    * @throws IOException           On I/O errors
    */
 
@@ -63,17 +60,9 @@ public interface SMFSerializerType extends Closeable
   /**
    * <p>Start serializing triangles.</p>
    *
-   * <p>This method must be called exactly once.</p>
-   *
-   * <p>If the method raises an exception, the serializer is considered to have
-   * <i>failed</i> and all subsequent method calls will raise {@link
-   * IllegalStateException}.</p>
-   *
    * @return A serializer for triangles
    *
-   * @throws IllegalStateException If the attribute data has not yet been
-   *                               serialized
-   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IllegalStateException If the header has not yet been serialized
    * @throws IOException           On I/O errors
    */
 
@@ -81,22 +70,17 @@ public interface SMFSerializerType extends Closeable
     throws IllegalStateException, IOException;
 
   /**
-   * <p>Start serializing metadata.</p>
+   * <p>Serialize one item of metadata.</p>
    *
-   * <p>This method must be called exactly once.</p>
+   * @param schema The schema ID
+   * @param data   The data
    *
-   * <p>If the method raises an exception, the serializer is considered to have
-   * <i>failed</i> and all subsequent method calls will raise {@link
-   * IllegalArgumentException}.</p>
-   *
-   * @return A serializer for metadata values
-   *
-   * @throws IllegalStateException If the triangle data has not yet been
-   *                               serialized
-   * @throws IllegalStateException If the serializer has previously failed
+   * @throws IllegalStateException If the header has not yet been serialized
    * @throws IOException           On I/O errors
    */
 
-  SMFSerializerDataMetaType serializeMetadataStart()
+  void serializeMetadata(
+    SMFSchemaIdentifier schema,
+    byte[] data)
     throws IllegalStateException, IOException;
 }

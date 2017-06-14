@@ -190,10 +190,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(0L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      0L,
-      mesh1.header().metaCount());
   }
 
   @Test
@@ -227,10 +223,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(1L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      1L,
-      mesh1.header().metaCount());
   }
 
   @Test
@@ -264,10 +256,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(3L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      3L,
-      mesh1.header().metaCount());
   }
 
   @Test
@@ -301,10 +289,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(3L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      3L,
-      mesh1.header().metaCount());
   }
 
   @Test
@@ -338,9 +322,5 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(3L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      3L,
-      mesh1.header().metaCount());
   }
 }

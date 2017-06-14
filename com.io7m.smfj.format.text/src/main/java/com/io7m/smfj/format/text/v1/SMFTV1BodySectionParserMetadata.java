@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.text.v1;
 
 import com.io7m.jnull.NullCheck;
-import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
@@ -40,8 +39,6 @@ import java.util.function.Supplier;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
-import static com.io7m.smfj.format.text.v1.SMFTErrors.errorMalformedCommand;
-import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 
 /**
  * A parser for the "metadata" body section.
@@ -55,7 +52,7 @@ public final class SMFTV1BodySectionParserMetadata
    */
 
   public static final String SYNTAX =
-    "meta <schema> <version-major> <version-minor> <line-count>";
+    "metadata <schema> <version-major> <version-minor> <line-count>";
 
   private final SMFTLineReaderType reader;
   private final Supplier<SMFHeader> header_get;
@@ -95,76 +92,7 @@ public final class SMFTV1BodySectionParserMetadata
     final List<String> line_start)
     throws IOException
   {
-    if (line_start.size() != 1) {
-      receiver.onError(errorMalformedCommand(
-        "metadata",
-        "metadata",
-        line_start,
-        this.reader.position()));
-      return FAILURE;
-    }
-
-    final SMFHeader header = this.header_get.get();
-    final long meta_count = header.metaCount();
-    long meta_remaining = meta_count;
-
-    boolean encountered_end = false;
-    while (!encountered_end) {
-      final Optional<List<String>> line_opt = this.reader.line();
-      if (!line_opt.isPresent()) {
-        receiver.onError(SMFParseError.of(
-          this.reader.position(),
-          "Unexpected EOF",
-          Optional.empty()));
-        return FAILURE;
-      }
-
-      final List<String> line = line_opt.get();
-      if (line.isEmpty()) {
-        continue;
-      }
-
-      final String command_name = line.get(0);
-      switch (command_name) {
-        case "meta": {
-          switch (this.parseMeta(line, receiver)) {
-            case SUCCESS:
-              meta_remaining = Math.subtractExact(meta_remaining, 1L);
-              continue;
-            case FAILURE:
-              return FAILURE;
-          }
-          break;
-        }
-        case "end": {
-          encountered_end = true;
-          break;
-        }
-        default: {
-          throw new UnimplementedCodeException();
-        }
-      }
-    }
-
-    if (meta_remaining < 0L) {
-      receiver.onError(errorExpectedGot(
-        "Too many metadata elements were provided.",
-        meta_count + " triangles",
-        (meta_count - meta_remaining) + " metadata elements",
-        this.reader.position()));
-      return FAILURE;
-    }
-
-    if (meta_remaining > 0L) {
-      receiver.onError(errorExpectedGot(
-        "Too few metadata elements were provided.",
-        meta_count + " triangles",
-        (meta_count - meta_remaining) + " metadata elements",
-        this.reader.position()));
-      return FAILURE;
-    }
-
-    return SUCCESS;
+    return this.parseMeta(line_start, receiver);
   }
 
   private SMFTParsingStatus parseMeta(
