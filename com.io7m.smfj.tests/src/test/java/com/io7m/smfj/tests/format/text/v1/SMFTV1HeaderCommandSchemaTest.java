@@ -55,7 +55,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     Assert.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
-    final SMFSchemaIdentifier schema = result.schemaIdentifier();
+    final SMFSchemaIdentifier schema = result.schemaIdentifier().get();
 
     Assert.assertEquals("com.io7m.example", schema.name().value());
     Assert.assertEquals(1L, (long) schema.versionMajor());

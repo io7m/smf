@@ -161,7 +161,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
-    Assert.assertEquals(identifier, r.get().header().schemaIdentifier());
+    Assert.assertEquals(identifier, r.get().header().schemaIdentifier().get());
 
     checkMeshesSame(loader.mesh(), r.get());
   }

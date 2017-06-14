@@ -1,2 +1,2 @@
-header_command_smf =
+smf =
   "smf" , integer-unsigned , integer-unsigned ;

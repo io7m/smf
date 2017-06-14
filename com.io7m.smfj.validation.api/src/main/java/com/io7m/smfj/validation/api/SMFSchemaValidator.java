@@ -45,12 +45,6 @@ import static javaslang.control.Validation.valid;
 @Component
 public final class SMFSchemaValidator implements SMFSchemaValidatorType
 {
-  private static final SMFSchemaIdentifier DEFAULT_IDENTIFIER;
-
-  static {
-    DEFAULT_IDENTIFIER = SMFSchemaIdentifier.builder().build();
-  }
-
   /**
    * Construct a validator.
    */
@@ -246,8 +240,9 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
 
     List<SMFErrorType> errors = List.empty();
 
-    final SMFSchemaIdentifier file_id = header.schemaIdentifier();
-    if (!Objects.equals(file_id, DEFAULT_IDENTIFIER)) {
+    final Optional<SMFSchemaIdentifier> file_id_opt = header.schemaIdentifier();
+    if (file_id_opt.isPresent()) {
+      final SMFSchemaIdentifier file_id = file_id_opt.get();
       final SMFSchemaIdentifier schema_id = schema.schemaIdentifier();
       if (!Objects.equals(schema_id, file_id)) {
         errors = errors.append(errorWrongSchemaID(schema_id, file_id));

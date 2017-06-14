@@ -5,7 +5,7 @@ coordinates +x +y -z counter-clockwise
 attribute "x" integer-signed 4 16
 end
 
-vertices noninterleaved
+vertices-noninterleaved
 attribute "x"
 -32767 0 32767 1
 -32767 0 32767 1

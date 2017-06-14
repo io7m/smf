@@ -25,6 +25,7 @@ import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Information about an SMF file.
@@ -61,12 +62,8 @@ public interface SMFHeaderType
    * @return The schema ID in the file
    */
 
-  @Value.Default
   @Value.Parameter
-  default SMFSchemaIdentifier schemaIdentifier()
-  {
-    return SMFSchemaIdentifier.builder().build();
-  }
+  Optional<SMFSchemaIdentifier> schemaIdentifier();
 
   /**
    * @return The coordinate system of the mesh data

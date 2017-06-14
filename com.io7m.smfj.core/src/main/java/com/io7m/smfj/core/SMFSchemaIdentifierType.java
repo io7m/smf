@@ -31,11 +31,7 @@ public interface SMFSchemaIdentifierType
    */
 
   @Value.Parameter
-  @Value.Default
-  default SMFSchemaName name()
-  {
-    return SMFSchemaName.of("");
-  }
+  SMFSchemaName name();
 
   /**
    * @return The schema major version

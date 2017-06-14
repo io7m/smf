@@ -199,7 +199,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
       final SMFBv1SchemaIDWritableType header_schema_id =
         this.view.getSchemaWritable();
 
-      final SMFSchemaIdentifier schema_id = header.schemaIdentifier();
+      final SMFSchemaIdentifier schema_id = header.schemaIdentifier().get();
       header_schema_id.getSchemaIdWritable().setValue(
         schema_id.name().value(), JPRAStringTruncation.REJECT);
       header_schema_id.setSchemaVersionMajor(schema_id.versionMajor());

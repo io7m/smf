@@ -462,7 +462,7 @@ class SMFExporter:
     out_file.write("coordinates +x +y -z counter-clockwise\n")
     out_file.write("end\n")
 
-    out_file.write("vertices noninterleaved\n")
+    out_file.write("vertices-noninterleaved\n")
     out_file.write("attribute \"POSITION\"\n")
     for vertex in smf_mesh.vertices:
       assert type(vertex) == SMFVertex

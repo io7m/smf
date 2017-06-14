@@ -4,5 +4,5 @@ axis =
 winding_order =
   "clockwise" | "counter-clockwise" ;
 
-header_command_coordinates =
+smf_coordinates =
   "coordinates" , <axis> , <axis> , <axis> , <winding_order> ;

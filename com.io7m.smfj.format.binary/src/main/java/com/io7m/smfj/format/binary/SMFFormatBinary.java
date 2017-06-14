@@ -143,6 +143,12 @@ public final class SMFFormatBinary
   }
 
   @Override
+  public String toString()
+  {
+    return SMFFormatBinary.class.getCanonicalName();
+  }
+
+  @Override
   public SMFFormatDescription parserFormat()
   {
     return FORMAT;

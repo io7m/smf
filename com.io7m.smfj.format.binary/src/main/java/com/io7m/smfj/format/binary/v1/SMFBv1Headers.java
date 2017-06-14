@@ -18,6 +18,7 @@ package com.io7m.smfj.format.binary.v1;
 
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
+import com.io7m.jpra.runtime.java.JPRAStringCursorReadableType;
 import com.io7m.jpra.runtime.java.JPRAValueByteBufferedConstructorType;
 import com.io7m.jpra.runtime.java.JPRAValueType;
 import com.io7m.junreachable.UnreachableCodeException;
@@ -263,12 +264,21 @@ public final class SMFBv1Headers
         final SMFBv1SchemaIDReadableType schema =
           view.getSchemaReadable();
 
-        final SMFSchemaIdentifier schema_id =
-          SMFSchemaIdentifier.builder()
-            .setName(SMFSchemaName.of(schema.getSchemaIdReadable().getNewValue()))
-            .setVersionMinor(schema.getSchemaVersionMinor())
-            .setVersionMajor(schema.getSchemaVersionMajor())
-            .build();
+        final JPRAStringCursorReadableType schema_id_readable =
+          schema.getSchemaIdReadable();
+
+        final Optional<SMFSchemaIdentifier> schema_id;
+        if (schema_id_readable.getUsedLength() > 0) {
+          schema_id =
+            Optional.of(
+              SMFSchemaIdentifier.builder()
+                .setName(SMFSchemaName.of(schema_id_readable.getNewValue()))
+                .setVersionMinor(schema.getSchemaVersionMinor())
+                .setVersionMajor(schema.getSchemaVersionMajor())
+                .build());
+        } else {
+          schema_id = Optional.empty();
+        }
 
         final SMFHeader.Builder header_b = SMFHeader.builder();
         header_b.setCoordinateSystem(system);

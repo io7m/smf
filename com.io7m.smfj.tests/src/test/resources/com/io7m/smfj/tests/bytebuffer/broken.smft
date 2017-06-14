@@ -4,5 +4,5 @@ triangles 1 8
 coordinates +x +y -z counter-clockwise
 attribute "x" float 1 16
 end
-vertices noninterleaved
+vertices-noninterleaved
 what?

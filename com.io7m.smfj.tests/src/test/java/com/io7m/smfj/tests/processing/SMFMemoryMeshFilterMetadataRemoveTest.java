@@ -58,17 +58,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   }
 
   @Test
-  public void testParseWrong2()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterMetadataRemove.parse(
-        Optional.empty(),
-        1,
-        List.of("x", "y"));
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test
   public void testParseWrong3()
   {
     final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =

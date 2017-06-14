@@ -53,7 +53,7 @@ import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
  * A parser for the "vertices" body section.
  */
 
-public final class SMFTV1BodySectionParserVertices implements
+public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
   SMFTBodySectionParserType
 {
   private final SMFTLineReaderType reader;
@@ -66,7 +66,7 @@ public final class SMFTV1BodySectionParserVertices implements
    * @param in_reader     A line reader
    */
 
-  public SMFTV1BodySectionParserVertices(
+  public SMFTV1BodySectionParserVerticesNonInterleaved(
     final Supplier<SMFHeader> in_header_get,
     final SMFTLineReaderType in_reader)
   {
@@ -110,7 +110,7 @@ public final class SMFTV1BodySectionParserVertices implements
   @Override
   public String name()
   {
-    return "vertices";
+    return "vertices-noninterleaved";
   }
 
   @Override
@@ -119,24 +119,6 @@ public final class SMFTV1BodySectionParserVertices implements
     final List<String> line_start)
     throws IOException
   {
-    if (line_start.size() != 2) {
-      receiver.onError(errorMalformedCommand(
-        "vertices",
-        "vertices noninterleaved",
-        line_start,
-        this.reader.position()));
-      return FAILURE;
-    }
-
-    if (!Objects.equals(line_start.get(1), "noninterleaved")) {
-      receiver.onError(errorMalformedCommand(
-        "vertices",
-        "vertices noninterleaved",
-        line_start,
-        this.reader.position()));
-      return FAILURE;
-    }
-
     final HashSet<String> attributes_done = new HashSet<>();
 
     final SMFParserEventsDataAttributesNonInterleavedType data_receiver =

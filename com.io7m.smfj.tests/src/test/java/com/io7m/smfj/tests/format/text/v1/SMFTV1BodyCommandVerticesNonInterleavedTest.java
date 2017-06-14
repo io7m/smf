@@ -23,7 +23,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
-import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVertices;
+import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVerticesNonInterleaved;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
@@ -55,8 +55,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new StrictExpectations()
     {{
@@ -70,62 +70,6 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
   }
 
   @Test
-  public void testMissingNonInterleaved(
-    final @Mocked SMFParserEventsBodyType events,
-    final @Mocked SMFTLineReaderType reader)
-    throws Exception
-  {
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    final SMFHeader header = header_b.build();
-
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("vertices noninterleaved");
-        }
-      }));
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices"));
-    Assert.assertEquals(FAILURE, r);
-  }
-
-  @Test
-  public void testNotNonInterleaved(
-    final @Mocked SMFParserEventsBodyType events,
-    final @Mocked SMFTLineReaderType reader)
-    throws Exception
-  {
-    final SMFHeader.Builder header_b = SMFHeader.builder();
-    final SMFHeader header = header_b.build();
-
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("vertices noninterleaved");
-        }
-      }));
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "what"));
-    Assert.assertEquals(FAILURE, r);
-  }
-
-  @Test
   public void testUndeclaredAttribute(
     final @Mocked SMFParserEventsBodyType events,
     final @Mocked SMFTLineReaderType reader)
@@ -134,8 +78,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -179,8 +123,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -213,8 +157,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -248,8 +192,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -295,8 +239,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -341,8 +285,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -387,8 +331,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -433,8 +377,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -479,8 +423,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -531,8 +475,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -583,8 +527,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -635,8 +579,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -687,8 +631,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -733,8 +677,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -779,8 +723,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -825,8 +769,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -871,8 +815,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -923,8 +867,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -975,8 +919,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1027,8 +971,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1079,8 +1023,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1125,8 +1069,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1171,8 +1115,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1217,8 +1161,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1263,8 +1207,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1315,8 +1259,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1367,8 +1311,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{
@@ -1419,8 +1363,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     header_b.setVertexCount(1L);
     final SMFHeader header = header_b.build();
 
-    final SMFTV1BodySectionParserVertices cmd =
-      new SMFTV1BodySectionParserVertices(() -> header, reader);
+    final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
 
     new Expectations()
     {{

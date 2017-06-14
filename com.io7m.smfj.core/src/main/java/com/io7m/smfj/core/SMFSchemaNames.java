@@ -43,7 +43,7 @@ public final class SMFSchemaNames
 
   static {
     PATTERN_TEXT =
-      "(([\\p{IsAlphabetic}])([\\p{IsAlphabetic}\\p{IsDigit}_\\.]){1,63})?";
+      "([\\p{IsAlphabetic}][\\p{IsAlphabetic}\\p{IsDigit}_]*)(\\.([\\p{IsAlphabetic}][\\p{IsAlphabetic}\\p{IsDigit}_]*))*";
     PATTERN = NullCheck.notNull(
       Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS),
       "Pattern");
@@ -64,5 +64,6 @@ public final class SMFSchemaNames
     final CharSequence text)
   {
     return text.length() <= MAXIMUM_CHARACTERS && PATTERN.matcher(text).matches();
+
   }
 }

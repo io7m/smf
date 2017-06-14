@@ -105,14 +105,23 @@ public final class SMFTV1Serializer implements SMFSerializerType
       this.writer.newLine();
 
       {
-        final SMFSchemaIdentifier schema = in_header.schemaIdentifier();
-        this.writer.append("schema ");
-        this.writer.append(schema.name().value());
-        this.writer.append(" ");
-        this.writer.append(Integer.toUnsignedString(schema.versionMajor()));
-        this.writer.append(" ");
-        this.writer.append(Integer.toUnsignedString(schema.versionMinor()));
-        this.writer.newLine();
+        try {
+          in_header.schemaIdentifier().ifPresent(s -> {
+            try {
+              this.writer.append("schema ");
+              this.writer.append(s.name().value());
+              this.writer.append(" ");
+              this.writer.append(Integer.toUnsignedString(s.versionMajor()));
+              this.writer.append(" ");
+              this.writer.append(Integer.toUnsignedString(s.versionMinor()));
+              this.writer.newLine();
+            } catch (final IOException e) {
+              throw new UncheckedIOException(e);
+            }
+          });
+        } catch (final UncheckedIOException e) {
+          throw e.getCause();
+        }
       }
 
       {
@@ -181,7 +190,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
     }
 
     try {
-      this.writer.append("vertices noninterleaved");
+      this.writer.append("vertices-noninterleaved");
       this.writer.newLine();
       return new VertexDataNonInterleaved(this.writer, this.header);
     } finally {

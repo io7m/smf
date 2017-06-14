@@ -1,0 +1,20 @@
+[section [title Section - triangles] [id smft.sections.triangles]]
+
+[subsection [title Definition] [id smft.sections.triangles.def]]
+[paragraph]
+The [term [type command] triangles] section specifies triangle data that will
+appear in the model.
+
+[formal-item [title "triangles"] [id smft.data.triangles.def]]
+[verbatim [include "smft-triangles.ebnf"]]
+
+[paragraph]
+The command takes no arguments.
+
+[paragraph]
+In a file that is specified to contain [term [type variable] k] triangles,
+the next [term [type variable] k] non-empty, non-commented lines will contain
+exactly [term [type constant] 3] whitespace-separated unsigned integer values
+each representing the index of a vertex. Implementations MUST raise errors if
+there are not exactly [term [type variable] k] triangles specified before
+section's [link [target smft.sections.end] end] command.

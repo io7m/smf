@@ -68,6 +68,12 @@ public final class SMFFormatOBJ implements SMFParserProviderType
   }
 
   @Override
+  public String toString()
+  {
+    return SMFFormatOBJ.class.getCanonicalName();
+  }
+
+  @Override
   public SMFFormatDescription parserFormat()
   {
     return FORMAT;

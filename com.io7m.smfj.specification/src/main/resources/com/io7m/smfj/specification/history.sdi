@@ -1,0 +1,9 @@
+[part [title Specification History] [id history]]
+
+[section [title History] [id history.history]]
+[paragraph]
+This section provides a brief summary of specification changes over time.
+
+[formal-item [title "History"] [id history.history.def]]
+[list-unordered
+  [item [term [type expression] 1.0] Initial specification.]]

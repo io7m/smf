@@ -151,6 +151,12 @@ public final class SMFFormatText
   }
 
   @Override
+  public String toString()
+  {
+    return SMFFormatText.class.getCanonicalName();
+  }
+
+  @Override
   public SMFFormatDescription parserFormat()
   {
     return FORMAT;

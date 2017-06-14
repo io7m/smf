@@ -178,7 +178,7 @@ public final class SMFBv1SectionParserHeaderTest
       4,
       32
     )), header.attributesInOrder());
-    Assert.assertEquals(schema_id, header.schemaIdentifier());
+    Assert.assertEquals(schema_id, header.schemaIdentifier().get());
   }
 
   private static void dumpErrors(

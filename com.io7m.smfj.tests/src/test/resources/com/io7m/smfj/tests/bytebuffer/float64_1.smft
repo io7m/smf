@@ -5,7 +5,7 @@ coordinates +x +y -z counter-clockwise
 attribute "x" float 1 64
 end
 
-vertices noninterleaved
+vertices-noninterleaved
 attribute "x"
 -1000.0
 0

@@ -2,5 +2,7 @@
   [title ${project.parent.name} ${project.version} Specification]
   [import "notational.sdi"]
   [import "model.sdi"]
+  [import "binary.sdi"]
   [import "text.sdi"]
-  [import "binary.sdi"]]
+  [import "history.sdi"]
+]

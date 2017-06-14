@@ -10,5 +10,5 @@ attribute_name =
 attribute_type =
   "integer-signed" | "integer-unsigned" | "float" ;
 
-header_command_attribute =
+smf_attribute =
   "attribute" , attribute_name , attribute_type , integer-unsigned , integer-unsigned ;

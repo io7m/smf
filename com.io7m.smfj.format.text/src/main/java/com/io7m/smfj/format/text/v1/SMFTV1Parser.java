@@ -111,7 +111,7 @@ public final class SMFTV1Parser implements SMFParserSequentialType
 
     this.body_commands = new TreeMap<>();
     this.registerBodyCommand(
-      new SMFTV1BodySectionParserVertices(() -> this.header, this.reader));
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> this.header, this.reader));
     this.registerBodyCommand(
       new SMFTV1BodySectionParserTriangles(() -> this.header, this.reader));
     this.registerBodyCommand(

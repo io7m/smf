@@ -106,7 +106,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
 
     if (text.length() > 0 && text.length() <= 3) {
       try {
-        Optional<SMFSchemaName> schema_name = Optional.empty();
+        final Optional<SMFSchemaName> schema_name;
         Optional<Pair<Integer, Integer>> schema_version = Optional.empty();
 
         if (Objects.equals(text.get(0), "-")) {

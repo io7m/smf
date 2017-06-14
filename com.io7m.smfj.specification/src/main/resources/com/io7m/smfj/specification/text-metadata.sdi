@@ -1,0 +1,30 @@
+[section [title Section - metadata] [id smft.sections.metadata]]
+
+[subsection [title Definition] [id smft.sections.metadata.def]]
+[paragraph]
+The [term [type command] metadata] section specifies an item of optional
+metadata that will be attached to the model.
+
+[formal-item [title "metadata"] [id smft.sections.metadata.def.syntax]]
+[verbatim [include "smft-metadata.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "meta Arguments"] [id smft.sections.metadata.args]]
+[list-ordered
+  [item The schema ID]
+  [item The major version of the schema]
+  [item The minor version of the schema]
+  [item The non-negative number of lines of metadata that will follow the command]]
+
+[paragraph]
+For any [term [type variable] v], [term [type variable] s], and
+[term [type variable] n], the command [term [type command] meta v s n] will
+indicate that the next [term [type expression] n] non-empty, non-commented
+lines will contain
+[link-ext [target https://tools.ietf.org/html/rfc4648] RFC4648 base64url]
+encoded data of a type with vendor [term [type variable] v] and schema
+[term [type variable] s]. Implementations MUST raise errors if
+there are not exactly [term [type variable] n] lines of data specified before
+the section's [link [target smft.sections.end] end] command.

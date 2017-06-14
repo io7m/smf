@@ -133,9 +133,13 @@ public final class SMFMemoryMeshFilterSchemaCheck
     NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
-    final SMFSchemaIdentifier received = m.header().schemaIdentifier();
-    if (Objects.equals(received, this.config)) {
-      return valid(m);
+    final Optional<SMFSchemaIdentifier> received_opt =
+      m.header().schemaIdentifier();
+    if (received_opt.isPresent()) {
+      final SMFSchemaIdentifier received = received_opt.get();
+      if (Objects.equals(received, this.config)) {
+        return valid(m);
+      }
     }
 
     final StringBuilder sb = new StringBuilder(128);
@@ -145,7 +149,12 @@ public final class SMFMemoryMeshFilterSchemaCheck
     sb.append(this.config.toHumanString());
     sb.append(System.lineSeparator());
     sb.append("Received: ");
-    sb.append(received.toHumanString());
+    if (received_opt.isPresent()) {
+      final SMFSchemaIdentifier received = received_opt.get();
+      sb.append(received.toHumanString());
+    } else {
+      sb.append("No schema ID");
+    }
     sb.append(System.lineSeparator());
 
     return invalid(List.of(

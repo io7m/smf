@@ -76,7 +76,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -126,7 +126,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .build();
@@ -179,7 +179,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(true)
         .setRequiredCoordinateSystem(coords_exp)
         .build();
@@ -224,7 +224,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(true)
         .setRequiredCoordinateSystem(coords_exp)
         .build();
@@ -261,7 +261,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -306,7 +306,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -356,7 +356,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -406,7 +406,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -451,7 +451,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -501,7 +501,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -546,7 +546,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -591,7 +591,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -641,7 +641,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -691,7 +691,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -736,7 +736,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -786,7 +786,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -830,7 +830,7 @@ public abstract class SMFSchemaValidatorContract
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
