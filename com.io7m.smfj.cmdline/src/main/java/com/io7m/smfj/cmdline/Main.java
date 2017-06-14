@@ -92,13 +92,13 @@ public final class Main implements Runnable
 
     this.commands = new HashMap<>(8);
     this.commands.put("filter", filter);
-    this.commands.put("formats", formats);
+    this.commands.put("list-formats", formats);
     this.commands.put("list-filters", list_filters);
 
     this.commander = new JCommander(r);
     this.commander.setProgramName("smf");
     this.commander.addCommand("filter", filter);
-    this.commander.addCommand("formats", formats);
+    this.commander.addCommand("list-formats", formats);
     this.commander.addCommand("list-filters", list_filters);
   }
 
