@@ -23,6 +23,8 @@ import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating2;
@@ -352,19 +354,22 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
-      loader,
-      "all.smft")) {
-      // Nothing
+    try (final SMFParserSequentialType parser =
+           SMFTestFiles.createParser(loader, "all.smft")) {
+      // Parse already called by SMFTestFiles.createParser
     }
 
-    this.expected.expect(IllegalStateException.class);
+    Assert.assertEquals(0L, (long) loader.errors().size());
 
-    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
-      loader,
-      "all.smft")) {
-      // Nothing
+    try (final SMFParserSequentialType parser =
+           SMFTestFiles.createParser(loader, "all.smft")) {
+      // Parse already called by SMFTestFiles.createParser
     }
+
+    Assert.assertEquals(1L, (long) loader.errors().size());
+
+    final SMFErrorType e = loader.errors().get(0);
+    Assert.assertTrue(e.exception().get() instanceof IllegalStateException);
   }
 
   @Test
@@ -373,10 +378,9 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser = SMFTestFiles.createParser(
-      loader,
-      "all.smft")) {
-      // Nothing
+    try (final SMFParserSequentialType parser =
+           SMFTestFiles.createParser(loader, "all.smft")) {
+      // Parse already called by SMFTestFiles.createParser
     }
 
     Assert.assertTrue(loader.errors().isEmpty());
@@ -388,20 +392,30 @@ public final class SMFMemoryMeshProducerTest
 
     {
       final SMFMetadata m = metas.get(0);
-      Assert.assertEquals(0x696f376dL, (long) m.vendor());
-      Assert.assertEquals(0L, (long) m.schema());
+      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
+      Assert.assertEquals(0L, (long) m.schema().versionMajor());
+      Assert.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(1);
-      Assert.assertEquals(0x696f376dL, (long) m.vendor());
-      Assert.assertEquals(1L, (long) m.schema());
+      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
+      Assert.assertEquals(1L, (long) m.schema().versionMajor());
+      Assert.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(2);
-      Assert.assertEquals(0x696f376dL, (long) m.vendor());
-      Assert.assertEquals(2L, (long) m.schema());
+      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example.different"),  m.schema().name());
+      Assert.assertEquals(1L, (long) m.schema().versionMajor());
+      Assert.assertEquals(0L, (long) m.schema().versionMinor());
+    }
+
+    {
+      final SMFMetadata m = metas.get(3);
+      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
+      Assert.assertEquals(2L, (long) m.schema().versionMajor());
+      Assert.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_4")));

@@ -29,7 +29,6 @@ import org.osgi.service.component.annotations.Component;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
-import java.nio.file.Paths;
 import java.util.Optional;
 
 /**
@@ -87,7 +86,7 @@ public final class SMFFormatOBJ implements SMFParserProviderType
     final InputStream stream)
     throws UnsupportedOperationException
   {
-    return SMFOBJImporter.create(Optional.of(Paths.get(uri)), stream, events);
+    return SMFOBJImporter.create(Optional.empty(), stream, events);
   }
 
   @Override

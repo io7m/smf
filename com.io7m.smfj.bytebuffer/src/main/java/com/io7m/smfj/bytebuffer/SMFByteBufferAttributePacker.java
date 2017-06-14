@@ -20,7 +20,10 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesType;
+import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
 
 import java.nio.ByteBuffer;
 
@@ -28,10 +31,11 @@ import java.nio.ByteBuffer;
  * An event listener that packs data into a given {@link ByteBuffer}.
  */
 
-public final class SMFByteBufferAttributePacker implements
-  SMFParserEventsDataAttributesType
+public final class SMFByteBufferAttributePacker
+  implements SMFParserEventsDataAttributeValuesType
 {
   private final long vertices;
+  private final SMFParserEventsErrorType errors;
   private JPRACursor1DType<SMFByteBufferFloat1Type> cursor_float1;
   private JPRACursor1DType<SMFByteBufferFloat2Type> cursor_float2;
   private JPRACursor1DType<SMFByteBufferFloat3Type> cursor_float3;
@@ -48,6 +52,7 @@ public final class SMFByteBufferAttributePacker implements
   /**
    * Construct a packer.
    *
+   * @param in_errors           An error listener
    * @param in_attribute_buffer The byte buffer that will contain attribute
    *                            data
    * @param in_packed_config    The packing configuration
@@ -56,11 +61,13 @@ public final class SMFByteBufferAttributePacker implements
    */
 
   public SMFByteBufferAttributePacker(
+    final SMFParserEventsErrorType in_errors,
     final ByteBuffer in_attribute_buffer,
     final SMFByteBufferPackingConfiguration in_packed_config,
     final SMFByteBufferPackedAttribute in_packed_attribute,
     final long in_vertices)
   {
+    this.errors = NullCheck.notNull(in_errors, "Errors");
     NullCheck.notNull(in_attribute_buffer, "Attribute buffer");
     NullCheck.notNull(in_packed_config, "Packed config");
     NullCheck.notNull(in_packed_attribute, "Packed attribute");
@@ -152,13 +159,6 @@ public final class SMFByteBufferAttributePacker implements
         }
       }
     }
-  }
-
-  @Override
-  public void onDataAttributeStart(
-    final SMFAttribute attribute)
-  {
-
   }
 
   private <T> void cursorNext(
@@ -286,9 +286,20 @@ public final class SMFByteBufferAttributePacker implements
   }
 
   @Override
-  public void onDataAttributeFinish(
-    final SMFAttribute attribute)
+  public void onDataAttributeValueFinish()
   {
 
+  }
+
+  @Override
+  public void onError(final SMFErrorType e)
+  {
+    this.errors.onError(e);
+  }
+
+  @Override
+  public void onWarning(final SMFWarningType w)
+  {
+    this.errors.onWarning(w);
   }
 }

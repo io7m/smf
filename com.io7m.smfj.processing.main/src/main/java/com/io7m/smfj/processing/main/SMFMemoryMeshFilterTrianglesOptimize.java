@@ -150,28 +150,28 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     return NAME + " " + SYNTAX;
   }
 
-  private static long optimize(
+  private static int optimize(
     final SMFMemoryMesh m,
     final OptionalInt optimize_opt,
     final long max)
   {
-    long triangle_size = m.header().triangles().triangleIndexSizeBits();
+    int triangle_size = m.header().triangles().triangleIndexSizeBits();
     if (optimize_opt.isPresent()) {
       if (max < (long) (StrictMath.pow(2.0, 64.0) - 1.0)) {
-        triangle_size = 64L;
+        triangle_size = 64;
       }
       if (max < (long) (StrictMath.pow(2.0, 32.0) - 1.0)) {
-        triangle_size = 32L;
+        triangle_size = 32;
       }
       if (max < (long) (StrictMath.pow(2.0, 16.0) - 1.0)) {
-        triangle_size = 16L;
+        triangle_size = 16;
       }
       if (max < (long) (StrictMath.pow(2.0, 8.0) - 1.0)) {
-        triangle_size = 8L;
+        triangle_size = 8;
       }
 
       final int smallest_allowed = optimize_opt.getAsInt();
-      triangle_size = Math.max(triangle_size, (long) smallest_allowed);
+      triangle_size = Math.max(triangle_size, smallest_allowed);
     }
     return triangle_size;
   }
@@ -226,8 +226,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
       max = Math.max(max, v2);
     }
 
-    final long triangle_size = optimize(m, optimize_opt, max);
-
+    final int triangle_size = optimize(m, optimize_opt, max);
     if (errors.isEmpty()) {
       final SMFTriangles new_triangles =
         m.header().triangles().withTriangleIndexSizeBits(triangle_size);

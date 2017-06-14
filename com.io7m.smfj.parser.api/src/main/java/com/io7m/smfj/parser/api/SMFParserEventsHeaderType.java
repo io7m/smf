@@ -18,6 +18,8 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFHeader;
 
+import java.util.Optional;
+
 /**
  * Events related to the parsing of headers.
  */
@@ -25,10 +27,14 @@ import com.io7m.smfj.core.SMFHeader;
 public interface SMFParserEventsHeaderType extends SMFParserEventsErrorType
 {
   /**
-   * Parsing of the header was successful.
+   * Parsing of the header was successful. The function must return an event
+   * receiver if it wishes parsing to continue.
    *
    * @param header The parsed header
+   *
+   * @return An event receiver
    */
 
-  void onHeaderParsed(SMFHeader header);
+  Optional<SMFParserEventsBodyType> onHeaderParsed(
+    SMFHeader header);
 }

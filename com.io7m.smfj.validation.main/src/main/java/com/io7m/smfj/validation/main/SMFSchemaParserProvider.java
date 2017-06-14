@@ -27,6 +27,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -371,13 +372,12 @@ public final class SMFSchemaParserProvider
     parseStatementIdentifier(
       final List<String> text)
     {
-      if (text.length() == 5) {
+      if (text.length() == 4) {
         try {
-          final int vendor = Integer.parseUnsignedInt(text.get(1), 16);
-          final int schema = Integer.parseUnsignedInt(text.get(2), 16);
-          final int major = Integer.parseUnsignedInt(text.get(3));
-          final int minor = Integer.parseUnsignedInt(text.get(4));
-          return valid(SMFSchemaIdentifier.of(vendor, schema, major, minor));
+          final SMFSchemaName schema = SMFSchemaName.of(text.get(1));
+          final int major = Integer.parseUnsignedInt(text.get(2));
+          final int minor = Integer.parseUnsignedInt(text.get(3));
+          return valid(SMFSchemaIdentifier.of(schema, major, minor));
         } catch (final NumberFormatException e) {
           return invalid(List.of(SMFParseError.of(
             this.reader.position(), e.getMessage(), Optional.of(e))));
@@ -388,7 +388,7 @@ public final class SMFSchemaParserProvider
       sb.append("Incorrect number of arguments.");
       sb.append(System.lineSeparator());
       sb.append(
-        "  Expected: schema <vendor> <schema> <version-major> <version-minor>");
+        "  Expected: schema <schema> <version-major> <version-minor>");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
       sb.append(text.toJavaStream().collect(Collectors.joining(" ")));

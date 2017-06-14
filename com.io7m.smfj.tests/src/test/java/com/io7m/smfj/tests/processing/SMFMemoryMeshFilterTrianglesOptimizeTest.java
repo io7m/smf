@@ -59,8 +59,6 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     Assert.assertEquals(
       mesh0.header().schemaIdentifier(), mesh1.header().schemaIdentifier());
     Assert.assertEquals(
-      mesh0.header().metaCount(), mesh1.header().metaCount());
-    Assert.assertEquals(
       mesh0.metadata(), mesh1.metadata());
     Assert.assertEquals(
       mesh0.arrays(), mesh1.arrays());

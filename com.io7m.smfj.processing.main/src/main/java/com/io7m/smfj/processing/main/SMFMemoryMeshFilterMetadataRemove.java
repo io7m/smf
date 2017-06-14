@@ -16,7 +16,9 @@
 
 package com.io7m.smfj.processing.main;
 
+import com.io7m.jfunctional.Pair;
 import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -32,7 +34,6 @@ import org.slf4j.LoggerFactory;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.OptionalLong;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
 import static javaslang.control.Validation.valid;
@@ -49,38 +50,40 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
    */
 
   public static final String NAME = "metadata-remove";
+
   private static final Logger LOG;
-  private static final String SYNTAX = "(<vendor-id> | '-') (<schema-id> | '-')";
+  private static final String SYNTAX =
+    "(<schema-id> ((<version-major> <version-minor>) | '-')) | '-'";
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataRemove.class);
   }
 
-  private final OptionalLong vendor_id;
-  private final OptionalLong schema_id;
+  private final Optional<SMFSchemaName> name;
+  private final Optional<Pair<Integer, Integer>> version;
 
   private SMFMemoryMeshFilterMetadataRemove(
-    final OptionalLong in_vendor_id,
-    final OptionalLong in_schema_id)
+    final Optional<SMFSchemaName> in_schema_name,
+    final Optional<Pair<Integer, Integer>> in_version)
   {
-    this.vendor_id = NullCheck.notNull(in_vendor_id, "Vendor ID");
-    this.schema_id = NullCheck.notNull(in_schema_id, "Schema ID");
+    this.name = NullCheck.notNull(in_schema_name, "Schema name");
+    this.version = NullCheck.notNull(in_version, "Version");
   }
 
   /**
    * Create a new filter.
    *
-   * @param in_vendor_id The vendor ID
-   * @param in_schema_id The schema ID
+   * @param in_schema_name The schema name
+   * @param in_version     The schema version
    *
    * @return A new filter
    */
 
   public static SMFMemoryMeshFilterType create(
-    final OptionalLong in_vendor_id,
-    final OptionalLong in_schema_id)
+    final Optional<SMFSchemaName> in_schema_name,
+    final Optional<Pair<Integer, Integer>> in_version)
   {
-    return new SMFMemoryMeshFilterMetadataRemove(in_vendor_id, in_schema_id);
+    return new SMFMemoryMeshFilterMetadataRemove(in_schema_name, in_version);
   }
 
   /**
@@ -101,27 +104,36 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     NullCheck.notNull(file, "file");
     NullCheck.notNull(text, "text");
 
-    if (text.length() == 2) {
+    if (text.length() > 0 && text.length() <= 3) {
       try {
-        final OptionalLong vendor_id;
+        Optional<SMFSchemaName> schema_name = Optional.empty();
+        Optional<Pair<Integer, Integer>> schema_version = Optional.empty();
+
         if (Objects.equals(text.get(0), "-")) {
-          vendor_id = OptionalLong.empty();
+          schema_name = Optional.empty();
         } else {
-          vendor_id = OptionalLong.of(Long.parseUnsignedLong(text.get(0), 16));
+          schema_name = Optional.of(SMFSchemaName.of(text.get(0)));
+
+          if (text.length() == 2) {
+            schema_version = Optional.empty();
+          }
+
+          if (text.length() == 3) {
+            final int major = Integer.parseUnsignedInt(text.get(1));
+            final int minor = Integer.parseUnsignedInt(text.get(2));
+            schema_version =
+              Optional.of(Pair.pair(
+                Integer.valueOf(major),
+                Integer.valueOf(minor)));
+          }
         }
 
-        final OptionalLong schema_id;
-        if (Objects.equals(text.get(1), "-")) {
-          schema_id = OptionalLong.empty();
-        } else {
-          schema_id = OptionalLong.of(Long.parseUnsignedLong(text.get(1), 16));
-        }
-
-        return valid(create(vendor_id, schema_id));
+        return valid(create(schema_name, schema_version));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
+
     return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
@@ -151,36 +163,37 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     NullCheck.notNull(m, "Mesh");
 
     final Vector<SMFMetadata> filtered = m.metadata().removeAll(meta -> {
-      final boolean vendor_matches;
-      if (this.vendor_id.isPresent()) {
-        final long v = this.vendor_id.getAsLong();
-        vendor_matches = meta.vendor() == v;
-      } else {
-        vendor_matches = true;
-      }
-
+      final boolean version_matches;
       final boolean schema_matches;
-      if (this.schema_id.isPresent()) {
-        final long s = this.schema_id.getAsLong();
-        schema_matches = meta.schema() == s;
+
+      if (this.name.isPresent()) {
+        final SMFSchemaName s = this.name.get();
+        schema_matches = Objects.equals(meta.schema().name(), s);
+        if (this.version.isPresent()) {
+          final Pair<Integer, Integer> v = this.version.get();
+          version_matches =
+            v.getLeft().intValue() == meta.schema().versionMajor()
+              && v.getRight().intValue() == meta.schema().versionMinor();
+        } else {
+          version_matches = true;
+        }
       } else {
         schema_matches = true;
+        version_matches = true;
       }
 
-      final boolean match = schema_matches && vendor_matches;
+      final boolean match = schema_matches && version_matches;
       if (LOG.isDebugEnabled()) {
         if (match) {
           LOG.debug(
-            "removing matched {} -> {} {}",
+            "removing matched {} -> {}",
             this.matchString(),
-            Long.toUnsignedString(meta.vendor(), 16),
-            Long.toUnsignedString(meta.schema(), 16));
+            meta.schema().toHumanString());
         } else {
           LOG.debug(
-            "preserving unmatched {} -> {} {}",
+            "preserving unmatched {} -> {}",
             this.matchString(),
-            Long.toUnsignedString(meta.vendor(), 16),
-            Long.toUnsignedString(meta.schema(), 16));
+            meta.schema().toHumanString());
         }
       }
 
@@ -191,21 +204,24 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
       SMFMemoryMesh.builder()
         .from(m)
         .setMetadata(filtered)
-        .setHeader(m.header().withMetaCount((long) filtered.size()))
         .build());
   }
 
   private String matchString()
   {
     final StringBuilder sb = new StringBuilder(64);
-    if (this.vendor_id.isPresent()) {
-      sb.append(Long.toUnsignedString(this.vendor_id.getAsLong(), 16));
+    if (this.name.isPresent()) {
+      sb.append(this.name.get().value());
     } else {
       sb.append("-");
     }
     sb.append(" ");
-    if (this.schema_id.isPresent()) {
-      sb.append(Long.toUnsignedString(this.schema_id.getAsLong(), 16));
+    if (this.version.isPresent()) {
+      sb.append(Integer.toUnsignedString(
+        this.version.get().getLeft().intValue()));
+      sb.append(" ");
+      sb.append(Integer.toUnsignedString(
+        this.version.get().getRight().intValue()));
     } else {
       sb.append("-");
     }

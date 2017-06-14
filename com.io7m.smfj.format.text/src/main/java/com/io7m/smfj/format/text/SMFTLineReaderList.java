@@ -19,6 +19,8 @@ package com.io7m.smfj.format.text;
 import com.io7m.jnull.NullCheck;
 import javaslang.collection.Iterator;
 import javaslang.collection.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
@@ -29,6 +31,12 @@ import java.net.URI;
 
 public final class SMFTLineReaderList extends SMFTLineReaderAbstract
 {
+  private static final Logger LOG;
+
+  static {
+    LOG = LoggerFactory.getLogger(SMFTLineReaderList.class);
+  }
+
   private final Iterator<String> lines;
 
   private SMFTLineReaderList(
@@ -56,6 +64,12 @@ public final class SMFTLineReaderList extends SMFTLineReaderAbstract
     final int in_start)
   {
     return new SMFTLineReaderList(in_uri, in_lines, in_start);
+  }
+
+  @Override
+  protected Logger log()
+  {
+    return LOG;
   }
 
   @Override

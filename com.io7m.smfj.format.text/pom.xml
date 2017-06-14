@@ -65,10 +65,6 @@
       <groupId>com.io7m.jlexing</groupId>
       <artifactId>com.io7m.jlexing.core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.io7m.jfsm</groupId>
-      <artifactId>com.io7m.jfsm.core</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.javaslang</groupId>

@@ -56,7 +56,7 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFFormatText;
-import com.io7m.smfj.parser.api.SMFParserEventsMeta;
+import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -96,8 +96,7 @@ public final class SMFByteBufferPackedMeshesTest
       final Path path = Paths.get(rpath);
       final SMFParserSequentialType parser =
         fmt.parserCreateSequential(loader, path.toUri(), stream);
-      parser.parseHeader();
-      parser.parseData();
+      parser.parse();
       return parser;
     }
   }
@@ -2277,7 +2276,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        SMFParserEventsMeta.ignore(),
+        SMFParserEventsDataMetaOptionalSupplierType.ignoring(),
         new SMFByteBufferPackerEventsType()
         {
           @Override
@@ -2983,7 +2982,7 @@ public final class SMFByteBufferPackedMeshesTest
   {
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        SMFParserEventsMeta.ignore(),
+        SMFParserEventsDataMetaOptionalSupplierType.ignoring(),
         new SMFByteBufferPackerEventsType()
         {
           @Override
@@ -3041,7 +3040,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        SMFParserEventsMeta.ignore(),
+        SMFParserEventsDataMetaOptionalSupplierType.ignoring(),
         new SMFByteBufferPackerEventsType()
         {
           @Override
@@ -3103,7 +3102,7 @@ public final class SMFByteBufferPackedMeshesTest
   {
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        SMFParserEventsMeta.ignore(),
+        SMFParserEventsDataMetaOptionalSupplierType.ignoring(),
         new SMFByteBufferPackerEventsType()
         {
           @Override
@@ -3161,7 +3160,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMeshLoaderType loader =
       SMFByteBufferPackedMeshes.newLoader(
-        SMFParserEventsMeta.ignore(),
+        SMFParserEventsDataMetaOptionalSupplierType.ignoring(),
         new SMFByteBufferPackerEventsType()
         {
           @Override

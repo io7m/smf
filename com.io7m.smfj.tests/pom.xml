@@ -118,10 +118,6 @@
       <artifactId>com.io7m.jtensors.core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.io7m.jfsm</groupId>
-      <artifactId>com.io7m.jfsm.core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.io7m.jcoords</groupId>
       <artifactId>com.io7m.jcoords.core</artifactId>
     </dependency>
@@ -152,11 +148,6 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hamcrest</groupId>
-      <artifactId>hamcrest-core</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

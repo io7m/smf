@@ -17,6 +17,8 @@
 package com.io7m.smfj.processing.main;
 
 import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -55,43 +57,38 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
 
   public static final String NAME = "metadata-add";
   private static final Logger LOG;
-  private static final String SYNTAX = "<vendor-id> <schema-id> <file>";
+  private static final String SYNTAX =
+    "<schema-id> <version-major> <version-minor> <file>";
 
   static {
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataAdd.class);
   }
 
-  private final long vendor_id;
-  private final long schema_id;
+  private final SMFSchemaIdentifier schema_id;
   private final Path meta_file;
 
   private SMFMemoryMeshFilterMetadataAdd(
-    final long in_vendor_id,
-    final long in_schema_id,
+    final SMFSchemaIdentifier in_schema,
     final Path in_file)
   {
-    this.vendor_id = in_vendor_id;
-    this.schema_id = in_schema_id;
+    this.schema_id = NullCheck.notNull(in_schema, "Schema");
     this.meta_file = NullCheck.notNull(in_file, "File");
   }
 
   /**
    * Create a new filter.
    *
-   * @param in_vendor_id The vendor ID
-   * @param in_schema_id The schema ID
-   * @param in_file      The schema file
+   * @param in_schema The schema ID
+   * @param in_file   The schema file
    *
    * @return A new filter
    */
 
   public static SMFMemoryMeshFilterType create(
-    final long in_vendor_id,
-    final long in_schema_id,
+    final SMFSchemaIdentifier in_schema,
     final Path in_file)
   {
-    return new SMFMemoryMeshFilterMetadataAdd(
-      in_vendor_id, in_schema_id, in_file);
+    return new SMFMemoryMeshFilterMetadataAdd(in_schema, in_file);
   }
 
   /**
@@ -112,12 +109,13 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     NullCheck.notNull(file, "file");
     NullCheck.notNull(text, "text");
 
-    if (text.length() == 3) {
+    if (text.length() == 4) {
       try {
-        final long vendor_id = Long.parseUnsignedLong(text.get(0), 16);
-        final long schema_id = Long.parseUnsignedLong(text.get(1), 16);
-        final Path path = Paths.get(text.get(2));
-        return valid(create(vendor_id, schema_id, path));
+        final SMFSchemaName name = SMFSchemaName.of(text.get(0));
+        final int major = Integer.parseUnsignedInt(text.get(1));
+        final int minor = Integer.parseUnsignedInt(text.get(2));
+        final Path path = Paths.get(text.get(3));
+        return valid(create(SMFSchemaIdentifier.of(name, major, minor), path));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -155,8 +153,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
 
     try (final InputStream stream = Files.newInputStream(file)) {
       final byte[] data = IOUtils.toByteArray(stream);
-      final SMFMetadata meta =
-        SMFMetadata.of(this.vendor_id, this.schema_id, data);
+      final SMFMetadata meta = SMFMetadata.of(this.schema_id, data);
 
       final Vector<SMFMetadata> new_meta =
         m.metadata().append(meta);
@@ -165,7 +162,6 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
         SMFMemoryMesh.builder()
           .from(m)
           .setMetadata(new_meta)
-          .setHeader(m.header().withMetaCount((long) new_meta.size()))
           .build());
     } catch (final IOException e) {
       return invalid(List.of(

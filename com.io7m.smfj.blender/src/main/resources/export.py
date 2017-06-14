@@ -460,8 +460,9 @@ class SMFExporter:
     out_file.write("vertices %d\n" % vertex_count)
     out_file.write("triangles %d %d\n" % (triangle_count, smf_mesh.triangles_index_size))
     out_file.write("coordinates +x +y -z counter-clockwise\n")
-    out_file.write("data\n")
+    out_file.write("end\n")
 
+    out_file.write("vertices noninterleaved\n")
     out_file.write("attribute \"POSITION\"\n")
     for vertex in smf_mesh.vertices:
       assert type(vertex) == SMFVertex
@@ -489,12 +490,14 @@ class SMFExporter:
         out_file.write("%.15f\n" % vertex.groups[group])
       #endfor
     #endfor
+    out_file.write("end\n")
 
     out_file.write("triangles\n")
     for triangle in smf_mesh.triangles:
       assert type(triangle) == SMFTriangle
       out_file.write("%d %d %d\n" % (triangle.vertex0, triangle.vertex1, triangle.vertex2))
     #endfor
+    out_file.write("end\n")
   #end
 
   #

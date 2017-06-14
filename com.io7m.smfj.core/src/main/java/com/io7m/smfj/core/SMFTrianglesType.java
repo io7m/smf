@@ -45,9 +45,9 @@ public interface SMFTrianglesType
 
   @Value.Parameter
   @Value.Default
-  default long triangleIndexSizeBits()
+  default int triangleIndexSizeBits()
   {
-    return 32L;
+    return 32;
   }
 
   /**
@@ -55,9 +55,9 @@ public interface SMFTrianglesType
    */
 
   @Value.Derived
-  default long triangleIndexSizeOctets()
+  default int triangleIndexSizeOctets()
   {
-    return this.triangleIndexSizeBits() / 8L;
+    return this.triangleIndexSizeBits() / 8;
   }
 
   /**
@@ -65,9 +65,9 @@ public interface SMFTrianglesType
    */
 
   @Value.Derived
-  default long triangleSizeOctets()
+  default int triangleSizeOctets()
   {
-    return Math.multiplyExact(this.triangleIndexSizeOctets(), 3L);
+    return Math.multiplyExact(this.triangleIndexSizeOctets(), 3);
   }
 
   /**
@@ -78,6 +78,6 @@ public interface SMFTrianglesType
   default void checkPreconditions()
   {
     SMFSupportedSizes.checkIntegerUnsignedSupported(
-      Math.toIntExact(this.triangleIndexSizeBits()));
+      this.triangleIndexSizeBits());
   }
 }

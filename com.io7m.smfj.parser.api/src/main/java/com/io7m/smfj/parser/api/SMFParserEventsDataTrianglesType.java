@@ -17,23 +17,12 @@
 package com.io7m.smfj.parser.api;
 
 /**
- * A receiver of parse events for triangle data. The expectation is that the
- * methods in this interface will be called by parsers after the call to {@link
- * SMFParserEventsHeaderType#onHeaderParsed(com.io7m.smfj.core.SMFHeader)}.
+ * A receiver of parse events for triangle data.
  */
 
-public interface SMFParserEventsDataTrianglesType
+public interface SMFParserEventsDataTrianglesType extends
+  SMFParserEventsErrorType
 {
-  /**
-   * Parsing of triangle data has started.
-   *
-   * <p>If this method is called, then {@link #onDataTrianglesFinish()}
-   * is guaranteed to be called at some point in the
-   * future, regardless of any errors encountered in the mean time.</p>
-   */
-
-  void onDataTrianglesStart();
-
   /**
    * A triangle has been parsed.
    *

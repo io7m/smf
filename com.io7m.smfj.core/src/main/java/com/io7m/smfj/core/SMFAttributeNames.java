@@ -42,9 +42,10 @@ public final class SMFAttributeNames
   private static final String PATTERN_TEXT;
 
   static {
-    PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.:]{1," + MAXIMUM_CHARACTERS + "}";
+    PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.:]{1,63}";
     PATTERN = NullCheck.notNull(
-      Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS));
+      Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS),
+      "Pattern");
   }
 
   private SMFAttributeNames()
@@ -61,6 +62,6 @@ public final class SMFAttributeNames
   public static boolean isValid(
     final CharSequence text)
   {
-    return PATTERN.matcher(text).matches();
+    return text.length() <= MAXIMUM_CHARACTERS && PATTERN.matcher(text).matches();
   }
 }

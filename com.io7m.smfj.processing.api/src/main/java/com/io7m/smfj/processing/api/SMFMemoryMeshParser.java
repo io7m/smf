@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jfunctional.Unit;
-import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
@@ -26,17 +24,19 @@ import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
 import com.io7m.junreachable.UnreachableCodeException;
-import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.Map;
+import javaslang.collection.Vector;
 
 import java.io.IOException;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -65,7 +65,7 @@ public final class SMFMemoryMeshParser
   {
     NullCheck.notNull(mesh, "mesh");
     NullCheck.notNull(events, "events");
-    return new RandomAccess(mesh, events);
+    throw new UnreachableCodeException();
   }
 
   /**
@@ -86,408 +86,274 @@ public final class SMFMemoryMeshParser
     return new Sequential(mesh, events);
   }
 
-  private static final class RandomAccess extends AbstractParser implements
-    SMFParserRandomAccessType
-  {
-    private final SMFMemoryMesh mesh;
-    private boolean started;
-    private boolean finished;
-
-    private RandomAccess(
-      final SMFMemoryMesh in_mesh,
-      final SMFParserEventsType in_events)
-    {
-      super(in_events);
-      this.mesh = NullCheck.notNull(in_mesh, "Mesh");
-      this.started = false;
-      this.finished = false;
-    }
-
-    @Override
-    public void parseHeader()
-    {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
-      }
-
-      try {
-        if (!this.started) {
-          this.started = true;
-          this.events.onStart();
-          this.events.onVersionReceived(SMFFormatVersion.of(1, 0));
-        }
-
-        this.events.onHeaderParsed(this.mesh.header());
-      } catch (final Exception e) {
-        this.fail(e);
-      }
-    }
-
-    @Override
-    public void parseAttributeData(
-      final SMFAttributeName name)
-      throws IllegalStateException
-    {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
-      }
-
-      final Map<SMFAttributeName, SMFAttributeArrayType> arrays = this.mesh.arrays();
-      if (!arrays.containsKey(name)) {
-        throw new NoSuchElementException("No such attribute: " + name.value());
-      }
-
-      final SMFAttribute attr =
-        this.mesh.header().attributesByName().get(name).get();
-      final SMFAttributeArrayType array =
-        this.mesh.arrays().get(name).get();
-
-      try {
-        try {
-          this.events.onDataAttributeStart(attr);
-          array.matchArray(
-            this,
-            AbstractParser::sendFloat4,
-            AbstractParser::sendFloat3,
-            AbstractParser::sendFloat2,
-            AbstractParser::sendFloat1,
-            AbstractParser::sendUnsigned4,
-            AbstractParser::sendUnsigned3,
-            AbstractParser::sendUnsigned2,
-            AbstractParser::sendUnsigned1,
-            AbstractParser::sendSigned4,
-            AbstractParser::sendSigned3,
-            AbstractParser::sendSigned2,
-            AbstractParser::sendSigned1);
-        } finally {
-          this.events.onDataAttributeFinish(attr);
-        }
-      } catch (final Exception e) {
-        this.fail(e);
-      }
-    }
-
-    @Override
-    public void parseTriangles()
-      throws IllegalStateException
-    {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
-      }
-
-      try {
-        try {
-          this.events.onDataTrianglesStart();
-          for (final Vector3L t : this.mesh.triangles()) {
-            this.events.onDataTriangle(t.x(), t.y(), t.z());
-          }
-        } finally {
-          this.events.onDataTrianglesFinish();
-        }
-      } catch (final Exception e) {
-        this.fail(e);
-      }
-    }
-
-    @Override
-    public void parseMetadata()
-      throws IllegalStateException
-    {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
-      }
-
-      try {
-        for (final SMFMetadata m : this.mesh.metadata()) {
-          if (this.events.onMeta(
-            m.vendor(), m.schema(), (long) m.data().length)) {
-            this.events.onMetaData(m.vendor(), m.schema(), m.data());
-          }
-        }
-      } catch (final Exception e) {
-        this.fail(e);
-      }
-    }
-
-    @Override
-    public void close()
-      throws IOException
-    {
-      try {
-        if (!this.finished) {
-          this.finished = false;
-          this.events.onFinish();
-        }
-      } catch (final Exception e) {
-        this.fail(e);
-      }
-    }
-
-    @Override
-    public boolean parserHasFailed()
-    {
-      return super.failed;
-    }
-  }
-
-  private static final class Sequential extends AbstractParser implements
-    SMFParserSequentialType
+  private static final class Sequential implements SMFParserSequentialType
   {
     private final SMFMemoryMesh mesh;
     private final SMFParserEventsType events;
-    private boolean started;
-    private boolean finished;
 
-    private Sequential(
+    Sequential(
       final SMFMemoryMesh in_mesh,
       final SMFParserEventsType in_events)
     {
-      super(in_events);
-
       this.mesh = NullCheck.notNull(in_mesh, "Mesh");
       this.events = NullCheck.notNull(in_events, "Events");
-      this.started = false;
-      this.finished = false;
     }
 
     @Override
-    public void parseHeader()
+    public void parse()
     {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
-      }
+      this.events.onStart();
 
       try {
-        if (!this.started) {
-          this.started = true;
-          this.events.onStart();
+        final Optional<SMFParserEventsHeaderType> r_opt =
           this.events.onVersionReceived(SMFFormatVersion.of(1, 0));
+
+        if (r_opt.isPresent()) {
+          final SMFParserEventsHeaderType r = r_opt.get();
+          this.parseBody(r.onHeaderParsed(this.mesh.header()));
         }
 
-        this.events.onHeaderParsed(this.mesh.header());
-      } catch (final Exception e) {
-        this.fail(e);
+      } finally {
+        this.events.onFinish();
       }
     }
 
-    @Override
-    public void parseData()
-      throws IllegalStateException
+    private void parseBody(
+      final Optional<SMFParserEventsBodyType> b_opt)
     {
-      if (this.parserHasFailed()) {
-        throw new IllegalStateException("Parser has failed");
+      if (b_opt.isPresent()) {
+        final SMFParserEventsBodyType b = b_opt.get();
+        this.parseDataNonInterleaved(b);
+        this.parseDataTriangles(b);
+        this.parseDataMeta(b);
       }
+    }
 
-      try {
-        final Map<SMFAttributeName, SMFAttributeArrayType> arrays = this.mesh.arrays();
-        for (final SMFAttribute attr : this.mesh.header().attributesInOrder()) {
-          final SMFAttributeArrayType array = arrays.get(attr.name()).get();
-
-          try {
-            this.events.onDataAttributeStart(attr);
-            array.matchArray(
-              this,
-              AbstractParser::sendFloat4,
-              AbstractParser::sendFloat3,
-              AbstractParser::sendFloat2,
-              AbstractParser::sendFloat1,
-              AbstractParser::sendUnsigned4,
-              AbstractParser::sendUnsigned3,
-              AbstractParser::sendUnsigned2,
-              AbstractParser::sendUnsigned1,
-              AbstractParser::sendSigned4,
-              AbstractParser::sendSigned3,
-              AbstractParser::sendSigned2,
-              AbstractParser::sendSigned1);
-          } finally {
-            this.events.onDataAttributeFinish(attr);
-          }
+    private void parseDataMeta(
+      final SMFParserEventsBodyType b)
+    {
+      final Vector<SMFMetadata> metas = this.mesh.metadata();
+      for (int index = 0; index < metas.size(); ++index) {
+        final SMFMetadata meta = metas.get(index);
+        final Optional<SMFParserEventsDataMetaType> m_opt =
+          b.onMeta(meta.schema());
+        if (m_opt.isPresent()) {
+          final SMFParserEventsDataMetaType m = m_opt.get();
+          m.onMetaData(meta.schema(), meta.data());
         }
+      }
+    }
 
+    private void parseDataTriangles(
+      final SMFParserEventsBodyType b)
+    {
+      final Optional<SMFParserEventsDataTrianglesType> t_opt = b.onTriangles();
+      if (t_opt.isPresent()) {
+        final SMFParserEventsDataTrianglesType t = t_opt.get();
         try {
-          this.events.onDataTrianglesStart();
-          for (final Vector3L t : this.mesh.triangles()) {
-            this.events.onDataTriangle(t.x(), t.y(), t.z());
+          final Vector<Vector3L> triangles = this.mesh.triangles();
+          for (int index = 0; index < triangles.size(); ++index) {
+            final Vector3L tri = triangles.get(index);
+            t.onDataTriangle(tri.x(), tri.y(), tri.z());
           }
         } finally {
-          this.events.onDataTrianglesFinish();
+          t.onDataTrianglesFinish();
         }
-
-        for (final SMFMetadata m : this.mesh.metadata()) {
-          if (this.events.onMeta(
-            m.vendor(), m.schema(), (long) m.data().length)) {
-            this.events.onMetaData(m.vendor(), m.schema(), m.data());
-          }
-        }
-
-      } catch (final Exception e) {
-        this.fail(e);
       }
     }
 
-    @Override
-    public boolean parserHasFailed()
+    private void parseDataNonInterleaved(
+      final SMFParserEventsBodyType b)
     {
-      return super.failed;
+      final Optional<SMFParserEventsDataAttributesNonInterleavedType> ni_opt =
+        b.onAttributesNonInterleaved();
+
+      if (ni_opt.isPresent()) {
+        final SMFParserEventsDataAttributesNonInterleavedType ni = ni_opt.get();
+        try {
+          this.mesh.header().attributesInOrder().forEach(a -> {
+            final Optional<SMFParserEventsDataAttributeValuesType> av_opt =
+              ni.onDataAttributeStart(a);
+
+            if (av_opt.isPresent()) {
+              final SMFParserEventsDataAttributeValuesType av = av_opt.get();
+              try {
+                final SMFAttributeArrayType array =
+                  this.mesh.arrays().get(a.name()).get();
+                array.matchArray(
+                  av,
+                  Sequential::sendArray4D,
+                  Sequential::sendArray3D,
+                  Sequential::sendArray2D,
+                  Sequential::sendArray1D,
+                  Sequential::sendArray4UL,
+                  Sequential::sendArray3UL,
+                  Sequential::sendArray2UL,
+                  Sequential::sendArray1UL,
+                  Sequential::sendArray4L,
+                  Sequential::sendArray3L,
+                  Sequential::sendArray2L,
+                  Sequential::sendArray1L);
+              } finally {
+                av.onDataAttributeValueFinish();
+              }
+            }
+          });
+        } finally {
+          ni.onDataAttributesNonInterleavedFinish();
+        }
+      }
+    }
+
+    private static Boolean sendArray4D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating4Type array_4d)
+    {
+      final Vector<Vector4D> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4D v = vv.get(index);
+        events.onDataAttributeValueFloat4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating3Type array_3d)
+    {
+      final Vector<Vector3D> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3D v = vv.get(index);
+        events.onDataAttributeValueFloat3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating2Type array_2d)
+    {
+      final Vector<Vector2D> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2D v = vv.get(index);
+        events.onDataAttributeValueFloat2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating1Type array_1d)
+    {
+      final Vector<Double> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Double v = vv.get(index);
+        events.onDataAttributeValueFloat1(v.doubleValue());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray4L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned4Type array_4d)
+    {
+      final Vector<Vector4L> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned3Type array_3d)
+    {
+      final Vector<Vector3L> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned2Type array_2d)
+    {
+      final Vector<Vector2L> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned1Type array_1d)
+    {
+      final Vector<Long> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Long v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned1(v.longValue());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray4UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned4Type array_4d)
+    {
+      final Vector<Vector4L> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned3Type array_3d)
+    {
+      final Vector<Vector3L> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned2Type array_2d)
+    {
+      final Vector<Vector2L> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned1Type array_1d)
+    {
+      final Vector<Long> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Long v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned1(v.longValue());
+      }
+      return Boolean.TRUE;
     }
 
     @Override
     public void close()
       throws IOException
     {
-      try {
-        if (!this.finished) {
-          this.finished = false;
-          this.events.onFinish();
-        }
-      } catch (final Exception e) {
-        super.fail(e);
-      }
-    }
-  }
 
-  private static abstract class AbstractParser
-  {
-    protected final SMFParserEventsType events;
-    protected boolean failed;
-
-    protected AbstractParser(
-      final SMFParserEventsType in_events)
-    {
-      this.events = NullCheck.notNull(in_events, "Events");
-      this.failed = false;
-    }
-
-    protected final void fail(
-      final Exception e)
-    {
-      this.failed = true;
-      this.events.onError(SMFParseError.of(
-        LexicalPositions.zero(), e.getMessage(), Optional.of(e)));
-    }
-
-    protected final Unit sendSigned1(
-      final SMFAttributeArrayIntegerSigned1Type y)
-      throws IOException
-    {
-      for (final Long v : y.values()) {
-        this.events.onDataAttributeValueIntegerSigned1(v.longValue());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendSigned2(
-      final SMFAttributeArrayIntegerSigned2Type y)
-      throws IOException
-    {
-      for (final Vector2L v : y.values()) {
-        this.events.onDataAttributeValueIntegerSigned2(v.x(), v.y());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendSigned3(
-      final SMFAttributeArrayIntegerSigned3Type y)
-      throws IOException
-    {
-      for (final Vector3L v : y.values()) {
-        this.events.onDataAttributeValueIntegerSigned3(v.x(), v.y(), v.z());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendSigned4(
-      final SMFAttributeArrayIntegerSigned4Type y)
-      throws IOException
-    {
-      for (final Vector4L v : y.values()) {
-        this.events.onDataAttributeValueIntegerSigned4(
-          v.x(), v.y(), v.z(), v.w());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendUnsigned1(
-      final SMFAttributeArrayIntegerUnsigned1Type y)
-      throws IOException
-    {
-      for (final Long v : y.values()) {
-        this.events.onDataAttributeValueIntegerUnsigned1(
-          v.longValue());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendUnsigned2(
-      final SMFAttributeArrayIntegerUnsigned2Type y)
-      throws IOException
-    {
-      for (final Vector2L v : y.values()) {
-        this.events.onDataAttributeValueIntegerUnsigned2(v.x(), v.y());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendUnsigned3(
-      final SMFAttributeArrayIntegerUnsigned3Type y)
-      throws IOException
-    {
-      for (final Vector3L v : y.values()) {
-        this.events.onDataAttributeValueIntegerUnsigned3(v.x(), v.y(), v.z());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendUnsigned4(
-      final SMFAttributeArrayIntegerUnsigned4Type y)
-      throws IOException
-    {
-      for (final Vector4L v : y.values()) {
-        this.events.onDataAttributeValueIntegerUnsigned4(
-          v.x(), v.y(), v.z(), v.w());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendFloat1(
-      final SMFAttributeArrayFloating1Type y)
-      throws IOException
-    {
-      for (final Double v : y.values()) {
-        this.events.onDataAttributeValueFloat1(
-          v.doubleValue());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendFloat2(
-      final SMFAttributeArrayFloating2Type y)
-      throws IOException
-    {
-      for (final Vector2D v : y.values()) {
-        this.events.onDataAttributeValueFloat2(v.x(), v.y());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendFloat3(
-      final SMFAttributeArrayFloating3Type y)
-      throws IOException
-    {
-      for (final Vector3D v : y.values()) {
-        this.events.onDataAttributeValueFloat3(v.x(), v.y(), v.z());
-      }
-      return Unit.unit();
-    }
-
-    protected final Unit sendFloat4(
-      final SMFAttributeArrayFloating4Type y)
-      throws IOException
-    {
-      for (final Vector4D v : y.values()) {
-        this.events.onDataAttributeValueFloat4(v.x(), v.y(), v.z(), v.w());
-      }
-      return Unit.unit();
     }
   }
 }

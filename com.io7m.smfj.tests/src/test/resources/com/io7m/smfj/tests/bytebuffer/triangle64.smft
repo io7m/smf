@@ -3,7 +3,12 @@ vertices 0
 triangles 1 64
 coordinates +x +y -z counter-clockwise
 attribute "x" float 1 16
-data
+end
+
+vertices noninterleaved
 attribute "x"
+end
+
 triangles
 0 1 2
+end

@@ -42,6 +42,19 @@ public interface SMFFormatVersionType extends Comparable<SMFFormatVersionType>
   @Value.Parameter
   int minor();
 
+  /**
+   * @return The humanly-readable version string
+   */
+
+  default String toHumanString()
+  {
+    return new StringBuilder(64)
+      .append(Integer.toUnsignedString(this.major()))
+      .append(".")
+      .append(Integer.toUnsignedString(this.minor()))
+      .toString();
+  }
+
   @Override
   default int compareTo(final SMFFormatVersionType o)
   {

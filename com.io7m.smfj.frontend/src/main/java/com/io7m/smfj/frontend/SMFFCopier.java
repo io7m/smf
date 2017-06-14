@@ -21,26 +21,50 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
+import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
+import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
+import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import javaslang.collection.List;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 
 /**
  * The default implementation of the {@link SMFFCopierType}.
  */
 
-public final class SMFFCopier implements SMFFCopierType
+public final class SMFFCopier
+  implements SMFFCopierType,
+  SMFParserEventsBodyType,
+  SMFParserEventsHeaderType,
+  SMFParserEventsDataAttributesNonInterleavedType,
+  SMFParserEventsDataTrianglesType,
+  SMFParserEventsDataMetaType,
+  SMFParserEventsDataAttributeValuesType
 {
   private final SMFSerializerType serializer;
+  private List<SMFWarningType> warnings;
   private List<SMFErrorType> errors;
+  private SMFSerializerDataAttributesNonInterleavedType serializer_data_noninterleaved;
+  private SMFSerializerDataTrianglesType serializer_triangles;
+  private SMFSerializerDataAttributesValuesType serializer_attribute;
 
   private SMFFCopier(
     final SMFSerializerType in_serializer)
   {
     this.serializer = NullCheck.notNull(in_serializer, "Serializer");
     this.errors = List.empty();
+    this.warnings = List.empty();
   }
 
   /**
@@ -64,16 +88,20 @@ public final class SMFFCopier implements SMFFCopierType
   }
 
   @Override
-  public void onVersionReceived(
-    final SMFFormatVersion version)
+  public Optional<SMFParserEventsHeaderType> onVersionReceived(
+    final SMFFormatVersion in_version)
   {
-
+    return Optional.of(this);
   }
 
   @Override
   public void onFinish()
   {
-
+    try {
+      this.serializer.close();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override
@@ -84,18 +112,32 @@ public final class SMFFCopier implements SMFFCopierType
   }
 
   @Override
-  public void onHeaderParsed(
-    final SMFHeader header)
+  public void onWarning(
+    final SMFWarningType w)
   {
-    this.serializer.serializeHeader(header);
+    this.warnings = this.warnings.append(w);
   }
 
+
   @Override
-  public void onDataAttributeStart(
+  public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
     final SMFAttribute attribute)
   {
     try {
-      this.serializer.serializeData(attribute.name());
+      this.serializer_attribute =
+        this.serializer_data_noninterleaved.serializeData(attribute.name());
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    return Optional.of(this);
+  }
+
+  @Override
+  public void onDataAttributesNonInterleavedFinish()
+  {
+    try {
+      this.serializer_data_noninterleaved.close();
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -106,7 +148,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long x)
   {
     try {
-      this.serializer.serializeValueIntegerSigned1(x);
+      this.serializer_attribute.serializeValueIntegerSigned1(x);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -118,7 +160,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long y)
   {
     try {
-      this.serializer.serializeValueIntegerSigned2(x, y);
+      this.serializer_attribute.serializeValueIntegerSigned2(x, y);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -131,7 +173,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long z)
   {
     try {
-      this.serializer.serializeValueIntegerSigned3(x, y, z);
+      this.serializer_attribute.serializeValueIntegerSigned3(x, y, z);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -145,7 +187,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long w)
   {
     try {
-      this.serializer.serializeValueIntegerSigned4(x, y, z, w);
+      this.serializer_attribute.serializeValueIntegerSigned4(x, y, z, w);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -156,7 +198,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long x)
   {
     try {
-      this.serializer.serializeValueIntegerUnsigned1(x);
+      this.serializer_attribute.serializeValueIntegerUnsigned1(x);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -168,7 +210,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long y)
   {
     try {
-      this.serializer.serializeValueIntegerUnsigned2(x, y);
+      this.serializer_attribute.serializeValueIntegerUnsigned2(x, y);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -181,7 +223,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long z)
   {
     try {
-      this.serializer.serializeValueIntegerUnsigned3(x, y, z);
+      this.serializer_attribute.serializeValueIntegerUnsigned3(x, y, z);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -195,7 +237,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long w)
   {
     try {
-      this.serializer.serializeValueIntegerUnsigned4(x, y, z, w);
+      this.serializer_attribute.serializeValueIntegerUnsigned4(x, y, z, w);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -206,7 +248,7 @@ public final class SMFFCopier implements SMFFCopierType
     final double x)
   {
     try {
-      this.serializer.serializeValueFloat1(x);
+      this.serializer_attribute.serializeValueFloat1(x);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -218,7 +260,7 @@ public final class SMFFCopier implements SMFFCopierType
     final double y)
   {
     try {
-      this.serializer.serializeValueFloat2(x, y);
+      this.serializer_attribute.serializeValueFloat2(x, y);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -231,7 +273,7 @@ public final class SMFFCopier implements SMFFCopierType
     final double z)
   {
     try {
-      this.serializer.serializeValueFloat3(x, y, z);
+      this.serializer_attribute.serializeValueFloat3(x, y, z);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -245,23 +287,20 @@ public final class SMFFCopier implements SMFFCopierType
     final double w)
   {
     try {
-      this.serializer.serializeValueFloat4(x, y, z, w);
+      this.serializer_attribute.serializeValueFloat4(x, y, z, w);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
   }
 
   @Override
-  public void onDataAttributeFinish(
-    final SMFAttribute attribute)
+  public void onDataAttributeValueFinish()
   {
-
-  }
-
-  @Override
-  public void onDataTrianglesStart()
-  {
-
+    try {
+      this.serializer_attribute.close();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override
@@ -271,7 +310,7 @@ public final class SMFFCopier implements SMFFCopierType
     final long v2)
   {
     try {
-      this.serializer.serializeTriangle(v0, v1, v2);
+      this.serializer_triangles.serializeTriangle(v0, v1, v2);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
@@ -280,7 +319,11 @@ public final class SMFFCopier implements SMFFCopierType
   @Override
   public void onDataTrianglesFinish()
   {
-
+    try {
+      this.serializer_triangles.close();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
   }
 
   @Override
@@ -290,24 +333,65 @@ public final class SMFFCopier implements SMFFCopierType
   }
 
   @Override
-  public boolean onMeta(
-    final long vendor,
-    final long schema,
-    final long length)
+  public List<SMFWarningType> warnings()
   {
-    return true;
+    return this.warnings;
+  }
+
+  @Override
+  public Optional<SMFParserEventsBodyType> onHeaderParsed(
+    final SMFHeader header)
+  {
+    try {
+      this.serializer.serializeHeader(header);
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    return Optional.of(this);
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataAttributesNonInterleavedType> onAttributesNonInterleaved()
+  {
+    try {
+      this.serializer_data_noninterleaved =
+        this.serializer.serializeVertexDataNonInterleavedStart();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    return Optional.of(this);
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataTrianglesType> onTriangles()
+  {
+    try {
+      this.serializer_triangles = this.serializer.serializeTrianglesStart();
+    } catch (final IOException e) {
+      throw new UncheckedIOException(e);
+    }
+
+    return Optional.of(this);
   }
 
   @Override
   public void onMetaData(
-    final long vendor,
-    final long schema,
+    final SMFSchemaIdentifier schema,
     final byte[] data)
   {
     try {
-      this.serializer.serializeMetadata(vendor, schema, data);
+      this.serializer.serializeMetadata(schema, data);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataMetaType> onMeta(
+    final SMFSchemaIdentifier schema)
+  {
+    return Optional.of(this);
   }
 }

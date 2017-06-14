@@ -16,9 +16,11 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.junreachable.UnreachableCodeException;
 
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -60,4 +62,74 @@ public final class SMFParseErrors
   {
     return SMFParseError.of(LexicalPositions.zero(), message, Optional.empty());
   }
+
+  /**
+   * Construct a parse error that indicates the expected and actual input.
+   *
+   * @param message  An error message
+   * @param expected The expected input
+   * @param received The received input
+   * @param position The current position
+   *
+   * @return A parse error
+   */
+
+  public static SMFParseError errorExpectedGot(
+    final String message,
+    final String expected,
+    final String received,
+    final LexicalPosition<URI> position)
+  {
+    final String text =
+      new StringBuilder(128)
+        .append(message)
+        .append(System.lineSeparator())
+        .append("  Expected: ")
+        .append(expected)
+        .append(System.lineSeparator())
+        .append("  Received: ")
+        .append(received)
+        .append(System.lineSeparator())
+        .toString();
+    return SMFParseError.of(position, text, Optional.empty());
+  }
+
+  /**
+   * Construct a parse error that indicates the expected and actual input.
+   *
+   * @param message   An error message
+   * @param expected  The expected input
+   * @param received  The received input
+   * @param position  The current position
+   * @param exception An exception raised during parsing
+   *
+   * @return A parse error
+   */
+
+  public static SMFParseError errorExpectedGotWithException(
+    final String message,
+    final String expected,
+    final String received,
+    final LexicalPosition<URI> position,
+    final Exception exception)
+  {
+    final String text =
+      new StringBuilder(128)
+        .append(message)
+        .append(System.lineSeparator())
+        .append("  Expected:  ")
+        .append(expected)
+        .append(System.lineSeparator())
+        .append("  Received:  ")
+        .append(received)
+        .append(System.lineSeparator())
+        .append("  Exception: ")
+        .append(exception.getClass().getCanonicalName())
+        .append(": ")
+        .append(exception.getMessage())
+        .append(System.lineSeparator())
+        .toString();
+    return SMFParseError.of(position, text, Optional.of(exception));
+  }
+
 }

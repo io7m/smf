@@ -17,8 +17,10 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.commons.io.input.CountingInputStream;
 
 import java.io.IOException;
@@ -48,10 +50,10 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
     final URI in_uri,
     final InputStream in_stream)
   {
-    this.uri = NullCheck.notNull(in_uri, "URI");
-    this.stream = new CountingInputStream(NullCheck.notNull(
-      in_stream,
-      "Stream"));
+    this.uri =
+      NullCheck.notNull(in_uri, "URI");
+    this.stream =
+      new CountingInputStream(NullCheck.notNull(in_stream, "Stream"));
 
     this.byte1 = new byte[1];
     this.byte2 = new byte[2];
@@ -295,5 +297,20 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
       throw this.makeIOException(
         Optional.of("padding"), this.position(), count, e.getMessage());
     }
+  }
+
+  @Override
+  public LexicalPosition<URI> positionLexical()
+  {
+    return LexicalPosition.of(
+      0, (int) this.position(), Optional.of(this.uri));
+  }
+
+  @Override
+  public SMFBDataStreamReaderType withBounds(
+    final long size)
+  {
+    return new SMFBDataStreamReader(
+      this.uri, new BoundedInputStream(this.stream, size));
   }
 }

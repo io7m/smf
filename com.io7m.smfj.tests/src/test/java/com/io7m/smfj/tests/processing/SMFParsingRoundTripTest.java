@@ -16,12 +16,9 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
-import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.format.binary.SMFFormatBinary;
-import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
+import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -37,10 +34,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+
+import static java.nio.file.StandardOpenOption.READ;
 
 public final class SMFParsingRoundTripTest
 {
@@ -51,108 +48,49 @@ public final class SMFParsingRoundTripTest
   }
 
   @Test
-  public void testRoundTripRandom()
+  public void testRoundTripSequentialText()
     throws Exception
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
     try (final SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
+      // createParser calls parse()
     }
+
+    loader0.errors().forEach(e -> {
+      LOG.error("parse: {}", e.fullMessage());
+      e.exception().ifPresent(ex -> LOG.error("parse exception: ", ex));
+    });
 
     final SMFMemoryMesh mesh0 = loader0.mesh();
 
-    final Path tmp = Files.createTempFile("smf-roundtrip-", ".smfb");
+    final Path tmp = Files.createTempFile("smf-roundtrip-", ".smft");
     LOG.debug("tmp file: {}", tmp);
 
-    final SMFFormatBinary fmt = new SMFFormatBinary();
+    final SMFFormatText fmt = new SMFFormatText();
 
     try (final OutputStream out = Files.newOutputStream(tmp)) {
-      try (final SMFSerializerType s = fmt.serializerCreate(SMFFormatVersion.of(
-        1,
-        0), tmp.toUri(), out)) {
+      final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
+      try (final SMFSerializerType s =
+             fmt.serializerCreate(version, tmp.toUri(), out)) {
         SMFMemoryMeshSerializer.serialize(loader0.mesh(), s);
       }
     }
 
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
 
-    try (final FileChannel channel = FileChannel.open(
-      tmp,
-      StandardOpenOption.READ)) {
-      try (final SMFParserRandomAccessType p = fmt.parserCreateRandomAccess(
-        loader1,
-        tmp.toUri(),
-        channel)) {
-        p.parseHeader();
-
-        final SMFHeader header = loader1.header();
-        for (final SMFAttribute attr : header.attributesInOrder()) {
-          p.parseAttributeData(attr.name());
-        }
-
-        p.parseTriangles();
-        p.parseMetadata();
+    try (final InputStream stream = Files.newInputStream(tmp, READ)) {
+      try (final SMFParserSequentialType p =
+             fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
+        p.parse();
       }
     }
 
-    final SMFMemoryMesh mesh1 = loader1.mesh();
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(
-      (long) mesh0.arrays().size(),
-      (long) mesh1.arrays().size());
-
-    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
-      final SMFAttributeArrayType array0 = pair._2;
-      final SMFAttributeArrayType array1 = mesh1.arrays().get(pair._1).get();
-      Assert.assertEquals(array0, array1);
-    }
-
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(mesh0.metadata(), mesh1.metadata());
-    Assert.assertEquals(mesh0, mesh1);
-  }
-
-  @Test
-  public void testRoundTripSequential()
-    throws Exception
-  {
-    final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
-
-    try (final SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
-    }
-
-    final SMFMemoryMesh mesh0 = loader0.mesh();
-
-    final Path tmp = Files.createTempFile("smf-roundtrip-", ".smfb");
-    LOG.debug("tmp file: {}", tmp);
-
-    final SMFFormatBinary fmt = new SMFFormatBinary();
-
-    try (final OutputStream out = Files.newOutputStream(tmp)) {
-      try (final SMFSerializerType s = fmt.serializerCreate(SMFFormatVersion.of(
-        1,
-        0), tmp.toUri(), out)) {
-        SMFMemoryMeshSerializer.serialize(loader0.mesh(), s);
-      }
-    }
-
-    final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
-
-    try (final InputStream stream = Files.newInputStream(
-      tmp,
-      StandardOpenOption.READ)) {
-      try (final SMFParserSequentialType p = fmt.parserCreateSequential(
-        loader1,
-        tmp.toUri(),
-        stream)) {
-        p.parseHeader();
-        p.parseData();
-      }
-    }
+    loader1.errors().forEach(e -> {
+      LOG.error("parse: {}", e.fullMessage());
+      e.exception().ifPresent(ex -> LOG.error("parse exception: ", ex));
+    });
 
     final SMFMemoryMesh mesh1 = loader1.mesh();
     Assert.assertEquals(mesh0.header(), mesh1.header());
