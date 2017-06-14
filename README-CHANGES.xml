@@ -42,6 +42,11 @@
       <c:ticket>41</c:ticket>
       <c:summary>Complete redesign of formats for forward and backwards compatibility.</c:summary>
     </c:item>
+    <c:item>
+      <c:date>2017-06-14</c:date>
+      <c:type-code-change/>
+      <c:summary>Rename the "formats" command to "list-formats".</c:summary>
+    </c:item>
   </c:release>
 
   <c:release c:ticket-system="com.github.io7m.smf">
