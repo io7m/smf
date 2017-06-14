@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.serializer.api;
 
-import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.smfj.core.SMFAttributeName;
 
 import java.io.Closeable;
@@ -46,15 +45,15 @@ public interface SMFSerializerDataAttributesNonInterleavedType extends Closeable
    *
    * @throws IllegalArgumentException Iff the given attribute is not the next
    *                                  expected attribute
-   * @throws FSMTransitionException   If too few values have been serialized for
+   * @throws IllegalStateException   If too few values have been serialized for
    *                                  the attribute previously passed to this
    *                                  method
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IOException              On I/O errors
    */
 
   SMFSerializerDataAttributesValuesType serializeData(
     SMFAttributeName name)
-    throws IllegalArgumentException, FSMTransitionException, IOException;
+    throws IllegalArgumentException, IllegalStateException, IOException;
 }

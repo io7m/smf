@@ -18,6 +18,7 @@ package com.io7m.smfj.tests.processing;
 
 import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -116,7 +117,7 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
       SMFMemoryMeshFilterSchemaCheck.parse(
         Optional.empty(),
         1,
-        List.of("696f376d", "0", "1", "2"));
+        List.of("com.io7m.smf.example", "1", "2"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "schema-check");
@@ -135,10 +136,9 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376d)
-        .setSchemaID(0)
-        .setSchemaMajorVersion(1)
-        .setSchemaMinorVersion(2)
+        .setName(SMFSchemaName.of("com.io7m.smf.example"))
+        .setVersionMajor(1)
+        .setVersionMinor(2)
         .build();
 
     final SMFMemoryMeshFilterType filter =
@@ -146,8 +146,19 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
+
+    this.dumpErrors(r);
+
     Assert.assertTrue(r.isValid());
     Assert.assertEquals(loader.mesh(), r.get());
+  }
+
+  private void dumpErrors(
+    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r)
+  {
+    if (r.isInvalid()) {
+      r.getError().forEach(e -> LOG.error("parse: {}", e.fullMessage()));
+    }
   }
 
   @Test
@@ -163,10 +174,9 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376e)
-        .setSchemaID(0)
-        .setSchemaMajorVersion(1)
-        .setSchemaMinorVersion(2)
+        .setName(SMFSchemaName.of("com.io7m.example"))
+        .setVersionMajor(1)
+        .setVersionMinor(2)
         .build();
 
     final SMFMemoryMeshFilterType filter =
@@ -195,10 +205,9 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376d)
-        .setSchemaID(1)
-        .setSchemaMajorVersion(1)
-        .setSchemaMinorVersion(2)
+        .setName(SMFSchemaName.of("com.io7m.example"))
+        .setVersionMajor(1)
+        .setVersionMinor(2)
         .build();
 
     final SMFMemoryMeshFilterType filter =
@@ -227,10 +236,9 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376d)
-        .setSchemaID(0)
-        .setSchemaMajorVersion(2)
-        .setSchemaMinorVersion(2)
+        .setName(SMFSchemaName.of("com.io7m.example"))
+        .setVersionMajor(1)
+        .setVersionMinor(2)
         .build();
 
     final SMFMemoryMeshFilterType filter =
@@ -259,10 +267,9 @@ public final class SMFMemoryMeshFilterSchemaCheckTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376d)
-        .setSchemaID(0)
-        .setSchemaMajorVersion(1)
-        .setSchemaMinorVersion(3)
+        .setName(SMFSchemaName.of("com.io7m.example"))
+        .setVersionMajor(1)
+        .setVersionMinor(2)
         .build();
 
     final SMFMemoryMeshFilterType filter =

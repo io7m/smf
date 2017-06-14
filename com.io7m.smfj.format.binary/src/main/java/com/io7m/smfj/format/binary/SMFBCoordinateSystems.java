@@ -23,8 +23,8 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
-import com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType;
-import com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType;
+import com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType;
+import com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType;
 
 /**
  * Functions to pack and unpack coordinate system values.
@@ -46,14 +46,48 @@ public final class SMFBCoordinateSystems
    */
 
   public static SMFCoordinateSystem unpack(
-    final SMFBV1CoordinateSystemsReadableType input)
+    final SMFBv1CoordinateSystemsReadableType input)
   {
     NullCheck.notNull(input, "input");
 
+    final CAxis right = axisFromIndex(input.getRight());
+    final CAxis up = axisFromIndex(input.getUp());
+    final CAxis forward = axisFromIndex(input.getForward());
+
+    checkPerpendicular("Right", right, "Up", up);
+    checkPerpendicular("Right", right, "Forward", forward);
+    checkPerpendicular("Up", up, "Forward", forward);
+
     final SMFCoordinateSystem.Builder cb = SMFCoordinateSystem.builder();
     cb.setWindingOrder(SMFFaceWindingOrder.fromIndex(input.getWinding()));
-    cb.setAxes(axesUnpack(input.getRight(), input.getUp(), input.getForward()));
+    cb.setAxes(CAxisSystem.of(right, up, forward));
     return cb.build();
+  }
+
+  private static void checkPerpendicular(
+    final String axis0_name,
+    final CAxis axis0,
+    final String axis1_name,
+    final CAxis axis1)
+  {
+    if (axis0 == axis1) {
+      final String text =
+        new StringBuilder(128)
+          .append("Axes must be perpendicular.")
+          .append(System.lineSeparator())
+          .append("  Axis 0: ")
+          .append(axis0_name)
+          .append(": ")
+          .append(axis0.axisSigned())
+          .append(System.lineSeparator())
+          .append("  Axis 1: ")
+          .append(axis1_name)
+          .append(": ")
+          .append(axis1.axisSigned())
+          .append(System.lineSeparator())
+          .toString();
+      throw new IllegalArgumentException(text);
+    }
   }
 
   private static CAxisSystem axesUnpack(
@@ -76,7 +110,7 @@ public final class SMFBCoordinateSystems
 
   public static void pack(
     final SMFCoordinateSystem system,
-    final SMFBV1CoordinateSystemsWritableType out)
+    final SMFBv1CoordinateSystemsWritableType out)
   {
     NullCheck.notNull(system, "system");
     NullCheck.notNull(out, "out");

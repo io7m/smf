@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2017 <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,42 +14,31 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.format.binary;
+package com.io7m.smfj.format.binary.v1;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.value.Value;
+import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 
-/**
- * An immutable octet range.
- */
+import java.io.IOException;
 
-@Value.Immutable
-@SMFImmutableStyleType
-public interface SMFBOctetRangeType
+final class Triangles32 extends Triangles
 {
-  /**
-   * @return The starting octet
-   */
-
-  @Value.Parameter
-  long octetStart();
-
-  /**
-   * @return The number of octets in the range
-   */
-
-  @Value.Parameter
-  long octetSize();
-
-  /**
-   * @return The exclusive upper octet
-   */
-
-  @Value.Default
-  default long octetLast()
+  Triangles32(
+    final SMFBDataStreamWriterType in_writer,
+    final SMFHeader in_header)
   {
-    return Math.addExact(
-      this.octetStart(),
-      Math.addExact(1L, this.octetSize()));
+    super(in_writer, in_header);
+  }
+
+  @Override
+  public void serializeTriangle(
+    final long v0,
+    final long v1,
+    final long v2)
+    throws IOException
+  {
+    super.writer().putU32(v0);
+    super.writer().putU32(v1);
+    super.writer().putU32(v2);
   }
 }

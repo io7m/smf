@@ -19,6 +19,7 @@ package com.io7m.smfj.format.text.v1;
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
@@ -44,7 +45,7 @@ public final class SMFTV1HeaderCommandSchema
    */
 
   public static final String SYNTAX =
-    "schema <vendor-id> <schema-id> <schema-version-major> <schema-version-minor>";
+    "schema <schema-id> <schema-version-major> <schema-version-minor>";
 
   private final SMFTLineReaderType reader;
   private final SMFHeader.Builder header;
@@ -76,21 +77,20 @@ public final class SMFTV1HeaderCommandSchema
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 5) {
+    if (line.length() == 4) {
       try {
-        final int vendor =
-          Integer.parseUnsignedInt(line.get(1), 16);
-        final int schema =
-          Integer.parseUnsignedInt(line.get(2), 16);
+        final SMFSchemaName schema =
+          SMFSchemaName.of(line.get(1));
         final int schema_version_major =
-          Integer.parseUnsignedInt(line.get(3));
+          Integer.parseUnsignedInt(line.get(2));
         final int schema_version_minor =
-          Integer.parseUnsignedInt(line.get(4));
+          Integer.parseUnsignedInt(line.get(3));
 
-        this.header.setSchemaIdentifier(SMFSchemaIdentifier.of(
-          vendor, schema, schema_version_major, schema_version_minor));
+        this.header.setSchemaIdentifier(
+          SMFSchemaIdentifier.of(
+            schema, schema_version_major, schema_version_minor));
         return SUCCESS;
-      } catch (final NumberFormatException e) {
+      } catch (final IllegalArgumentException e) {
         receiver.onError(errorCommandExpectedGotWithException(
           "schema", SYNTAX, line, this.reader.position(), e));
         return FAILURE;

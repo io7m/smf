@@ -80,7 +80,7 @@ public final class SMFMemoryMeshSerializer
   {
     try (final SMFSerializerDataMetaType sm = s.serializeMetadataStart()) {
       for (final SMFMetadata m : mesh.metadata()) {
-        sm.serializeMetadata(m.vendor(), m.schema(), m.data());
+        sm.serializeMetadata(m.schema(), m.data());
       }
     }
   }

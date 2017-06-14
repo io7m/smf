@@ -136,10 +136,10 @@ public final class SMFMemoryMeshParser
       for (int index = 0; index < metas.size(); ++index) {
         final SMFMetadata meta = metas.get(index);
         final Optional<SMFParserEventsDataMetaType> m_opt =
-          b.onMeta(meta.vendor(), meta.schema());
+          b.onMeta(meta.schema());
         if (m_opt.isPresent()) {
           final SMFParserEventsDataMetaType m = m_opt.get();
-          m.onMetaData(meta.data());
+          m.onMetaData(meta.schema(), meta.data());
         }
       }
     }

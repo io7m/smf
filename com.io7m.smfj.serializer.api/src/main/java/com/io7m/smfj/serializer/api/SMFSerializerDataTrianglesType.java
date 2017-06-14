@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.serializer.api;
 
-import com.io7m.jfsm.core.FSMTransitionException;
-
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -34,12 +32,12 @@ public interface SMFSerializerDataTrianglesType extends Closeable
    * @param v1 The second vertex index
    * @param v2 The third vertex index
    *
-   * @throws FSMTransitionException If the header has not yet been serialized
-   * @throws FSMTransitionException If the attribute has not yet been
+   * @throws IllegalStateException If the header has not yet been serialized
+   * @throws IllegalStateException If the attribute has not yet been
    *                                serialized
-   * @throws FSMTransitionException If the required number of triangles have
+   * @throws IllegalStateException If the required number of triangles have
    *                                already been serialized
-   * @throws FSMTransitionException If the serializer has previously failed
+   * @throws IllegalStateException If the serializer has previously failed
    * @throws IOException            On I/O errors
    */
 
@@ -47,5 +45,5 @@ public interface SMFSerializerDataTrianglesType extends Closeable
     long v0,
     long v1,
     long v2)
-    throws IOException, FSMTransitionException;
+    throws IOException, IllegalStateException;
 }

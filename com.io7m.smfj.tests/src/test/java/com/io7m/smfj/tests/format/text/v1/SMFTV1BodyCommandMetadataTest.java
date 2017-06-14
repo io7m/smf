@@ -18,6 +18,8 @@ package com.io7m.smfj.tests.format.text.v1;
 
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
@@ -71,7 +73,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "aGVsbG8taGVsbG8K",
           "end"),
         0);
@@ -85,7 +87,8 @@ public final class SMFTV1BodyCommandMetadataTest
 
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0));
       this.result = Optional.empty();
     }};
 
@@ -167,7 +170,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "AA==",
           "end"),
         0);
@@ -179,11 +182,15 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id);
       this.result = Optional.of(events_meta);
-      events_meta.onMetaData(new byte[] {(byte) 0x0});
+      events_meta.onMetaData(id, new byte[] {(byte) 0x0});
 
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -209,7 +216,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "AA==",
           "end"),
         0);
@@ -221,11 +228,15 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id);
       this.result = Optional.of(events_meta);
-      events_meta.onMetaData(new byte[] {(byte) 0x0});
+      events_meta.onMetaData(id, new byte[] {(byte) 0x0});
 
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -251,7 +262,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "=",
           "end"),
         0);
@@ -263,9 +274,13 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id);
       this.result = Optional.of(events_meta);
 
       events_meta.onError(this.with(new Delegate<SMFErrorType>()
@@ -292,7 +307,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "",
           "end"),
         0);
@@ -304,9 +319,13 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id);
       this.result = Optional.of(events_meta);
 
       events_meta.onError(this.with(new Delegate<SMFErrorType>()
@@ -333,7 +352,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1"),
+          "meta com.io7m.smf.example 1 0 1"),
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -343,9 +362,13 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id);
       this.result = Optional.of(events_meta);
 
       events_meta.onError(this.with(new Delegate<SMFErrorType>()
@@ -371,7 +394,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta z 10203040 1"),
+          "meta z com.io7m.smf.example 1"),
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -406,7 +429,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 z 1"),
+          "meta com.io7m.smf.example z 1"),
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -441,7 +464,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 z"),
+          "meta com.io7m.smf.example 1 z 1"),
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -476,7 +499,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1 q"),
+          "meta com.io7m.smf.example 1 0 q"),
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
@@ -547,9 +570,9 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFTLineReaderList.create(
         URI.create("urn:x"),
         List.of(
-          "meta a0b0c0d0 10203040 1",
+          "meta com.io7m.smf.example 1 0 1",
           "AA==",
-          "meta a1b1c1d1 11213141 1",
+          "meta com.io7m.smf.example 2 0 1",
           "AQ==",
           "end"),
         0);
@@ -561,15 +584,23 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
+    final SMFSchemaIdentifier id0 =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
+
+    final SMFSchemaIdentifier id1 =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.smf.example"), 2, 0);
+
     new StrictExpectations()
     {{
-      events.onMeta(0xa0b0c0d0L, 0x10203040L);
+      events.onMeta(id0);
       this.result = Optional.of(events_meta);
-      events_meta.onMetaData(new byte[] {(byte) 0x0});
+      events_meta.onMetaData(id0, new byte[] {(byte) 0x0});
 
-      events.onMeta(0xa1b1c1d1L, 0x11213141L);
+      events.onMeta(id1);
       this.result = Optional.of(events_meta);
-      events_meta.onMetaData(new byte[] {(byte) 0x1});
+      events_meta.onMetaData(id1, new byte[] {(byte) 0x1});
     }};
 
     final SMFTParsingStatus r =

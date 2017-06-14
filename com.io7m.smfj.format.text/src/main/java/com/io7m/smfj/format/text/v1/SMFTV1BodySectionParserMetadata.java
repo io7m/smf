@@ -21,6 +21,8 @@ import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.format.text.SMFBase64Lines;
 import com.io7m.smfj.format.text.SMFTBodySectionParserType;
@@ -48,6 +50,13 @@ import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 public final class SMFTV1BodySectionParserMetadata
   implements SMFTBodySectionParserType
 {
+  /**
+   * The syntax for the command.
+   */
+
+  public static final String SYNTAX =
+    "meta <schema> <version-major> <version-minor> <line-count>";
+
   private final SMFTLineReaderType reader;
   private final Supplier<SMFHeader> header_get;
 
@@ -68,11 +77,9 @@ public final class SMFTV1BodySectionParserMetadata
 
   private static SMFParserEventsDataMetaType makeMetadataReceiver(
     final SMFParserEventsBodyType receiver,
-    final long vendor,
-    final long schema)
+    final SMFSchemaIdentifier schema)
   {
-    final Optional<SMFParserEventsDataMetaType> r_opt =
-      receiver.onMeta(vendor, schema);
+    final Optional<SMFParserEventsDataMetaType> r_opt = receiver.onMeta(schema);
     return r_opt.orElseGet(() -> new IgnoringMetaReceiver(receiver));
   }
 
@@ -165,15 +172,19 @@ public final class SMFTV1BodySectionParserMetadata
     final SMFParserEventsBodyType receiver)
     throws IOException
   {
-    if (line.length() == 4) {
+    if (line.length() == 5) {
       try {
-        final long vendor = Long.parseUnsignedLong(line.get(1), 16);
-        final long schema = Long.parseUnsignedLong(line.get(2), 16);
-        final long lines = Long.parseUnsignedLong(line.get(3));
+        final SMFSchemaName name = SMFSchemaName.of(line.get(1));
+        final int major = Integer.parseUnsignedInt(line.get(2));
+        final int minor = Integer.parseUnsignedInt(line.get(3));
+        final int lines = Integer.parseUnsignedInt(line.get(4));
+        final SMFSchemaIdentifier schema =
+          SMFSchemaIdentifier.of(name, major, minor);
 
         final SMFParserEventsDataMetaType meta_receiver =
-          makeMetadataReceiver(receiver, vendor, schema);
-        switch (this.readDataLines(meta_receiver, lines)) {
+          makeMetadataReceiver(receiver, schema);
+
+        switch (this.readDataLines(meta_receiver, schema, lines)) {
           case SUCCESS:
             return SUCCESS;
           case FAILURE:
@@ -183,7 +194,7 @@ public final class SMFTV1BodySectionParserMetadata
       } catch (final NumberFormatException e) {
         receiver.onError(SMFTErrors.errorExpectedGotWithException(
           "Cannot parse meta command: " + e.getMessage(),
-          "meta <vendor> <schema> <integer-unsigned>",
+          SYNTAX,
           line,
           this.reader.position(),
           e));
@@ -193,7 +204,7 @@ public final class SMFTV1BodySectionParserMetadata
 
     receiver.onError(SMFTErrors.errorExpectedGot(
       "Cannot parse meta command.",
-      "meta <vendor> <schema> <integer-unsigned>",
+      SYNTAX,
       line,
       this.reader.position()));
     return FAILURE;
@@ -201,11 +212,12 @@ public final class SMFTV1BodySectionParserMetadata
 
   private SMFTParsingStatus readDataLines(
     final SMFParserEventsDataMetaType receiver,
-    final long lines)
+    final SMFSchemaIdentifier schema,
+    final int lines)
     throws IOException
   {
     final ArrayList<String> lines_saved = new ArrayList<>();
-    for (long index = 0L; index < lines; ++index) {
+    for (int index = 0; Integer.compareUnsigned(index, lines) < 0; ++index) {
       final Optional<List<String>> data_line_opt = this.reader.line();
       if (!data_line_opt.isPresent()) {
         receiver.onError(SMFParseError.of(
@@ -230,7 +242,7 @@ public final class SMFTV1BodySectionParserMetadata
 
     try {
       final byte[] data = SMFBase64Lines.fromBase64Lines(lines_saved);
-      receiver.onMetaData(data);
+      receiver.onMetaData(schema, data);
       return SUCCESS;
     } catch (final Exception e) {
       receiver.onError(SMFTErrors.errorExpectedGotWithException(
@@ -255,13 +267,6 @@ public final class SMFTV1BodySectionParserMetadata
     }
 
     @Override
-    public void onMetaData(
-      final byte[] data)
-    {
-
-    }
-
-    @Override
     public void onError(final SMFErrorType e)
     {
       this.receiver.onError(e);
@@ -271,6 +276,14 @@ public final class SMFTV1BodySectionParserMetadata
     public void onWarning(final SMFWarningType w)
     {
       this.receiver.onWarning(w);
+    }
+
+    @Override
+    public void onMetaData(
+      final SMFSchemaIdentifier schema,
+      final byte[] data)
+    {
+
     }
   }
 }

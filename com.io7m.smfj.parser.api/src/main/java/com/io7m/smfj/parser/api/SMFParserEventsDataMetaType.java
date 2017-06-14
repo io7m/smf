@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+
 /**
  * Events related to the parsing of metadata.
  */
@@ -25,9 +27,11 @@ public interface SMFParserEventsDataMetaType extends SMFParserEventsErrorType
   /**
    * Metadata is ready for delivery.
    *
-   * @param data The data
+   * @param schema The metadata schema
+   * @param data   The data
    */
 
   void onMetaData(
+    SMFSchemaIdentifier schema,
     byte[] data);
 }

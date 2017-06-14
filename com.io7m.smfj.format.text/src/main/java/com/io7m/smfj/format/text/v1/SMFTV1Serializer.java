@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.text.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jfsm.core.FSMTransitionException;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jnull.Nullable;
 import com.io7m.smfj.core.SMFAttribute;
@@ -110,13 +109,11 @@ public final class SMFTV1Serializer implements SMFSerializerType
       {
         final SMFSchemaIdentifier schema = in_header.schemaIdentifier();
         this.writer.append("schema ");
-        this.writer.append(Integer.toUnsignedString(schema.vendorID(), 16));
+        this.writer.append(schema.name().value());
         this.writer.append(" ");
-        this.writer.append(Integer.toUnsignedString(schema.schemaID(), 16));
+        this.writer.append(Integer.toUnsignedString(schema.versionMajor()));
         this.writer.append(" ");
-        this.writer.append(Integer.toUnsignedString(schema.schemaMajorVersion()));
-        this.writer.append(" ");
-        this.writer.append(Integer.toUnsignedString(schema.schemaMinorVersion()));
+        this.writer.append(Integer.toUnsignedString(schema.versionMinor()));
         this.writer.newLine();
       }
 
@@ -631,7 +628,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final long v0,
       final long v1,
       final long v2)
-      throws IOException, FSMTransitionException
+      throws IOException, IllegalStateException
     {
       if (Long.compareUnsigned(this.remaining, 0L) <= 0) {
         final String text =
@@ -693,10 +690,9 @@ public final class SMFTV1Serializer implements SMFSerializerType
 
     @Override
     public void serializeMetadata(
-      final long vendor,
-      final long schema,
+      final SMFSchemaIdentifier schema,
       final byte[] data)
-      throws IOException, FSMTransitionException
+      throws IOException, IllegalStateException
     {
       if (Long.compareUnsigned(this.remaining, 0L) <= 0) {
         final String text =
@@ -714,9 +710,11 @@ public final class SMFTV1Serializer implements SMFSerializerType
 
       final List<String> lines = SMFBase64Lines.toBase64Lines(data);
       this.writer.append("meta ");
-      this.writer.append(Long.toUnsignedString(vendor, 16));
+      this.writer.append(schema.name().value());
       this.writer.append(" ");
-      this.writer.append(Long.toUnsignedString(schema, 16));
+      this.writer.append(Integer.toUnsignedString(schema.versionMajor()));
+      this.writer.append(" ");
+      this.writer.append(Integer.toUnsignedString(schema.versionMinor()));
       this.writer.append(" ");
       this.writer.append(Integer.toUnsignedString(lines.size()));
       this.writer.newLine();

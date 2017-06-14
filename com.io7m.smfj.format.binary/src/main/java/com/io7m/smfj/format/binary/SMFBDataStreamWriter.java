@@ -244,4 +244,16 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
     this.buffer8.putDouble(0, value);
     this.stream.write(this.byte8);
   }
+
+  @Override
+  public void pad(
+    final long count,
+    final byte value)
+    throws IOException
+  {
+    this.byte1[0] = value;
+    for (long index = 0L; Long.compareUnsigned(index, count) < 0; ++index) {
+      this.stream.write(this.byte1);
+    }
+  }
 }

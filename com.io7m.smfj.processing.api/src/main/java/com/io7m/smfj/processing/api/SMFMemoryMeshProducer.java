@@ -30,13 +30,14 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import javaslang.collection.HashMap;
 import javaslang.collection.List;
 import javaslang.collection.Map;
@@ -68,9 +69,6 @@ public final class SMFMemoryMeshProducer
   private Vector<Vector3L> triangles;
   private SMFMemoryMesh mesh;
   private boolean finished;
-  private long meta_vendor;
-  private long meta_schema;
-  private long meta_length;
   private SMFAttribute attribute_current;
 
   private SMFMemoryMeshProducer()
@@ -119,6 +117,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsHeaderType> onVersionReceived(
     final SMFFormatVersion version)
   {
+    NullCheck.notNull(version, "Version");
     return Optional.of(this);
   }
 
@@ -182,16 +181,6 @@ public final class SMFMemoryMeshProducer
   @Override
   public Optional<SMFParserEventsDataTrianglesType> onTriangles()
   {
-    return Optional.of(this);
-  }
-
-  @Override
-  public Optional<SMFParserEventsDataMetaType> onMeta(
-    final long vendor,
-    final long schema)
-  {
-    this.meta_vendor = vendor;
-    this.meta_schema = schema;
     return Optional.of(this);
   }
 
@@ -453,6 +442,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
     final SMFAttribute attribute)
   {
+    NullCheck.notNull(attribute, "Attribute");
     this.attribute_current = attribute;
     this.elements = Vector.empty();
     return Optional.of(this);
@@ -465,9 +455,20 @@ public final class SMFMemoryMeshProducer
   }
 
   @Override
-  public void onMetaData(final byte[] data)
+  public void onMetaData(
+    final SMFSchemaIdentifier schema,
+    final byte[] data)
   {
-    this.metadata = this.metadata.append(
-      SMFMetadata.of(this.meta_vendor, this.meta_schema, data));
+    NullCheck.notNull(schema, "Schema");
+    NullCheck.notNull(data, "Data");
+    this.metadata = this.metadata.append(SMFMetadata.of(schema, data));
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataMetaType> onMeta(
+    final SMFSchemaIdentifier schema)
+  {
+    NullCheck.notNull(schema, "Schema");
+    return Optional.of(this);
   }
 }

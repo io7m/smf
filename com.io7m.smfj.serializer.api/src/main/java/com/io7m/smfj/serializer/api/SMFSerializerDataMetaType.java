@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.serializer.api;
 
-import com.io7m.jfsm.core.FSMTransitionException;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -33,23 +33,21 @@ public interface SMFSerializerDataMetaType extends Closeable
    * <p>Metadata is serialized after all other data in the file has been
    * serialized.</p>
    *
-   * @param vendor The vendor ID
    * @param schema The schema ID
    * @param data   The data
    *
-   * @throws FSMTransitionException If the header has not yet been serialized
-   * @throws FSMTransitionException If the mesh data has not yet been
+   * @throws IllegalStateException If the header has not yet been serialized
+   * @throws IllegalStateException If the mesh data has not yet been
    *                                serialized
-   * @throws FSMTransitionException If the triangle data has not yet been
+   * @throws IllegalStateException If the triangle data has not yet been
    *                                serialized
-   * @throws FSMTransitionException If no metadata was specified by the header
-   * @throws FSMTransitionException If the serializer has previously failed
+   * @throws IllegalStateException If no metadata was specified by the header
+   * @throws IllegalStateException If the serializer has previously failed
    * @throws IOException            On I/O errors
    */
 
   void serializeMetadata(
-    long vendor,
-    long schema,
+    SMFSchemaIdentifier schema,
     byte[] data)
-    throws IOException, FSMTransitionException;
+    throws IOException, IllegalStateException;
 }

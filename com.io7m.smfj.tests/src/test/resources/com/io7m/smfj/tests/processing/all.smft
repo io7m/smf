@@ -1,9 +1,9 @@
 smf 1 0
 vertices 3
 triangles 1 8
-schema 696f376d 0 1 2
+schema com.io7m.smf.example 1 2
 coordinates +x +y -z counter-clockwise
-meta 3
+meta 4
 
 attribute "f16_4" float 4 16
 attribute "f16_3" float 3 16
@@ -256,10 +256,12 @@ triangles
 end
 
 metadata
-meta 696f376d 0 1
+meta com.io7m.smf.example 0 0 1
 aGVsbG8=
-meta 696f376d 1 1
+meta com.io7m.smf.example 1 0 1
 b2xsZWg=
-meta 696f376d 2 1
+meta com.io7m.smf.example.different 1 0 1
+b2xsZWg=
+meta com.io7m.smf.example 2 0 1
 dGhlIGVuZA==
 end

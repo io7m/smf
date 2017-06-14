@@ -78,7 +78,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(0L, 32L));
+    header_b.setTriangles(SMFTriangles.of(0L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
@@ -115,7 +115,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(0L, 32L));
+    header_b.setTriangles(SMFTriangles.of(0L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
@@ -156,7 +156,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(1L, 32L));
+    header_b.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
@@ -198,7 +198,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(1L, 32L));
+    header_b.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
@@ -240,7 +240,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(1L, 32L));
+    header_b.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
@@ -282,7 +282,7 @@ public final class SMFTV1BodyCommandTrianglesTest
         0);
 
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setTriangles(SMFTriangles.of(1L, 32L));
+    header_b.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =

@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
@@ -248,11 +249,12 @@ public final class SMFByteBufferPackedMeshes
         final ByteBuffer b = this.attr_buffers.get(id).get();
         final SMFByteBufferPackedAttribute pa = by_name.get(name).get();
         final SMFByteBufferAttributePacker packer =
-          new SMFByteBufferAttributePacker(this,
-                                           b,
-                                           bc,
-                                           pa,
-                                           this.header.vertexCount());
+          new SMFByteBufferAttributePacker(
+            this,
+            b,
+            bc,
+            pa,
+            this.header.vertexCount());
         packers = packers.put(id, packer);
       }
     }
@@ -462,14 +464,6 @@ public final class SMFByteBufferPackedMeshes
   }
 
   @Override
-  public Optional<SMFParserEventsDataMetaType> onMeta(
-    final long vendor,
-    final long schema)
-  {
-    return this.meta.onMeta(vendor, schema);
-  }
-
-  @Override
   public Optional<SMFParserEventsDataAttributesNonInterleavedType> onAttributesNonInterleaved()
   {
     return Optional.of(this);
@@ -483,5 +477,12 @@ public final class SMFByteBufferPackedMeshes
     }
 
     return Optional.empty();
+  }
+
+  @Override
+  public Optional<SMFParserEventsDataMetaType> onMeta(
+    final SMFSchemaIdentifier schema)
+  {
+    return this.meta.onMeta(schema);
   }
 }

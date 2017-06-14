@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+
 import java.util.Optional;
 
 /**
@@ -32,17 +34,15 @@ public interface SMFParserEventsDataMetaOptionalSupplierType
 
   static SMFParserEventsDataMetaOptionalSupplierType ignoring()
   {
-    return (vendor, schema) -> Optional.empty();
+    return (schema) -> Optional.empty();
   }
 
   /**
-   * @param vendor The vendor ID
    * @param schema The schema ID
    *
    * @return A listener that will receive metadata
    */
 
   Optional<SMFParserEventsDataMetaType> onMeta(
-    long vendor,
-    long schema);
+    SMFSchemaIdentifier schema);
 }

@@ -35,6 +35,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParseWarning;
@@ -187,7 +188,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   private void deliverHeader()
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(0, 0, 0, 0));
+    header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(
+      SMFSchemaName.of("com.io7m.example"), 0, 0));
 
     javaslang.collection.List<SMFAttribute> attributes =
       javaslang.collection.List.empty();
@@ -247,9 +249,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     }
 
     header_b.setCoordinateSystem(system);
-    header_b.setTriangles(SMFTriangles.of(
-      (long) this.triangles.size(),
-      (long) triangle_bits));
+    header_b.setTriangles(
+      SMFTriangles.of((long) this.triangles.size(), triangle_bits));
     final SMFHeader header = header_b.build();
 
     final Optional<SMFParserEventsHeaderType> events_header_opt =

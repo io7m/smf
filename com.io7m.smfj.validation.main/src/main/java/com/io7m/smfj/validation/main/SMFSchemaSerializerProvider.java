@@ -20,6 +20,7 @@ import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerProviderType;
@@ -159,8 +160,13 @@ public final class SMFSchemaSerializerProvider implements
       writer.append(Integer.toUnsignedString(this.version.minor()));
       writer.newLine();
 
+      final SMFSchemaIdentifier id = schema.schemaIdentifier();
       writer.append("schema ");
-      writer.append(schema.schemaIdentifier().toHumanString());
+      writer.append(id.name().value());
+      writer.append(" ");
+      writer.append(Integer.toUnsignedString(id.versionMajor()));
+      writer.append(" ");
+      writer.append(Integer.toUnsignedString(id.versionMinor()));
       writer.newLine();
 
       final Optional<SMFCoordinateSystem> coords_opt =

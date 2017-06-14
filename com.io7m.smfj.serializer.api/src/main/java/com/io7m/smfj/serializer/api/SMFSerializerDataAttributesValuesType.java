@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.serializer.api;
 
-import com.io7m.jfsm.core.FSMTransitionException;
-
 import java.io.Closeable;
 import java.io.IOException;
 
@@ -35,8 +33,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -47,7 +45,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     double y,
     double z,
     double w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -56,8 +54,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -67,7 +65,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     double x,
     double y,
     double z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -75,8 +73,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -85,15 +83,15 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
   void serializeValueFloat2(
     double x,
     double y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
    *
    * @param x The x value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -101,7 +99,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
 
   void serializeValueFloat1(
     double x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -111,8 +109,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -123,7 +121,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     long y,
     long z,
     long w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -132,8 +130,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -143,7 +141,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     long x,
     long y,
     long z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -151,8 +149,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -161,15 +159,15 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
   void serializeValueIntegerSigned2(
     long x,
     long y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
    *
    * @param x The x value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -177,7 +175,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
 
   void serializeValueIntegerSigned1(
     long x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -187,8 +185,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -199,7 +197,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     long y,
     long z,
     long w)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -208,8 +206,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -219,7 +217,7 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
     long x,
     long y,
     long z)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
@@ -227,8 +225,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -237,15 +235,15 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
   void serializeValueIntegerUnsigned2(
     long x,
     long y)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 
   /**
    * Serialize a value.
    *
    * @param x The x value
    *
-   * @throws FSMTransitionException   If the header has not yet been serialized
-   * @throws FSMTransitionException   If the serializer has previously failed
+   * @throws IllegalStateException   If the header has not yet been serialized
+   * @throws IllegalStateException   If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -253,5 +251,5 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
 
   void serializeValueIntegerUnsigned1(
     long x)
-    throws IOException, IllegalArgumentException, FSMTransitionException;
+    throws IOException, IllegalArgumentException, IllegalStateException;
 }

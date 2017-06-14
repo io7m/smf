@@ -1,5 +1,5 @@
 smf-schema 1 0
-schema a0a0a0a0 b0 3 2
+schema com.io7m.smf.example 3 2
 attribute required a float 4 32
 attribute required b float 3 32
 attribute required c float 2 32

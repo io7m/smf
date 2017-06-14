@@ -197,4 +197,40 @@ public interface SMFBDataStreamWriterType
   void putF64(
     double value)
     throws IOException;
+
+  /**
+   * Insert {@code count} octets of padding.
+   *
+   * @param count The octet count
+   * @param value The padding value
+   *
+   * @throws IOException On I/O errors
+   */
+
+  void pad(
+    long count,
+    byte value)
+    throws IOException;
+
+  /**
+   * Insert padding up to {@code offset}. Has no effect if the writer has
+   * already passed {@code offset}.
+   *
+   * @param offset The octet count
+   * @param value  The padding value
+   *
+   * @throws IOException On I/O errors
+   */
+
+  default void padTo(
+    final long offset,
+    final byte value)
+    throws IOException
+  {
+    final long position = this.position();
+    if (Long.compareUnsigned(position, offset) < 0) {
+      final long diff = Math.subtractExact(offset, position);
+      this.pad(diff, value);
+    }
+  }
 }

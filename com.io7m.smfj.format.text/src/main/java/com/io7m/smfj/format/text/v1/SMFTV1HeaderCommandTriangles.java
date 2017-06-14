@@ -78,10 +78,9 @@ public final class SMFTV1HeaderCommandTriangles
   {
     if (line.length() == 3) {
       try {
-        final long triangle_count = Long.parseUnsignedLong(line.get(1));
-        final long triangle_size = Long.parseUnsignedLong(line.get(2));
-        this.header.setTriangles(
-          SMFTriangles.of(triangle_count, triangle_size));
+        final long tri_count = Long.parseUnsignedLong(line.get(1));
+        final int tri_size = Integer.parseUnsignedInt(line.get(2));
+        this.header.setTriangles(SMFTriangles.of(tri_count, tri_size));
         return SUCCESS;
       } catch (final NumberFormatException e) {
         receiver.onError(errorCommandExpectedGotWithException(

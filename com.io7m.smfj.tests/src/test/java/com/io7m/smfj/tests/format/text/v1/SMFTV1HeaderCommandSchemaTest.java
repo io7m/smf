@@ -51,16 +51,15 @@ public final class SMFTV1HeaderCommandSchemaTest
     }};
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "aabbccdd", "11223344", "1", "2"));
+      cmd.parse(events, List.of("schema", "com.io7m.example", "1", "2"));
     Assert.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
     final SMFSchemaIdentifier schema = result.schemaIdentifier();
 
-    Assert.assertEquals(0xaabbccddL, Integer.toUnsignedLong(schema.vendorID()));
-    Assert.assertEquals(0x11223344L, Integer.toUnsignedLong(schema.schemaID()));
-    Assert.assertEquals(1L, (long) schema.schemaMajorVersion());
-    Assert.assertEquals(2L, (long) schema.schemaMinorVersion());
+    Assert.assertEquals("com.io7m.example", schema.name().value());
+    Assert.assertEquals(1L, (long) schema.versionMajor());
+    Assert.assertEquals(2L, (long) schema.versionMinor());
   }
 
   @Test

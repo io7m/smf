@@ -54,8 +54,16 @@
       <artifactId>com.io7m.junreachable.core</artifactId>
     </dependency>
     <dependency>
+      <groupId>com.io7m.jfunctional</groupId>
+      <artifactId>com.io7m.jfunctional.core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>com.io7m.jcoords</groupId>
       <artifactId>com.io7m.jcoords.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jlexing</groupId>
+      <artifactId>com.io7m.jlexing.core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.io7m.jaffirm</groupId>

@@ -17,11 +17,16 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Preconditions;
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnimplementedCodeException;
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.format.binary.v1.SMFBv1Parser;
+import com.io7m.smfj.format.binary.v1.SMFBv1Serializer;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
@@ -41,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.DatatypeConverter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -48,6 +54,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.Optional;
 
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
@@ -131,9 +138,8 @@ public final class SMFFormatBinary
     final SMFFormatVersion version)
   {
     return String.format(
-      "Version %d.%d is not supported",
-      Integer.valueOf(version.major()),
-      Integer.valueOf(version.minor()));
+      "Version %s is not supported",
+      version.toHumanString());
   }
 
   @Override
@@ -158,7 +164,7 @@ public final class SMFFormatBinary
     NullCheck.notNull(in_uri, "URI");
     NullCheck.notNull(in_stream, "Stream");
 
-    throw new UnimplementedCodeException();
+    return new ParserSequential(in_events, in_stream, in_uri);
   }
 
   @Override
@@ -194,7 +200,18 @@ public final class SMFFormatBinary
     final OutputStream stream)
     throws UnsupportedOperationException
   {
-    throw new UnimplementedCodeException();
+    if (!SUPPORTED_VERSIONS.contains(version)) {
+      throw new UnsupportedOperationException(notSupported(version));
+    }
+
+    switch (version.major()) {
+      case 1: {
+        return new SMFBv1Serializer(version, uri, stream);
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
   }
 
   @Override
@@ -246,4 +263,101 @@ public final class SMFFormatBinary
     }
   }
 
+  private static final class ParserSequential implements SMFParserSequentialType
+  {
+    private final SMFParserEventsType events;
+    private final URI uri;
+    private final SMFBDataStreamReaderType reader;
+    private final InputStream stream;
+    private SMFParserSequentialType parser;
+
+    ParserSequential(
+      final SMFParserEventsType in_events,
+      final InputStream in_stream,
+      final URI in_uri)
+    {
+      this.events = NullCheck.notNull(in_events, "Events");
+      this.uri = NullCheck.notNull(in_uri, "URI");
+      this.stream = NullCheck.notNull(in_stream, "Stream");
+      this.reader = SMFBDataStreamReader.create(in_uri, this.stream);
+    }
+
+    @Override
+    public void parse()
+    {
+      try {
+        this.events.onStart();
+
+        final byte[] magic = new byte[MAGIC_NUMBER.length];
+        this.reader.readBytes(Optional.of("Magic number"), magic);
+
+        if (!magicNumberIsValid(magic)) {
+          final String text =
+            new StringBuilder(128)
+              .append("Bad magic number.")
+              .append(System.lineSeparator())
+              .append("  Expected: ")
+              .append(DatatypeConverter.printHexBinary(MAGIC_NUMBER))
+              .append(System.lineSeparator())
+              .append("  Received: ")
+              .append(DatatypeConverter.printHexBinary(magic))
+              .append(System.lineSeparator())
+              .toString();
+          this.events.onError(SMFParseError.of(
+            LexicalPosition.of(0, 0, Optional.of(this.uri)),
+            text,
+            Optional.empty()));
+          return;
+        }
+
+        final int major =
+          Math.toIntExact(this.reader.readU32(Optional.of("Major version")));
+        final int minor =
+          Math.toIntExact(this.reader.readU32(Optional.of("Minor version")));
+        final SMFFormatVersion version =
+          SMFFormatVersion.of(major, minor);
+        final Optional<SMFParserEventsHeaderType> events_header_opt =
+          this.events.onVersionReceived(version);
+
+        if (events_header_opt.isPresent()) {
+          final SMFParserEventsHeaderType events_header =
+            events_header_opt.get();
+
+          switch (major) {
+            case 1: {
+              this.parser =
+                new SMFBv1Parser(
+                  version,
+                  SMFBDataStreamReader.create(this.uri, this.stream),
+                  events_header);
+              this.parser.parse();
+              break;
+            }
+            default: {
+              throw new UnsupportedOperationException(notSupported(version));
+            }
+          }
+        }
+
+      } catch (final Exception e) {
+        this.events.onError(SMFParseError.of(
+          LexicalPosition.of(0, 0, Optional.of(this.uri)),
+          e.getMessage(),
+          Optional.of(e)));
+      } finally {
+        this.events.onFinish();
+      }
+    }
+
+    @Override
+    public void close()
+      throws IOException
+    {
+      final SMFParserSequentialType p = this.parser;
+      if (p != null) {
+        this.parser = null;
+        p.close();
+      }
+    }
+  }
 }

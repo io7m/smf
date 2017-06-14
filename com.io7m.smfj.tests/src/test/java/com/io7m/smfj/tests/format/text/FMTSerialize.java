@@ -4,6 +4,7 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
@@ -160,33 +161,6 @@ public final class FMTSerialize
     {
       LOG.debug("triangles start");
       return Optional.of(this);
-    }
-
-    @Override
-    public Optional<SMFParserEventsDataMetaType> onMeta(
-      final long vendor,
-      final long schema)
-    {
-      this.meta_vendor = vendor;
-      this.meta_schema = schema;
-
-      LOG.debug(
-        "metadata request: {} {}",
-        Long.toUnsignedString(this.meta_vendor, 16),
-        Long.toUnsignedString(this.meta_schema, 16));
-
-      return Optional.of(this);
-    }
-
-    @Override
-    public void onMetaData(
-      final byte[] data)
-    {
-      LOG.debug(
-        "metadata: {} {} {}",
-        Long.toUnsignedString(this.meta_vendor, 16),
-        Long.toUnsignedString(this.meta_schema, 16),
-        Base64.getUrlEncoder().encodeToString(data));
     }
 
     @Override
@@ -461,6 +435,25 @@ public final class FMTSerialize
       } catch (final IOException e) {
         throw new UncheckedIOException(e);
       }
+    }
+
+    @Override
+    public void onMetaData(
+      final SMFSchemaIdentifier schema,
+      final byte[] data)
+    {
+      LOG.debug(
+        "metadata: {} {}",
+        schema.toHumanString(),
+        Base64.getUrlEncoder().encodeToString(data));
+    }
+
+    @Override
+    public Optional<SMFParserEventsDataMetaType> onMeta(
+      final SMFSchemaIdentifier schema)
+    {
+      LOG.debug("metadata request: {}", schema.toHumanString());
+      return Optional.of(this);
     }
   }
 }

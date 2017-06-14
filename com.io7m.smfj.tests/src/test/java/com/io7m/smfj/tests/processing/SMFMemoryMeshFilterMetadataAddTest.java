@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.tests.processing;
 
+import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
@@ -115,7 +117,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
-        List.of("1", "2", "x"));
+        List.of("com.io7m.smf.example", "1", "2", "x"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataAdd.NAME);
@@ -139,8 +141,12 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     final SMFFilterCommandContext context =
       SMFFilterCommandContext.of(root, root);
 
+    final SMFSchemaIdentifier schema_id =
+      SMFSchemaIdentifier.of(
+      SMFSchemaName.of("com.io7m.example"), 1, 0);
+
     final SMFMemoryMeshFilterType filter =
-      SMFMemoryMeshFilterMetadataAdd.create(0L, 0L, path);
+      SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -176,8 +182,12 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     final SMFFilterCommandContext context =
       SMFFilterCommandContext.of(root, root);
 
+    final SMFSchemaIdentifier schema_id =
+      SMFSchemaIdentifier.of(
+        SMFSchemaName.of("com.io7m.example"), 1, 0);
+
     final SMFMemoryMeshFilterType filter =
-      SMFMemoryMeshFilterMetadataAdd.create(0xa0b0c0d0L, 0xf0e0c0d0L, path);
+      SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -195,8 +205,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
       mesh1.header().metaCount());
 
     final SMFMetadata meta = mesh1.metadata().last();
-    Assert.assertEquals(0xa0b0c0d0L, meta.vendor());
-    Assert.assertEquals(0xf0e0c0d0L, meta.schema());
+    Assert.assertEquals(schema_id, meta.schema());
     Assert.assertArrayEquals(data, meta.data());
   }
 }

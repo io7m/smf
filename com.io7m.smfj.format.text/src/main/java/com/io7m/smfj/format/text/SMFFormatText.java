@@ -146,9 +146,8 @@ public final class SMFFormatText
     final SMFFormatVersion version)
   {
     return String.format(
-      "Version %s.%s is not supported",
-      Integer.toUnsignedString(version.major()),
-      Integer.toUnsignedString(version.minor()));
+      "Version %s is not supported",
+      version.toHumanString());
   }
 
   @Override
