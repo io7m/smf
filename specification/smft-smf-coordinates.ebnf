@@ -1,0 +1,8 @@
+axis =
+  "+x" | "-x" | "+y" | "-y" | "+z" | "-z" ;
+
+winding_order =
+  "clockwise" | "counter-clockwise" ;
+
+smf_coordinates =
+  "coordinates" , <axis> , <axis> , <axis> , <winding_order> ;

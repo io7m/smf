@@ -1,3 +1,169 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.parser.api/target/com.io7m.smfj.parser.api-0.10.0.jar against /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.parser.api/target/com.io7m.smfj.parser.api-0.10.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.parser.api/target/com.io7m.smfj.parser.api-0.11.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.parser.api/0.11.0-SNAPSHOT/com.io7m.smfj.parser.api-0.11.0-SNAPSHOT.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.parser.api.SMFParseErrors  (not serializable)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseError errorExpectedGot(java.lang.String, java.lang.String, java.lang.String, com.io7m.jlexing.core.LexicalPosition)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseError errorExpectedGotWithException(java.lang.String, java.lang.String, java.lang.String, com.io7m.jlexing.core.LexicalPosition, java.lang.Exception)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParserEventsBodyType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.util.Optional onAttributesNonInterleaved()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.util.Optional onTriangles()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributesNonInterleavedFinish()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.util.Optional onDataAttributeStart(com.io7m.smfj.core.SMFAttribute)
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.parser.api.SMFParserEventsDataAttributesType  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeFinish(com.io7m.smfj.core.SMFAttribute)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeStart(com.io7m.smfj.core.SMFAttribute)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueFloat1(double)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueFloat2(double, double)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueFloat3(double, double, double)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueFloat4(double, double, double, double)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerSigned1(long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerSigned2(long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerSigned3(long, long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerSigned4(long, long, long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerUnsigned1(long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerUnsigned2(long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerUnsigned3(long, long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataAttributeValueIntegerUnsigned4(long, long, long, long)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesIgnoringReceiver  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFParserEventsDataAttributeValuesIgnoringReceiver(com.io7m.smfj.parser.api.SMFParserEventsErrorType)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFinish()
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFloat1(double)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFloat2(double, double)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFloat3(double, double, double)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFloat4(double, double, double, double)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerSigned1(long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerSigned2(long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerSigned3(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerSigned4(long, long, long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerUnsigned1(long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerUnsigned2(long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerUnsigned3(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueIntegerUnsigned4(long, long, long, long)
+	+++  NEW METHOD: PUBLIC(+) void onError(com.io7m.smfj.core.SMFErrorType)
+	+++  NEW METHOD: PUBLIC(+) void onWarning(com.io7m.smfj.core.SMFWarningType)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueFinish()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueFloat1(double)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueFloat2(double, double)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueFloat3(double, double, double)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueFloat4(double, double, double, double)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerSigned1(long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerSigned2(long, long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerSigned3(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerSigned4(long, long, long, long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerUnsigned1(long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerUnsigned2(long, long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerUnsigned3(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onDataAttributeValueIntegerUnsigned4(long, long, long, long)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType ignoring()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.util.Optional onMeta(com.io7m.smfj.core.SMFSchemaIdentifier)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParserEventsDataMetaType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void onMetaData(com.io7m.smfj.core.SMFSchemaIdentifier, byte[])
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesIgnoringReceiver  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFParserEventsDataTrianglesIgnoringReceiver(com.io7m.smfj.parser.api.SMFParserEventsErrorType)
+	+++  NEW METHOD: PUBLIC(+) void onDataTriangle(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) void onDataTrianglesFinish()
+	+++  NEW METHOD: PUBLIC(+) void onError(com.io7m.smfj.core.SMFErrorType)
+	+++  NEW METHOD: PUBLIC(+) void onWarning(com.io7m.smfj.core.SMFWarningType)
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onDataTrianglesStart()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.parser.api.SMFParserEventsDataType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataAttributesType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType
+	---! REMOVED SUPERCLASS: java.lang.Object
+**** MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserEventsErrorType  (not serializable)
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) void onWarning(com.io7m.smfj.core.SMFWarningType)
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserEventsHeaderType  (not serializable)
+	===* UNCHANGED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	***! MODIFIED METHOD: PUBLIC ABSTRACT java.util.Optional (<-void) onHeaderParsed(com.io7m.smfj.core.SMFHeader)
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.parser.api.SMFParserEventsMeta  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.parser.api.SMFParserEventsMetaType delegating(javaslang.collection.List)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.parser.api.SMFParserEventsMetaType ignore()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.parser.api.SMFParserEventsMetaType  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) boolean onMeta(long, long, long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void onMetaData(long, long, byte[])
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserEventsType  (not serializable)
+	===* UNCHANGED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsErrorType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataAttributesType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsHeaderType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsMetaType
+	---! REMOVED INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataType
+	***! MODIFIED METHOD: PUBLIC ABSTRACT java.util.Optional (<-void) onVersionReceived(com.io7m.smfj.core.SMFFormatVersion)
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserRandomAccessType  (not serializable)
+	===! UNCHANGED INTERFACE: com.io7m.smfj.parser.api.SMFParserType
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) void parse()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseAttributeData(com.io7m.smfj.core.SMFAttributeName)
+		---  REMOVED EXCEPTION: java.lang.IllegalStateException
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseHeader()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseMetadata()
+		---  REMOVED EXCEPTION: java.lang.IllegalStateException
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseTriangles()
+		---  REMOVED EXCEPTION: java.lang.IllegalStateException
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserSequentialType  (not serializable)
+	===! UNCHANGED INTERFACE: com.io7m.smfj.parser.api.SMFParserType
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) void parse()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseData()
+		---  REMOVED EXCEPTION: java.lang.IllegalStateException
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void parseHeader()
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.parser.api.SMFParserType  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) boolean parserHasFailed()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.core.SMFWarningType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParseWarningType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder builder()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseWarning copyOf(com.io7m.smfj.parser.api.SMFParseWarningType)
+	+++  NEW METHOD: PUBLIC(+) boolean equals(java.lang.Object)
+	+++  NEW METHOD: PUBLIC(+) java.util.Optional exception()
+	+++  NEW METHOD: PUBLIC(+) java.lang.String fullMessage()
+	+++  NEW METHOD: PUBLIC(+) int hashCode()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jlexing.core.LexicalPosition lexical()
+	+++  NEW METHOD: PUBLIC(+) java.lang.String message()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseWarning of(com.io7m.jlexing.core.LexicalPosition, java.lang.String, java.util.Optional)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String toString()
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning withException(java.lang.Exception)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning withException(java.util.Optional)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning withLexical(com.io7m.jlexing.core.LexicalPosition)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning withMessage(java.lang.String)
++++  NEW CLASS: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.parser.api.SMFParseWarning build()
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder from(com.io7m.smfj.core.SMFWarningType)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder from(com.io7m.smfj.parser.api.SMFParseWarningType)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder setException(java.lang.Exception)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder setException(java.util.Optional)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder setLexical(com.io7m.jlexing.core.LexicalPosition)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarning$Builder setMessage(java.lang.String)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.parser.api.SMFParseWarnings  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.parser.api.SMFParseWarning warningExpectedGot(java.lang.String, java.lang.String, java.lang.String, com.io7m.jlexing.core.LexicalPosition)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.parser.api.SMFParseWarningType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.core.SMFWarningType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.util.Optional exception()
+	+++  NEW METHOD: PUBLIC(+) java.lang.String fullMessage()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jlexing.core.LexicalPosition lexical()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.lang.String message()

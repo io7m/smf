@@ -1,0 +1,5 @@
+schema_segment =
+  ? [\p{IsAlphabetic}][\p{IsAlphabetic}\p{IsDigit}_]* ? ;
+
+schema_name =
+  schema_segment , { "." , schema_segment } ;

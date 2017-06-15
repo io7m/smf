@@ -1,6 +1,8 @@
 [document
-  [title com.io7m.smfj 0.10.0 Specification]
+  [title com.io7m.smfj 0.11.0 Specification]
   [import "notational.sdi"]
   [import "model.sdi"]
+  [import "binary.sdi"]
   [import "text.sdi"]
-  [import "binary.sdi"]]
+  [import "history.sdi"]
+]

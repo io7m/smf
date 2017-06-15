@@ -1,3 +1,8 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.main/target/com.io7m.smfj.processing.main-0.10.0.jar against /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.main/target/com.io7m.smfj.processing.main-0.10.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.main/target/com.io7m.smfj.processing.main-0.11.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.processing.main/0.11.0-SNAPSHOT/com.io7m.smfj.processing.main-0.11.0-SNAPSHOT.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataAdd  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.processing.api.SMFMemoryMeshFilterType create(long, long, java.nio.file.Path)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.processing.api.SMFMemoryMeshFilterType create(com.io7m.smfj.core.SMFSchemaIdentifier, java.nio.file.Path)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataRemove  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.processing.api.SMFMemoryMeshFilterType create(java.util.OptionalLong, java.util.OptionalLong)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.processing.api.SMFMemoryMeshFilterType create(java.util.Optional, java.util.Optional)

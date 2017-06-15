@@ -1,0 +1,28 @@
+[section [title Section - end] [id smfb.sections.end]]
+
+[subsection [title Definition] [id smfb.sections.end.def]]
+[paragraph]
+The [term [type type] end] section indicates the end of an
+[term [type type] SMF/B] file.
+
+[subsection [title Cardinality/Ordering] [id smfb.sections.end.cardinality]]
+[paragraph]
+An [term [type type] end] section must appear exactly once in an
+[term [type type] SMF/B] file.
+
+[paragraph]
+The [term [type type] end] section MUST be the last section in an
+[term [type type] SMF/B] file. Implementations MUST reject
+[term [type type] SMF/B] files that do not contain a terminating
+[term [type type] end] section.
+
+[subsection [title Magic Number] [id smfb.sections.end.magic]]
+[paragraph]
+The [term [type type] end] section is identified by the magic number
+[term [type constant] 0x534D465F454E4421].
+
+[subsection [title Data] [id smfb.sections.end.data]]
+[paragraph]
+The [term [type type] end] section contains no data. The specified
+[link [target smfb.sections.def.size] data size] for the section MUST be
+[term [type constant] 0].

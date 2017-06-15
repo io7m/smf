@@ -1,3 +1,775 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.binary/target/com.io7m.smfj.format.binary-0.10.0.jar against /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.binary/target/com.io7m.smfj.format.binary-0.10.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.binary/target/com.io7m.smfj.format.binary-0.11.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.binary/0.11.0-SNAPSHOT/com.io7m.smfj.format.binary-0.11.0-SNAPSHOT.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBAlignment  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) long alignNext(long, int)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.SMFBBodySectionParserType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long magic()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void parse(com.io7m.smfj.core.SMFHeader, com.io7m.smfj.parser.api.SMFParserEventsBodyType, com.io7m.smfj.format.binary.SMFBDataStreamReaderType)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.SMFBCoordinateSystems  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) void pack(com.io7m.smfj.core.SMFCoordinateSystem, com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) void pack(com.io7m.smfj.core.SMFCoordinateSystem, com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.core.SMFCoordinateSystem unpack(com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.core.SMFCoordinateSystem unpack(com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType)
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.SMFBDataStreamReader  (not serializable)
+	===* UNCHANGED INTERFACE: com.io7m.smfj.format.binary.SMFBDataStreamReaderType
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jlexing.core.LexicalPosition positionLexical()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.SMFBDataStreamReaderType withBounds(long)
+**** MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.format.binary.SMFBDataStreamReaderType  (not serializable)
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jlexing.core.LexicalPosition positionLexical()
+	+++* NEW METHOD: PUBLIC(+) void skipTo(long)
+		+++  NEW EXCEPTION: java.io.IOException
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.SMFBDataStreamReaderType withBounds(long)
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.SMFBDataStreamWriter  (not serializable)
+	===* UNCHANGED INTERFACE: com.io7m.smfj.format.binary.SMFBDataStreamWriterType
+	+++  NEW METHOD: PUBLIC(+) void pad(long, byte)
+		+++  NEW EXCEPTION: java.io.IOException
+**** MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.format.binary.SMFBDataStreamWriterType  (not serializable)
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) void pad(long, byte)
+		+++  NEW EXCEPTION: java.io.IOException
+	+++* NEW METHOD: PUBLIC(+) void padTo(long, byte)
+		+++  NEW EXCEPTION: java.io.IOException
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.SMFBOctetRangeType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder builder()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.SMFBOctetRange copyOf(com.io7m.smfj.format.binary.SMFBOctetRangeType)
+	---! REMOVED METHOD: PUBLIC(-) boolean equals(java.lang.Object)
+	---! REMOVED METHOD: PUBLIC(-) int hashCode()
+	---  REMOVED METHOD: PUBLIC(-) long octetLast()
+	---  REMOVED METHOD: PUBLIC(-) long octetSize()
+	---  REMOVED METHOD: PUBLIC(-) long octetStart()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.SMFBOctetRange of(long, long)
+	---! REMOVED METHOD: PUBLIC(-) java.lang.String toString()
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange withOctetLast(long)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange withOctetSize(long)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange withOctetStart(long)
+---! REMOVED CLASS: PUBLIC(-) STATIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) com.io7m.smfj.format.binary.SMFBOctetRange build()
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder from(com.io7m.smfj.format.binary.SMFBOctetRangeType)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder setOctetLast(long)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder setOctetSize(long)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBOctetRange$Builder setOctetStart(long)
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.SMFBOctetRangeType  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) long octetLast()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long octetSize()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long octetStart()
++++  NEW ENUM: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBParsingStatus  (compatible)
+	+++  NEW INTERFACE: java.lang.Comparable
+	+++  NEW INTERFACE: java.io.Serializable
+	+++  NEW SUPERCLASS: java.lang.Enum
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBParsingStatus SUCCESS
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBParsingStatus FAILURE
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.SMFBParsingStatus valueOf(java.lang.String)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.SMFBParsingStatus[] values()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.SMFBSectionType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.SMFBSection$Builder builder()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.SMFBSection copyOf(com.io7m.smfj.format.binary.SMFBSectionType)
+	+++  NEW METHOD: PUBLIC(+) boolean equals(java.lang.Object)
+	+++  NEW METHOD: PUBLIC(+) int hashCode()
+	+++  NEW METHOD: PUBLIC(+) long id()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.SMFBSection of(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) long offset()
+	+++  NEW METHOD: PUBLIC(+) long sizeOfData()
+	+++  NEW METHOD: PUBLIC(+) long sizeTotal()
+	+++  NEW METHOD: PUBLIC(+) java.lang.String toString()
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection withId(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection withOffset(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection withSizeOfData(long)
++++  NEW CLASS: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection$Builder  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.SMFBSection build()
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection$Builder from(com.io7m.smfj.format.binary.SMFBSectionType)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection$Builder setId(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection$Builder setOffset(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSection$Builder setSizeOfData(long)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionEnd  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) long MAGIC
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionHeader  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) long MAGIC
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionMetadata  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) long MAGIC
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionParser  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.SMFBSectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBSectionParser(com.io7m.smfj.format.binary.SMFBDataStreamReaderType)
+	+++  NEW METHOD: PUBLIC(+) javaslang.control.Validation parse()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.SMFBSectionParserType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) javaslang.control.Validation parse()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionTriangles  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) long MAGIC
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.SMFBSectionType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int SECTION_ALIGNMENT
+	+++  NEW METHOD: PUBLIC(+) void checkPreconditions()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long id()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long offset()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long sizeOfData()
+	+++  NEW METHOD: PUBLIC(+) long sizeTotal()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.SMFBSectionVerticesNonInterleaved  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) long MAGIC
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.SMFBV1Offsets  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long alignToNext8(long)
+	---! REMOVED METHOD: PUBLIC(-) javaslang.collection.Map attributeOffsets()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.SMFBV1Offsets fromHeader(com.io7m.smfj.core.SMFHeader)
+	---! REMOVED METHOD: PUBLIC(-) long metaDataOffset()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long offsetHeader()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long offsetHeaderAttributesData()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long offsetMagicNumber()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long offsetVersionMajor()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) long offsetVersionMinor()
+	---! REMOVED METHOD: PUBLIC(-) long trianglesDataOffset()
+	---! REMOVED METHOD: PUBLIC(-) long verticesDataOffset()
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.SMFFormatBinary  (not serializable)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String toString()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderByteBuffered  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) int getAttributeCount()
+	+++  NEW METHOD: PUBLIC(+) int getAttributeOffset()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType getCoordinateSystemReadable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsType getCoordinateSystemWritable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDReadableType getSchemaReadable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDType getSchemaWritable()
+	+++  NEW METHOD: PUBLIC(+) long getTriangleCount()
+	+++  NEW METHOD: PUBLIC(+) int getTriangleIndexSizeBits()
+	+++  NEW METHOD: PUBLIC(+) long getVertexCount()
+	+++  NEW METHOD: PUBLIC(+) int metaAttributeCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaAttributeCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaAttributeCountStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeCountType()
+	+++  NEW METHOD: PUBLIC(+) int metaAttributeOffsetOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaAttributeOffsetOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaAttributeOffsetStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeOffsetType()
+	+++  NEW METHOD: PUBLIC(+) int metaCoordinateSystemOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaCoordinateSystemOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaCoordinateSystemStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaCoordinateSystemType()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaSchemaStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaSchemaType()
+	+++  NEW METHOD: PUBLIC(+) int metaTriangleCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaTriangleCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaTriangleCountStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleCountType()
+	+++  NEW METHOD: PUBLIC(+) int metaTriangleIndexSizeBitsOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaTriangleIndexSizeBitsOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaTriangleIndexSizeBitsStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleIndexSizeBitsType()
+	+++  NEW METHOD: PUBLIC(+) int metaVertexCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaVertexCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaVertexCountStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVertexCountType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	+++  NEW METHOD: PUBLIC(+) void setAttributeCount(int)
+	+++  NEW METHOD: PUBLIC(+) void setAttributeOffset(int)
+	+++  NEW METHOD: PUBLIC(+) void setTriangleCount(long)
+	+++  NEW METHOD: PUBLIC(+) void setTriangleIndexSizeBits(int)
+	+++  NEW METHOD: PUBLIC(+) void setVertexCount(long)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int sizeInOctets()
+	+++  NEW METHOD: PUBLIC(+) int sizeOctets()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderReadableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getAttributeCount()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getAttributeOffset()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType getCoordinateSystemReadable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDReadableType getSchemaReadable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long getTriangleCount()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getTriangleIndexSizeBits()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) long getVertexCount()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaAttributeCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaAttributeCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeCountType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaAttributeOffsetOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaAttributeOffsetOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeOffsetType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaCoordinateSystemOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaCoordinateSystemOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaCoordinateSystemType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaSchemaType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaTriangleCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaTriangleCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleCountType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaTriangleIndexSizeBitsOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaTriangleIndexSizeBitsOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleIndexSizeBitsType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaVertexCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaVertexCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVertexCountType()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderWritableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType getCoordinateSystemWritable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDWritableType getSchemaWritable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setAttributeCount(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setAttributeOffset(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setTriangleCount(long)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setTriangleIndexSizeBits(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setVertexCount(long)
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeByteBuffered  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1AttributeWritableType
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1AttributeType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1AttributeReadableType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---  REMOVED METHOD: PUBLIC(-) int getComponentCount()
+	---  REMOVED METHOD: PUBLIC(-) int getComponentKind()
+	---  REMOVED METHOD: PUBLIC(-) int getComponentSize()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getNameReadable()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRAStringCursorType getNameWritable()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentCountOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaComponentCountStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentCountType()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentKindOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentKindOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaComponentKindStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentKindType()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentSizeOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaComponentSizeOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaComponentSizeStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentSizeType()
+	---  REMOVED METHOD: PUBLIC(-) int metaNameOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaNameOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaNameStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaNameType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	---  REMOVED METHOD: PUBLIC(-) void setComponentCount(int)
+	---  REMOVED METHOD: PUBLIC(-) void setComponentKind(int)
+	---  REMOVED METHOD: PUBLIC(-) void setComponentSize(int)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int sizeInOctets()
+	---! REMOVED METHOD: PUBLIC(-) int sizeOctets()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeByteBuffered  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1AttributeType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1AttributeWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1AttributeReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) int getComponentCount()
+	+++  NEW METHOD: PUBLIC(+) int getComponentKind()
+	+++  NEW METHOD: PUBLIC(+) int getComponentSize()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getNameReadable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getNameWritable()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaComponentCountStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentCountType()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentKindOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentKindOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaComponentKindStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentKindType()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentSizeOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaComponentSizeOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaComponentSizeStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentSizeType()
+	+++  NEW METHOD: PUBLIC(+) int metaNameOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaNameOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaNameStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaNameType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	+++  NEW METHOD: PUBLIC(+) void setComponentCount(int)
+	+++  NEW METHOD: PUBLIC(+) void setComponentKind(int)
+	+++  NEW METHOD: PUBLIC(+) void setComponentSize(int)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int sizeInOctets()
+	+++  NEW METHOD: PUBLIC(+) int sizeOctets()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeReadableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getComponentCount()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getComponentKind()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getComponentSize()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getNameReadable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentCountOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentCountType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentKindOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentKindOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentKindType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentSizeOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaComponentSizeOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentSizeType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaNameOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaNameOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaNameType()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeReadableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getComponentCount()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getComponentKind()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getComponentSize()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getNameReadable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentCountOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentCountOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentCountType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentKindOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentKindOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentKindType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentSizeOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaComponentSizeOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaComponentSizeType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaNameOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaNameOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaNameType()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1AttributeWritableType
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1AttributeReadableType
+	---! REMOVED SUPERCLASS: java.lang.Object
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1AttributeWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1AttributeReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1AttributeWritableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRAStringCursorType getNameWritable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setComponentCount(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setComponentKind(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setComponentSize(int)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1AttributeWritableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getNameWritable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setComponentCount(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setComponentKind(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setComponentSize(int)
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsByteBuffered  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---  REMOVED METHOD: PUBLIC(-) int getForward()
+	---  REMOVED METHOD: PUBLIC(-) int getRight()
+	---  REMOVED METHOD: PUBLIC(-) int getUp()
+	---  REMOVED METHOD: PUBLIC(-) int getWinding()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	---  REMOVED METHOD: PUBLIC(-) void set(int, int, int, int)
+	---  REMOVED METHOD: PUBLIC(-) void setForward(int)
+	---  REMOVED METHOD: PUBLIC(-) void setRight(int)
+	---  REMOVED METHOD: PUBLIC(-) void setUp(int)
+	---  REMOVED METHOD: PUBLIC(-) void setWinding(int)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int sizeInOctets()
+	---! REMOVED METHOD: PUBLIC(-) int sizeOctets()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsByteBuffered  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) int getForward()
+	+++  NEW METHOD: PUBLIC(+) int getRight()
+	+++  NEW METHOD: PUBLIC(+) int getUp()
+	+++  NEW METHOD: PUBLIC(+) int getWinding()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	+++  NEW METHOD: PUBLIC(+) void set(int, int, int, int)
+	+++  NEW METHOD: PUBLIC(+) void setForward(int)
+	+++  NEW METHOD: PUBLIC(+) void setRight(int)
+	+++  NEW METHOD: PUBLIC(+) void setUp(int)
+	+++  NEW METHOD: PUBLIC(+) void setWinding(int)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int sizeInOctets()
+	+++  NEW METHOD: PUBLIC(+) int sizeOctets()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getForward()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getRight()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getUp()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getWinding()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getForward()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getRight()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getUp()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getWinding()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType
+	---! REMOVED SUPERCLASS: java.lang.Object
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void set(int, int, int, int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setForward(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setRight(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setUp(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setWinding(int)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void set(int, int, int, int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setForward(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setRight(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setUp(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setWinding(int)
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderByteBuffered  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1HeaderWritableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1HeaderType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1HeaderReadableType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---  REMOVED METHOD: PUBLIC(-) long getAttributeCount()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType getCoordinateSystemReadable()
+	---! REMOVED METHOD: PUBLIC(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsType getCoordinateSystemWritable()
+	---  REMOVED METHOD: PUBLIC(-) int getMetaCount()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType getSchemaReadable()
+	---! REMOVED METHOD: PUBLIC(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDType getSchemaWritable()
+	---  REMOVED METHOD: PUBLIC(-) long getTriangleCount()
+	---  REMOVED METHOD: PUBLIC(-) int getTriangleIndexSizeBits()
+	---  REMOVED METHOD: PUBLIC(-) long getVertexCount()
+	---  REMOVED METHOD: PUBLIC(-) int metaAttributeCountOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaAttributeCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaAttributeCountStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeCountType()
+	---  REMOVED METHOD: PUBLIC(-) int metaCoordinateSystemOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaCoordinateSystemOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaCoordinateSystemStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaCoordinateSystemType()
+	---  REMOVED METHOD: PUBLIC(-) int metaMetaCountOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaMetaCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaMetaCountStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaCountType()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaSchemaStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaSchemaType()
+	---  REMOVED METHOD: PUBLIC(-) int metaTriangleCountOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaTriangleCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaTriangleCountStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleCountType()
+	---  REMOVED METHOD: PUBLIC(-) int metaTriangleIndexSizeBitsOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaTriangleIndexSizeBitsOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaTriangleIndexSizeBitsStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleIndexSizeBitsType()
+	---  REMOVED METHOD: PUBLIC(-) int metaVertexCountOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaVertexCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaVertexCountStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVertexCountType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	---  REMOVED METHOD: PUBLIC(-) void setAttributeCount(long)
+	---  REMOVED METHOD: PUBLIC(-) void setMetaCount(int)
+	---  REMOVED METHOD: PUBLIC(-) void setTriangleCount(long)
+	---  REMOVED METHOD: PUBLIC(-) void setTriangleIndexSizeBits(int)
+	---  REMOVED METHOD: PUBLIC(-) void setVertexCount(long)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int sizeInOctets()
+	---! REMOVED METHOD: PUBLIC(-) int sizeOctets()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderReadableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long getAttributeCount()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsReadableType getCoordinateSystemReadable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getMetaCount()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType getSchemaReadable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long getTriangleCount()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getTriangleIndexSizeBits()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long getVertexCount()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaAttributeCountOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaAttributeCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaAttributeCountType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaCoordinateSystemOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaCoordinateSystemOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaCoordinateSystemType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaMetaCountOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaMetaCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaCountType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAUserDefined metaSchemaType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaTriangleCountOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaTriangleCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleCountType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaTriangleIndexSizeBitsOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaTriangleIndexSizeBitsOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaTriangleIndexSizeBitsType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaVertexCountOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaVertexCountOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVertexCountType()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1Headers  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) javaslang.control.Validation parse(com.io7m.smfj.core.SMFFormatVersion, com.io7m.smfj.format.binary.SMFBDataStreamReaderType, com.io7m.smfj.format.binary.SMFBSection)
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1HeaderWritableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1HeaderReadableType
+	---! REMOVED SUPERCLASS: java.lang.Object
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1HeaderWritableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1CoordinateSystemsWritableType getCoordinateSystemWritable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType getSchemaWritable()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setAttributeCount(long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setMetaCount(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setTriangleCount(long)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setTriangleIndexSizeBits(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setVertexCount(long)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDByteBuffered  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getMetaSchemaIdReadable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getMetaSchemaIdWritable()
+	+++  NEW METHOD: PUBLIC(+) int getMetaSchemaVersionMajor()
+	+++  NEW METHOD: PUBLIC(+) int getMetaSchemaVersionMinor()
+	+++  NEW METHOD: PUBLIC(+) int getMetaSize()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaIdOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaIdOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaMetaSchemaIdStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaMetaSchemaIdType()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaVersionMajorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaVersionMajorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaMetaSchemaVersionMajorStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSchemaVersionMajorType()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaVersionMinorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSchemaVersionMinorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaMetaSchemaVersionMinorStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSchemaVersionMinorType()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSizeOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaMetaSizeOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaMetaSizeStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSizeType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	+++  NEW METHOD: PUBLIC(+) void setMetaSchemaVersionMajor(int)
+	+++  NEW METHOD: PUBLIC(+) void setMetaSchemaVersionMinor(int)
+	+++  NEW METHOD: PUBLIC(+) void setMetaSize(int)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int sizeInOctets()
+	+++  NEW METHOD: PUBLIC(+) int sizeOctets()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDReadableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getMetaSchemaIdReadable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getMetaSchemaVersionMajor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getMetaSchemaVersionMinor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getMetaSize()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaIdOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaIdOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaMetaSchemaIdType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaVersionMajorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaVersionMajorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSchemaVersionMajorType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaVersionMinorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSchemaVersionMinorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSchemaVersionMinorType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSizeOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaMetaSizeOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaMetaSizeType()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDWritableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getMetaSchemaIdWritable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setMetaSchemaVersionMajor(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setMetaSchemaVersionMinor(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setMetaSize(int)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1Parser  (not serializable)
+	+++  NEW INTERFACE: java.io.Closeable
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserType
+	+++  NEW INTERFACE: java.lang.AutoCloseable
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserSequentialType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1Parser(com.io7m.smfj.core.SMFFormatVersion, com.io7m.smfj.format.binary.SMFBDataStreamReaderType, com.io7m.smfj.parser.api.SMFParserEventsHeaderType)
+	+++  NEW METHOD: PUBLIC(+) void close()
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void parse()
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDByteBuffered  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---  REMOVED METHOD: PUBLIC(-) int getSchemaId()
+	---  REMOVED METHOD: PUBLIC(-) int getSchemaVersionMajor()
+	---  REMOVED METHOD: PUBLIC(-) int getSchemaVersionMinor()
+	---  REMOVED METHOD: PUBLIC(-) int getVendorId()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaIdOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaIdOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaSchemaIdStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaIdType()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaVersionMajorOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaVersionMajorOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaSchemaVersionMajorStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMajorType()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaVersionMinorOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaSchemaVersionMinorOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaSchemaVersionMinorStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMinorType()
+	---  REMOVED METHOD: PUBLIC(-) int metaVendorIdOffsetFromCursor()
+	---  REMOVED METHOD: PUBLIC(-) int metaVendorIdOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int metaVendorIdStaticOffsetFromType()
+	---  REMOVED METHOD: PUBLIC(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVendorIdType()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	---  REMOVED METHOD: PUBLIC(-) void setSchemaId(int)
+	---  REMOVED METHOD: PUBLIC(-) void setSchemaVersionMajor(int)
+	---  REMOVED METHOD: PUBLIC(-) void setSchemaVersionMinor(int)
+	---  REMOVED METHOD: PUBLIC(-) void setVendorId(int)
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) int sizeInOctets()
+	---! REMOVED METHOD: PUBLIC(-) int sizeOctets()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDByteBuffered  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getSchemaIdReadable()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getSchemaIdWritable()
+	+++  NEW METHOD: PUBLIC(+) int getSchemaVersionMajor()
+	+++  NEW METHOD: PUBLIC(+) int getSchemaVersionMinor()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaIdOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaIdOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaSchemaIdStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaSchemaIdType()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaVersionMajorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaVersionMajorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaSchemaVersionMajorStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMajorType()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaVersionMinorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) int metaSchemaVersionMinorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int metaSchemaVersionMinorStaticOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMinorType()
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDType newValue(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDType newValueWithOffset(java.nio.ByteBuffer, com.io7m.jpra.runtime.java.JPRACursorByteReadableType, int)
+	+++  NEW METHOD: PUBLIC(+) void setSchemaVersionMajor(int)
+	+++  NEW METHOD: PUBLIC(+) void setSchemaVersionMinor(int)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) int sizeInOctets()
+	+++  NEW METHOD: PUBLIC(+) int sizeOctets()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getSchemaId()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getSchemaVersionMajor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getSchemaVersionMinor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int getVendorId()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaIdOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaIdOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaIdType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaVersionMajorOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaVersionMajorOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMajorType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaVersionMinorOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaSchemaVersionMinorOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMinorType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaVendorIdOffsetFromCursor()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) int metaVendorIdOffsetFromType()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaVendorIdType()
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDReadableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorReadableType getSchemaIdReadable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getSchemaVersionMajor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int getSchemaVersionMinor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaIdOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaIdOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAString metaSchemaIdType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaVersionMajorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaVersionMajorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMajorType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaVersionMinorOffsetFromCursor()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) int metaSchemaVersionMinorOffsetFromType()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRATypeModel$JPRAIntegerUnsigned metaSchemaVersionMinorType()
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDReadableType
+	---! REMOVED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType
+	---! REMOVED SUPERCLASS: java.lang.Object
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDWritableType
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDReadableType
+	+++  NEW SUPERCLASS: java.lang.Object
+---! REMOVED INTERFACE: PUBLIC(-) ABSTRACT(-) com.io7m.smfj.format.binary.v1.SMFBV1SchemaIDWritableType  (not serializable)
+	---! REMOVED INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setSchemaId(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setSchemaVersionMajor(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setSchemaVersionMinor(int)
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setVendorId(int)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDWritableType  (not serializable)
+	+++  NEW INTERFACE: com.io7m.jpra.runtime.java.JPRAValueType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.jpra.runtime.java.JPRAStringCursorType getSchemaIdWritable()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setSchemaVersionMajor(int)
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) void setSchemaVersionMinor(int)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1SectionParserMetadata  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.SMFBBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1SectionParserMetadata()
+	+++  NEW METHOD: PUBLIC(+) long magic()
+	+++  NEW METHOD: PUBLIC(+) void parse(com.io7m.smfj.core.SMFHeader, com.io7m.smfj.parser.api.SMFParserEventsBodyType, com.io7m.smfj.format.binary.SMFBDataStreamReaderType)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1SectionParserTriangles  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.SMFBBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1SectionParserTriangles()
+	+++  NEW METHOD: PUBLIC(+) long magic()
+	+++  NEW METHOD: PUBLIC(+) void parse(com.io7m.smfj.core.SMFHeader, com.io7m.smfj.parser.api.SMFParserEventsBodyType, com.io7m.smfj.format.binary.SMFBDataStreamReaderType)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1SectionParserVerticesNonInterleaved  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.binary.SMFBBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1SectionParserVerticesNonInterleaved()
+	+++  NEW METHOD: PUBLIC(+) long magic()
+	+++  NEW METHOD: PUBLIC(+) void parse(com.io7m.smfj.core.SMFHeader, com.io7m.smfj.parser.api.SMFParserEventsBodyType, com.io7m.smfj.format.binary.SMFBDataStreamReaderType)
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.v1.SMFBv1Serializer  (not serializable)
+	+++  NEW INTERFACE: java.io.Closeable
+	+++  NEW INTERFACE: com.io7m.smfj.serializer.api.SMFSerializerType
+	+++  NEW INTERFACE: java.lang.AutoCloseable
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1Serializer(com.io7m.smfj.core.SMFFormatVersion, java.net.URI, java.io.OutputStream)
+	+++  NEW METHOD: PUBLIC(+) void close()
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void serializeHeader(com.io7m.smfj.core.SMFHeader)
+		+++  NEW EXCEPTION: java.lang.IllegalStateException
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void serializeMetadata(com.io7m.smfj.core.SMFSchemaIdentifier, byte[])
+		+++  NEW EXCEPTION: java.lang.IllegalStateException
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType serializeTrianglesStart()
+		+++  NEW EXCEPTION: java.lang.IllegalStateException
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType serializeVertexDataNonInterleavedStart()
+		+++  NEW EXCEPTION: java.lang.IllegalStateException
+		+++  NEW EXCEPTION: java.io.IOException

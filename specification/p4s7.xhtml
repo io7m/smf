@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>com.io7m.smfj 0.11.0 Specification: 4.7. Example</title><meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8"/><link rel="stylesheet" type="text/css" href="kstructural-layout.css"/><link rel="stylesheet" type="text/css" href="kstructural-colour.css"/><link rel="stylesheet" type="text/css" href="specification.css"/></head><body><div class="st300_body"><div class="st300_navbar st300_navbar_top"><table class="st300_navbar_table" summary="st300_Navigation bar"><tr><td class="st300_navbar_prev_title_cell">4.6. Section - metadata</td><td class="st300_navbar_up_title_cell">4. SMF/T - Text Encoding</td><td class="st300_navbar_next_title_cell">5. Specification History</td></tr><tr><td class="st300_navbar_prev_file_cell"><a rel="previous" href="p4s6.xhtml#st300_p4s6" title="Go to previous page">Previous</a></td><td class="st300_navbar_up_file_cell"><a rel="up" href="p4.xhtml#st300_p4" title="Go to parent page">Up</a></td><td class="st300_navbar_next_file_cell"><a rel="next" href="p5.xhtml#st300_p5" title="Go to next page">Next</a></td></tr></table><hr class="st300_hr"/></div><div class="st300_section_container"><a id="smft.example"/><div class="st300_section_title_number"><a id="st300_p4s7" href="#st300_p4s7" title="Section 4.7: Example">4.7</a></div><div class="st300_section_title">Example</div><span/><div class="st300_paragraph_container"><div class="st300_paragraph_number"><a id="st300_p4s7ss1c1" href="#st300_p4s7ss1c1" title="Paragraph 4.7.1.1">1</a></div><div class="st300_paragraph">The following is a complete example of an <span class="st300_term type">SMF/T</span> file:</div></div><div class="st300_formal_item"><a id="smft.example.def"/><div class="st300_formal_item_title"><a id="st300_p4s7ss1c2" href="#st300_p4s7ss1c2" title="Formal item 4.7.1.2: smf">4.7.1.2 smf</a></div><div class="st300_formal_item_content"><pre class="st300_verbatim">smf 1 0
+schema com.io7m.example.smf 1 0
+vertices 9
+triangles 4 32
+coordinates +x +y -z counter-clockwise
+attribute "POSITION" float 3 32
+attribute "NORMAL" float 3 32
+attribute "UV:UVMap" float 2 32
+attribute "GROUP:group0" float 1 32
+end
+
+#
+# This is a comment and will be ignored.
+#
+
+vertices-noninterleaved
+attribute "POSITION"
+0.000000000000000 0.000000000000000 0.000000000000000
+1.000000000000000 0.000000000000000 0.000000000000000
+0.000000000000000 0.000000000000000 -2.000000000000000
+1.000000000000000 0.000000000000000 -2.000000000000000
+2.000000000000000 0.000000000000000 0.000000000000000
+2.000000000000000 0.000000000000000 -2.000000000000000
+1.000000000000000 0.000000000000000 0.000000000000000
+1.000000000000000 0.000000000000000 -2.000000000000000
+1.000000000000000 0.000000000000000 0.000000000000000
+attribute "NORMAL"
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 0.999999940395355 0.000000000000000
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 0.999999940395355 0.000000000000000
+0.000000000000000 1.000000000000000 0.000000000000000
+0.000000000000000 0.999999940395355 0.000000000000000
+attribute "UV:UVMap"
+0.112528264522552 0.912521243095398
+0.112528264522552 0.712549567222595
+0.512471735477448 0.912521243095398
+0.696853816509247 0.614087224006653
+0.396896183490753 0.464108407497406
+0.696853816509247 0.464108407497406
+0.396896213293076 0.614087224006653
+0.512471735477448 0.712549448013306
+0.396896213293076 0.614087224006653
+attribute "GROUP:group0"
+0.000000000000000
+0.300000011920929
+0.200000002980232
+0.400000005960465
+0.600000023841858
+0.699999988079071
+0.300000011920929
+0.400000005960465
+0.300000011920929
+end
+
+triangles
+1 2 0
+6 5 3
+1 7 2
+8 4 5
+end
+
+metadata com.example.metadata.example0 1 0 1
+aGVsbG8taGVsbG8K
+end
+
+metadata com.example.metadata.example3 2 0 5
+AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8gISIjJCUmJygpKissLS4vMDEyMzQ1
+Njc4OTo7PD0-P0BBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWltcXV5fYGFiY2RlZmdoaWpr
+bG1ub3BxcnN0dXZ3eHl6e3x9fn-AgYKDhIWGh4iJiouMjY6PkJGSk5SVlpeYmZqbnJ2en6Ch
+oqOkpaanqKmqq6ytrq-wsbKztLW2t7i5uru8vb6_wMHCw8TFxsfIycrLzM3Oz9DR0tPU1dbX
+2Nna29zd3t_g4eLj5OXm5-jp6uvs7e7v8PHy8_T19vf4-fr7_P3-_w==
+end
+</pre></div></div></div><div class="st300_navbar st300_navbar_bottom"><hr class="st300_hr"/><table class="st300_navbar_table" summary="st300_Navigation bar"><tr><td class="st300_navbar_prev_file_cell"><a rel="previous" href="p4s6.xhtml#st300_p4s6" title="Go to previous page">Previous</a></td><td class="st300_navbar_up_file_cell"><a rel="up" href="p4.xhtml#st300_p4" title="Go to parent page">Up</a></td><td class="st300_navbar_next_file_cell"><a rel="next" href="p5.xhtml#st300_p5" title="Go to next page">Next</a></td></tr><tr><td class="st300_navbar_prev_title_cell">4.6. Section - metadata</td><td class="st300_navbar_up_title_cell">4. SMF/T - Text Encoding</td><td class="st300_navbar_next_title_cell">5. Specification History</td></tr></table></div></div></body></html>

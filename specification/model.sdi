@@ -1,6 +1,6 @@
-[section [title Model] [id smf_model.model]]
+[part [title Model] [id smf_model.model]]
 
-[subsection [title Overview] [id smf_model.overview]]
+[section [title Overview] [id smf_model.overview]]
 [paragraph]
 The SMF model is a minimalist, portable storage model for
 [term [type term] triangle mesh data]. SMF files are intended to be consumed by
@@ -11,31 +11,309 @@ of the model are designed to be trivial to parse and to permit the easy
 construction of extremely fast event-based parsers that do not require loading
 the entire file into memory for processing.
 
+[paragraph]
+The format is [link [target smf_model.versioning] versioned], and is
+specified in a manner that allows for implementations to provide strong
+guarantees of [term [type term] forwards] and [term [type term] backwards]
+compatibility as the specification evolves.
+
+[paragraph]
+The version of the SMF model described by this specification is [term [type expression] "(1, 0)"].
+See [link [target smf_model.versioning] versioning] for details.
+
 [footnote [id smf_model.collada]]
 [link-ext [target "https://en.wikipedia.org/wiki/COLLADA"] "https://en.wikipedia.org/wiki/COLLADA"]
 
-[subsection [title Mesh] [id smf_model.mesh]]
+[section [title Versioning] [id smf_model.versioning]]
+[subsection [title Overview]]
+[paragraph]
+The SMF specification is versioned via a restricted subset of the
+[link-ext [target "http://semver.org/"] Semantic Versioning] specification.
+The SMF specification has a [term [type term] major] and [term [type term] minor]
+version number, with [term [type term] major] version increments denoting
+incompatible changes, and [term [type term] minor] version increments
+denoting new functionality. There is no  [term [type term] patch] version
+number. A version of the specification with [term [type term] major] version
+[term [type variable] m] and [term [type term] minor] version
+[term [type variable] n] is denoted as specification version
+[term [type expression] "(m, n)"].
+
+[subsection [title Forward Compatibility] [id smf_model.versioning.fwd]]
+[paragraph]
+Assuming a version of the SMF specification [term [type variable] m],
+an update to the specification that yields version [term [type variable] n]
+such that [term [type expression] "n > m"] is considered to be
+[term [type term] forwards compatible] if a parser that
+supports format version [term [type variable] m] can read files that were
+written using format version [term [type variable] n].
+
+[subsection [title Backward Compatibility] [id smf_model.versioning.bwd]]
+[paragraph]
+Assuming a version of the SMF specification [term [type variable] m],
+an update to the specification that yields version [term [type variable] n]
+such that [term [type expression] "n > m"]
+is considered to be [term [type term] backwards compatible] if a parser that
+supports format version [term [type variable] n] can read files that were
+written using format version [term [type variable] m].
+
+[subsection [title Compatibility] [id smf_model.versioning.cmp]]
+[paragraph]
+The SMF specification is designed such that a correctly-written parser implementation
+that supports a [term [type term] major] version [term [type variable] m] is able to support
+the set of versions [term [type expression] "∀n. (m, n)"]. This implies full
+forwards and backwards compatibility for parsers when the
+[term [type term] major] version is unchanged.
+
+[paragraph]
+Changes that would cause a
+parser supporting an older version of the specification to fail to read a file
+written according to a newer version of the specification MUST imply an
+increment in the [term [type term] major] version of the specification.
+
+[paragraph]
+Changes that would cause a parser supporting a newer version of the
+specification to fail to read a file written according to an older version of
+the specification MUST imply an increment in the [term [type term] major]
+version of the specification.
+
+[paragraph]
+An implication of the above rules is that new features
+added to the specification must be added in a manner that allows them to be
+ignored by older parsers, lest the [term [type term] major] version of the
+specification be incremented on every update.
+
+[section [title Mesh] [id smf_model.mesh]]
 [paragraph]
 A [term [type term] mesh] in the SMF model is a set of
 [link [target smf_model.triangle] triangles].
 
-[subsection [title Attributes] [id smf_model.attribute]]
+
+
+[section [title Attributes] [id smf_model.attribute]]
 [paragraph]
 An [term [type term] attribute] in the SMF model is a uniquely-named array of
-elements of a given type. All attributes within a particular SMF file have the
-same number of elements.
+elements of a given [term [type term] type]. All attributes within a
+particular SMF file have the same number of elements. The [term [type term] type]
+of an attribute is a 3-tuple [term [type expression] "(c, n, s)"], where [term [type expression] c]
+is a [term [type term] component type], [term [type expression] n]
+is a [term [type term] component count], and
+[term [type expression] s] is a [term [type term] component size] expressed
+in bits.
+
+[paragraph]
+This version of the specification defines three basic
+[term [type term] component types]: [term [type term] signed integers],
+[term [type term] unsigned integers], and
+[term [type term] floating point numbers]. Floating point numbers are
+[link-ext [target https://en.wikipedia.org/wiki/IEEE_754] IEEE 754] floating
+point values.
+
+[formal-item [title "Attribute Type"] [id smf_model.attribute.def]]
+[verbatim [include "attribute.hs"]]
 
 [paragraph]
 Implementations are required to support attributes of at least the following
 types:
 
 [formal-item [title "Types"] [id smf_model.attribute.types]]
-[list-unordered
-  [item 8/16/32/64-bit signed integer vectors of 1-4 components]
-  [item 8/16/32/64-bit unsigned integer vectors of 1-4 components]
-  [item 16/32/64-bit floating point vectors of 1-4 components]]
+[table
+  [summary Required attribute types]
+  [type required_types]
+  [head
+    [name Component Type]
+    [name Component Count]
+    [name Component size "(bits)"]]
+  [body
+    [row
+      [cell Signed integer]
+      [cell 1]
+      [cell 8]]
+    [row
+      [cell Signed integer]
+      [cell 2]
+      [cell 8]]
+    [row
+      [cell Signed integer]
+      [cell 3]
+      [cell 8]]
+    [row
+      [cell Signed integer]
+      [cell 4]
+      [cell 8]]
 
-[subsection [title Vertices] [id smf_model.vertex]]
+    [row
+      [cell Signed integer]
+      [cell 1]
+      [cell 16]]
+    [row
+      [cell Signed integer]
+      [cell 2]
+      [cell 16]]
+    [row
+      [cell Signed integer]
+      [cell 3]
+      [cell 16]]
+    [row
+      [cell Signed integer]
+      [cell 4]
+      [cell 16]]
+
+    [row
+      [cell Signed integer]
+      [cell 1]
+      [cell 32]]
+    [row
+      [cell Signed integer]
+      [cell 2]
+      [cell 32]]
+    [row
+      [cell Signed integer]
+      [cell 3]
+      [cell 32]]
+    [row
+      [cell Signed integer]
+      [cell 4]
+      [cell 32]]
+
+    [row
+      [cell Signed integer]
+      [cell 1]
+      [cell 64]]
+    [row
+      [cell Signed integer]
+      [cell 2]
+      [cell 64]]
+    [row
+      [cell Signed integer]
+      [cell 3]
+      [cell 64]]
+    [row
+      [cell Signed integer]
+      [cell 4]
+      [cell 64]]
+
+    [row
+      [cell Unsigned integer]
+      [cell 1]
+      [cell 8]]
+    [row
+      [cell Unsigned integer]
+      [cell 2]
+      [cell 8]]
+    [row
+      [cell Unsigned integer]
+      [cell 3]
+      [cell 8]]
+    [row
+      [cell Unsigned integer]
+      [cell 4]
+      [cell 8]]
+
+    [row
+      [cell Unsigned integer]
+      [cell 1]
+      [cell 16]]
+    [row
+      [cell Unsigned integer]
+      [cell 2]
+      [cell 16]]
+    [row
+      [cell Unsigned integer]
+      [cell 3]
+      [cell 16]]
+    [row
+      [cell Unsigned integer]
+      [cell 4]
+      [cell 16]]
+
+    [row
+      [cell Unsigned integer]
+      [cell 1]
+      [cell 32]]
+    [row
+      [cell Unsigned integer]
+      [cell 2]
+      [cell 32]]
+    [row
+      [cell Unsigned integer]
+      [cell 3]
+      [cell 32]]
+    [row
+      [cell Unsigned integer]
+      [cell 4]
+      [cell 32]]
+
+    [row
+      [cell Unsigned integer]
+      [cell 1]
+      [cell 64]]
+    [row
+      [cell Unsigned integer]
+      [cell 2]
+      [cell 64]]
+    [row
+      [cell Unsigned integer]
+      [cell 3]
+      [cell 64]]
+    [row
+      [cell Unsigned integer]
+      [cell 4]
+      [cell 64]]
+
+    [row
+      [cell IEEE754 floating point]
+      [cell 1]
+      [cell 16]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 2]
+      [cell 16]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 3]
+      [cell 16]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 4]
+      [cell 16]]
+
+    [row
+      [cell IEEE754 floating point]
+      [cell 1]
+      [cell 32]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 2]
+      [cell 32]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 3]
+      [cell 32]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 4]
+      [cell 32]]
+
+    [row
+      [cell IEEE754 floating point]
+      [cell 1]
+      [cell 64]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 2]
+      [cell 64]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 3]
+      [cell 64]]
+    [row
+      [cell IEEE754 floating point]
+      [cell 4]
+      [cell 64]]]]
+
+
+
+[section [title Vertices] [id smf_model.vertex]]
 [paragraph]
 A [term [type term] vertex] is an abstract object consisting of exactly one
 element taken from each of the defined [link [target smf_model.attribute] attributes].
@@ -44,12 +322,16 @@ index [term [type expression] "n"] can be considered to be the aggregation
 of the [term [type expression] "nth"] elements of all of the defined attributes.
 Vertices are numbered starting at [term [type expression] "0"].
 
-[subsection [title Triangles] [id smf_model.triangle]]
+
+
+[section [title Triangles] [id smf_model.triangle]]
 [paragraph]
 A triangle is a 3-tuple of [link [target smf_model.vertex] vertices]. In the
 SMF model, a triangle references vertices by their numeric index.
 
-[subsection [title Coordinate System] [id smf_model.coords]]
+
+
+[section [title Coordinate System] [id smf_model.coords]]
 [paragraph]
 A [term [type term] coordinate system] in the SMF model is a set of three
 axis names and a triangle [term [type term] winding order]. The axis names
@@ -65,7 +347,9 @@ gives a formal definition of the validity of sets of axes.
 [formal-item [title "Axis"] [id smf_model.coords.axis_def]]
 [verbatim [include "axis.hs"]]
 
-[subsection [title Schema ID] [id smf_model.schema_id]]
+
+
+[section [title Schema ID] [id smf_model.schema_id]]
 [paragraph]
 A [term [type term] schema identifier] is an optional identifier that can be
 inserted into SMF files. Because the SMF model does not predefine any particular
@@ -81,25 +365,33 @@ and validation tools use this identifier to locate schema definitions against
 which the document is then validated.
 
 [paragraph]
-A schema identifier consists of four integer values:
+A schema identifier consists of a string and two integer values:
 
 [formal-item [title "Schema Identifier"] [id smf_model.schema_id.def]]
 [verbatim [include "schema-id.hs"]]
 
 [paragraph]
-The [term [type term] vendor_id] uniquely identifiers the vendor, the
-[term [type term] schema_id] uniquely identifies the file type, and the
+The [term [type term] schema_id] uniquely identifies the schema, and the
 [term [type term] schema_version_major] and [term [type term] schema_version_minor]
 values identify the version of the schema.
+
+[paragraph]
+Schema names may be at most [term [type constant] 64] characters in length
+and must conform to the following syntax:
+
+[formal-item [title "Schema Name Syntax"] [id smf_model.schema_id.name_syntax]]
+[verbatim [include "schema-name.ebnf"]]
 
 [footnote [id smf_model.xmlns]]
 [link-ext [target "https://en.wikipedia.org/wiki/XML_Namespace"] "https://en.wikipedia.org/wiki/XML_Namespace"]
 
-[subsection [title Metadata] [id smf_model.metadata]]
+
+
+[section [title Metadata] [id smf_model.metadata]]
 [paragraph]
 The SMF model supports the inclusion of arbitrary metadata. A
 [term [type term] metadata value] is an opaque data value with
-[term [type term] vendor] and [term [type term] schema] identifiers specified
+a [term [type term] schema] identifier specified
 in the same manner as the [link [target smf_model.schema_id] schema identifier].
 Applications may use the metadata facilities to associate small amounts of extra
 information with mesh data. Typical uses include checksums, copyright

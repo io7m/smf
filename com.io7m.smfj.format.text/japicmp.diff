@@ -1,3 +1,123 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.text/target/com.io7m.smfj.format.text-0.10.0.jar against /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.text/target/com.io7m.smfj.format.text-0.10.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.text/target/com.io7m.smfj.format.text-0.11.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.text/0.11.0-SNAPSHOT/com.io7m.smfj.format.text-0.11.0-SNAPSHOT.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.SMFFormatText  (not serializable)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String toString()
+---! REMOVED CLASS: PUBLIC(-) FINAL(-) com.io7m.smfj.format.text.SMFLineLexer  (not serializable)
+	---! REMOVED SUPERCLASS: java.lang.Object
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFLineLexer()
+	---! REMOVED METHOD: PUBLIC(-) javaslang.collection.List lex(java.lang.String)
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.text.SMFTBodySectionParserType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsBodyType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW INTERFACE: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.text.SMFTHeaderCommandParserType  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) ABSTRACT(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.SMFTLineLexer  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTLineLexer()
+	+++  NEW METHOD: PUBLIC(+) javaslang.collection.List lex(java.lang.String)
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.SMFTLineReaderList  (not serializable)
+	+++  NEW METHOD: PROTECTED(+) org.slf4j.Logger log()
+***  MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.SMFTLineReaderStreamIO  (not serializable)
+	+++  NEW METHOD: PROTECTED(+) org.slf4j.Logger log()
++++  NEW ENUM: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.SMFTParsingStatus  (compatible)
+	+++  NEW INTERFACE: java.lang.Comparable
+	+++  NEW INTERFACE: java.io.Serializable
+	+++  NEW SUPERCLASS: java.lang.Enum
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.format.text.SMFTParsingStatus SUCCESS
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.format.text.SMFTParsingStatus FAILURE
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.text.SMFTParsingStatus valueOf(java.lang.String)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.format.text.SMFTParsingStatus[] values()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserMetadata  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1BodySectionParserMetadata(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsBodyType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserTriangles  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1BodySectionParserTriangles(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsBodyType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVerticesNonInterleaved  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTBodySectionParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1BodySectionParserVerticesNonInterleaved(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsBodyType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandAttribute  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTHeaderCommandParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1HeaderCommandAttribute(java.util.Map, java.util.Collection, com.io7m.smfj.format.text.SMFTLineReaderType, com.io7m.smfj.core.SMFHeader$Builder)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandCoordinates  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTHeaderCommandParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1HeaderCommandCoordinates(com.io7m.smfj.format.text.SMFTLineReaderType, com.io7m.smfj.core.SMFHeader$Builder)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandSchema  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTHeaderCommandParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1HeaderCommandSchema(com.io7m.smfj.format.text.SMFTLineReaderType, com.io7m.smfj.core.SMFHeader$Builder)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandTriangles  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTHeaderCommandParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) java.lang.String SYNTAX
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1HeaderCommandTriangles(com.io7m.smfj.format.text.SMFTLineReaderType, com.io7m.smfj.core.SMFHeader$Builder)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandVertices  (not serializable)
+	+++  NEW INTERFACE: com.io7m.smfj.format.text.SMFTHeaderCommandParserType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1HeaderCommandVertices(com.io7m.smfj.format.text.SMFTLineReaderType, com.io7m.smfj.core.SMFHeader$Builder)
+	+++  NEW METHOD: PUBLIC(+) java.lang.String name()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.format.text.SMFTParsingStatus parse(com.io7m.smfj.parser.api.SMFParserEventsHeaderType, javaslang.collection.List)
+		+++  NEW EXCEPTION: java.io.IOException
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1Parser  (not serializable)
+	+++  NEW INTERFACE: java.io.Closeable
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserType
+	+++  NEW INTERFACE: java.lang.AutoCloseable
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserSequentialType
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1Parser(com.io7m.smfj.core.SMFFormatVersion, com.io7m.smfj.parser.api.SMFParserEventsType, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW METHOD: PUBLIC(+) void close()
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void parse()
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.v1.SMFTV1Serializer  (not serializable)
+	+++  NEW INTERFACE: java.io.Closeable
+	+++  NEW INTERFACE: com.io7m.smfj.serializer.api.SMFSerializerType
+	+++  NEW INTERFACE: java.lang.AutoCloseable
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1Serializer(com.io7m.smfj.core.SMFFormatVersion, java.net.URI, java.io.OutputStream)
+	+++  NEW METHOD: PUBLIC(+) void close()
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void serializeHeader(com.io7m.smfj.core.SMFHeader)
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) void serializeMetadata(com.io7m.smfj.core.SMFSchemaIdentifier, byte[])
+		+++  NEW EXCEPTION: java.lang.IllegalStateException
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType serializeTrianglesStart()
+		+++  NEW EXCEPTION: java.io.IOException
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType serializeVertexDataNonInterleavedStart()
+		+++  NEW EXCEPTION: java.io.IOException

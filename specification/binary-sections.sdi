@@ -1,0 +1,91 @@
+[section [title Sections] [id smfb.sections]]
+[subsection [title Definition] [id smfb.sections.def]]
+[paragraph]
+Directly following the [link [target smfb.header] header], an
+[term [type type] SMF/B] file consists of a series of
+[term [type term] sections]. A [term [type term] section] begins with the
+following fixed-size structure:
+
+[formal-item [title "Section header"] [id smfb.sections.def.header]]
+[verbatim [include "binary-section-header.txt"]]
+
+[paragraph [id smfb.sections.def.size]]
+The [term [type field] id] field of the section header identifies the type
+of the section. The [term [type field] size] field of the section header
+specifies the [term [type term] data size]; the size in octets of the data that
+follows the section header. The [term [type term] data size] necessarily includes
+any trailing [term [type term] padding octets] that may be inserted in order to
+guarantee that the start of the [term [type term] next] section "(if any)"
+is correctly [link [target smfb.sections.alignment] aligned]. This implies that
+the [term [type term] data size] of any given section MUST be a multiple of
+the [link [target smfb.sections.alignment] alignment] size.
+
+[paragraph]
+Implementations MUST ignore any content inside a section of an unrecognized
+type [footnote-ref smfb.sections.compat]. As sections explicitly state the
+size of their own data, implementations can simply seek forwards in the file
+by the specified data size to reach the next section.
+
+[footnote [id smfb.sections.compat]]
+Ignoring unrecognized sections allows for forwards compatibility:
+An implementation supporting version [term [type expression] m] can read a file
+of version [term [type expression] n], where [term [type expression] m < n],
+and ignore any new sections specified by format [term [type expression] n] that
+it does not understand.
+
+[paragraph]
+The first section in an [term [type type] SMF/B] file MUST be
+an [link [target smfb.sections.smf] smf] section. The last section in
+an [term [type type] SMF/B] file MUST be an
+[link [target smfb.sections.end] end] section.
+
+[subsection [title Alignment] [id smfb.sections.alignment]]
+[paragraph]
+Sections MUST be aligned to [term [type constant] 16] octet boundaries. As
+the section [link [target smfb.header] header] is defined to be exactly
+[term [type constant] 16] octets, this implies that the data within a section
+will also be aligned to a [term [type constant] 16] octet boundary
+[footnote-ref smfb.sections.alignment.vector]. Implementations MUST reject
+[term [type type] SMF/B] files containing one or more incorrectly aligned
+sections.
+
+[footnote [id smfb.sections.alignment.vector]]
+The requirement for data to be aligned to [term [type constant] 16] octet
+boundaries is intended to facilitate implementations using
+vector instruction sets such as [link-ext [target https://en.wikipedia.org/wiki/Streaming_SIMD_Extensions] SSE]
+to efficiently operate on memory-mapped [term [type type] SMF/B] files.
+
+[subsection [title Available Sections] [id smfb.sections.available]]
+[paragraph]
+This version of the specification defines the following sections:
+
+[formal-item [title "Sections"] [id smfb.sections.list]]
+[list-unordered
+  [item [link [target smfb.sections.end] end]]
+  [item [link [target smfb.sections.metadata] metadata]]
+  [item [link [target smfb.sections.smf] smf]]
+  [item [link [target smfb.sections.triangles] triangles]]
+  [item [link [target smfb.sections.vertices-noninterleaved] vertices-noninterleaved]]
+]
+
+[subsection [title Enumerating Sections] [id smfb.sections.enumerating]]
+[paragraph]
+Note: This subsection is [term [type term] informative].
+
+[paragraph]
+The design of sections allows for implementations to quickly enumerate all
+sections within a file using the following strategy:
+
+[formal-item [title "Enumerating Sections"] [id smfb.sections.enumerating.example]]
+[verbatim [include "binary-enumerating.java"]]
+
+[paragraph]
+The [term [type function] bytesAvailable] method is assumed to return [term [type constant] true]
+if there are any bytes remaining in the file. The [term [type function] currentOffset]
+method is assumed to return the current read position in octets within the file.
+The [term [type function] readUnsigned64]
+method is assumed to read a 64-bit big-endian integer from the current file,
+advancing the current read position by 8 octets.
+The [term [type function] readUnsigned32]
+method is assumed to read a 32-bit big-endian integer from the current file,
+advancing the current read position by 4 octets.

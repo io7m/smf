@@ -1,0 +1,14 @@
+attribute_name_raw =
+  ? [\p{IsAlphabetic}\p{IsDigit}_\-\.:]{1,64} ? ;
+
+attribute_name_quoted =
+  """ , attribute_name_raw , """ ;
+
+attribute_name =
+  attribute_name_raw | attribute_name_quoted ;
+
+attribute_type =
+  "integer-signed" | "integer-unsigned" | "float" ;
+
+smf_attribute =
+  "attribute" , attribute_name , attribute_type , integer-unsigned , integer-unsigned ;

@@ -1,0 +1,40 @@
+[section [title Section - vertices-noninterleaved] [id smfb.sections.vertices-noninterleaved]]
+
+[subsection [title Definition] [id smfb.sections.vertices-noninterleaved.def]]
+[paragraph]
+The [term [type type] vertices-noninterleaved] section specifies vertex data for
+all declared [link [target smf_model.attribute] attributes].
+
+[subsection [title Cardinality/Ordering] [id smfb.sections.vertices-noninterleaved.cardinality]]
+[paragraph]
+A [term [type type] vertices-noninterleaved] section can appear
+[term [type expression] "[0, 1]"] times in an [term [type type] SMF/B] file.
+
+[paragraph]
+The [term [type type] vertices-noninterleaved] section has no requirements on ordering.
+
+[subsection [title Magic Number] [id smfb.sections.vertices-noninterleaved.magic]]
+[paragraph]
+The [term [type type] vertices-noninterleaved] section is identified by the magic number
+[term [type constant] 0x534D465F56444E49].
+
+[subsection [title Data] [id smfb.sections.vertices-noninterleaved.data]]
+[paragraph]
+The data for each attribute is given in full in the order in which the
+attributes were declared in the header. Specifically, in a file containing
+[term [type expression] v]
+vertices and a list of attributes [term [type expression] a] of length
+[term [type expression] "n"], the data of the section will
+contain [term [type expression] v] values of the
+type specified in [term [type expression] "a !! 0"],
+followed by [term [type expression] v] values of the type specified by
+[term [type expression] "a !! 1"], and so on up to
+[term [type expression] "a !! (n - 1)"]. All values are stored in big-endian
+form.
+
+[paragraph]
+The start of the data for each attribute is aligned to the next
+[term [type constant] 16] octet boundary regardless of type. The alignment is
+achieved by inserting [term [type term] padding octets] at the end of the data
+for each attribute so that the start of the data for the next attribute,
+or the start of the next section, occurs on a [term [type constant] 16] octet boundary.

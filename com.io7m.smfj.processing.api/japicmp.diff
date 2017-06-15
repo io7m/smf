@@ -1,3 +1,44 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.api/target/com.io7m.smfj.processing.api-0.10.0.jar against /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.api/target/com.io7m.smfj.processing.api-0.10.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.processing.api/target/com.io7m.smfj.processing.api-0.11.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.processing.api/0.11.0-SNAPSHOT/com.io7m.smfj.processing.api-0.11.0-SNAPSHOT.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.processing.api.SMFMemoryMeshProducer  (not serializable)
+	===* UNCHANGED INTERFACE: com.io7m.smfj.processing.api.SMFMemoryMeshProducerType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsHeaderType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataMetaType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsBodyType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType
+	+++  NEW INTERFACE: com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType
+	+++  NEW METHOD: PUBLIC(+) java.util.Optional onAttributesNonInterleaved()
+	---! REMOVED METHOD: PUBLIC(-) void onDataAttributeFinish(com.io7m.smfj.core.SMFAttribute)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributesNonInterleavedFinish()
+	***! MODIFIED METHOD: PUBLIC java.util.Optional (<-void) onDataAttributeStart(com.io7m.smfj.core.SMFAttribute)
+	+++  NEW METHOD: PUBLIC(+) void onDataAttributeValueFinish()
+	---! REMOVED METHOD: PUBLIC(-) void onDataTrianglesStart()
+	***! MODIFIED METHOD: PUBLIC java.util.Optional (<-void) onHeaderParsed(com.io7m.smfj.core.SMFHeader)
+	---! REMOVED METHOD: PUBLIC(-) boolean onMeta(long, long, long)
+	+++  NEW METHOD: PUBLIC(+) java.util.Optional onMeta(com.io7m.smfj.core.SMFSchemaIdentifier)
+	---! REMOVED METHOD: PUBLIC(-) void onMetaData(long, long, byte[])
+	+++  NEW METHOD: PUBLIC(+) void onMetaData(com.io7m.smfj.core.SMFSchemaIdentifier, byte[])
+	+++  NEW METHOD: PUBLIC(+) java.util.Optional onTriangles()
+	***! MODIFIED METHOD: PUBLIC java.util.Optional (<-void) onVersionReceived(com.io7m.smfj.core.SMFFormatVersion)
+	+++  NEW METHOD: PUBLIC(+) void onWarning(com.io7m.smfj.core.SMFWarningType)
+	+++  NEW METHOD: PUBLIC(+) javaslang.collection.List warnings()
+**** MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.processing.api.SMFMemoryMeshProducerType  (not serializable)
+	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) javaslang.collection.List warnings()
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.processing.api.SMFMetadata  (not serializable)
+	===! UNCHANGED INTERFACE: com.io7m.smfj.processing.api.SMFMetadataType
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.processing.api.SMFMetadata of(long, long, byte[])
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.processing.api.SMFMetadata of(com.io7m.smfj.core.SMFSchemaIdentifier, byte[])
+	***! MODIFIED METHOD: PUBLIC com.io7m.smfj.core.SMFSchemaIdentifier (<-long) schema()
+	---  REMOVED METHOD: PUBLIC(-) long vendor()
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.processing.api.SMFMetadata withSchema(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.processing.api.SMFMetadata withSchema(com.io7m.smfj.core.SMFSchemaIdentifier)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.processing.api.SMFMetadata withVendor(long)
+***! MODIFIED CLASS: PUBLIC STATIC FINAL com.io7m.smfj.processing.api.SMFMetadata$Builder  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.processing.api.SMFMetadata$Builder setSchema(long)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.processing.api.SMFMetadata$Builder setSchema(com.io7m.smfj.core.SMFSchemaIdentifier)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.processing.api.SMFMetadata$Builder setVendor(long)
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.processing.api.SMFMetadataType  (not serializable)
+	***! MODIFIED METHOD: PUBLIC ABSTRACT com.io7m.smfj.core.SMFSchemaIdentifier (<-long) schema()
+	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) long vendor()
