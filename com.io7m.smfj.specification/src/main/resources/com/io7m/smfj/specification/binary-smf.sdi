@@ -1,0 +1,26 @@
+[section [title Section - smf] [id smfb.sections.smf]]
+
+[subsection [title Definition] [id smfb.sections.smf.def]]
+[paragraph]
+The [term [type type] smf] section specifies information common to all
+sections in an [term [type type] SMF/B] file.
+
+[subsection [title Cardinality/Ordering] [id smfb.sections.smf.cardinality]]
+[paragraph]
+An [term [type type] smf] section MUST appear exactly once in an
+[term [type type] SMF/B] file.
+
+[paragraph]
+The [term [type type] smf] section MUST be the first section in an
+[term [type type] SMF/B] file. Implementations MUST reject
+[term [type type] SMF/B] files that do not start with an
+[term [type type] smf] section.
+
+[subsection [title Magic Number] [id smfb.sections.smf.magic]]
+[paragraph]
+The [term [type type] smf] section is identified by the magic number
+[term [type constant] 0x534D465F48454144].
+
+[subsection [title Data] [id smfb.sections.smf.data]]
+[paragraph]
+Data.

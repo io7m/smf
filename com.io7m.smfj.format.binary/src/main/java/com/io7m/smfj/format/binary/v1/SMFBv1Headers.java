@@ -172,7 +172,7 @@ public final class SMFBv1Headers
           .append(" header.")
           .append(System.lineSeparator())
           .append("  Section: ")
-          .append(Long.toUnsignedString(section.magic(), 16))
+          .append(Long.toUnsignedString(section.id(), 16))
           .append(System.lineSeparator())
           .append("  Required size: ")
           .append(parser.sizeRequired())

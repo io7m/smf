@@ -83,7 +83,7 @@ public final class SMFFormatBinary
       final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
       b.setDescription("A binary encoding of SMF data");
       b.setMimeType("application/vnd.io7m.smf");
-      b.setName("smfb");
+      b.setName("smf/b");
       b.setRandomAccess(true);
       b.setSuffix("smfb");
       FORMAT = b.build();

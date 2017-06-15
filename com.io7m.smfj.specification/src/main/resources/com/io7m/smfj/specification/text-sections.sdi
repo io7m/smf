@@ -1,0 +1,43 @@
+[section [title Sections] [id smft.sections]]
+[subsection [title Definition] [id smft.sections.def]]
+[paragraph]
+A [term [type term] section] is started with a [link [target smft.sections] section command]
+and terminated with a corresponding [link [target smft.sections.end] end]
+command. Implementations MUST ignore any content between and including an
+unrecognized section command and the corresponding end command
+[footnote-ref smft.sections.compat].
+
+[paragraph]
+The first line of an [term [type type] SMF/T] file MUST begin
+an [link [target smft.sections.smf] smf] section.
+
+[paragraph [id smft.sections.end]]
+A [term [type term] section] is terminated with an [term [type command] end]
+command. Implementations MUST raise errors if an end-of-file condition is
+encountered before an [term [type command] end] command is given for the
+current section.
+
+[formal-item [title "end"] [id smft.sections.def.end.syntax]]
+[verbatim [include "smft-end.ebnf"]]
+
+[paragraph]
+The command takes no arguments.
+
+[footnote [id smft.sections.compat]]
+Ignoring unrecognized sections allows for forwards compatibility:
+An implementation supporting version [term [type expression] m] can read a file
+of version [term [type expression] n], where [term [type expression] m < n],
+and ignore any new sections specified by format [term [type expression] n] that
+it does not understand.
+
+[subsection [title Available Sections] [id smft.sections.available]]
+[paragraph]
+This version of the specification defines the following
+[term [type term] sections]:
+
+[formal-item [title "Sections"] [id smft.sections.list]]
+[list-unordered
+  [item [link [target smft.sections.smf] smf]]
+  [item [link [target smft.sections.triangles] triangles]]
+  [item [link [target smft.sections.vertices-noninterleaved] vertices-noninterleaved]]
+  [item [link [target smft.sections.metadata] metadata]]]

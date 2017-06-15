@@ -1,0 +1,26 @@
+[section [title Header] [id smfb.header]]
+[paragraph]
+An [term [type type] SMF/B] file begins with the following fixed-size
+structure:
+
+[formal-item [title "SMF/B Header"] [id smfb.header.def]]
+[verbatim [include "jpra-header-start.txt"]]
+
+[paragraph]
+The value of the [term [type field] magic] field MUST be
+[term [type constant] 0x89534D460D0A1A0A]. Implementations MUST immediately
+reject any files that do not begin with this magic number. The derivation of
+this constant is taken almost verbatim from the PNG [footnote-ref smfb.png]
+file format with the characters [term [type constant] PNG] changed to
+[term [type constant] SMF].
+
+[footnote [id smfb.png]]
+[link-ext [target https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header] https://en.wikipedia.org/wiki/Portable_Network_Graphics#File_header]
+
+[paragraph]
+The [term [type field] version_major] field specifies the
+[link [target smf_model.versioning] major] version number of the specification
+to which the data in the file is expected to conform. The
+[term [type field] version_minor] field specifies the
+[link [target smf_model.versioning] minor] version number of the specification
+to which the data in the file is expected to conform.

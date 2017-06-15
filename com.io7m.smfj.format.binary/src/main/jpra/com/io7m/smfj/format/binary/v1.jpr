@@ -3,14 +3,15 @@
 [record SMFBv1SchemaID
   ([field schema_id            [string 64 "UTF-8"]]
    [field schema_version_major [integer unsigned 32]]
-   [field schema_version_minor [integer unsigned 32]])]
+   [field schema_version_minor [integer unsigned 32]]
+   [padding-octets             4])]
 
 [packed SMFBv1CoordinateSystems
   ([field right   [integer unsigned 3]]
    [field up      [integer unsigned 3]]
    [field forward [integer unsigned 3]]
    [field winding [integer unsigned 2]]
-   [padding-bits 5])]
+   [padding-bits  5])]
 
 [record SMFBv1Attribute
   ([field name            [string 64 "UTF-8"]]
@@ -26,7 +27,6 @@
 
 [record SMFBv1_0Header
   ([field schema                   SMFBv1SchemaID]
-   [padding-octets                 4]
    [field vertex_count             [integer unsigned 64]]
    [field triangle_count           [integer unsigned 64]]
    [field triangle_index_size_bits [integer unsigned 32]]

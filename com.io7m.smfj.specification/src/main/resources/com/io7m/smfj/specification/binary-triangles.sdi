@@ -1,0 +1,22 @@
+[section [title Section - triangles] [id smfb.sections.triangles]]
+
+[subsection [title Definition] [id smfb.sections.triangles.def]]
+[paragraph]
+The [term [type type] triangles] section specifies triangle data.
+
+[subsection [title Cardinality/Ordering] [id smfb.sections.triangles.cardinality]]
+[paragraph]
+An [term [type type] triangles] section can appear [term [type expression] "[0, 1]"]
+times in an [term [type type] SMF/B] file.
+
+[paragraph]
+The [term [type type] triangles] section has no requirements on ordering.
+
+[subsection [title Magic Number] [id smfb.sections.triangles.magic]]
+[paragraph]
+The [term [type type] triangles] section is identified by the magic number
+[term [type constant] 0x534D465F54524953].
+
+[subsection [title Data] [id smfb.sections.triangles.data]]
+[paragraph]
+Data.

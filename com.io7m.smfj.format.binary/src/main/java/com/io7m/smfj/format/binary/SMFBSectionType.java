@@ -34,11 +34,11 @@ public interface SMFBSectionType
   int SECTION_ALIGNMENT = 16;
 
   /**
-   * @return The magic number identifying this section
+   * @return The identifier of this section
    */
 
   @Value.Parameter
-  long magic();
+  long id();
 
   /**
    * <p>The size of the section data, not including the magic number or this

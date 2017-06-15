@@ -1,0 +1,35 @@
+[section [title Section - metadata] [id smfb.sections.metadata]]
+
+[subsection [title Definition] [id smfb.sections.metadata.def]]
+[paragraph]
+The [term [type type] metadata] section specifies arbitrary metadata.
+
+[subsection [title Cardinality/Ordering] [id smfb.sections.metadata.cardinality]]
+[paragraph]
+A [term [type type] metadata] section can appear
+[term [type expression] "[0, n]"] times in an [term [type type] SMF/B] file,
+for any [term [type expression] "n"].
+
+[paragraph]
+The [term [type type] metadata] section has no requirements on ordering.
+
+[subsection [title Magic Number] [id smfb.sections.metadata.magic]]
+[paragraph]
+The [term [type type] metadata] section is identified by the magic number
+[term [type constant] 0x534D465F4D455441].
+
+[subsection [title Data] [id smfb.sections.metadata.data]]
+[paragraph]
+The data of a [term [type type] metadata] section starts with the following
+fixed-size header:
+
+[formal-item [title "Metadata Header"] [id smfb.sections.metadata.header.def]]
+[verbatim [include "binary-metadata-header.txt"]]
+
+[paragraph]
+The [term [type field] meta_schema_id], [term [type field] meta_schema_version_major],
+and [term [type field] meta_schema_version_minor] fields are intended to provide
+type information for the metadata. They have the same semantics and purpose as
+[link [target smf_model.schema_id] schema identifiers]. The
+[term [type field] meta_size] field specifies the size in octets of the
+metadata.

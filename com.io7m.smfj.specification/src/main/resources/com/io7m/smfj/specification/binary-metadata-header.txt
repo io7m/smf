@@ -1,0 +1,5 @@
+[record SMFBv1MetadataID
+  ([field meta_schema_id            [string 64 "UTF-8"]]
+   [field meta_schema_version_major [integer unsigned 32]]
+   [field meta_schema_version_minor [integer unsigned 32]]
+   [field meta_size                 [integer unsigned 32]])]

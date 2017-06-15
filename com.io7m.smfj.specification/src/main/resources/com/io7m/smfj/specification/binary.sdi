@@ -1,6 +1,10 @@
-[part [title SMFB - Binary Encoding] [id smfb]]
+[part [title SMF/B - Binary Encoding] [id smfb]]
 
-[section [title Overview] [id smfb.overview]]
-[paragraph]
-The [term [type type] SMFB] format is a binary encoding for the
-[link [target smf_model.model] SMF model].
+[import "binary-overview.sdi"]
+[import "binary-header.sdi"]
+[import "binary-sections.sdi"]
+[import "binary-end.sdi"]
+[import "binary-smf.sdi"]
+[import "binary-triangles.sdi"]
+[import "binary-vertices-noninterleaved.sdi"]
+[import "binary-metadata.sdi"]

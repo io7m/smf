@@ -1,0 +1,12 @@
+[section [title Overview] [id smft.overview]]
+[paragraph]
+The [term [type type] SMF/T] format is a text encoding for the
+[link [target smf_model.model] SMF model]. Data specified in the text encoding
+is separated into explicitly delimited [link [target smft.sections] sections].
+
+[paragraph]
+The format is line-based,
+and lines "(excluding" the very first line in the "file)" containing only
+whitespace, or lines beginning with
+[term [type constant] U+0023] [term [type constant] #]
+are ignored. In a given line, whitespace between tokens is insignificant.

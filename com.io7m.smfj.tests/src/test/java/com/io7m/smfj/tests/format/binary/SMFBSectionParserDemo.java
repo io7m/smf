@@ -66,17 +66,17 @@ public final class SMFBSectionParserDemo
           final SMFBSection section = result.get();
           final ByteBuffer buf = ByteBuffer.allocate(8);
           buf.order(ByteOrder.BIG_ENDIAN);
-          buf.putLong(section.magic());
+          buf.putLong(section.id());
           final String text = new String(buf.array(), StandardCharsets.UTF_8);
 
           LOG.debug(
             "section: {} ({}) size {} at {}",
-            Long.toUnsignedString(section.magic(), 16),
+            Long.toUnsignedString(section.id(), 16),
             text,
             Long.toUnsignedString(section.sizeOfData()),
             Long.toUnsignedString(section.offset()));
 
-          ended = section.magic() == SMFBSectionEnd.MAGIC;
+          ended = section.id() == SMFBSectionEnd.MAGIC;
         } else {
           final SMFParseError error = result.getError();
           LOG.error("{}", error.fullMessage());

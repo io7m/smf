@@ -80,7 +80,7 @@ public final class SMFFormatText
       final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
       b.setDescription("A plain text encoding of SMF data");
       b.setMimeType("text/vnd.io7m.smf");
-      b.setName("smft");
+      b.setName("smf/t");
       b.setRandomAccess(false);
       b.setSuffix("smft");
       FORMAT = b.build();

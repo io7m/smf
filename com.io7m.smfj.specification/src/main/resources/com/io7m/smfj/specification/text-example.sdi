@@ -1,7 +1,7 @@
 [section [title Example] [id smft.example]]
 
 [paragraph]
-The following is a complete example of an [term [type type] SMFT] file:
+The following is a complete example of an [term [type type] SMF/T] file:
 
 [formal-item [title "smf"] [id smft.example.def]]
 [verbatim [include "example.smft"]]

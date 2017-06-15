@@ -155,7 +155,7 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     final SMFParserEventsBodyType events_body,
     final SMFBSection section)
   {
-    final long magic = section.magic();
+    final long magic = section.id();
     if (magic == SMFBSectionEnd.MAGIC) {
       return Continue.HALT;
     }
@@ -195,12 +195,12 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     final LexicalPosition<URI> position = this.reader.positionLexical();
     final SMFBSection section = result.get();
 
-    if (section.magic() != SMFBSectionHeader.MAGIC) {
+    if (section.id() != SMFBSectionHeader.MAGIC) {
       this.events_header.onError(
         errorExpectedGot(
           "Files must begin with an SMF_HEAD section.",
           "Section " + Long.toUnsignedString(SMFBSectionHeader.MAGIC, 16),
-          "Section " + Long.toUnsignedString(section.magic(), 16),
+          "Section " + Long.toUnsignedString(section.id(), 16),
           position));
       return invalid(unit());
     }
