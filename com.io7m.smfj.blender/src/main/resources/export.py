@@ -14,6 +14,7 @@
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 #
 
+import base64
 import bmesh
 import bpy
 import bpy_extras.io_utils
@@ -436,7 +437,7 @@ class SMFExporter:
   #end
 
   #
-  # Serialize the SMFMesh to the SMF text format.
+  # Serialize the SMFMesh to the SMF/T format.
   #
 
   def __writeMesh(self, out_file, smf_mesh):
@@ -497,6 +498,17 @@ class SMFExporter:
       assert type(triangle) == SMFTriangle
       out_file.write("%d %d %d\n" % (triangle.vertex0, triangle.vertex1, triangle.vertex2))
     #endfor
+    out_file.write("end\n")
+
+    meta = ""
+    meta += "time: " + datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z") + "\n"
+    meta += "app.role: author\n"
+    meta += "app.version: Blender " + bpy.app.version_string + "\n"
+    meta += "smf.version: ${parsedVersion.majorVersion}.${parsedVersion.minorVersion}.${parsedVersion.incrementalVersion}\n"
+
+    out_file.write("metadata com.io7m.smf.application 1 0 1\n")
+    out_file.write(base64.urlsafe_b64encode(bytearray(meta, encoding="utf-8")).decode(encoding="utf-8", errors="strict"))
+    out_file.write("\n")
     out_file.write("end\n")
   #end
 
