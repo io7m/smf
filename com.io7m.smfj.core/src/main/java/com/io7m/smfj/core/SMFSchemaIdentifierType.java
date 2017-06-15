@@ -27,26 +27,11 @@ import org.immutables.value.Value;
 public interface SMFSchemaIdentifierType
 {
   /**
-   * @return The vendor ID
+   * @return The schema name
    */
 
   @Value.Parameter
-  @Value.Default
-  default int vendorID()
-  {
-    return 0x0;
-  }
-
-  /**
-   * @return The schema ID
-   */
-
-  @Value.Parameter
-  @Value.Default
-  default int schemaID()
-  {
-    return 0x0;
-  }
+  SMFSchemaName name();
 
   /**
    * @return The schema major version
@@ -54,7 +39,7 @@ public interface SMFSchemaIdentifierType
 
   @Value.Parameter
   @Value.Default
-  default int schemaMajorVersion()
+  default int versionMajor()
   {
     return 0x0;
   }
@@ -65,7 +50,7 @@ public interface SMFSchemaIdentifierType
 
   @Value.Parameter
   @Value.Default
-  default int schemaMinorVersion()
+  default int versionMinor()
   {
     return 0x0;
   }
@@ -78,10 +63,9 @@ public interface SMFSchemaIdentifierType
   default String toHumanString()
   {
     return String.format(
-      "%08x %08x %d %d",
-      Integer.valueOf(this.vendorID()),
-      Integer.valueOf(this.schemaID()),
-      Integer.valueOf(this.schemaMajorVersion()),
-      Integer.valueOf(this.schemaMinorVersion()));
+      "%s %s.%s",
+      this.name().value(),
+      Integer.toUnsignedString(this.versionMajor()),
+      Integer.toUnsignedString(this.versionMinor()));
   }
 }

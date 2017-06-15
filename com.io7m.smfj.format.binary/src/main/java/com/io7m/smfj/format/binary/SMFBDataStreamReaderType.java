@@ -16,8 +16,10 @@
 
 package com.io7m.smfj.format.binary;
 
+import com.io7m.jlexing.core.LexicalPosition;
+
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -27,10 +29,10 @@ import java.util.Optional;
 public interface SMFBDataStreamReaderType
 {
   /**
-   * @return The path referred to by the stream
+   * @return The URI referred to by the stream
    */
 
-  Path path();
+  URI uri();
 
   /**
    * Read exactly {@code b.length} octets from the stream, raising an error
@@ -218,4 +220,42 @@ public interface SMFBDataStreamReaderType
   void skip(
     long count)
     throws IOException;
+
+  /**
+   * @return The current stream position; the number of octets consumed so far
+   */
+
+  LexicalPosition<URI> positionLexical();
+
+  /**
+   * Create a new view of this reader that is only allowed to read {@code size}
+   * more octets from the current stream. Reading from the newly created reader
+   * will advance the position of the current reader as well.
+   *
+   * @param size The maximum number of octets that can be read
+   *
+   * @return A new reader
+   */
+
+  SMFBDataStreamReaderType withBounds(long size);
+
+  /**
+   * Skip to the given offset. Has no effect if the writer has already passed
+   * the given offset.
+   *
+   * @param offset The offset
+   *
+   * @throws IOException On I/O errors
+   */
+
+  default void skipTo(
+    final long offset)
+    throws IOException
+  {
+    final long position = this.position();
+    if (Long.compareUnsigned(position, offset) < 0) {
+      final long diff = Math.subtractExact(offset, position);
+      this.skip(diff);
+    }
+  }
 }

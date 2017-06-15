@@ -18,12 +18,13 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFFormatVersion;
 
+import java.util.Optional;
+
 /**
  * A receiver of parse events.
  */
 
-public interface SMFParserEventsType extends SMFParserEventsHeaderType,
-  SMFParserEventsDataType, SMFParserEventsMetaType
+public interface SMFParserEventsType extends SMFParserEventsErrorType
 {
   /**
    * Parsing has started.
@@ -32,20 +33,16 @@ public interface SMFParserEventsType extends SMFParserEventsHeaderType,
   void onStart();
 
   /**
-   * The file format version has been successfully parsed.
-   *
-   * <p>After parsing the version number, assuming that the parsed version is
-   * supported, the methods in {@link SMFParserEventsHeaderType} will be
-   * called.</p>
-   *
-   * <p>After the methods in {@link SMFParserEventsHeaderType} have been called,
-   * parsers must attempt to sequentially parse the data in the rest of the
-   * file, delivering it via the methods in {@link SMFParserEventsDataType}.</p>
+   * The file format version has been successfully parsed. The functions should
+   * return a receiver for the header information if parsing should continue, or
+   * {@link Optional#empty()} if parsing should stop.
    *
    * @param version The file format version
+   *
+   * @return A receiver for the header, if any
    */
 
-  void onVersionReceived(
+  Optional<SMFParserEventsHeaderType> onVersionReceived(
     SMFFormatVersion version);
 
   /**

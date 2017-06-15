@@ -3,6 +3,53 @@
   <c:project>com.io7m.smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2017-04-25</c:date>
+    <c:version>0.11.0</c:version>
+
+    <c:item>
+      <c:date>2017-04-25</c:date>
+      <c:type-code-new/>
+      <c:ticket>42</c:ticket>
+      <c:summary>Implement version probing.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-04-27</c:date>
+      <c:type-code-new/>
+      <c:summary>Add convenient SMFFilterCommandChecks class for developing filters.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-04-28</c:date>
+      <c:type-code-change/>
+      <c:summary>Move SMFSchemaValidator into the API package as it defines the semantics of validation.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-04-28</c:date>
+      <c:type-code-change/>
+      <c:ticket>43</c:ticket>
+      <c:summary>Make parsers use URIs instead of Paths for diagnostic messages.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-04-28</c:date>
+      <c:type-code-fix/>
+      <c:ticket>44</c:ticket>
+      <c:summary>Fail in the correct way when failing to parse files during mesh processing.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-06-14</c:date>
+      <c:type-code-change/>
+      <c:ticket>46</c:ticket>
+      <c:ticket>45</c:ticket>
+      <c:ticket>41</c:ticket>
+      <c:summary>Complete redesign of formats for forward and backwards compatibility.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-06-14</c:date>
+      <c:type-code-change/>
+      <c:summary>Rename the "formats" command to "list-formats".</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2017-04-09</c:date>
     <c:version>0.10.0</c:version>
 

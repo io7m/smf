@@ -17,6 +17,7 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -53,8 +54,6 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
       mesh0.header().attributesInOrder(), mesh1.header().attributesInOrder());
     Assert.assertEquals(
       mesh0.header().coordinateSystem(), mesh1.header().coordinateSystem());
-    Assert.assertEquals(
-      mesh0.header().metaCount(), mesh1.header().metaCount());
     Assert.assertEquals(
       mesh0.metadata(), mesh1.metadata());
     Assert.assertEquals(
@@ -132,7 +131,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
       SMFMemoryMeshFilterSchemaSet.parse(
         Optional.empty(),
         1,
-        List.of("696f376d", "0", "1", "2"));
+        List.of("com.io7m.smf.example", "1", "2"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), "schema-set");
@@ -151,10 +150,9 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
 
     final SMFSchemaIdentifier identifier =
       SMFSchemaIdentifier.builder()
-        .setVendorID(0x696f376d)
-        .setSchemaID(0)
-        .setSchemaMajorVersion(2)
-        .setSchemaMinorVersion(3)
+        .setName(SMFSchemaName.of("com.io7m.schema"))
+        .setVersionMajor(2)
+        .setVersionMinor(3)
         .build();
 
     final SMFMemoryMeshFilterType filter =
@@ -163,7 +161,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
-    Assert.assertEquals(identifier, r.get().header().schemaIdentifier());
+    Assert.assertEquals(identifier, r.get().header().schemaIdentifier().get());
 
     checkMeshesSame(loader.mesh(), r.get());
   }

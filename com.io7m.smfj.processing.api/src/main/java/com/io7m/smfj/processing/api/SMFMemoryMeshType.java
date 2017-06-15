@@ -80,15 +80,6 @@ public interface SMFMemoryMeshType
     }
 
     {
-      final long meta_lsize = (long) this.metadata().size();
-      final long meta_hcount = this.header().metaCount();
-      Preconditions.checkPreconditionL(
-        meta_lsize,
-        meta_lsize == meta_hcount,
-        x -> "Metadata list size must match header count");
-    }
-
-    {
       this.arrays().forEach(p -> {
         final long array_lsize = (long) p._2.size();
         final long array_hcount = this.header().vertexCount();

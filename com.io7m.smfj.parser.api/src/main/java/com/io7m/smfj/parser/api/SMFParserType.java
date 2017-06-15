@@ -24,9 +24,5 @@ import java.io.Closeable;
 
 public interface SMFParserType extends Closeable
 {
-  /**
-   * @return {@code true} iff the parser has failed
-   */
 
-  boolean parserHasFailed();
 }

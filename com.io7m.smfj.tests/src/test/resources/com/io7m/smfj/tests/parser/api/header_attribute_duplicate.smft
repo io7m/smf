@@ -1,0 +1,4 @@
+smf 1 0
+attribute "x" float 3 32
+attribute "x" float 3 32
+end

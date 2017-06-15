@@ -16,6 +16,8 @@
 
 package com.io7m.smfj.tests.processing;
 
+import com.io7m.jfunctional.Pair;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
@@ -34,7 +36,6 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Optional;
-import java.util.OptionalLong;
 
 public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   SMFMemoryMeshFilterContract
@@ -53,17 +54,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
-  }
-
-  @Test
-  public void testParseWrong2()
-  {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
-      SMFMemoryMeshFilterMetadataRemove.parse(
-        Optional.empty(),
-        1,
-        List.of("x", "y"));
     Assert.assertTrue(r.isInvalid());
   }
 
@@ -113,7 +103,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
-        List.of("1", "2"));
+        List.of("com.io7m.smf.example", "1", "0"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
@@ -126,7 +116,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
-        List.of("-", "2"));
+        List.of("com.io7m.smf.example", "-"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
@@ -139,7 +129,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
-        List.of("1", "-"));
+        List.of("-"));
     Assert.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
     Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
@@ -176,7 +166,8 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
-        OptionalLong.empty(), OptionalLong.empty());
+        Optional.empty(),
+        Optional.empty());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -188,10 +179,6 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
     Assert.assertEquals(0L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      0L,
-      mesh1.header().metaCount());
   }
 
   @Test
@@ -212,7 +199,8 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
-        OptionalLong.of(0x696f376dL), OptionalLong.empty());
+        Optional.of(SMFSchemaName.of("com.io7m.smf.example")),
+        Optional.empty());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -223,11 +211,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMesh mesh1 = r.get();
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(0L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      0L,
-      mesh1.header().metaCount());
+    Assert.assertEquals(1L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -248,7 +232,8 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
-        OptionalLong.empty(), OptionalLong.of(0L));
+        Optional.of(SMFSchemaName.of("com.io7m.smf.example")),
+        Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -259,11 +244,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMesh mesh1 = r.get();
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(2L, (long) mesh1.metadata().size());
-
-    Assert.assertEquals(
-      2L,
-      mesh1.header().metaCount());
+    Assert.assertEquals(3L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -284,7 +265,8 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
-        OptionalLong.of(0x696f376dL), OptionalLong.of(0L));
+        Optional.of(SMFSchemaName.of("com.io7m.smf.example")),
+        Optional.of(Pair.pair(Integer.valueOf(2), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
@@ -295,10 +277,39 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMesh mesh1 = r.get();
     Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(2L, (long) mesh1.metadata().size());
+    Assert.assertEquals(3L, (long) mesh1.metadata().size());
+  }
 
-    Assert.assertEquals(
-      2L,
-      mesh1.header().metaCount());
+  @Test
+  public void testRemoveOK4()
+    throws Exception
+  {
+    final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
+
+    try (final SMFParserSequentialType parser =
+           SMFTestFiles.createParser(loader, "all.smft")) {
+      // Nothing
+    }
+
+    final Path root =
+      this.filesystem.getRootDirectories().iterator().next();
+    final SMFFilterCommandContext context =
+      SMFFilterCommandContext.of(root, root);
+
+    final SMFMemoryMeshFilterType filter =
+      SMFMemoryMeshFilterMetadataRemove.create(
+        Optional.of(SMFSchemaName.of("com.io7m.smf.example.different")),
+        Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
+
+    final SMFMemoryMesh mesh0 = loader.mesh();
+    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+      filter.filter(context, mesh0);
+
+    Assert.assertTrue(r.isValid());
+
+    final SMFMemoryMesh mesh1 = r.get();
+    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assert.assertEquals(3L, (long) mesh1.metadata().size());
   }
 }

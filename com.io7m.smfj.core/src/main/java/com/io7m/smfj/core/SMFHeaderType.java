@@ -25,6 +25,7 @@ import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Information about an SMF file.
@@ -39,8 +40,12 @@ public interface SMFHeaderType
    * @return The triangle information for the file
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFTriangles triangles();
+  default SMFTriangles triangles()
+  {
+    return SMFTriangles.builder().build();
+  }
 
   /**
    * @return The number of vertices in the file
@@ -58,14 +63,18 @@ public interface SMFHeaderType
    */
 
   @Value.Parameter
-  SMFSchemaIdentifier schemaIdentifier();
+  Optional<SMFSchemaIdentifier> schemaIdentifier();
 
   /**
    * @return The coordinate system of the mesh data
    */
 
+  @Value.Default
   @Value.Parameter
-  SMFCoordinateSystem coordinateSystem();
+  default SMFCoordinateSystem coordinateSystem()
+  {
+    return SMFCoordinateSystem.builder().build();
+  }
 
   /**
    * @return The attributes in the order that they appeared in the file
@@ -97,17 +106,6 @@ public interface SMFHeaderType
       m = m.put(attr.name(), attr);
     }
     return m;
-  }
-
-  /**
-   * @return The number of metadata elements in the file
-   */
-
-  @Value.Parameter
-  @Value.Default
-  default long metaCount()
-  {
-    return 0L;
   }
 
   /**

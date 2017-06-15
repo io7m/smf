@@ -22,7 +22,7 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -41,7 +41,7 @@ public final class SMFFilterCommandParsing
    * Construct an error message that indicates that one sort of input was
    * expected but another was received.
    *
-   * @param file     The file, if any
+   * @param uri      The URI, if any
    * @param line     The current line number
    * @param expected The expected input
    * @param text     The received input
@@ -51,20 +51,20 @@ public final class SMFFilterCommandParsing
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
   errorExpectedGotValidation(
-    final Optional<Path> file,
+    final Optional<URI> uri,
     final int line,
     final String expected,
     final List<String> text)
   {
     return Validation.invalid(List.of(
-      errorExpectedGot(file, line, expected, text)));
+      errorExpectedGot(uri, line, expected, text)));
   }
 
   /**
    * Construct an error message that indicates that one sort of input was
    * expected but another was received.
    *
-   * @param file     The file, if any
+   * @param uri      The URI, if any
    * @param line     The current line number
    * @param expected The expected input
    * @param text     The received input
@@ -74,7 +74,7 @@ public final class SMFFilterCommandParsing
 
   public static SMFParseError
   errorExpectedGot(
-    final Optional<Path> file,
+    final Optional<URI> uri,
     final int line,
     final String expected,
     final List<String> text)
@@ -90,6 +90,6 @@ public final class SMFFilterCommandParsing
     sb.append(System.lineSeparator());
 
     return SMFParseError.of(
-      LexicalPosition.of(line, 0, file), sb.toString(), Optional.empty());
+      LexicalPosition.of(line, 0, uri), sb.toString(), Optional.empty());
   }
 }

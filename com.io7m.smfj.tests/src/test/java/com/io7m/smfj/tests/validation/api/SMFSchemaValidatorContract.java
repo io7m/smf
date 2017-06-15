@@ -26,6 +26,7 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
@@ -69,12 +70,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -118,12 +120,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .build();
@@ -170,12 +173,13 @@ public abstract class SMFSchemaValidatorContract
         .addAttributesInOrder(attr_0)
         .setCoordinateSystem(coords_rec)
         .setTriangles(SMFTriangles.builder().build())
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(true)
         .setRequiredCoordinateSystem(coords_exp)
         .build();
@@ -214,12 +218,13 @@ public abstract class SMFSchemaValidatorContract
         .addAttributesInOrder(attr_0)
         .setTriangles(SMFTriangles.builder().build())
         .setCoordinateSystem(coords_exp)
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(true)
         .setRequiredCoordinateSystem(coords_exp)
         .build();
@@ -250,12 +255,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -294,12 +300,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -343,12 +350,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -392,12 +400,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -436,12 +445,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -485,12 +495,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putRequiredAttributes(
@@ -529,12 +540,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -573,12 +585,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -622,12 +635,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -671,12 +685,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -715,12 +730,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -764,12 +780,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -807,12 +824,13 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
         .setTriangles(SMFTriangles.builder().build())
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(SMFSchemaName.of(
+          "com.io7m.schema"), 1, 0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(header.schemaIdentifier())
+        .setSchemaIdentifier(header.schemaIdentifier().get())
         .setAllowExtraAttributes(false)
         .setRequiredCoordinateSystem(Optional.empty())
         .putOptionalAttributes(
@@ -843,12 +861,19 @@ public abstract class SMFSchemaValidatorContract
             CAxis.AXIS_POSITIVE_Y,
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE))
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374D, 0, 1, 0))
+        .setSchemaIdentifier(
+          SMFSchemaIdentifier.of(
+            SMFSchemaName.of("com.io7m.schema"),
+            1,
+            0))
         .build();
 
     final SMFSchema schema =
       SMFSchema.builder()
-        .setSchemaIdentifier(SMFSchemaIdentifier.of(0x494F374E, 0, 1, 0))
+        .setSchemaIdentifier(SMFSchemaIdentifier.of(
+          SMFSchemaName.of("com.io7m.schema.different"),
+          1,
+          0))
         .setAllowExtraAttributes(true)
         .build();
 

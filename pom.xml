@@ -13,7 +13,7 @@
 
   <groupId>com.io7m.smfj</groupId>
   <artifactId>com.io7m.smfj</artifactId>
-  <version>0.10.0</version>
+  <version>0.11.0</version>
 
   <packaging>pom</packaging>
   <name>com.io7m.smfj</name>
@@ -32,6 +32,7 @@
     <module>com.io7m.smfj.format.text</module>
     <module>com.io7m.smfj.frontend</module>
     <module>com.io7m.smfj.parser.api</module>
+    <module>com.io7m.smfj.probe.api</module>
     <module>com.io7m.smfj.processing.api</module>
     <module>com.io7m.smfj.processing.main</module>
     <module>com.io7m.smfj.serializer.api</module>
@@ -46,7 +47,7 @@
     <siteDocumentationDirectory>com/io7m/smfj/com.io7m.smfj.documentation</siteDocumentationDirectory>
     <io7m.checkstyle.artifact>com.io7m.smfj.checkstyle</io7m.checkstyle.artifact>
     <io7m.checkstyle.path>/com/io7m/smfj/checkstyle/checkstyle.xml</io7m.checkstyle.path>
-    <io7m.api.previousVersion>0.10.0</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.11.0-SNAPSHOT</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>[8.0.0, 9.0.0)</com.io7m.smfj.jtensors.versionRange>
   </properties>
 
@@ -87,6 +88,10 @@
       <id>sonatype-nexus-staging</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    </snapshotRepository>
   </distributionManagement>
 
   <ciManagement>
@@ -143,7 +148,7 @@
       <dependency>
         <groupId>com.io7m.jlexing</groupId>
         <artifactId>com.io7m.jlexing.core</artifactId>
-        <version>0.2.1</version>
+        <version>[1.1.0, 2.0.0)</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jaffirm</groupId>

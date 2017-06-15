@@ -27,6 +27,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -46,8 +47,8 @@ import org.osgi.service.component.annotations.Component;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -62,8 +63,8 @@ import static javaslang.control.Validation.valid;
  */
 
 @Component
-public final class SMFSchemaParserProvider implements
-  SMFSchemaParserProviderType
+public final class SMFSchemaParserProvider
+  implements SMFSchemaParserProviderType
 {
   private static final SortedSet<SMFSchemaVersion> SUPPORTED;
 
@@ -94,7 +95,7 @@ public final class SMFSchemaParserProvider implements
 
   @Override
   public SMFSchemaParserType schemaParserCreate(
-    final Path path,
+    final URI path,
     final InputStream stream)
   {
     return new Parser(path, stream);
@@ -104,17 +105,17 @@ public final class SMFSchemaParserProvider implements
   {
     private final SMFSchemaVersion version;
     private final SMFTLineReaderType reader;
-    private final Path path;
+    private final URI uri;
     private boolean received_identifier;
 
     ParserV1(
       final SMFSchemaVersion in_version,
       final SMFTLineReaderType in_reader,
-      final Path in_path)
+      final URI in_uri)
     {
       this.version = in_version;
       this.reader = in_reader;
-      this.path = in_path;
+      this.uri = in_uri;
       this.received_identifier = false;
     }
 
@@ -371,13 +372,12 @@ public final class SMFSchemaParserProvider implements
     parseStatementIdentifier(
       final List<String> text)
     {
-      if (text.length() == 5) {
+      if (text.length() == 4) {
         try {
-          final int vendor = Integer.parseUnsignedInt(text.get(1), 16);
-          final int schema = Integer.parseUnsignedInt(text.get(2), 16);
-          final int major = Integer.parseUnsignedInt(text.get(3));
-          final int minor = Integer.parseUnsignedInt(text.get(4));
-          return valid(SMFSchemaIdentifier.of(vendor, schema, major, minor));
+          final SMFSchemaName schema = SMFSchemaName.of(text.get(1));
+          final int major = Integer.parseUnsignedInt(text.get(2));
+          final int minor = Integer.parseUnsignedInt(text.get(3));
+          return valid(SMFSchemaIdentifier.of(schema, major, minor));
         } catch (final NumberFormatException e) {
           return invalid(List.of(SMFParseError.of(
             this.reader.position(), e.getMessage(), Optional.of(e))));
@@ -388,7 +388,7 @@ public final class SMFSchemaParserProvider implements
       sb.append("Incorrect number of arguments.");
       sb.append(System.lineSeparator());
       sb.append(
-        "  Expected: schema <vendor> <schema> <version-major> <version-minor>");
+        "  Expected: schema <schema> <version-major> <version-minor>");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
       sb.append(text.toJavaStream().collect(Collectors.joining(" ")));
@@ -454,14 +454,14 @@ public final class SMFSchemaParserProvider implements
 
   private static final class Parser implements SMFSchemaParserType
   {
-    private final Path path;
+    private final URI uri;
     private final InputStream stream;
 
     Parser(
-      final Path in_path,
+      final URI in_uri,
       final InputStream in_stream)
     {
-      this.path = NullCheck.notNull(in_path, "path");
+      this.uri = NullCheck.notNull(in_uri, "uri");
       this.stream = NullCheck.notNull(in_stream, "stream");
     }
 
@@ -472,7 +472,7 @@ public final class SMFSchemaParserProvider implements
         final List<String> lines =
           List.ofAll(IOUtils.readLines(this.stream, StandardCharsets.UTF_8));
         final SMFTLineReaderType reader =
-          SMFTLineReaderList.create(this.path, lines, 1);
+          SMFTLineReaderList.create(this.uri, lines, 1);
 
         try {
           final Optional<List<String>> line = reader.line();
@@ -485,7 +485,7 @@ public final class SMFSchemaParserProvider implements
 
             final SMFSchemaVersion version = r_version.get();
             if (version.major() == 1) {
-              return new ParserV1(version, reader, this.path).parseSchema();
+              return new ParserV1(version, reader, this.uri).parseSchema();
             }
 
             throw new UnimplementedCodeException();
@@ -503,7 +503,7 @@ public final class SMFSchemaParserProvider implements
       } catch (final IOException e) {
         final SMFParseError error =
           SMFParseError.of(
-            LexicalPosition.of(1, 0, Optional.of(this.path)),
+            LexicalPosition.of(1, 0, Optional.of(this.uri)),
             "I/O error",
             Optional.of(e));
         return invalid(List.of(error));
@@ -511,7 +511,7 @@ public final class SMFSchemaParserProvider implements
     }
 
     private Validation<List<SMFErrorType>, SMFSchemaVersion> parseVersion(
-      final LexicalPosition<Path> position,
+      final LexicalPosition<URI> position,
       final List<String> line)
     {
       if (line.size() == 3) {
@@ -557,7 +557,7 @@ public final class SMFSchemaParserProvider implements
       sb.append(line);
       sb.append(System.lineSeparator());
       return SMFParseError.of(
-        LexicalPosition.of(1, 0, Optional.of(this.path)),
+        LexicalPosition.of(1, 0, Optional.of(this.uri)),
         sb.toString(),
         exception);
     }

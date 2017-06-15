@@ -1,2 +1,0 @@
-header_command_schema =
-  "schema" , integer-unsigned-base16 , integer-unsigned-base16 , integer-unsigned , integer-unsigned ;

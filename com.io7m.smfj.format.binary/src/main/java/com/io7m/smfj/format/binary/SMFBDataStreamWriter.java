@@ -23,10 +23,10 @@ import org.apache.commons.io.output.CountingOutputStream;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 
 /**
  * The default implementation of the {@link SMFBDataStreamWriterType} interface.
@@ -34,7 +34,7 @@ import java.nio.file.Path;
 
 public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
 {
-  private final Path path;
+  private final URI uri;
   private final CountingOutputStream stream;
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
@@ -45,10 +45,10 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   private final byte[] byte1;
 
   private SMFBDataStreamWriter(
-    final Path in_path,
+    final URI in_uri,
     final OutputStream in_stream)
   {
-    this.path = NullCheck.notNull(in_path, "Path");
+    this.uri = NullCheck.notNull(in_uri, "URI");
     this.stream =
       new CountingOutputStream(NullCheck.notNull(in_stream, "Stream"));
 
@@ -67,17 +67,17 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   /**
    * Create a data stream writer.
    *
-   * @param in_path   The path
+   * @param in_uri    The uri
    * @param in_stream The stream
    *
    * @return A new data stream writer
    */
 
   public static SMFBDataStreamWriterType create(
-    final Path in_path,
+    final URI in_uri,
     final OutputStream in_stream)
   {
-    return new SMFBDataStreamWriter(in_path, in_stream);
+    return new SMFBDataStreamWriter(in_uri, in_stream);
   }
 
   @Override
@@ -87,9 +87,9 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
   }
 
   @Override
-  public Path path()
+  public URI uri()
   {
-    return this.path;
+    return this.uri;
   }
 
   @Override
@@ -243,5 +243,17 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
     this.checkAlignment(8L);
     this.buffer8.putDouble(0, value);
     this.stream.write(this.byte8);
+  }
+
+  @Override
+  public void pad(
+    final long count,
+    final byte value)
+    throws IOException
+  {
+    this.byte1[0] = value;
+    for (long index = 0L; Long.compareUnsigned(index, count) < 0; ++index) {
+      this.stream.write(this.byte1);
+    }
   }
 }

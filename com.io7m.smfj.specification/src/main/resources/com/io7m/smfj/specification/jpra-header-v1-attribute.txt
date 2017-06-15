@@ -1,6 +1,0 @@
-[record SMFBV1Attribute
-  ([field name            [string 64 "UTF-8"]]
-   [field component_kind  [integer unsigned 32]]
-   [field component_count [integer unsigned 32]]
-   [field component_size  [integer unsigned 32]])]
-

@@ -23,8 +23,8 @@ import com.io7m.smfj.parser.api.SMFParserSequentialType;
  * The type of Wavefront OBJ importers.
  */
 
-public interface SMFOBJImporterType extends JOParserEventListenerType,
-  SMFParserSequentialType
+public interface SMFOBJImporterType
+  extends JOParserEventListenerType, SMFParserSequentialType
 {
-
+  // No extra methods
 }

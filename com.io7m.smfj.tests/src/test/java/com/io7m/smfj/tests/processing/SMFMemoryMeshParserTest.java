@@ -40,43 +40,6 @@ public final class SMFMemoryMeshParserTest
   }
 
   @Test
-  public void testRoundTripRandom()
-    throws Exception
-  {
-    final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
-
-    try (final SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
-    }
-
-    final SMFMemoryMesh mesh0 = loader0.mesh();
-    final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
-
-    try (final SMFParserRandomAccessType parser =
-           SMFMemoryMeshParser.createRandomAccess(mesh0, loader1)) {
-      parser.parseHeader();
-      for (final SMFAttribute attr : mesh0.header().attributesInOrder()) {
-        parser.parseAttributeData(attr.name());
-      }
-      parser.parseTriangles();
-      parser.parseMetadata();
-    }
-
-    final SMFMemoryMesh mesh1 = loader1.mesh();
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(mesh0.metadata(), mesh1.metadata());
-
-    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
-      final SMFAttributeArrayType array0 = pair._2;
-      final SMFAttributeArrayType array1 = mesh1.arrays().get(pair._1).get();
-      Assert.assertEquals(array0, array1);
-    }
-
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-  }
-
-  @Test
   public void testRoundTripSequential()
     throws Exception
   {
@@ -92,8 +55,7 @@ public final class SMFMemoryMeshParserTest
 
     try (final SMFParserSequentialType parser =
            SMFMemoryMeshParser.createSequential(mesh0, loader1)) {
-      parser.parseHeader();
-      parser.parseData();
+      parser.parse();
     }
 
     final SMFMemoryMesh mesh1 = loader1.mesh();

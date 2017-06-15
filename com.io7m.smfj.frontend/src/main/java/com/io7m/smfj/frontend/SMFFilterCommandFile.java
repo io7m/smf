@@ -19,7 +19,7 @@ package com.io7m.smfj.frontend;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jnull.NullCheck;
-import com.io7m.smfj.format.text.SMFLineLexer;
+import com.io7m.smfj.format.text.SMFTLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
@@ -36,8 +36,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -73,7 +73,7 @@ public final class SMFFilterCommandFile
   public static Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>>
   parseFromStream(
     final SMFFilterCommandModuleResolverType resolver,
-    final Optional<Path> path_opt,
+    final Optional<URI> path_opt,
     final InputStream stream)
     throws IOException
   {
@@ -81,14 +81,14 @@ public final class SMFFilterCommandFile
     NullCheck.notNull(path_opt, "Path");
     NullCheck.notNull(stream, "Stream");
 
-    final SMFLineLexer lexer = new SMFLineLexer();
+    final SMFTLineLexer lexer = new SMFTLineLexer();
 
     final SortedMap<String, SMFFilterCommandModuleType> modules =
       resolver.available();
 
     List<SMFParseError> errors = List.empty();
     List<SMFMemoryMeshFilterType> filters = List.empty();
-    LexicalPosition<Path> position = LexicalPosition.of(1, 0, path_opt);
+    LexicalPosition<URI> position = LexicalPosition.of(1, 0, path_opt);
 
     try (final BufferedReader reader =
            new BufferedReader(new InputStreamReader(
@@ -144,8 +144,8 @@ public final class SMFFilterCommandFile
   private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
   resolveCommand(
     final SortedMap<String, SMFFilterCommandModuleType> modules,
-    final LexicalPosition<Path> position,
-    final Optional<Path> path_opt,
+    final LexicalPosition<URI> position,
+    final Optional<URI> path_opt,
     final String module_name,
     final String command_name,
     final List<String> text)
@@ -174,8 +174,8 @@ public final class SMFFilterCommandFile
   }
 
   private static SMFParseError notFullyQualified(
-    final LexicalPositionType<Path> position,
-    final Optional<Path> path_opt,
+    final LexicalPositionType<URI> position,
+    final Optional<URI> path_opt,
     final String received)
   {
     final StringBuilder sb = new StringBuilder(128);
@@ -185,14 +185,15 @@ public final class SMFFilterCommandFile
     sb.append(received);
     sb.append(System.lineSeparator());
     return SMFParseError.of(
-      LexicalPosition.of(position.line(), position.column(), path_opt),
+      LexicalPosition.of(
+        position.line(), position.column(), path_opt),
       sb.toString(),
       Optional.empty());
   }
 
   private static SMFParseError noSuchCommand(
-    final LexicalPositionType<Path> position,
-    final Optional<Path> path_opt,
+    final LexicalPositionType<URI> position,
+    final Optional<URI> path_opt,
     final SMFFilterCommandModuleType module,
     final String command_name)
   {
@@ -219,8 +220,8 @@ public final class SMFFilterCommandFile
   }
 
   private static SMFParseError noSuchModule(
-    final LexicalPositionType<Path> position,
-    final Optional<Path> path_opt,
+    final LexicalPositionType<URI> position,
+    final Optional<URI> path_opt,
     final Map<String, SMFFilterCommandModuleType> modules,
     final String module_name)
   {

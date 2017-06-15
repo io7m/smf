@@ -17,15 +17,17 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jnull.NullCheck;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.commons.io.input.CountingInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -34,7 +36,7 @@ import java.util.Optional;
 
 public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
 {
-  private final Path path;
+  private final URI uri;
   private final CountingInputStream stream;
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
@@ -45,13 +47,13 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   private final byte[] byte8;
 
   private SMFBDataStreamReader(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    this.path = NullCheck.notNull(in_path, "Path");
-    this.stream = new CountingInputStream(NullCheck.notNull(
-      in_stream,
-      "Stream"));
+    this.uri =
+      NullCheck.notNull(in_uri, "URI");
+    this.stream =
+      new CountingInputStream(NullCheck.notNull(in_stream, "Stream"));
 
     this.byte1 = new byte[1];
     this.byte2 = new byte[2];
@@ -68,23 +70,23 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   /**
    * Create a data stream reader.
    *
-   * @param in_path   The path
+   * @param in_uri    The uri
    * @param in_stream The stream
    *
    * @return A new data stream reader
    */
 
   public static SMFBDataStreamReaderType create(
-    final Path in_path,
+    final URI in_uri,
     final InputStream in_stream)
   {
-    return new SMFBDataStreamReader(in_path, in_stream);
+    return new SMFBDataStreamReader(in_uri, in_stream);
   }
 
   @Override
-  public Path path()
+  public URI uri()
   {
-    return this.path;
+    return this.uri;
   }
 
   @Override
@@ -295,5 +297,20 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
       throw this.makeIOException(
         Optional.of("padding"), this.position(), count, e.getMessage());
     }
+  }
+
+  @Override
+  public LexicalPosition<URI> positionLexical()
+  {
+    return LexicalPosition.of(
+      0, (int) this.position(), Optional.of(this.uri));
+  }
+
+  @Override
+  public SMFBDataStreamReaderType withBounds(
+    final long size)
+  {
+    return new SMFBDataStreamReader(
+      this.uri, new BoundedInputStream(this.stream, size));
   }
 }

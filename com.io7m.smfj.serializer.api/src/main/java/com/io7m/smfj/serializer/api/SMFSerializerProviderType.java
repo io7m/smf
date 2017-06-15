@@ -22,7 +22,7 @@ import javaslang.collection.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.OutputStream;
-import java.nio.file.Path;
+import java.net.URI;
 
 /**
  * The type of serializer providers.
@@ -45,7 +45,7 @@ public interface SMFSerializerProviderType
 
   /**
    * @param version The format version
-   * @param path    The path referred to by the output stream, for diagnostic
+   * @param uri     The URI referred to by the output stream, for diagnostic
    *                messages
    * @param stream  An output stream
    *
@@ -57,7 +57,7 @@ public interface SMFSerializerProviderType
 
   SMFSerializerType serializerCreate(
     SMFFormatVersion version,
-    Path path,
+    URI uri,
     OutputStream stream)
     throws UnsupportedOperationException;
 }

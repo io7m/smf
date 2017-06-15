@@ -1,6 +1,6 @@
 smf-schema 1 0
 
-schema 696f376d 0 1 2
+schema com.io7m.smf.example 1 2
 coordinates +x +y -z counter-clockwise
 
 attribute required "f16_4" float 4 16

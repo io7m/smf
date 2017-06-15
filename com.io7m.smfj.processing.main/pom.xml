@@ -8,12 +8,12 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
   <artifactId>com.io7m.smfj.processing.main</artifactId>
 
   <packaging>bundle</packaging>
-  <name>com.io7m.smfj.processing</name>
+  <name>com.io7m.smfj.processing.main</name>
   <description>Sequential mesh format (Main filters)</description>
   <url>http://io7m.github.io/smfj/</url>
 
@@ -52,6 +52,10 @@
     <dependency>
       <groupId>com.io7m.jtensors</groupId>
       <artifactId>com.io7m.jtensors.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jfunctional</groupId>
+      <artifactId>com.io7m.jfunctional.core</artifactId>
     </dependency>
 
     <dependency>

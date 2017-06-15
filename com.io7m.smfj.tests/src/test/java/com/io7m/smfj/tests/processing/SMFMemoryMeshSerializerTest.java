@@ -59,6 +59,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 
 import static com.io7m.jfunctional.Unit.unit;
+import static java.nio.file.StandardOpenOption.*;
 
 public final class SMFMemoryMeshSerializerTest
 {
@@ -244,7 +245,7 @@ public final class SMFMemoryMeshSerializerTest
 
     try (final SMFParserSequentialType parser0 =
            SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
+      // Parse already called by SMFTestFiles.createParser
     }
 
     Assert.assertTrue(loader0.errors().isEmpty());
@@ -253,12 +254,10 @@ public final class SMFMemoryMeshSerializerTest
     final SMFFormatText fmt = new SMFFormatText();
     final Path tmp = Files.createTempFile("smf-memory-", ".smft");
     try (final OutputStream stream =
-           Files.newOutputStream(
-             tmp,
-             StandardOpenOption.CREATE,
-             StandardOpenOption.TRUNCATE_EXISTING)) {
+           Files.newOutputStream(tmp, CREATE, TRUNCATE_EXISTING)) {
+      final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
       try (final SMFSerializerType serial =
-             fmt.serializerCreate(SMFFormatVersion.of(1, 0), tmp, stream)) {
+             fmt.serializerCreate(version, tmp.toUri(), stream)) {
         SMFMemoryMeshSerializer.serialize(mesh0, serial);
       }
     }
@@ -266,9 +265,8 @@ public final class SMFMemoryMeshSerializerTest
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
     try (final InputStream stream = Files.newInputStream(tmp)) {
       try (final SMFParserSequentialType parser1 =
-             fmt.parserCreateSequential(loader1, tmp, stream)) {
-        parser1.parseHeader();
-        parser1.parseData();
+             fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
+        parser1.parse();
       }
     }
 

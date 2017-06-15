@@ -25,6 +25,7 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
@@ -357,7 +358,8 @@ public abstract class SMFSchemaParserContract
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
       Assert.assertEquals(
-        SMFSchemaIdentifier.of(0x494F374D, 0xF, 1, 2),
+        SMFSchemaIdentifier.of(
+          SMFSchemaName.of("com.io7m.smf.example"), 1, 2),
         schema.schemaIdentifier());
       Assert.assertEquals(Optional.empty(), schema.requiredCoordinateSystem());
       Assert.assertEquals(TreeMap.empty(), schema.requiredAttributes());
@@ -442,7 +444,8 @@ public abstract class SMFSchemaParserContract
       Assert.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
       Assert.assertEquals(
-        SMFSchemaIdentifier.of(0x494F374D, 0xF, 1, 2),
+        SMFSchemaIdentifier.of(
+          SMFSchemaName.of("com.io7m.smf.example"), 1, 2),
         schema.schemaIdentifier());
       Assert.assertEquals(
         Optional.of(SMFCoordinateSystem.of(

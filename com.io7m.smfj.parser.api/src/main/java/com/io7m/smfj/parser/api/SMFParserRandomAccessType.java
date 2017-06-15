@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.parser.api;
 
-import com.io7m.smfj.core.SMFAttributeName;
-
 /**
  * The type of random-access parsers.
  */
@@ -25,44 +23,8 @@ import com.io7m.smfj.core.SMFAttributeName;
 public interface SMFParserRandomAccessType extends SMFParserType
 {
   /**
-   * Parse the header of the file.
+   * Begin parsing.
    */
 
-  void parseHeader();
-
-  /**
-   * Parse data for a specific attribute.
-   *
-   * @param name The attribute name
-   *
-   * @throws IllegalStateException If {@link #parseHeader()} has not been
-   *                               called, or if parsing the header previously
-   *                               failed
-   */
-
-  void parseAttributeData(
-    SMFAttributeName name)
-    throws IllegalStateException;
-
-  /**
-   * Parse triangle data.
-   *
-   * @throws IllegalStateException If {@link #parseHeader()} has not been
-   *                               called, or if parsing the header previously
-   *                               failed
-   */
-
-  void parseTriangles()
-    throws IllegalStateException;
-
-  /**
-   * Parse metadata.
-   *
-   * @throws IllegalStateException If {@link #parseHeader()} has not been
-   *                               called, or if parsing the header previously
-   *                               failed
-   */
-
-  void parseMetadata()
-    throws IllegalStateException;
+  void parse();
 }

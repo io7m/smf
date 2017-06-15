@@ -20,15 +20,15 @@ import com.io7m.ieee754b16.Binary16;
 import com.io7m.jnull.NullCheck;
 
 import java.io.IOException;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
 import java.util.Optional;
 
 final class SMFBDataFileChannelReader
 {
-  private final Path path;
+  private final URI uri;
   private final FileChannel channel;
   private final ByteBuffer buffer8;
   private final ByteBuffer buffer4;
@@ -36,10 +36,10 @@ final class SMFBDataFileChannelReader
   private final ByteBuffer buffer1;
 
   SMFBDataFileChannelReader(
-    final Path in_path,
+    final URI in_uri,
     final FileChannel in_channel)
   {
-    this.path = NullCheck.notNull(in_path, "Path");
+    this.uri = NullCheck.notNull(in_uri, "URI");
     this.channel = NullCheck.notNull(in_channel, "Channel");
     this.buffer8 = ByteBuffer.allocate(8);
     this.buffer8.order(ByteOrder.BIG_ENDIAN);
@@ -51,9 +51,9 @@ final class SMFBDataFileChannelReader
     this.buffer1.order(ByteOrder.BIG_ENDIAN);
   }
 
-  Path path()
+  URI path()
   {
-    return this.path;
+    return this.uri;
   }
 
   public void readBytes(

@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
   <artifactId>com.io7m.smfj.format.binary</artifactId>
 
@@ -36,6 +36,11 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.smfj.probe.api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.smfj.serializer.api</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -47,6 +52,10 @@
     <dependency>
       <groupId>com.io7m.junreachable</groupId>
       <artifactId>com.io7m.junreachable.core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.io7m.jfunctional</groupId>
+      <artifactId>com.io7m.jfunctional.core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.io7m.jcoords</groupId>
@@ -67,10 +76,6 @@
     <dependency>
       <groupId>com.io7m.ieee754b16</groupId>
       <artifactId>com.io7m.ieee754b16.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.jfsm</groupId>
-      <artifactId>com.io7m.jfsm.core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.io7m.mutable.numbers</groupId>

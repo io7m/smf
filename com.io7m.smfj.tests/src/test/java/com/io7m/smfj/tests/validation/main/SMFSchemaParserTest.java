@@ -30,6 +30,8 @@ public final class SMFSchemaParserTest extends SMFSchemaParserContract
     final Path path,
     final InputStream stream)
   {
-    return new SMFSchemaParserProvider().schemaParserCreate(path, stream);
+    return new SMFSchemaParserProvider().schemaParserCreate(
+      path.toUri(),
+      stream);
   }
 }

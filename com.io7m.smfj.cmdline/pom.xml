@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
   <artifactId>com.io7m.smfj.cmdline</artifactId>
 
@@ -27,6 +27,11 @@
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.smfj.core</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.smfj.probe.api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -131,7 +136,7 @@
             </goals>
             <configuration>
               <createDependencyReducedPom>false</createDependencyReducedPom>
-              <minimizeJar>true</minimizeJar>
+              <minimizeJar>false</minimizeJar>
               <shadedClassifierName>main</shadedClassifierName>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <transformers>
@@ -142,62 +147,6 @@
                   </manifestEntries>
                 </transformer>
               </transformers>
-              <filters>
-                <filter>
-                  <artifact>com.io7m.smfj:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jaffirm:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jobj:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jpra:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jtensors:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jlexing:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>com.io7m.jfsm:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>io.javaslang:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-                <filter>
-                  <artifact>commons-io:*</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
-              </filters>
             </configuration>
           </execution>
         </executions>

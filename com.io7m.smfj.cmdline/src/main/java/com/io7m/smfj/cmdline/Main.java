@@ -22,14 +22,24 @@ import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.io7m.jfunctional.Unit;
 import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
+import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.frontend.SMFFilterCommandFile;
 import com.io7m.smfj.frontend.SMFParserProviders;
 import com.io7m.smfj.frontend.SMFSerializerProviders;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
+import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.probe.api.SMFVersionProbeControllerServiceLoader;
+import com.io7m.smfj.probe.api.SMFVersionProbeControllerType;
+import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
@@ -52,6 +62,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -83,23 +94,26 @@ public final class Main implements Runnable
 
   private Main(final String[] in_args)
   {
-    this.args = NullCheck.notNull(in_args);
+    this.args = NullCheck.notNull(in_args, "Arguments");
 
     final CommandRoot r = new CommandRoot();
     final CommandFormats formats = new CommandFormats();
     final CommandFilter filter = new CommandFilter();
     final CommandListFilters list_filters = new CommandListFilters();
+    final CommandProbe probe = new CommandProbe();
 
     this.commands = new HashMap<>(8);
     this.commands.put("filter", filter);
-    this.commands.put("formats", formats);
+    this.commands.put("list-formats", formats);
     this.commands.put("list-filters", list_filters);
+    this.commands.put("probe", probe);
 
     this.commander = new JCommander(r);
     this.commander.setProgramName("smf");
     this.commander.addCommand("filter", filter);
-    this.commander.addCommand("formats", formats);
+    this.commander.addCommand("list-formats", formats);
     this.commander.addCommand("list-filters", list_filters);
+    this.commander.addCommand("probe", probe);
   }
 
   /**
@@ -402,7 +416,7 @@ public final class Main implements Runnable
           try (final SMFSerializerType serializer =
                  provider_serializer.serializerCreate(
                    provider_serializer.serializerSupportedVersions().last(),
-                   path_out,
+                   path_out.toUri(),
                    os)) {
             SMFMemoryMeshSerializer.serialize(filtered, serializer);
           }
@@ -452,11 +466,9 @@ public final class Main implements Runnable
 
       try (final InputStream is = Files.newInputStream(path_in)) {
         try (final SMFParserSequentialType parser =
-               provider_parser.parserCreateSequential(loader, path_in, is)) {
-          parser.parseHeader();
-          if (!parser.parserHasFailed()) {
-            parser.parseData();
-          }
+               provider_parser.parserCreateSequential(
+                 loader, path_in.toUri(), is)) {
+          parser.parse();
         }
         if (!loader.errors().isEmpty()) {
           loader.errors().forEach(e -> LOG.error(e.fullMessage()));
@@ -478,7 +490,7 @@ public final class Main implements Runnable
         final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
             resolver,
-            Optional.of(path_commands),
+            Optional.of(path_commands.toUri()),
             stream);
         if (r.isValid()) {
           return Optional.of(r.get());
@@ -487,6 +499,129 @@ public final class Main implements Runnable
         r.getError().forEach(e -> LOG.error(e.fullMessage()));
         return Optional.empty();
       }
+    }
+  }
+
+  @Parameters(commandDescription = "Probe a mesh file and display information")
+  private final class CommandProbe extends CommandRoot
+    implements SMFParserEventsType, SMFParserEventsHeaderType
+  {
+    @Parameter(
+      names = "-file-in",
+      required = true,
+      description = "The input file")
+    private String file_in;
+
+    CommandProbe()
+    {
+
+    }
+
+    @Override
+    public Unit call()
+      throws Exception
+    {
+      super.call();
+
+      final Path path_in = Paths.get(this.file_in);
+
+      final SMFVersionProbeControllerType controller =
+        new SMFVersionProbeControllerServiceLoader();
+
+      final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+        controller.probe(() -> {
+          try {
+            return Files.newInputStream(path_in);
+          } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+          }
+        });
+
+      if (r.isInvalid()) {
+        r.getError().forEach(e -> LOG.error(e.fullMessage()));
+        Main.this.exit_code = 1;
+        return unit();
+      }
+
+      final SMFVersionProbed version = r.get();
+      final SMFFormatDescription format = version.provider().parserFormat();
+      System.out.printf(
+        "Format: %s (%s) %s\n",
+        format.name(),
+        format.mimeType(),
+        version.version().toHumanString());
+
+      try (final InputStream stream = Files.newInputStream(path_in)) {
+        try (final SMFParserSequentialType p = version.provider()
+          .parserCreateSequential(this, path_in.toUri(), stream)) {
+          p.parse();
+        }
+      }
+
+      return unit();
+    }
+
+    @Override
+    public void onStart()
+    {
+
+    }
+
+    @Override
+    public Optional<SMFParserEventsHeaderType> onVersionReceived(
+      final SMFFormatVersion version)
+    {
+      return Optional.of(this);
+    }
+
+    @Override
+    public void onFinish()
+    {
+
+    }
+
+    @Override
+    public void onError(
+      final SMFErrorType e)
+    {
+      LOG.error(e.fullMessage());
+    }
+
+    @Override
+    public void onWarning(
+      final SMFWarningType w)
+    {
+      LOG.warn(w.fullMessage());
+    }
+
+    @Override
+    public Optional<SMFParserEventsBodyType> onHeaderParsed(
+      final SMFHeader header)
+    {
+      header.schemaIdentifier().ifPresent(
+        schema -> System.out.printf("Schema: %s\n", schema.toHumanString()));
+
+      System.out.printf(
+        "Vertices: %s\n",
+        Long.toUnsignedString(header.vertexCount()));
+
+      final SMFTriangles triangles = header.triangles();
+      System.out.printf(
+        "Triangles: %s (size %s)\n",
+        Long.toUnsignedString(triangles.triangleCount()),
+        Integer.toUnsignedString(triangles.triangleIndexSizeBits()));
+
+      System.out.printf("Attributes:\n");
+
+      header.attributesInOrder().forEach(
+        attr -> System.out.printf(
+          "  %-32s %s %s %s\n",
+          attr.name().value(),
+          attr.componentType().getName(),
+          Integer.toUnsignedString(attr.componentCount()),
+          Integer.toUnsignedString(attr.componentSizeBits())));
+
+      return Optional.empty();
     }
   }
 }

@@ -22,8 +22,8 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
+import com.io7m.smfj.processing.api.SMFFilterCommandChecks;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -32,8 +32,11 @@ import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
 
 /**
  * A filter that removes a mesh attribute.
@@ -83,7 +86,7 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {
@@ -95,12 +98,10 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
         return Validation.valid(create(attr));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -128,12 +129,15 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
     NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
 
+    final Seq<SMFProcessingError> errors =
+      SMFFilterCommandChecks.checkAttributeExists(
+        List.empty(), m.header().attributesByName(), this.source);
+    if (!errors.isEmpty()) {
+      return invalid(List.ofAll(errors));
+    }
+
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
     final SMFHeader orig_header = m.header();
-    if (!arrays.containsKey(this.source)) {
-      return Validation.invalid(List.of(this.nonexistentAttribute(
-        orig_header.attributesInOrder())));
-    }
 
     /*
      * Remove array.
@@ -163,29 +167,5 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
         .setHeader(new_header)
         .setArrays(removed_arrays)
         .build());
-  }
-
-  private SMFProcessingError nonexistentAttribute(
-    final Seq<SMFAttribute> ordered)
-  {
-    final StringBuilder sb = new StringBuilder(128);
-    sb.append("Mesh does not contain the given attribute.");
-    sb.append(System.lineSeparator());
-    sb.append("  Attribute: ");
-    sb.append(this.source.value());
-    sb.append(System.lineSeparator());
-    sb.append("  Existing:  ");
-    sb.append(System.lineSeparator());
-
-    for (int index = 0; index < ordered.size(); ++index) {
-      final SMFAttribute attr = ordered.get(index);
-      sb.append("    [");
-      sb.append(index);
-      sb.append("] ");
-      sb.append(attr.name().value());
-      sb.append(System.lineSeparator());
-    }
-
-    return SMFProcessingError.of(sb.toString(), Optional.empty());
   }
 }

@@ -19,9 +19,10 @@ package com.io7m.smfj.format.text;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionMutable;
 import javaslang.collection.List;
+import org.slf4j.Logger;
 
 import java.io.IOException;
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
 
 /**
@@ -30,22 +31,22 @@ import java.util.Optional;
 
 abstract class SMFTLineReaderAbstract implements SMFTLineReaderType
 {
-  private final LexicalPositionMutable<Path> position;
-  private final SMFLineLexer lexer;
+  private final LexicalPositionMutable<URI> position;
+  private final SMFTLineLexer lexer;
 
   SMFTLineReaderAbstract(
-    final Path in_path,
+    final URI in_uri,
     final int in_start)
   {
-    this.lexer = new SMFLineLexer();
+    this.lexer = new SMFTLineLexer();
     this.position = LexicalPositionMutable.create(
       in_start - 1,
       0,
-      Optional.of(in_path));
+      Optional.of(in_uri));
   }
 
   @Override
-  public final LexicalPosition<Path> position()
+  public final LexicalPosition<URI> position()
   {
     return LexicalPosition.copyOf(this.position);
   }
@@ -70,8 +71,21 @@ abstract class SMFTLineReaderAbstract implements SMFTLineReaderType
       return Optional.of(List.empty());
     }
 
+    if (this.log().isTraceEnabled()) {
+      if (this.position.file().isPresent()) {
+        final URI file = this.position.file().get();
+        this.log().trace(
+          "{}:{}: {}", file, Integer.valueOf(this.position.line()), trimmed);
+      } else {
+        this.log().trace(
+          "{}: {}", Integer.valueOf(this.position.line()), trimmed);
+      }
+    }
+
     return Optional.of(this.lexer.lex(trimmed));
   }
+
+  protected abstract Logger log();
 
   protected abstract String lineNextRaw()
     throws IOException;

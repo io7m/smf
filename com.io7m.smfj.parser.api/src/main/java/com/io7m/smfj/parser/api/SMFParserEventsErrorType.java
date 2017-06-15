@@ -17,9 +17,10 @@
 package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFWarningType;
 
 /**
- * A receiver of parse error events.
+ * A receiver of parse error/warning events.
  */
 
 public interface SMFParserEventsErrorType
@@ -33,4 +34,14 @@ public interface SMFParserEventsErrorType
 
   void onError(
     SMFErrorType e);
+
+  /**
+   * An error has occurred of a severity low enough that it should just be
+   * considered a warning.
+   *
+   * @param w The warning
+   */
+
+  void onWarning(
+    SMFWarningType w);
 }

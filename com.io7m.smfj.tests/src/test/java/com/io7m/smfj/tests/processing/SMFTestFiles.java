@@ -50,9 +50,8 @@ public final class SMFTestFiles
       final String rpath = "/com/io7m/smfj/tests/processing/" + name;
       final Path path = Paths.get(rpath);
       final SMFParserSequentialType parser =
-        fmt.parserCreateSequential(loader, path, stream);
-      parser.parseHeader();
-      parser.parseData();
+        fmt.parserCreateSequential(loader, path.toUri(), stream);
+      parser.parse();
       return parser;
     }
   }

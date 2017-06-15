@@ -32,6 +32,7 @@
 .constant,
 .element,
 .expression,
+.field,
 .file,
 .function,
 .keyword,
@@ -99,6 +100,13 @@
 }
 
 .dependencies table td
+{
+  padding-right: 3.0em;
+  font-family:   monospace;
+  font-size:     9pt;
+}
+
+.required_types th, .required_types td
 {
   padding-right: 3.0em;
   font-family:   monospace;

@@ -21,7 +21,6 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
@@ -36,12 +35,17 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
+
+import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
+import static javaslang.control.Validation.invalid;
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that validates the current mesh against a schema.
@@ -95,7 +99,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {
@@ -104,14 +108,12 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
 
     if (text.length() == 1) {
       try {
-        return Validation.valid(create(Paths.get(text.get(0))));
+        return valid(create(Paths.get(text.get(0))));
       } catch (final IllegalArgumentException e) {
-        return SMFFilterCommandParsing.errorExpectedGotValidation(
-          file, line, makeSyntax(), text);
+        return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
     }
-    return SMFFilterCommandParsing.errorExpectedGotValidation(
-      file, line, makeSyntax(), text);
+    return errorExpectedGotValidation(file, line, makeSyntax(), text);
   }
 
   private static String makeSyntax()
@@ -173,7 +175,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
 
     try (final InputStream stream = Files.newInputStream(file)) {
       try (final SMFSchemaParserType parser =
-             parser_provider.schemaParserCreate(file, stream)) {
+             parser_provider.schemaParserCreate(file.toUri(), stream)) {
         final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
         if (result_schema.isValid()) {
           final SMFSchema schema = result_schema.get();
@@ -181,20 +183,20 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
             validator.validate(m.header(), schema);
 
           if (result_valid.isValid()) {
-            return Validation.valid(m);
+            return valid(m);
           }
 
-          return Validation.invalid(
+          return invalid(
             result_valid.getError()
               .map(e -> SMFProcessingError.of(e.message(), e.exception())));
         }
 
-        return Validation.invalid(
+        return invalid(
           result_schema.getError()
             .map(e -> SMFProcessingError.of(e.message(), e.exception())));
       }
     } catch (final IOException e) {
-      return Validation.invalid(List.of(
+      return invalid(List.of(
         SMFProcessingError.of(e.getMessage(), Optional.of(e))));
     }
   }

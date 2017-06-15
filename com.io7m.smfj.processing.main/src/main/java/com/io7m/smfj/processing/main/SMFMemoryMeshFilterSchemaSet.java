@@ -18,6 +18,7 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
@@ -27,8 +28,10 @@ import com.io7m.smfj.processing.api.SMFProcessingError;
 import javaslang.collection.List;
 import javaslang.control.Validation;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.Optional;
+
+import static javaslang.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -44,7 +47,7 @@ public final class SMFMemoryMeshFilterSchemaSet implements
   public static final String NAME = "schema-set";
 
   private static final String SYNTAX =
-    "<vendor-id> <schema-id> <schema-major> <schema-minor>";
+    "<schema-id> <schema-major> <schema-minor>";
 
   private final SMFSchemaIdentifier config;
 
@@ -79,25 +82,23 @@ public final class SMFMemoryMeshFilterSchemaSet implements
    */
 
   public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<Path> file,
+    final Optional<URI> file,
     final int line,
     final List<String> text)
   {
     NullCheck.notNull(file, "file");
     NullCheck.notNull(text, "text");
 
-    if (text.length() == 4) {
+    if (text.length() == 3) {
       try {
-        final int vendor = Integer.parseUnsignedInt(text.get(0), 16);
-        final int schema = Integer.parseUnsignedInt(text.get(1), 16);
-        final int major = Integer.parseUnsignedInt(text.get(2));
-        final int minor = Integer.parseUnsignedInt(text.get(3));
-        return Validation.valid(create(
+        final SMFSchemaName schema = SMFSchemaName.of(text.get(0));
+        final int major = Integer.parseUnsignedInt(text.get(1));
+        final int minor = Integer.parseUnsignedInt(text.get(2));
+        return valid(create(
           SMFSchemaIdentifier.builder()
-            .setVendorID(vendor)
-            .setSchemaID(schema)
-            .setSchemaMajorVersion(major)
-            .setSchemaMinorVersion(minor).build()));
+            .setName(schema)
+            .setVersionMajor(major)
+            .setVersionMinor(minor).build()));
       } catch (final IllegalArgumentException e) {
         return SMFFilterCommandParsing.errorExpectedGotValidation(
           file, line, makeSyntax(), text);
@@ -132,7 +133,6 @@ public final class SMFMemoryMeshFilterSchemaSet implements
   {
     NullCheck.notNull(context, "Context");
     NullCheck.notNull(m, "Mesh");
-    return Validation.valid(
-      m.withHeader(m.header().withSchemaIdentifier(this.config)));
+    return valid(m.withHeader(m.header().withSchemaIdentifier(this.config)));
   }
 }

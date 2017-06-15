@@ -86,7 +86,8 @@ public abstract class SMFTextTest implements SMFTextTestType
       }
 
       final InputStream stream = Files.newInputStream(target);
-      return new SMFFormatText().parserCreateSequential(events, target, stream);
+      return new SMFFormatText().parserCreateSequential(
+        events, target.toUri(), stream);
     } catch (final IOException e) {
       throw new UncheckedIOException(e);
     }

@@ -1,0 +1,13 @@
+[section [title Overview] [id smfb.overview]]
+[paragraph]
+The [term [type type] SMF/B] format is a binary encoding for the
+[link [target smf_model.model] SMF model].
+
+[paragraph]
+An [term [type type] SMF/B] file begins with a simple fixed-size
+[link [target smfb.header] header] followed by a series of
+[link [target smfb.sections] sections] containing data and metadata.
+
+[paragraph]
+All data in an [term [type type] SMF/B] file is written in
+[term [type term] big-endian] byte order.

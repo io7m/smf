@@ -1,0 +1,60 @@
+[section [title Section - vertices-noninterleaved] [id smft.sections.vertices-noninterleaved]]
+
+[subsection [title Definition] [id smft.sections.vertices-noninterleaved.def]]
+[paragraph]
+The [term [type command] vertices-noninterleaved] section specifies the vertex
+data that will appear in the model.
+
+[paragraph]
+The contents of a [term [type command] vertices-noninterleaved] section are a series of
+[link [target smft.sections.vertices-noninterleaved.subs] subcommands] with at most one subcommand
+appearing on each line within the section. A [term [type term] subcommand]
+consists of the subcommand's name and a series of zero or more arguments.
+Implementations MUST ignore subcommands that have unrecognized names, but
+SHOULD log warning messages to indicate that unrecognized subcommands have been
+specified.
+
+
+[subsection [title Subcommands] [id smft.sections.vertices-noninterleaved.subs]]
+[paragraph]
+This version of the specification defines the following
+[term [type command] vertices-noninterleaved] [term [type term] subcommands]:
+
+[formal-item [title "Subcommands"] [id smft.sections.vertices-noninterleaved.subs.list]]
+[list-unordered
+  [item [link [target smft.sections.vertices-noninterleaved.attribute] attribute]]
+]
+
+
+
+[subsection [title Subcommand - attribute] [id smft.sections.vertices-noninterleaved.attribute]]
+[paragraph]
+The [term [type command] attribute] subcommand indicates the start of data
+for an attribute.
+
+[formal-item [title "attribute"] [id smft.sections.vertices-noninterleaved.attribute.def]]
+[verbatim [include "smft-vertices-noninterleaved-attribute.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "attribute Arguments"] [id smft.sections.vertices-noninterleaved.attribute.args]]
+[list-ordered
+  [item The name of the attribute]]
+
+[paragraph]
+The named attribute must have been declared in the
+[link [target smft.sections.smf] smf] section; Implementations MUST raise
+errors when encountering [term [type command] attribute] subcommands that name
+attributes that were not declared in the [link [target smft.sections.smf] smf] section.
+
+[paragraph]
+For an attribute[term [type variable] a] that specifies [term [type variable] c] components
+of type [term [type variable] t], in a file that is specified to contain
+[term [type variable] v] vertices, the next [term [type variable] v] non-empty,
+non-commented lines will contain exactly [term [type variable] c]
+whitespace-separated values of type [term [type variable] t]. Implementations
+MUST raise errors if there are not exactly [term [type variable] v] vertex values
+specified before section's [link [target smft.sections.end] end] command or the
+start of the next [term [type command] attribute] subcommand, whichever occurs
+first.

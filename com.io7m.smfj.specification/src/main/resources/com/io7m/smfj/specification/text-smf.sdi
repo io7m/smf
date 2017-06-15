@@ -1,0 +1,169 @@
+[section [title Section - smf] [id smft.sections.smf]]
+
+[subsection [title Definition] [id smft.sections.smf.def]]
+[paragraph]
+The [term [type command] smf] section specifies the [term [type term] major]
+and [term [type term] minor] version of the specification to which the rest
+of the file is expected to conform. The first argument specifies the
+[term [type term] major] version, and the second argument specifies the
+[term [type term] minor] version. Implementations MUST immediately reject files
+that are of unsupported [term [type term] major] versions, and MUST halt
+processing of the rest of the file if the version numbers cannot be parsed.
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "smf Arguments"] [id smft.sections.smf.args]]
+[list-ordered
+  [item The non-negative SMF major version]
+  [item The non-negative SMF minor version]]
+
+[formal-item [title "smf"] [id smft.sections.smf.syntax]]
+[verbatim [include "smft-smf.ebnf"]]
+
+[paragraph]
+The contents of an [term [type command] smf] section are a series of
+[link [target smft.sections.smf.subs] subcommands] with at most one subcommand
+appearing on each line within the section. A [term [type term] subcommand]
+consists of the subcommand's name and a series of zero or more arguments.
+Implementations MUST ignore subcommands that have unrecognized names, but
+SHOULD log warning messages to indicate that unrecognized subcommands have been
+specified.
+
+
+
+[subsection [title Subcommands] [id smft.sections.smf.subs]]
+[paragraph]
+This version of the specification defines the following [term [type command] smf]
+[term [type term] subcommands]:
+
+[formal-item [title "Subcommands"] [id smft.sections.smf.subs.list]]
+[list-unordered
+  [item [link [target smft.sections.smf.subs.attribute] attribute]]
+  [item [link [target smft.sections.smf.subs.coordinates] coordinates]]
+  [item [link [target smft.sections.smf.subs.schema] schema]]
+  [item [link [target smft.sections.smf.subs.triangles] triangles]]
+  [item [link [target smft.sections.smf.subs.vertices] vertices]]
+]
+
+
+
+[subsection [title Subcommand - attribute] [id smft.sections.smf.subs.attribute]]
+[paragraph]
+The [term [type command] attribute] subcommand specifies an
+[link [target smf_model.attribute] attribute] that will appear in the model.
+
+[formal-item [title "attribute"] [id smft.sections.smf.subs.attribute.def]]
+[verbatim [include "smft-smf-attribute.ebnf"]]
+
+[paragraph]
+The subcommand takes the following arguments:
+
+[formal-item [title "attributes Arguments"] [id smft.sections.smf.subs.attribute.args]]
+[list-ordered
+  [item The name of the attribute]
+  [item The type of the components in the attribute]
+  [item The non-negative number of components in the attribute]
+  [item The non-negative size in bits of an individual component]]
+
+[paragraph]
+The subcommand is allowed to appear any number of times, but all specified
+attribute names must be unique.
+
+
+
+[subsection [title Subcommand - coordinates] [id smft.sections.smf.subs.coordinates]]
+[paragraph]
+The [term [type command] coordinates] subcommand specifies the
+[link [target smf_model.coords] coordinate space] of the mesh data that will
+appear in the model.
+
+[formal-item [title "coordinates"] [id smft.sections.smf.subs.coordinates.def]]
+[verbatim [include "smft-smf-coordinates.ebnf"]]
+
+[paragraph]
+The subcommand takes the following arguments:
+
+[formal-item [title "coordinates Arguments"] [id smft.sections.smf.subs.coordinates.args]]
+[list-ordered
+  [item The axis for the [term [type term] right] direction]
+  [item The axis for the [term [type term] up] direction]
+  [item The axis for the [term [type term] forward] direction]
+  [item The triangle [term [type term] winding order]]]
+
+[paragraph]
+If the subcommand does not appear in the section, implementations MUST behave
+as if the following subcommand had been specified:
+
+[formal-item [title "coordinates Default"] [id smft.sections.smf.subs.coordinates.default]]
+[verbatim "coordinates +x +y -z counter-clockwise"]
+
+
+
+[subsection [title Subcommand - schema] [id smft.sections.smf.subs.schema]]
+[paragraph]
+The [term [type command] schema] command specifies the
+[link [target smf_model.schema_id] schema identifier] for the file.
+
+[formal-item [title "schema"] [id smft.header.schema.def]]
+[verbatim [include "smft-smf-schema.ebnf"]]
+
+[paragraph]
+The command takes the following arguments:
+
+[formal-item [title "schema Arguments"] [id smft.sections.smf.subs.schema.args]]
+[list-ordered
+  [item The schema ID string]
+  [item The non-negative schema major version]
+  [item The non-negative schema minor version]]
+
+
+
+[subsection [title Subcommand - triangles] [id smft.sections.smf.subs.triangles]]
+[paragraph]
+The [term [type command] triangles] subcommand specifies the number of
+[link [target smf_model.triangle] triangles] that will appear in the
+model, and the size of the vertex indices in bits.
+
+[formal-item [title "triangles"] [id smft.sections.smf.subs.triangles.def]]
+[verbatim [include "smft-smf-triangles.ebnf"]]
+
+[paragraph]
+The subcommand takes the following arguments:
+
+[formal-item [title "triangles Arguments"] [id smft.sections.smf.subs.triangles.args]]
+[list-ordered
+  [item The non-negative triangle count]
+  [item The non-negative size in bits of a triangle vertex index]]
+
+[paragraph]
+If the subcommand does not appear in the section, implementations MUST behave
+as if the following subcommand had been specified:
+
+[formal-item [title "vertices Default"] [id smft.sections.smf.subs.triangles.default]]
+[verbatim "trianges 0 32"]
+
+
+
+[subsection [title Subcommand - vertices] [id smft.sections.smf.subs.vertices]]
+[paragraph]
+The [term [type command] vertices] subcommand specifies the number of
+[link [target smf_model.vertex] vertices] that will appear in the model for
+each attribute.
+
+[formal-item [title "vertices"] [id smft.sections.smf.subs.vertices.def]]
+[verbatim [include "smft-smf-vertices.ebnf"]]
+
+[paragraph]
+The subcommand takes the following arguments:
+
+[formal-item [title "vertices Arguments"] [id smft.sections.smf.subs.vertices.args]]
+[list-ordered
+  [item The non-negative number of vertices that will appear in the file]]
+
+[paragraph]
+If the subcommand does not appear in the section, implementations MUST behave
+as if the following subcommand had been specified:
+
+[formal-item [title "vertices Default"] [id smft.header.vertices.default]]
+[verbatim "vertices 0"]

@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.10.0</version>
+    <version>0.11.0</version>
   </parent>
   <artifactId>com.io7m.smfj.validation.api</artifactId>
 
@@ -56,6 +56,11 @@
     <dependency>
       <groupId>org.osgi</groupId>
       <artifactId>org.osgi.annotation</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.service.component.annotations</artifactId>
       <scope>provided</scope>
     </dependency>
   </dependencies>

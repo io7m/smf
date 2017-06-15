@@ -17,10 +17,10 @@
 package com.io7m.smfj.format.obj;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
+import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.jnull.NullCheck;
 import com.io7m.jnull.Nullable;
 import com.io7m.jobj.core.JOParser;
@@ -32,11 +32,18 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
-import com.io7m.smfj.core.SMFFaceWindingOrder;
+import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
+import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.parser.api.SMFParseWarning;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +56,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import static com.io7m.jcoords.core.conversion.CAxis.AXIS_NEGATIVE_Z;
+import static com.io7m.jcoords.core.conversion.CAxis.AXIS_POSITIVE_X;
+import static com.io7m.jcoords.core.conversion.CAxis.AXIS_POSITIVE_Y;
+import static com.io7m.smfj.core.SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
 
 /**
  * The default implementation of the {@link SMFOBJImporterType} interface.
@@ -70,7 +82,6 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   private final List<Vertex> vertices;
   private final List<Triangle> triangles;
   private final Map<OriginalVertexIdentifier, Integer> vertex_mappings;
-  private State state;
   private int triangle_v0;
   private int triangle_v1;
   private int triangle_v2;
@@ -92,7 +103,6 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     this.vertices = new ArrayList<>(0);
     this.triangles = new ArrayList<>(0);
     this.vertex_mappings = new HashMap<>(16);
-    this.state = State.STATE_INITIAL;
   }
 
   /**
@@ -114,50 +124,13 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   }
 
   @Override
-  public boolean parserHasFailed()
-  {
-    return this.state == State.STATE_FAILED;
-  }
-
-  @Override
-  public void parseHeader()
-  {
-    if (this.state != State.STATE_INITIAL) {
-      throw new IllegalStateException("Parser has already executed");
-    }
-
-    this.events.onStart();
-    this.parser.run();
-
-    if (this.state != State.STATE_FAILED) {
-      this.state = State.STATE_HEADER_PARSED;
-    }
-  }
-
-  @Override
-  public void parseData()
-    throws IllegalStateException
-  {
-    if (this.state != State.STATE_HEADER_PARSED) {
-      throw new IllegalStateException("Header has not been parsed");
-    }
-
-    this.deliverData();
-
-    if (this.state == State.STATE_HEADER_PARSED) {
-      this.state = State.STATE_FINISHED;
-    }
-  }
-
-  @Override
   public void onFatalError(
     final LexicalPositionType<Path> p,
     final Optional<Throwable> e,
     final String message)
   {
-    this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
-      LexicalPosition.copyOf(p),
+      LexicalPosition.of(p.line(), p.column(), p.file().map(Path::toUri)),
       e + ": " + message,
       e.map(Exception::new)));
   }
@@ -168,9 +141,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final JOParserErrorCode e,
     final String message)
   {
-    this.state = State.STATE_FAILED;
     this.events.onError(SMFParseError.of(
-      LexicalPosition.copyOf(p),
+      LexicalPosition.of(p.line(), p.column(), p.file().map(Path::toUri)),
       e + ": " + message,
       Optional.empty()));
   }
@@ -190,24 +162,34 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     this.deliverHeader();
   }
 
-  private void deliverData()
+  private void deliverData(
+    final SMFParserEventsBodyType events_data)
   {
     if (this.vertices.size() > 0) {
+      final Optional<SMFParserEventsDataAttributesNonInterleavedType> events_noninterleaved_opt =
+        events_data.onAttributesNonInterleaved();
+      final SMFParserEventsDataAttributesNonInterleavedType events_noninterleaved =
+        events_noninterleaved_opt.get();
       final Vertex vertex = this.vertices.get(0);
-      this.deliverDataPosition(this.attrib_position, vertex);
-      this.deliverDataNormals(this.attrib_normal, vertex);
-      this.deliverDataUV(this.attrib_uv, vertex);
+
+      this.deliverDataPosition(
+        events_noninterleaved, this.attrib_position, vertex);
+      this.deliverDataNormals(
+        events_noninterleaved, this.attrib_normal, vertex);
+      this.deliverDataUV(
+        events_noninterleaved, this.attrib_uv, vertex);
     }
 
     if (this.triangles.size() > 0) {
-      this.deliverDataTriangles();
+      this.deliverDataTriangles(events_data);
     }
   }
 
   private void deliverHeader()
   {
     final SMFHeader.Builder header_b = SMFHeader.builder();
-    header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(0, 0, 0, 0));
+    header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(
+      SMFSchemaName.of("com.io7m.example"), 0, 0));
 
     javaslang.collection.List<SMFAttribute> attributes =
       javaslang.collection.List.empty();
@@ -247,77 +229,134 @@ public final class SMFOBJImporter implements SMFOBJImporterType
       triangle_bits = 16;
     }
 
-    LOG.warn("OBJ files do not contain coordinate system information.");
-    LOG.warn(
-      "A possibly incorrect default coordinate system has been assumed: Right +X, Up +Y, Forward -Z");
+    final SMFCoordinateSystem system =
+      SMFCoordinateSystem.of(
+        CAxisSystem.of(AXIS_POSITIVE_X, AXIS_POSITIVE_Y, AXIS_NEGATIVE_Z),
+        FACE_WINDING_ORDER_COUNTER_CLOCKWISE);
 
-    header_b.setCoordinateSystem(SMFCoordinateSystem.of(
-      CAxisSystem.of(
-        CAxis.AXIS_POSITIVE_X,
-        CAxis.AXIS_POSITIVE_Y,
-        CAxis.AXIS_NEGATIVE_Z),
-      SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
+    {
+      final String text =
+        new StringBuilder(128)
+          .append("OBJ files do not contain coordinate system information.")
+          .append(System.lineSeparator())
+          .append(
+            "A possibly incorrect default coordinate system has been assumed: ")
+          .append(system.toHumanString())
+          .append(System.lineSeparator())
+          .toString();
+      this.events.onWarning(
+        SMFParseWarning.of(LexicalPositions.zero(), text, Optional.empty()));
+    }
 
-    header_b.setTriangles(SMFTriangles.of(
-      (long) this.triangles.size(),
-      (long) triangle_bits));
+    header_b.setCoordinateSystem(system);
+    header_b.setTriangles(
+      SMFTriangles.of((long) this.triangles.size(), triangle_bits));
     final SMFHeader header = header_b.build();
-    this.events.onHeaderParsed(header);
+
+    final Optional<SMFParserEventsHeaderType> events_header_opt =
+      this.events.onVersionReceived(SMFFormatVersion.of(1, 0));
+
+    if (events_header_opt.isPresent()) {
+      final SMFParserEventsHeaderType events_header = events_header_opt.get();
+      final Optional<SMFParserEventsBodyType> events_data_opt =
+        events_header.onHeaderParsed(header);
+
+      if (events_data_opt.isPresent()) {
+        final SMFParserEventsBodyType events_data = events_data_opt.get();
+        this.deliverData(events_data);
+      }
+    }
   }
 
-  private void deliverDataTriangles()
+  private void deliverDataTriangles(
+    final SMFParserEventsBodyType events_data)
   {
-    this.events.onDataTrianglesStart();
-    for (final Triangle t : this.triangles) {
-      this.events.onDataTriangle((long) t.v0, (long) t.v1, (long) t.v2);
+    final Optional<SMFParserEventsDataTrianglesType> events_tri_opt =
+      events_data.onTriangles();
+
+    if (events_tri_opt.isPresent()) {
+      final SMFParserEventsDataTrianglesType events_tri = events_tri_opt.get();
+      try {
+        for (final Triangle t : this.triangles) {
+          events_tri.onDataTriangle((long) t.v0, (long) t.v1, (long) t.v2);
+        }
+      } finally {
+        events_tri.onDataTrianglesFinish();
+      }
     }
-    this.events.onDataTrianglesFinish();
   }
 
   private void deliverDataUV(
+    final SMFParserEventsDataAttributesNonInterleavedType events_noninterleaved,
     final SMFAttribute in_attrib_uv,
     final Vertex vertex)
   {
     if (vertex.uv != null) {
-      this.events.onDataAttributeStart(in_attrib_uv);
-      for (final Vertex v : this.vertices) {
-        this.events.onDataAttributeValueFloat2(
-          v.uv.x(),
-          v.uv.y());
+      final Optional<SMFParserEventsDataAttributeValuesType> events_opt =
+        events_noninterleaved.onDataAttributeStart(in_attrib_uv);
+
+      if (events_opt.isPresent()) {
+        final SMFParserEventsDataAttributeValuesType data_events = events_opt.get();
+        try {
+          for (final Vertex v : this.vertices) {
+            data_events.onDataAttributeValueFloat2(
+              v.uv.x(),
+              v.uv.y());
+          }
+        } finally {
+          data_events.onDataAttributeValueFinish();
+        }
       }
-      this.events.onDataAttributeFinish(in_attrib_uv);
     }
   }
 
   private void deliverDataNormals(
+    final SMFParserEventsDataAttributesNonInterleavedType events_noninterleaved,
     final SMFAttribute in_attrib_normal,
     final Vertex vertex)
   {
     if (vertex.normal != null) {
-      this.events.onDataAttributeStart(in_attrib_normal);
-      for (final Vertex v : this.vertices) {
-        this.events.onDataAttributeValueFloat3(
-          v.normal.x(),
-          v.normal.y(),
-          v.normal.z());
+      final Optional<SMFParserEventsDataAttributeValuesType> events_opt =
+        events_noninterleaved.onDataAttributeStart(in_attrib_normal);
+
+      if (events_opt.isPresent()) {
+        final SMFParserEventsDataAttributeValuesType data_events = events_opt.get();
+        try {
+          for (final Vertex v : this.vertices) {
+            data_events.onDataAttributeValueFloat3(
+              v.normal.x(),
+              v.normal.y(),
+              v.normal.z());
+          }
+        } finally {
+          data_events.onDataAttributeValueFinish();
+        }
       }
-      this.events.onDataAttributeFinish(in_attrib_normal);
     }
   }
 
   private void deliverDataPosition(
+    final SMFParserEventsDataAttributesNonInterleavedType events_noninterleaved,
     final SMFAttribute in_attrib_position,
     final Vertex vertex)
   {
     if (vertex.position != null) {
-      this.events.onDataAttributeStart(in_attrib_position);
-      for (final Vertex v : this.vertices) {
-        this.events.onDataAttributeValueFloat3(
-          v.position.x(),
-          v.position.y(),
-          v.position.z());
+      final Optional<SMFParserEventsDataAttributeValuesType> events_opt =
+        events_noninterleaved.onDataAttributeStart(in_attrib_position);
+
+      if (events_opt.isPresent()) {
+        final SMFParserEventsDataAttributeValuesType data_events = events_opt.get();
+        try {
+          for (final Vertex v : this.vertices) {
+            data_events.onDataAttributeValueFloat3(
+              v.position.x(),
+              v.position.y(),
+              v.position.z());
+          }
+        } finally {
+          data_events.onDataAttributeValueFinish();
+        }
       }
-      this.events.onDataAttributeFinish(in_attrib_position);
     }
   }
 
@@ -641,22 +680,13 @@ public final class SMFOBJImporter implements SMFOBJImporterType
   public void close()
     throws IOException
   {
-    try {
-      if (this.state != State.STATE_CLOSED) {
-        this.events.onFinish();
-      }
-    } finally {
-      this.state = State.STATE_CLOSED;
-    }
+
   }
 
-  private enum State
+  @Override
+  public void parse()
   {
-    STATE_INITIAL,
-    STATE_FAILED,
-    STATE_HEADER_PARSED,
-    STATE_FINISHED,
-    STATE_CLOSED
+    this.parser.run();
   }
 
   private enum TriangleState

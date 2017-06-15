@@ -23,19 +23,8 @@ package com.io7m.smfj.parser.api;
 public interface SMFParserSequentialType extends SMFParserType
 {
   /**
-   * Parse the header of the file.
+   * Begin parsing.
    */
 
-  void parseHeader();
-
-  /**
-   * Parse the file data, delivering events to any provided event listener.
-   *
-   * @throws IllegalStateException If {@link #parseHeader()} has not been
-   *                               called, or if parsing the header previously
-   *                               failed
-   */
-
-  void parseData()
-    throws IllegalStateException;
+  void parse();
 }
