@@ -36,5 +36,5 @@ form.
 The start of the data for each attribute is aligned to the next
 [term [type constant] 16] octet boundary regardless of type. The alignment is
 achieved by inserting [term [type term] padding octets] at the end of the data
-for each attribute so that the start of the data for the next attribute occurs
-on a [term [type constant] 16] octet boundary.
+for each attribute so that the start of the data for the next attribute,
+or the start of the next section, occurs on a [term [type constant] 16] octet boundary.

@@ -1,0 +1,11 @@
+[section
+  [title Example]
+  [id smfb.example]
+
+[paragraph
+  A diagram of an example [term [type type] SMF/B] file is as follows:]
+
+[formal-item
+  [title "Example"]
+  [id smfb.example.diagram]
+  [image [target "layout.svg.png"] Example file]]]

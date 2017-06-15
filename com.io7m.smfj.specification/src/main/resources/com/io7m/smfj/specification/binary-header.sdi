@@ -4,7 +4,7 @@ An [term [type type] SMF/B] file begins with the following fixed-size
 structure:
 
 [formal-item [title "SMF/B Header"] [id smfb.header.def]]
-[verbatim [include "jpra-header-start.txt"]]
+[verbatim [include "binary-header-start.txt"]]
 
 [paragraph]
 The value of the [term [type field] magic] field MUST be

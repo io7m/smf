@@ -23,4 +23,77 @@ The [term [type type] smf] section is identified by the magic number
 
 [subsection [title Data] [id smfb.sections.smf.data]]
 [paragraph]
-Data.
+The [term [type type] smf] section begins with the following structure:
+
+[formal-item [title "SMF Header"] [id smfb.sections.smf.header.def]]
+[verbatim [include "binary-smf-header.txt"]]
+
+[paragraph]
+The [term [type field] schema] field specifies the
+[link [target smf_model.schema_id] schema identifier] for the model:
+
+[formal-item [title "Schema Identifier"] [id smfb.sections.smf.header.schema_id.def]]
+[verbatim [include "binary-smf-schema.txt"]]
+
+[paragraph]
+If the length of the [term [type field] schema_id] field is
+[term [type constant] 0], the schema identifier as a whole is ignored.
+
+[paragraph]
+The [term [type field] vertex_count] field specifies the number of vertices
+that will be specified in a
+[link [target smfb.sections.vertices-noninterleaved] vertices-noninterleaved]
+section.
+
+[paragraph]
+The [term [type field] triangle_count] field specifies the number of triangles
+that will be specified in a
+[link [target smfb.sections.triangles] triangles] section. The
+[term [type field] triangle_size] field specifies the size in bits of the
+individual vertex indices within each triangle.
+
+[paragraph]
+The [term [type field] attribute_count] field specifies the number of
+[link [target smf_model.attribute] attributes] that will be declared. The
+[term [type field] attribute_offset] field specifies a relative offset in
+octets, from the start of the [term [type field] attribute_offset] field,
+at which a list of attributes will be declared. The purpose of this field
+is to allow for forward compatibility: Future updates to this specification
+may add extra fields to the end of the header structure, and the value of
+this field allows older implementations to skip those newer fields.
+
+[paragraph]
+The [term [type field] coordinate_system] field specifies the
+[link [target smf_model.coords] coordinate system] of the model:
+
+[formal-item [title "Coordinate System"] [id smfb.sections.smf.header.coords.def]]
+[verbatim [include "binary-smf-coords.txt"]]
+
+[paragraph]
+The [term [type term] axis] and [term [type term] winding order] values are
+related to integer values via the following functions:
+
+[formal-item [title "Coordinate System Mapping"] [id smfb.sections.smf.header.coords.map]]
+[verbatim [include "axis_map.hs"]]
+
+[paragraph]
+Directly following the end of the header structure, is a series of attribute
+declarations:
+
+[formal-item [title "Attribute"] [id smfb.sections.smf.header.attribute.def]]
+[verbatim [include "binary-smf-attribute.txt"]]
+
+[paragraph]
+The [term [type field] name] field specifies the name of the attribute. The
+[term [type field] component_kind] field specifies the type of the attribute
+components. The [term [type field] component_count] field specifies the number
+of components in each value in the attribute, and the
+[term [type field] component_size] field specifies the size in bits of each
+component value.
+
+[paragraph]
+Attribute component types are related to integer values via the following
+function:
+
+[formal-item [title "Attribute Type Mapping"] [id smfb.sections.smf.header.attribute.type_map]]
+[verbatim [include "attribute_map.hs"]]

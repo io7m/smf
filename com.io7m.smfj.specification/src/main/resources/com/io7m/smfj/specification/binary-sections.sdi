@@ -7,7 +7,7 @@ Directly following the [link [target smfb.header] header], an
 following fixed-size structure:
 
 [formal-item [title "Section header"] [id smfb.sections.def.header]]
-[verbatim [include "jpra-section-header.txt"]]
+[verbatim [include "binary-section-header.txt"]]
 
 [paragraph [id smfb.sections.def.size]]
 The [term [type field] id] field of the section header identifies the type

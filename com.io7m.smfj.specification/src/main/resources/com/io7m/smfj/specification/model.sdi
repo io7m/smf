@@ -92,8 +92,24 @@ A [term [type term] mesh] in the SMF model is a set of
 [section [title Attributes] [id smf_model.attribute]]
 [paragraph]
 An [term [type term] attribute] in the SMF model is a uniquely-named array of
-elements of a given type. All attributes within a particular SMF file have the
-same number of elements.
+elements of a given [term [type term] type]. All attributes within a
+particular SMF file have the same number of elements. The [term [type term] type]
+of an attribute is a 3-tuple [term [type expression] "(c, n, s)"], where [term [type expression] c]
+is a [term [type term] component type], [term [type expression] n]
+is a [term [type term] component count], and
+[term [type expression] s] is a [term [type term] component size] expressed
+in bits.
+
+[paragraph]
+This version of the specification defines three basic
+[term [type term] component types]: [term [type term] signed integers],
+[term [type term] unsigned integers], and
+[term [type term] floating point numbers]. Floating point numbers are
+[link-ext [target https://en.wikipedia.org/wiki/IEEE_754] IEEE 754] floating
+point values.
+
+[formal-item [title "Attribute Type"] [id smf_model.attribute.def]]
+[verbatim [include "attribute.hs"]]
 
 [paragraph]
 Implementations are required to support attributes of at least the following
@@ -104,8 +120,8 @@ types:
   [summary Required attribute types]
   [type required_types]
   [head
-    [name Type]
-    [name Components]
+    [name Component Type]
+    [name Component Count]
     [name Component size "(bits)"]]
   [body
     [row
