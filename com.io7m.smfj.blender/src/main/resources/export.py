@@ -501,6 +501,11 @@ class SMFExporter:
     out_file.write("end\n")
 
     meta = ""
+
+    if bpy.data.filepath != None:
+      meta += "file: " + bpy.data.filepath + "\n"
+    #end
+
     meta += "time: " + datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S%z") + "\n"
     meta += "app.role: author\n"
     meta += "app.version: Blender " + bpy.app.version_string + "\n"
