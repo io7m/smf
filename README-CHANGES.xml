@@ -9,6 +9,11 @@
     <c:item>
       <c:date>2017-06-15</c:date>
       <c:type-code-new/>
+      <c:summary>Add a "resample" filter command to provide lossy resampling of vertex data.</c:summary>
+    </c:item>
+    <c:item>
+      <c:date>2017-06-15</c:date>
+      <c:type-code-new/>
       <c:summary>Add application information. Export application metadata in the Blender plugin, and add a filter command to generate application info as metadata.</c:summary>
     </c:item>
   </c:release>
