@@ -21,13 +21,11 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import javaslang.collection.List;
-import javaslang.collection.Map;
 import javaslang.collection.Seq;
 import javaslang.collection.SortedMap;
 import javaslang.control.Validation;
@@ -86,7 +84,7 @@ public final class SMFMemoryMeshFilterAttributeResample implements
 
     if (text.length() == 2) {
       try {
-        final SMFAttributeName  name = SMFAttributeName.of(text.get(0));
+        final SMFAttributeName name = SMFAttributeName.of(text.get(0));
         final int size = Integer.parseUnsignedInt(text.get(1));
         return valid(create(name, size));
       } catch (final IllegalArgumentException e) {
@@ -142,7 +140,7 @@ public final class SMFMemoryMeshFilterAttributeResample implements
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       m.header().attributesByName();
     Seq<SMFProcessingError> errors = List.empty();
-      errors = checkAttributeExists(errors, by_name, this.attribute);
+    errors = checkAttributeExists(errors, by_name, this.attribute);
 
     if (errors.isEmpty()) {
       try {
