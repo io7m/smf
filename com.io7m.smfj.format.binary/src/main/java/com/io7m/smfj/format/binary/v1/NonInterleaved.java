@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
+import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import javaslang.collection.SortedMap;
@@ -381,6 +382,8 @@ final class NonInterleaved
     final SMFAttributeName name)
     throws IllegalArgumentException, IOException
   {
+    this.writer.checkAlignment(SMFBSection.SECTION_ALIGNMENT);
+
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       this.header.attributesByName();
 
