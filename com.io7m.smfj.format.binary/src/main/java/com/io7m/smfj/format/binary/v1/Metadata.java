@@ -88,11 +88,11 @@ final class Metadata
     writer.putBytes(meta_header_buffer);
     writer.padTo(
       Math.addExact(position_header, meta_header_size),
-      (byte) 'h');
+      (byte) 0);
 
     writer.putBytes(data);
     writer.padTo(
       SMFBAlignment.alignNext(writer.position(), SMFBSection.SECTION_ALIGNMENT),
-      (byte) 'm');
+      (byte) 0);
   }
 }

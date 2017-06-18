@@ -251,7 +251,9 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   {
     try {
       IOUtils.readFully(this.stream, this.byte2);
-      return Binary16.unpackDouble(this.buffer2.getChar(0));
+      final char packed = this.buffer2.getChar(0);
+      final double result = Binary16.unpackDouble(packed);
+      return result;
     } catch (final IOException e) {
       throw this.makeIOException(name, this.position(), 2L, e.getMessage());
     }

@@ -39,6 +39,46 @@ public interface SMFBDataStreamWriterType
   URI uri();
 
   /**
+   * @param alignment The boundary
+   *
+   * @return {@code true} iff the writer is currently on an {@code
+   * alignment}-octet boundary
+   */
+
+  default boolean isAligned(
+    final int alignment)
+  {
+    return (this.position() % (long) alignment == 0L);
+  }
+
+  /**
+   * Check that the writer is currently on an {@code alignment}-octet boundary.
+   *
+   * @param alignment The boundary
+   *
+   * @throws IOException On I/O errors, or if the writer is not aligned
+   */
+
+  default void checkAlignment(
+    final int alignment)
+    throws IOException
+  {
+    if (!this.isAligned(alignment)) {
+      final String text = new StringBuilder(128)
+        .append("Writer is not aligned.")
+        .append(System.lineSeparator())
+        .append("  Alignment: ")
+        .append(alignment)
+        .append(System.lineSeparator())
+        .append("  Position:  ")
+        .append(this.position())
+        .append(System.lineSeparator())
+        .toString();
+      throw new IOException(text);
+    }
+  }
+
+  /**
    * Write the given bytes to the stream.
    *
    * @param data The bytes
