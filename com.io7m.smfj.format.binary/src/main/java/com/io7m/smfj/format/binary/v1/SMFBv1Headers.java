@@ -214,16 +214,8 @@ public final class SMFBv1Headers
     {
       final long position_now =
         reader.position();
-      final long position_attribute_offset_start =
-        Math.addExact(
-          position_start,
-          (long) view.metaAttributeOffsetOffsetFromCursor());
-      final long position_attribute_offset_value =
-        (long) view.getAttributeOffset();
       final long attribute_offset =
-        Math.addExact(
-          position_attribute_offset_start,
-          position_attribute_offset_value);
+        Math.addExact(position_start, (long) view.getFieldsSize());
       final long seek =
         Math.subtractExact(attribute_offset, position_now);
 

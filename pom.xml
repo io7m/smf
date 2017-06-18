@@ -47,7 +47,7 @@
     <siteDocumentationDirectory>com/io7m/smfj/com.io7m.smfj.documentation</siteDocumentationDirectory>
     <io7m.checkstyle.artifact>com.io7m.smfj.checkstyle</io7m.checkstyle.artifact>
     <io7m.checkstyle.path>/com/io7m/smfj/checkstyle/checkstyle.xml</io7m.checkstyle.path>
-    <io7m.api.previousVersion>0.11.0</io7m.api.previousVersion>
+    <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>[8.0.0, 9.0.0)</com.io7m.smfj.jtensors.versionRange>
   </properties>
 

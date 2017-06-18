@@ -138,7 +138,7 @@ public final class SMFBv1Serializer implements SMFSerializerType
 
         final SMFTriangles triangles = in_header.triangles();
         view.setAttributeCount(in_header.attributesInOrder().size());
-        view.setAttributeOffset(8);
+        view.setFieldsSize(buffer.length);
         view.setTriangleCount(triangles.triangleCount());
         view.setTriangleIndexSizeBits(triangles.triangleIndexSizeBits());
         view.setVertexCount(in_header.vertexCount());
