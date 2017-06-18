@@ -203,7 +203,8 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
     throws IOException
   {
     this.checkAlignment(2L);
-    this.buffer2.putChar(0, Binary16.packDouble(value));
+    final char packed = Binary16.packDouble(value);
+    this.buffer2.putChar(0, packed);
     this.stream.write(this.byte2);
   }
 

@@ -1629,8 +1629,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(0);
           v.get2D(o);
@@ -1641,8 +1641,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = Binary16.unpackDouble(rb.getChar(4));
           final double vy = Binary16.unpackDouble(rb.getChar(6));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(1);
           v.get2D(o);
@@ -1653,8 +1653,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = Binary16.unpackDouble(rb.getChar(8));
           final double vy = Binary16.unpackDouble(rb.getChar(10));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(2);
           v.get2D(o);
@@ -1674,9 +1674,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
           final double vz = Binary16.unpackDouble(rb.getChar(4));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(0);
           v.get3D(o);
@@ -1689,9 +1689,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = Binary16.unpackDouble(rb.getChar(6));
           final double vy = Binary16.unpackDouble(rb.getChar(8));
           final double vz = Binary16.unpackDouble(rb.getChar(10));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(1);
           v.get3D(o);
@@ -1704,9 +1704,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = Binary16.unpackDouble(rb.getChar(12));
           final double vy = Binary16.unpackDouble(rb.getChar(14));
           final double vz = Binary16.unpackDouble(rb.getChar(16));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(2);
           v.get3D(o);
@@ -1728,16 +1728,16 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(2));
           final double vz = Binary16.unpackDouble(rb.getChar(4));
           final double vw = Binary16.unpackDouble(rb.getChar(6));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.001);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(0);
           v.get4D(o);
           Assert.assertEquals(o.x(), -1000.0, 0.0);
           Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
+          Assert.assertEquals(o.z(), 1.0, 0.001);
           Assert.assertEquals(o.w(), 1000.0, 0.0);
         }
 
@@ -1746,16 +1746,16 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(10));
           final double vz = Binary16.unpackDouble(rb.getChar(12));
           final double vw = Binary16.unpackDouble(rb.getChar(14));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.001);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(1);
           v.get4D(o);
           Assert.assertEquals(o.x(), -1000.0, 0.0);
           Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
+          Assert.assertEquals(o.z(), 1.0, 0.001);
           Assert.assertEquals(o.w(), 1000.0, 0.0);
         }
 
@@ -1764,16 +1764,16 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(18));
           final double vz = Binary16.unpackDouble(rb.getChar(20));
           final double vw = Binary16.unpackDouble(rb.getChar(22));
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.001);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(2);
           v.get4D(o);
           Assert.assertEquals(o.x(), -1000.0, 0.0);
           Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
+          Assert.assertEquals(o.z(), 1.0, 0.001);
           Assert.assertEquals(o.w(), 1000.0, 0.0);
         }
         break;
@@ -1819,8 +1819,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = (double) rb.getFloat(0);
           final double vy = (double) rb.getFloat(4);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(0);
           v.get2D(o);
@@ -1831,8 +1831,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = (double) rb.getFloat(8);
           final double vy = (double) rb.getFloat(12);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(1);
           v.get2D(o);
@@ -1843,8 +1843,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = (double) rb.getFloat(16);
           final double vy = (double) rb.getFloat(20);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(2);
           v.get2D(o);
@@ -1864,9 +1864,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = (double) rb.getFloat(0);
           final double vy = (double) rb.getFloat(4);
           final double vz = (double) rb.getFloat(8);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(0);
           v.get3D(o);
@@ -1879,9 +1879,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = (double) rb.getFloat(12);
           final double vy = (double) rb.getFloat(16);
           final double vz = (double) rb.getFloat(20);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(1);
           v.get3D(o);
@@ -1894,9 +1894,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = (double) rb.getFloat(24);
           final double vy = (double) rb.getFloat(28);
           final double vz = (double) rb.getFloat(32);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(2);
           v.get3D(o);
@@ -1918,10 +1918,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(4);
           final double vz = (double) rb.getFloat(8);
           final double vw = (double) rb.getFloat(12);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(0);
           v.get4D(o);
@@ -1936,10 +1936,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(20);
           final double vz = (double) rb.getFloat(24);
           final double vw = (double) rb.getFloat(28);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(1);
           v.get4D(o);
@@ -1954,10 +1954,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(36);
           final double vz = (double) rb.getFloat(40);
           final double vw = (double) rb.getFloat(44);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(2);
           v.get4D(o);
@@ -2010,8 +2010,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = rb.getDouble(0);
           final double vy = rb.getDouble(8);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(0);
           v.get2D(o);
@@ -2022,8 +2022,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = rb.getDouble(16);
           final double vy = rb.getDouble(24);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(1);
           v.get2D(o);
@@ -2034,8 +2034,8 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = rb.getDouble(32);
           final double vy = rb.getDouble(40);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(1000.0, vy, 0.0);
 
           c.setElementIndex(2);
           v.get2D(o);
@@ -2056,9 +2056,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = rb.getDouble(0);
           final double vy = rb.getDouble(8);
           final double vz = rb.getDouble(16);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(0);
           v.get3D(o);
@@ -2071,9 +2071,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = rb.getDouble(24);
           final double vy = rb.getDouble(32);
           final double vz = rb.getDouble(40);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(1);
           v.get3D(o);
@@ -2086,9 +2086,9 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = rb.getDouble(48);
           final double vy = rb.getDouble(56);
           final double vz = rb.getDouble(64);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1000.0, vz, 0.0);
 
           c.setElementIndex(2);
           v.get3D(o);
@@ -2111,10 +2111,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(8);
           final double vz = rb.getDouble(16);
           final double vw = rb.getDouble(24);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(0);
           v.get4D(o);
@@ -2129,10 +2129,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(40);
           final double vz = rb.getDouble(48);
           final double vw = rb.getDouble(56);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(1);
           v.get4D(o);
@@ -2147,10 +2147,10 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(72);
           final double vz = rb.getDouble(80);
           final double vw = rb.getDouble(88);
-          Assert.assertEquals(vx, -1000.0, 0.0);
-          Assert.assertEquals(vy, 0.0, 0.0);
-          Assert.assertEquals(vz, 1.0, 0.0);
-          Assert.assertEquals(vw, 1000.0, 0.0);
+          Assert.assertEquals(-1000.0, vx, 0.0);
+          Assert.assertEquals(0.0, vy, 0.0);
+          Assert.assertEquals(1.0, vz, 0.0);
+          Assert.assertEquals(1000.0, vw, 0.0);
 
           c.setElementIndex(2);
           v.get4D(o);
