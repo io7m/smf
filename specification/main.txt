@@ -1,4 +1,4 @@
-com.io7m.smfj 0.11.0 Specification
+com.io7m.smfj 0.13.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents
@@ -721,15 +721,22 @@ com.io7m.smfj 0.11.0 Specification
       ──────────────────
 
       [record SMFBv1_0Header
-        ([field schema                   SMFBv1SchemaID]
+        ([field fields_size              [integer unsigned 32]]
+         [field schema                   SMFBv1SchemaID]
+         [padding-octets                 4]
          [field vertex_count             [integer unsigned 64]]
          [field triangle_count           [integer unsigned 64]]
          [field triangle_index_size_bits [integer unsigned 32]]
          [field attribute_count          [integer unsigned 32]]
-         [field attribute_offset         [integer unsigned 32]]
          [field coordinate_system        SMFBv1CoordinateSystems]
-         [padding-octets                 2])]
+         [padding-octets                 14])]
 
+      The fields_size field specifies the total size of the header fields,
+      after which a list of attributes will be declared. The purpose of this
+      field is to allow for forward compatibility: Future updates to this
+      specification may add extra fields to the end of the header structure,
+      and the value of this field allows older implementations to skip those
+      newer fields.
 
 
 3     The schema field specifies the schema identifier [ref:
@@ -759,13 +766,7 @@ com.io7m.smfj 0.11.0 Specification
       indices within each triangle.
 
 8     The attribute_count field specifies the number of attributes [ref:
-      smf_model.attribute] that will be declared. The attribute_offset field
-      specifies a relative offset in octets, from the start of the
-      attribute_offset field, at which a list of attributes will be declared.
-      The purpose of this field is to allow for forward compatibility: Future
-      updates to this specification may add extra fields to the end of the
-      header structure, and the value of this field allows older
-      implementations to skip those newer fields.
+      smf_model.attribute] that will be declared.
 
 9     The coordinate_system field specifies the coordinate system [ref:
       smf_model.coords] of the model:
