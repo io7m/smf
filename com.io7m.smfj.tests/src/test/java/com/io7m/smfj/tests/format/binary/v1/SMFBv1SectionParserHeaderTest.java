@@ -90,6 +90,36 @@ public final class SMFBv1SectionParserHeaderTest
   }
 
   @Test
+  public void testSizesAlignment()
+  {
+    Assert.assertTrue(
+      "Fields size is 4 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaFieldsSizeStaticOffsetFromType() % 4 == 0);
+    Assert.assertTrue(
+      "Schema is 4 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaSchemaStaticOffsetFromType() % 4 == 0);
+    Assert.assertTrue(
+      "Vertex count is 8 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaVertexCountStaticOffsetFromType() % 8 == 0);
+    Assert.assertTrue(
+      "Triangle count is 8 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaTriangleCountStaticOffsetFromType() % 8 == 0);
+    Assert.assertTrue(
+      "Triangle size is 4 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaTriangleIndexSizeBitsStaticOffsetFromType() % 4 == 0);
+    Assert.assertTrue(
+      "Attribute count is 4 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaAttributeCountStaticOffsetFromType() % 4 == 0);
+    Assert.assertTrue(
+      "Attribute count is 2 octet aligned",
+      SMFBv1_0HeaderByteBuffered.metaCoordinateSystemStaticOffsetFromType() % 2 == 0);
+
+    Assert.assertTrue(
+      "Size of header is divisible by 16",
+      SMFBv1_0HeaderByteBuffered.sizeInOctets() % 16 == 0);
+  }
+
+  @Test
   public void testV1_0(
     final @Mocked SMFParserEventsBodyType events_body)
     throws Exception
@@ -143,7 +173,7 @@ public final class SMFBv1SectionParserHeaderTest
     header_view.setTriangleIndexSizeBits(32);
     header_view.setTriangleCount(17L);
     header_view.setAttributeCount(1);
-    header_view.setAttributeOffset(8);
+    header_view.setFieldsSize(header_size);
 
     final SMFBv1SchemaIDWritableType schema = header_view.getSchemaWritable();
     schema.setSchemaVersionMajor(schema_id.versionMajor());
