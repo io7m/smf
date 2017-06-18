@@ -3,7 +3,7 @@
   <c:project>com.io7m.smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
-    <c:date>2017-06-15</c:date>
+    <c:date>2017-06-18</c:date>
     <c:version>0.12.0</c:version>
 
     <c:item>
