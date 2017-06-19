@@ -28,6 +28,7 @@ The [term [type type] smf] section begins with the following structure:
 [formal-item [title "SMF Header"] [id smfb.sections.smf.header.def]]
 [verbatim [include "binary-smf-header.txt"]]
 
+[paragraph]
 The [term [type field] fields_size] field specifies the total size of the
 header fields, after which a list of attributes will be declared. The purpose
 of this field is to allow for forward compatibility: Future updates to this
@@ -77,7 +78,7 @@ related to integer values via the following functions:
 [verbatim [include "axis_map.hs"]]
 
 [paragraph]
-Directly following the end of the header structure, is a series of attribute
+Directly following the end of the header structure is a series of attribute
 declarations:
 
 [formal-item [title "Attribute"] [id smfb.sections.smf.header.attribute.def]]
