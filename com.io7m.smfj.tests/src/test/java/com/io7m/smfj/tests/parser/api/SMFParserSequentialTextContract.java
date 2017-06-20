@@ -19,8 +19,11 @@ package com.io7m.smfj.tests.parser.api;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -396,6 +399,74 @@ public abstract class SMFParserSequentialTextContract
 
     try (final SMFParserSequentialType p =
            this.parser(events, "body_unrecognized1.smft")) {
+      p.parse();
+    }
+  }
+
+  @Test
+  public void testVerticesMissing(
+    final @Mocked SMFParserEventsBodyType events_data,
+    final @Mocked SMFParserEventsHeaderType events_header,
+    final @Mocked SMFParserEventsType events)
+    throws Exception
+  {
+    final SMFHeader.Builder header_builder = SMFHeader.builder();
+    header_builder.setVertexCount(1L);
+    final SMFHeader header = header_builder.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      this.result = Optional.of(events_header);
+      events_header.onHeaderParsed(header);
+      this.result = Optional.of(events_data);
+      events.onError(this.with(new Delegate<SMFErrorType>()
+      {
+        boolean check(final SMFErrorType e)
+        {
+          return e.message().contains("A non-zero vertex count was specified, but no vertices were provided");
+        }
+      }));
+      events.onFinish();
+    }};
+
+    try (final SMFParserSequentialType p =
+           this.parser(events, "vertices_missing.smft")) {
+      p.parse();
+    }
+  }
+
+  @Test
+  public void testTrianglesMissing(
+    final @Mocked SMFParserEventsBodyType events_data,
+    final @Mocked SMFParserEventsHeaderType events_header,
+    final @Mocked SMFParserEventsType events)
+    throws Exception
+  {
+    final SMFHeader.Builder header_builder = SMFHeader.builder();
+    header_builder.setTriangles(SMFTriangles.of(1L, 32));
+    final SMFHeader header = header_builder.build();
+
+    new StrictExpectations()
+    {{
+      events.onStart();
+      events.onVersionReceived(SMFFormatVersion.of(1, 0));
+      this.result = Optional.of(events_header);
+      events_header.onHeaderParsed(header);
+      this.result = Optional.of(events_data);
+      events.onError(this.with(new Delegate<SMFErrorType>()
+      {
+        boolean check(final SMFErrorType e)
+        {
+          return e.message().contains("A non-zero triangle count was specified, but no triangles were provided");
+        }
+      }));
+      events.onFinish();
+    }};
+
+    try (final SMFParserSequentialType p =
+           this.parser(events, "triangles_missing.smft")) {
       p.parse();
     }
   }

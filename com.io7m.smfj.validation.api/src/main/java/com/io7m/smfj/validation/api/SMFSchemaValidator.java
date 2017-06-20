@@ -35,6 +35,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
+import static com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED;
+import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
+import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
 import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
 
@@ -230,6 +233,20 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     return SMFSchemaValidationError.of(sb.toString(), Optional.empty());
   }
 
+  private static SMFSchemaValidationError errorVerticesRequiredButEmpty()
+  {
+    return SMFSchemaValidationError.of(
+      "The model contains no vertices, but a non-zero vertex count is required.",
+      Optional.empty());
+  }
+
+  private static SMFSchemaValidationError errorTrianglesRequiredButEmpty()
+  {
+    return SMFSchemaValidationError.of(
+      "The model contains no triangles, but a non-zero triangle count is required.",
+      Optional.empty());
+  }
+
   @Override
   public Validation<List<SMFErrorType>, SMFHeader> validate(
     final SMFHeader header,
@@ -249,6 +266,67 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
       }
     }
 
+    errors = checkVerticesAndTriangles(header, schema, errors);
+    errors = checkAttributes(header, schema, errors);
+    errors = checkCoordinateSystem(header, schema, errors);
+
+    if (errors.isEmpty()) {
+      return valid(header);
+    }
+
+    return invalid(errors);
+  }
+
+  private static List<SMFErrorType> checkVerticesAndTriangles(
+    final SMFHeader header,
+    final SMFSchema schema,
+    final List<SMFErrorType> errors)
+  {
+    List<SMFErrorType> error_accum = errors;
+
+    if (schema.requireTriangles() == SMF_TRIANGLES_REQUIRED) {
+      if (header.triangles().triangleCount() == 0L) {
+        error_accum = error_accum.append(errorTrianglesRequiredButEmpty());
+      }
+    }
+
+    if (schema.requireVertices() == SMF_VERTICES_REQUIRED) {
+      if (header.vertexCount() == 0L) {
+        error_accum = error_accum.append(errorVerticesRequiredButEmpty());
+      }
+    }
+
+    return error_accum;
+  }
+
+  private static List<SMFErrorType> checkCoordinateSystem(
+    final SMFHeader header,
+    final SMFSchema schema,
+    final List<SMFErrorType> errors)
+  {
+    List<SMFErrorType> error_accum = errors;
+
+    final Optional<SMFCoordinateSystem> coords_opt =
+      schema.requiredCoordinateSystem();
+    if (coords_opt.isPresent()) {
+      final SMFCoordinateSystem req_coords = coords_opt.get();
+      if (!Objects.equals(req_coords, header.coordinateSystem())) {
+        error_accum =
+          error_accum.append(errorWrongCoordinateSystem(
+            req_coords,
+            header.coordinateSystem()));
+      }
+    }
+    return error_accum;
+  }
+
+  private static List<SMFErrorType> checkAttributes(
+    final SMFHeader header,
+    final SMFSchema schema,
+    final List<SMFErrorType> errors)
+  {
+    List<SMFErrorType> error_x = errors;
+
     final SortedMap<SMFAttributeName, SMFSchemaAttribute> optional_by_name =
       schema.optionalAttributes();
     final SortedMap<SMFAttributeName, SMFSchemaAttribute> required_by_name =
@@ -262,39 +340,24 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
 
       if (required_by_name.containsKey(name)) {
         final SMFSchemaAttribute attr_schema = required_by_name.get(name).get();
-        errors = checkComponentType(errors, name, attr_schema, attribute);
-        errors = checkComponentSize(errors, name, attr_schema, attribute);
-        errors = checkComponentCount(errors, name, attr_schema, attribute);
+        error_x = checkComponentType(error_x, name, attr_schema, attribute);
+        error_x = checkComponentSize(error_x, name, attr_schema, attribute);
+        error_x = checkComponentCount(error_x, name, attr_schema, attribute);
       } else if (optional_by_name.containsKey(name)) {
         final SMFSchemaAttribute attr_schema = optional_by_name.get(name).get();
-        errors = checkComponentType(errors, name, attr_schema, attribute);
-        errors = checkComponentSize(errors, name, attr_schema, attribute);
-        errors = checkComponentCount(errors, name, attr_schema, attribute);
-      } else if (!schema.allowExtraAttributes()) {
-        errors = errors.append(errorExtraAttribute(name));
+        error_x = checkComponentType(error_x, name, attr_schema, attribute);
+        error_x = checkComponentSize(error_x, name, attr_schema, attribute);
+        error_x = checkComponentCount(error_x, name, attr_schema, attribute);
+      } else if (schema.allowExtraAttributes() == SMF_EXTRA_ATTRIBUTES_DISALLOWED) {
+        error_x = errors.append(errorExtraAttribute(name));
       }
     }
 
     final SortedSet<SMFAttributeName> missing =
       required_by_name.keySet().diff(by_name.keySet());
-    errors = errors.appendAll(
+    error_x = error_x.appendAll(
       missing.toList().map(SMFSchemaValidator::errorMissingAttribute));
-
-    final Optional<SMFCoordinateSystem> coords_opt =
-      schema.requiredCoordinateSystem();
-    if (coords_opt.isPresent()) {
-      final SMFCoordinateSystem req_coords = coords_opt.get();
-      if (!Objects.equals(req_coords, header.coordinateSystem())) {
-        errors = errors.append(errorWrongCoordinateSystem(
-          req_coords,
-          header.coordinateSystem()));
-      }
-    }
-
-    if (errors.isEmpty()) {
-      return valid(header);
-    }
-
-    return invalid(errors);
+    return error_x;
   }
+
 }

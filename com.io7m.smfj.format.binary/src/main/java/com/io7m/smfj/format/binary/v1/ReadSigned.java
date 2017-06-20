@@ -88,7 +88,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 16: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -101,7 +101,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 32: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -114,7 +114,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 64: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -127,7 +127,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       default: {
         throw new UnreachableCodeException();
       }
@@ -155,7 +155,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 16: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -167,7 +167,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 32: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -179,7 +179,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 64: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -191,7 +191,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       default: {
         throw new UnreachableCodeException();
       }
@@ -218,7 +218,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 16: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -229,7 +229,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 32: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -240,7 +240,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 64: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -251,7 +251,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       default: {
         throw new UnreachableCodeException();
       }
@@ -287,7 +287,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 32: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -297,7 +297,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       case 64: {
         for (long index = 0L;
              Long.compareUnsigned(index, count) < 0;
@@ -307,7 +307,7 @@ final class ReadSigned
         }
         return;
       }
-      
+
       default: {
         throw new UnreachableCodeException();
       }

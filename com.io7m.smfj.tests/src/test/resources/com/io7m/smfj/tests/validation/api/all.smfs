@@ -12,3 +12,6 @@ attribute optional "f32_4" float 4 32
 attribute optional "f32_3" - 3 32
 attribute optional "f32_2" float - 32
 attribute optional "f32_1" float 1 -
+
+require-triangles true
+require-vertices true

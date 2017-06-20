@@ -32,9 +32,12 @@ import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.validation.api.SMFSchema;
+import com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
+import com.io7m.smfj.validation.api.SMFSchemaRequireTriangles;
+import com.io7m.smfj.validation.api.SMFSchemaRequireVertices;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
 import javaslang.Tuple;
 import javaslang.Tuple2;
@@ -54,6 +57,10 @@ import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
+import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_NOT_REQUIRED;
+import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
+import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_NOT_REQUIRED;
+import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
 import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
 
@@ -123,7 +130,12 @@ public final class SMFSchemaParserProvider
     public Validation<List<SMFErrorType>, SMFSchema> parseSchema()
     {
       final SMFSchema.Builder builder = SMFSchema.builder();
-      builder.setAllowExtraAttributes(false);
+      builder.setAllowExtraAttributes(
+        SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED);
+      builder.setRequireTriangles(
+        SMF_TRIANGLES_REQUIRED);
+      builder.setRequireVertices(
+        SMF_VERTICES_REQUIRED);
 
       List<SMFErrorType> errors = List.empty();
 
@@ -192,6 +204,28 @@ public final class SMFSchemaParserProvider
           return errors.appendAll(result.getError());
         }
 
+        case "require-vertices": {
+          final Validation<List<SMFParseError>, SMFSchemaRequireVertices> result =
+            this.parseStatementRequireVertices(line);
+          if (result.isValid()) {
+            builder.setRequireVertices(result.get());
+            return errors;
+          }
+
+          return errors.appendAll(result.getError());
+        }
+
+        case "require-triangles": {
+          final Validation<List<SMFParseError>, SMFSchemaRequireTriangles> result =
+            this.parseStatementRequireTriangles(line);
+          if (result.isValid()) {
+            builder.setRequireTriangles(result.get());
+            return errors;
+          }
+
+          return errors.appendAll(result.getError());
+        }
+
         case "attribute": {
           final Validation<List<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>> result =
             this.parseStatementAttribute(line);
@@ -217,6 +251,66 @@ public final class SMFSchemaParserProvider
           return errors.append(error);
         }
       }
+    }
+
+    private Validation<List<SMFParseError>, SMFSchemaRequireTriangles>
+    parseStatementRequireTriangles(
+      final List<String> line)
+    {
+      if (line.size() == 2) {
+        final String text = line.get(1);
+        switch (text) {
+          case "true":
+            return valid(SMF_TRIANGLES_REQUIRED);
+          case "false":
+            return valid(SMF_TRIANGLES_NOT_REQUIRED);
+          default:
+            break;
+        }
+      }
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append("Could not parse triangle requirement.");
+      sb.append(System.lineSeparator());
+      sb.append("  Expected: require-triangles (true | false)");
+      sb.append(System.lineSeparator());
+      sb.append("  Received: ");
+      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(System.lineSeparator());
+      return invalid(List.of(SMFParseError.of(
+        this.reader.position(),
+        sb.toString(),
+        Optional.empty())));
+    }
+
+    private Validation<List<SMFParseError>, SMFSchemaRequireVertices>
+    parseStatementRequireVertices(
+      final List<String> line)
+    {
+      if (line.size() == 2) {
+        final String text = line.get(1);
+        switch (text) {
+          case "true":
+            return valid(SMF_VERTICES_REQUIRED);
+          case "false":
+            return valid(SMF_VERTICES_NOT_REQUIRED);
+          default:
+            break;
+        }
+      }
+
+      final StringBuilder sb = new StringBuilder(128);
+      sb.append("Could not parse vertices requirement.");
+      sb.append(System.lineSeparator());
+      sb.append("  Expected: require-vertices (true | false)");
+      sb.append(System.lineSeparator());
+      sb.append("  Received: ");
+      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(System.lineSeparator());
+      return invalid(List.of(SMFParseError.of(
+        this.reader.position(),
+        sb.toString(),
+        Optional.empty())));
     }
 
     private Validation<List<SMFParseError>, SMFCoordinateSystem> parseStatementCoordinates(

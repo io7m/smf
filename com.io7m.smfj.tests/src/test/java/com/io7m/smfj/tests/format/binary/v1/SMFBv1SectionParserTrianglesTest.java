@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.BitSet;
 import java.util.Optional;
 
 public final class SMFBv1SectionParserTrianglesTest
@@ -45,6 +46,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
         URI.create("urn:test"),
@@ -55,7 +58,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(1L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -85,6 +89,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
         URI.create("urn:test"),
@@ -95,7 +101,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(1L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -112,6 +119,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
         URI.create("urn:test"),
@@ -122,7 +131,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(0L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -140,6 +150,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
         URI.create("urn:test"),
@@ -150,7 +162,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 8))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -170,6 +183,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final byte[] data = new byte[6 * 2];
 
     final ByteBuffer wrap =
@@ -191,7 +206,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 16))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -211,6 +227,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final byte[] data = new byte[6 * 4];
 
     final ByteBuffer wrap =
@@ -232,7 +250,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -252,6 +271,8 @@ public final class SMFBv1SectionParserTrianglesTest
     final @Mocked SMFParserEventsDataTrianglesType events_tri,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final byte[] data = new byte[6 * 8];
 
     final ByteBuffer wrap =
@@ -273,7 +294,8 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 64))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles();
+    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
+      state);
     Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
     new StrictExpectations()

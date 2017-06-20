@@ -178,6 +178,30 @@ public final class SMFSchemaSerializerProvider implements
         writer.newLine();
       }
 
+      switch (schema.requireVertices()) {
+        case SMF_VERTICES_REQUIRED: {
+          writer.append("require-vertices true");
+          break;
+        }
+        case SMF_VERTICES_NOT_REQUIRED: {
+          writer.append("require-vertices false");
+          break;
+        }
+      }
+      writer.newLine();
+
+      switch (schema.requireTriangles()) {
+        case SMF_TRIANGLES_REQUIRED: {
+          writer.append("require-triangles true");
+          break;
+        }
+        case SMF_TRIANGLES_NOT_REQUIRED: {
+          writer.append("require-triangles false");
+          break;
+        }
+      }
+      writer.newLine();
+
       for (final Tuple2<SMFAttributeName, SMFSchemaAttribute> p : schema.requiredAttributes()) {
         serializeAttribute(writer, "required", p);
       }

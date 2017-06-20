@@ -22,11 +22,13 @@ import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSectionTriangles;
+import com.io7m.smfj.format.binary.implementation.Flags;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.jnull.NullCheck.notNull;
@@ -38,13 +40,17 @@ import static com.io7m.jnull.NullCheck.notNull;
 public final class SMFBv1SectionParserTriangles
   implements SMFBBodySectionParserType
 {
+  private final BitSet state;
+
   /**
    * Construct a parser.
+   *
+   * @param in_state The current parser state
    */
 
-  public SMFBv1SectionParserTriangles()
+  public SMFBv1SectionParserTriangles(final BitSet in_state)
   {
-
+    this.state = notNull(in_state, "state");
   }
 
   @Override
@@ -123,6 +129,8 @@ public final class SMFBv1SectionParserTriangles
             throw new UnreachableCodeException();
           }
         }
+
+        this.state.set(Flags.TRIANGLES_RECEIVED, true);
       } catch (final IOException e) {
         tri.onError(SMFParseError.of(
           reader.positionLexical(), e.getMessage(), Optional.of(e)));

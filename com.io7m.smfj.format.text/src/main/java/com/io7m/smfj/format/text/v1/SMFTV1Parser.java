@@ -40,6 +40,7 @@ import javaslang.collection.List;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -49,6 +50,8 @@ import java.util.stream.Collectors;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
+import static com.io7m.smfj.format.text.implementation.Flags.TRIANGLES_REQUIRED;
+import static com.io7m.smfj.format.text.implementation.Flags.VERTICES_REQUIRED;
 
 /**
  * A parser for the 1.* format.
@@ -62,6 +65,7 @@ public final class SMFTV1Parser implements SMFParserSequentialType
   private final TreeMap<String, SMFTHeaderCommandParserType> header_commands;
   private final TreeMap<String, SMFTBodySectionParserType> body_commands;
   private final SMFHeader.Builder header_builder;
+  private final BitSet state;
   private TreeMap<SMFAttributeName, Integer> attributes_lines;
   private Collection<SMFAttribute> attributes_list;
   private SMFHeader header;
@@ -70,18 +74,21 @@ public final class SMFTV1Parser implements SMFParserSequentialType
    * Construct a parser.
    *
    * @param in_version The format version
+   * @param in_state   Parser state
    * @param in_events  An event receiver
    * @param in_reader  A line reader
    */
 
   public SMFTV1Parser(
     final SMFFormatVersion in_version,
+    final BitSet in_state,
     final SMFParserEventsType in_events,
     final SMFTLineReaderType in_reader)
   {
+    this.version = NullCheck.notNull(in_version, "Version");
+    this.state = NullCheck.notNull(in_state, "State");
     this.events = NullCheck.notNull(in_events, "Events");
     this.reader = NullCheck.notNull(in_reader, "Reader");
-    this.version = NullCheck.notNull(in_version, "Version");
 
     Preconditions.checkPreconditionI(
       in_version.major(),
@@ -112,12 +119,13 @@ public final class SMFTV1Parser implements SMFParserSequentialType
     this.body_commands = new TreeMap<>();
     this.registerBodyCommand(
       new SMFTV1BodySectionParserVerticesNonInterleaved(
-        () -> this.header,
-        this.reader));
+        () -> this.header, this.reader, this.state));
     this.registerBodyCommand(
-      new SMFTV1BodySectionParserTriangles(() -> this.header, this.reader));
+      new SMFTV1BodySectionParserTriangles(
+        () -> this.header, this.reader, this.state));
     this.registerBodyCommand(
-      new SMFTV1BodySectionParserMetadata(() -> this.header, this.reader));
+      new SMFTV1BodySectionParserMetadata(
+        () -> this.header, this.reader));
   }
 
   private void registerHeaderCommand(
@@ -221,6 +229,12 @@ public final class SMFTV1Parser implements SMFParserSequentialType
     }
 
     this.header = this.header_builder.build();
+
+    this.state.set(
+      VERTICES_REQUIRED, this.header.vertexCount() != 0L);
+    this.state.set(
+      TRIANGLES_REQUIRED, this.header.triangles().triangleCount() != 0L);
+
     final Optional<SMFParserEventsBodyType> r_opt =
       header_receiver.onHeaderParsed(this.header);
 

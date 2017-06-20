@@ -50,7 +50,8 @@ If the length of the [term [type field] schema_id] field is
 The [term [type field] vertex_count] field specifies the number of vertices
 that will be specified in a
 [link [target smfb.sections.vertices-noninterleaved] vertices-noninterleaved]
-section.
+section. Parsers MUST raise an appropriate error if a non-zero vertex count
+is specified but no vertices are actually provided in any following section.
 
 [paragraph]
 The [term [type field] triangle_count] field specifies the number of triangles
@@ -58,6 +59,8 @@ that will be specified in a
 [link [target smfb.sections.triangles] triangles] section. The
 [term [type field] triangle_size] field specifies the size in bits of the
 individual vertex indices within each triangle.
+Parsers MUST raise an appropriate error if a non-zero triangle count
+is specified but no triangles are actually provided in any following section.
 
 [paragraph]
 The [term [type field] attribute_count] field specifies the number of

@@ -23,12 +23,14 @@ import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSectionType;
 import com.io7m.smfj.format.binary.SMFBSectionVerticesNonInterleaved;
+import com.io7m.smfj.format.binary.implementation.Flags;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.jnull.NullCheck.notNull;
@@ -40,13 +42,17 @@ import static com.io7m.jnull.NullCheck.notNull;
 public final class SMFBv1SectionParserVerticesNonInterleaved
   implements SMFBBodySectionParserType
 {
+  private final BitSet state;
+
   /**
    * Construct a parser.
+   *
+   * @param in_state The current parser state
    */
 
-  public SMFBv1SectionParserVerticesNonInterleaved()
+  public SMFBv1SectionParserVerticesNonInterleaved(final BitSet in_state)
   {
-
+    this.state = notNull(in_state, "state");
   }
 
   private static void processAttributes(
@@ -149,5 +155,7 @@ public final class SMFBv1SectionParserVerticesNonInterleaved
         events_vni.onDataAttributesNonInterleavedFinish();
       }
     }
+
+    this.state.set(Flags.VERTICES_RECEIVED, true);
   }
 }

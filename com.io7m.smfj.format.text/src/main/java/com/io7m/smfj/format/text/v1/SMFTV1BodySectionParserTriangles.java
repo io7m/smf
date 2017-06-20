@@ -21,6 +21,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTBodySectionParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
+import com.io7m.smfj.format.text.implementation.Flags;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesIgnoringReceiver;
@@ -28,6 +29,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import javaslang.collection.List;
 
 import java.io.IOException;
+import java.util.BitSet;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -52,20 +54,24 @@ public final class SMFTV1BodySectionParserTriangles implements
 
   private final SMFTLineReaderType reader;
   private final Supplier<SMFHeader> header_get;
+  private final BitSet state;
 
   /**
    * Construct a parser.
    *
    * @param in_header_get A function that yields a header
    * @param in_reader     A line reader
+   * @param in_state      The current state
    */
 
   public SMFTV1BodySectionParserTriangles(
     final Supplier<SMFHeader> in_header_get,
-    final SMFTLineReaderType in_reader)
+    final SMFTLineReaderType in_reader,
+    final BitSet in_state)
   {
     this.header_get = NullCheck.notNull(in_header_get, "Header");
     this.reader = NullCheck.notNull(in_reader, "Reader");
+    this.state = NullCheck.notNull(in_state, "State");
   }
 
   private static SMFParserEventsDataTrianglesType makeTriangleReceiver(
@@ -130,9 +136,8 @@ public final class SMFTV1BodySectionParserTriangles implements
           default: {
             switch (this.parseAttributeElementUnsigned3(tri_receiver, line)) {
               case SUCCESS:
-                triangles_remaining = Math.subtractExact(
-                  triangles_remaining,
-                  1L);
+                triangles_remaining =
+                  Math.subtractExact(triangles_remaining, 1L);
                 break;
               case FAILURE:
                 return FAILURE;
@@ -159,6 +164,7 @@ public final class SMFTV1BodySectionParserTriangles implements
         return FAILURE;
       }
 
+      this.state.set(Flags.TRIANGLES_RECEIVED, true);
       return SUCCESS;
     } finally {
       tri_receiver.onDataTrianglesFinish();
