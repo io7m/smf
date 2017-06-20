@@ -3059,7 +3059,7 @@ public final class SMFByteBufferPackedMeshesTest
           @Override
           public boolean onShouldPackTriangles()
           {
-            return false;
+            return true;
           }
 
           @Override
@@ -3067,9 +3067,7 @@ public final class SMFByteBufferPackedMeshesTest
             final SMFTriangles triangles,
             final long size)
           {
-            return ByteBuffer
-              .allocate(Math.toIntExact(size))
-              .order(ByteOrder.nativeOrder());
+            throw new UnreachableCodeException();
           }
 
           @Override
@@ -3085,7 +3083,7 @@ public final class SMFByteBufferPackedMeshesTest
         });
 
     try (final SMFParserSequentialType parser =
-           createParser(loader, "float64_4.smft")) {
+           createParser(loader, "no_triangles.smft")) {
       // Nothing
     }
 
@@ -3141,7 +3139,7 @@ public final class SMFByteBufferPackedMeshesTest
         });
 
     try (final SMFParserSequentialType parser =
-           createParser(loader, "float64_4.smft")) {
+           createParser(loader, "no_attributes.smft")) {
       // Nothing
     }
 
@@ -3149,7 +3147,7 @@ public final class SMFByteBufferPackedMeshesTest
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
     Assert.assertTrue(mesh.attributeSets().isEmpty());
-    Assert.assertTrue(mesh.triangles().isPresent());
+    Assert.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
