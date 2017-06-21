@@ -1,4 +1,4 @@
-com.io7m.smfj 0.13.0 Specification
+com.io7m.smfj 0.14.0 Specification
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Contents
@@ -731,18 +731,19 @@ com.io7m.smfj 0.13.0 Specification
          [field coordinate_system        SMFBv1CoordinateSystems]
          [padding-octets                 14])]
 
-      The fields_size field specifies the total size of the header fields,
+
+
+3     The fields_size field specifies the total size of the header fields,
       after which a list of attributes will be declared. The purpose of this
       field is to allow for forward compatibility: Future updates to this
       specification may add extra fields to the end of the header structure,
       and the value of this field allows older implementations to skip those
       newer fields.
 
-
-3     The schema field specifies the schema identifier [ref:
+4     The schema field specifies the schema identifier [ref:
       smf_model.schema_id] for the model:
 
-      3.5.4.4 Schema Identifier
+      3.5.4.5 Schema Identifier
       ─────────────────────────
 
       [record SMFBv1SchemaID
@@ -753,25 +754,29 @@ com.io7m.smfj 0.13.0 Specification
 
 
 
-5     If the length of the schema_id field is 0, the schema identifier as a
+6     If the length of the schema_id field is 0, the schema identifier as a
       whole is ignored.
 
-6     The vertex_count field specifies the number of vertices that will be
+7     The vertex_count field specifies the number of vertices that will be
       specified in a vertices-noninterleaved [ref:
-      smfb.sections.vertices-noninterleaved] section.
+      smfb.sections.vertices-noninterleaved] section. Parsers MUST raise an
+      appropriate error if a non-zero vertex count is specified but no vertices
+      are actually provided in any following section.
 
-7     The triangle_count field specifies the number of triangles that will be
+8     The triangle_count field specifies the number of triangles that will be
       specified in a triangles [ref: smfb.sections.triangles] section. The
       triangle_size field specifies the size in bits of the individual vertex
-      indices within each triangle.
+      indices within each triangle. Parsers MUST raise an appropriate error if
+      a non-zero triangle count is specified but no triangles are actually
+      provided in any following section.
 
-8     The attribute_count field specifies the number of attributes [ref:
+9     The attribute_count field specifies the number of attributes [ref:
       smf_model.attribute] that will be declared.
 
-9     The coordinate_system field specifies the coordinate system [ref:
+10    The coordinate_system field specifies the coordinate system [ref:
       smf_model.coords] of the model:
 
-      3.5.4.10 Coordinate System
+      3.5.4.11 Coordinate System
       ──────────────────────────
 
       [packed SMFBv1CoordinateSystems
@@ -783,10 +788,10 @@ com.io7m.smfj 0.13.0 Specification
 
 
 
-11    The axis and winding order values are related to integer values via the
+12    The axis and winding order values are related to integer values via the
       following functions:
 
-      3.5.4.12 Coordinate System Mapping
+      3.5.4.13 Coordinate System Mapping
       ──────────────────────────────────
 
       import qualified Axis as A
@@ -805,10 +810,10 @@ com.io7m.smfj 0.13.0 Specification
 
 
 
-13    Directly following the end of the header structure, is a series of
+14    Directly following the end of the header structure is a series of
       attribute declarations:
 
-      3.5.4.14 Attribute
+      3.5.4.15 Attribute
       ──────────────────
 
       [record SMFBv1Attribute
@@ -819,16 +824,16 @@ com.io7m.smfj 0.13.0 Specification
 
 
 
-15    The name field specifies the name of the attribute. The component_kind
+16    The name field specifies the name of the attribute. The component_kind
       field specifies the type of the attribute components. The component_count
       field specifies the number of components in each value in the attribute,
       and the component_size field specifies the size in bits of each component
       value.
 
-16    Attribute component types are related to integer values via the following
+17    Attribute component types are related to integer values via the following
       function:
 
-      3.5.4.17 Attribute Type Mapping
+      3.5.4.18 Attribute Type Mapping
       ───────────────────────────────
 
       import qualified Attribute as A
@@ -847,7 +852,7 @@ com.io7m.smfj 0.13.0 Specification
 
 3.6.2 Cardinality/Ordering [id: smfb.sections.triangles.cardinality]
 
-1     An triangles section can appear [0, 1] times in an SMF/B file.
+1     A triangles section can appear [0, 1] times in an SMF/B file.
 
 2     The triangles section has no requirements on ordering.
 
@@ -1210,6 +1215,10 @@ com.io7m.smfj 0.13.0 Specification
       trianges 0 32
 
 
+7     Parsers MUST raise an appropriate error if a non-zero triangle count is
+      specified but no triangles are actually provided in any following
+      section.
+
 4.3.7 Subcommand - vertices [id: smft.sections.smf.subs.vertices]
 
 1     The vertices subcommand specifies the number of vertices [ref:
@@ -1239,6 +1248,9 @@ com.io7m.smfj 0.13.0 Specification
 
       vertices 0
 
+
+7     Parsers MUST raise an appropriate error if a non-zero vertex count is
+      specified but no vertices are actually provided in any following section.
 
 4.4 Section - triangles [id: smft.sections.triangles]
 

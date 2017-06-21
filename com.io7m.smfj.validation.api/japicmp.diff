@@ -1,3 +1,46 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.validation.api/target/com.io7m.smfj.validation.api-0.13.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.validation.api/0.12.0/com.io7m.smfj.validation.api-0.12.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.validation.api/target/com.io7m.smfj.validation.api-0.14.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.validation.api/0.12.0/com.io7m.smfj.validation.api-0.12.0.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.validation.api.SMFSchema  (not serializable)
+	===! UNCHANGED INTERFACE: com.io7m.smfj.validation.api.SMFSchemaType
+	***! MODIFIED METHOD: PUBLIC com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes (<-boolean) allowExtraAttributes()
+	---! REMOVED METHOD: PUBLIC(-) STATIC(-) com.io7m.smfj.validation.api.SMFSchema of(com.io7m.smfj.core.SMFSchemaIdentifier, javaslang.collection.SortedMap, javaslang.collection.SortedMap, java.util.Optional, boolean)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchema of(com.io7m.smfj.core.SMFSchemaIdentifier, javaslang.collection.SortedMap, javaslang.collection.SortedMap, java.util.Optional, com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes, com.io7m.smfj.validation.api.SMFSchemaRequireTriangles, com.io7m.smfj.validation.api.SMFSchemaRequireVertices)
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles requireTriangles()
+	+++  NEW METHOD: PUBLIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices requireVertices()
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.validation.api.SMFSchema withAllowExtraAttributes(boolean)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema withAllowExtraAttributes(com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema withRequireTriangles(com.io7m.smfj.validation.api.SMFSchemaRequireTriangles)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema withRequireVertices(com.io7m.smfj.validation.api.SMFSchemaRequireVertices)
+***! MODIFIED CLASS: PUBLIC STATIC FINAL com.io7m.smfj.validation.api.SMFSchema$Builder  (not serializable)
+	---! REMOVED METHOD: PUBLIC(-) FINAL(-) com.io7m.smfj.validation.api.SMFSchema$Builder setAllowExtraAttributes(boolean)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema$Builder setAllowExtraAttributes(com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema$Builder setRequireTriangles(com.io7m.smfj.validation.api.SMFSchemaRequireTriangles)
+	+++  NEW METHOD: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchema$Builder setRequireVertices(com.io7m.smfj.validation.api.SMFSchemaRequireVertices)
++++  NEW ENUM: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes  (compatible)
+	+++  NEW INTERFACE: java.lang.Comparable
+	+++  NEW INTERFACE: java.io.Serializable
+	+++  NEW SUPERCLASS: java.lang.Enum
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes SMF_EXTRA_ATTRIBUTES_DISALLOWED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes SMF_EXTRA_ATTRIBUTES_ALLOWED
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes valueOf(java.lang.String)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes[] values()
++++  NEW ENUM: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles  (compatible)
+	+++  NEW INTERFACE: java.lang.Comparable
+	+++  NEW INTERFACE: java.io.Serializable
+	+++  NEW SUPERCLASS: java.lang.Enum
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles SMF_TRIANGLES_REQUIRED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles SMF_TRIANGLES_NOT_REQUIRED
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles valueOf(java.lang.String)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles[] values()
++++  NEW ENUM: PUBLIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices  (compatible)
+	+++  NEW INTERFACE: java.lang.Comparable
+	+++  NEW INTERFACE: java.io.Serializable
+	+++  NEW SUPERCLASS: java.lang.Enum
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices SMF_VERTICES_REQUIRED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices SMF_VERTICES_NOT_REQUIRED
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices valueOf(java.lang.String)
+	+++  NEW METHOD: PUBLIC(+) STATIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices[] values()
+***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.validation.api.SMFSchemaType  (not serializable)
+	***! MODIFIED METHOD: PUBLIC NON_ABSTRACT (<- ABSTRACT) com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes (<-boolean) allowExtraAttributes()
+	+++* NEW METHOD: PUBLIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireTriangles requireTriangles()
+	+++* NEW METHOD: PUBLIC(+) com.io7m.smfj.validation.api.SMFSchemaRequireVertices requireVertices()

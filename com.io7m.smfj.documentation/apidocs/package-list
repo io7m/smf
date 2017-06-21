@@ -4,9 +4,11 @@ com.io7m.smfj.cmdline
 com.io7m.smfj.core
 com.io7m.smfj.documentation
 com.io7m.smfj.format.binary
+com.io7m.smfj.format.binary.implementation
 com.io7m.smfj.format.binary.v1
 com.io7m.smfj.format.obj
 com.io7m.smfj.format.text
+com.io7m.smfj.format.text.implementation
 com.io7m.smfj.format.text.v1
 com.io7m.smfj.frontend
 com.io7m.smfj.parser.api

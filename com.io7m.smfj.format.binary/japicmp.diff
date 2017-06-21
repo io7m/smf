@@ -1,5 +1,11 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.binary/target/com.io7m.smfj.format.binary-0.13.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.binary/0.12.0/com.io7m.smfj.format.binary-0.12.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.binary/target/com.io7m.smfj.format.binary-0.14.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.binary/0.12.0/com.io7m.smfj.format.binary-0.12.0.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.binary.implementation.Flags  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int VERTICES_RECEIVED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int TRIANGLES_RECEIVED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int TRIANGLES_REQUIRED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int VERTICES_REQUIRED
 ***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderByteBuffered  (not serializable)
 	===! UNCHANGED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderWritableType
 	===! UNCHANGED INTERFACE: com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderReadableType
@@ -27,3 +33,12 @@ WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses 
 ***! MODIFIED INTERFACE: PUBLIC ABSTRACT com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderWritableType  (not serializable)
 	---! REMOVED METHOD: PUBLIC(-) ABSTRACT(-) void setAttributeOffset(int)
 	+++* NEW METHOD: PUBLIC(+) ABSTRACT(+) void setFieldsSize(int)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.v1.SMFBv1Parser  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFBv1Parser(com.io7m.smfj.core.SMFFormatVersion, com.io7m.smfj.format.binary.SMFBDataStreamReaderType, com.io7m.smfj.parser.api.SMFParserEventsHeaderType)
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1Parser(com.io7m.smfj.core.SMFFormatVersion, java.util.BitSet, com.io7m.smfj.format.binary.SMFBDataStreamReaderType, com.io7m.smfj.parser.api.SMFParserEventsHeaderType)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.v1.SMFBv1SectionParserTriangles  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFBv1SectionParserTriangles()
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1SectionParserTriangles(java.util.BitSet)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.binary.v1.SMFBv1SectionParserVerticesNonInterleaved  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFBv1SectionParserVerticesNonInterleaved()
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFBv1SectionParserVerticesNonInterleaved(java.util.BitSet)

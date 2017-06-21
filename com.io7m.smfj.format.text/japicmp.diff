@@ -1,3 +1,17 @@
-Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.text/target/com.io7m.smfj.format.text-0.13.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.text/0.12.0/com.io7m.smfj.format.text-0.12.0.jar
+Comparing source compatibility of /home/someone/git/com.github/io7m/smfj/com.io7m.smfj.format.text/target/com.io7m.smfj.format.text-0.14.0.jar against /home/someone/.m2/repository/com/io7m/smfj/com.io7m.smfj.format.text/0.12.0/com.io7m.smfj.format.text-0.12.0.jar
 WARNING: You are using the option '--ignore-missing-classes', i.e. superclasses and interfaces that could not be found on the classpath are ignored. Hence changes caused by these superclasses and interfaces are not reflected in the output.
-No changes.
++++  NEW CLASS: PUBLIC(+) FINAL(+) com.io7m.smfj.format.text.implementation.Flags  (not serializable)
+	+++  NEW SUPERCLASS: java.lang.Object
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int VERTICES_RECEIVED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int TRIANGLES_RECEIVED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int TRIANGLES_REQUIRED
+	+++  NEW FIELD: PUBLIC(+) STATIC(+) FINAL(+) int VERTICES_REQUIRED
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserTriangles  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFTV1BodySectionParserTriangles(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1BodySectionParserTriangles(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType, java.util.BitSet)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVerticesNonInterleaved  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFTV1BodySectionParserVerticesNonInterleaved(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1BodySectionParserVerticesNonInterleaved(java.util.function.Supplier, com.io7m.smfj.format.text.SMFTLineReaderType, java.util.BitSet)
+***! MODIFIED CLASS: PUBLIC FINAL com.io7m.smfj.format.text.v1.SMFTV1Parser  (not serializable)
+	---! REMOVED CONSTRUCTOR: PUBLIC(-) SMFTV1Parser(com.io7m.smfj.core.SMFFormatVersion, com.io7m.smfj.parser.api.SMFParserEventsType, com.io7m.smfj.format.text.SMFTLineReaderType)
+	+++  NEW CONSTRUCTOR: PUBLIC(+) SMFTV1Parser(com.io7m.smfj.core.SMFFormatVersion, java.util.BitSet, com.io7m.smfj.parser.api.SMFParserEventsType, com.io7m.smfj.format.text.SMFTLineReaderType)
