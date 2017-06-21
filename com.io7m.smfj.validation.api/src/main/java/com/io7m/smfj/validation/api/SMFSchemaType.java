@@ -72,12 +72,41 @@ public interface SMFSchemaType
   Optional<SMFCoordinateSystem> requiredCoordinateSystem();
 
   /**
-   * @return {@code true} iff the mesh is allowed to contain attributes that are
-   * not given in {@link #requiredAttributes()}
+   * @return {@link SMFSchemaAllowExtraAttributes#SMF_EXTRA_ATTRIBUTES_ALLOWED}
+   * if the mesh is allowed to contain attributes that are not given in {@link
+   * #requiredAttributes()}
    */
 
   @Value.Parameter
-  boolean allowExtraAttributes();
+  @Value.Default
+  default SMFSchemaAllowExtraAttributes allowExtraAttributes()
+  {
+    return SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED;
+  }
+
+  /**
+   * @return {@link SMFSchemaRequireTriangles#SMF_TRIANGLES_REQUIRED} if a
+   * non-zero triangle count is required
+   */
+
+  @Value.Parameter
+  @Value.Default
+  default SMFSchemaRequireTriangles requireTriangles()
+  {
+    return SMFSchemaRequireTriangles.SMF_TRIANGLES_NOT_REQUIRED;
+  }
+
+  /**
+   * @return {@link SMFSchemaRequireVertices#SMF_VERTICES_REQUIRED} if a
+   * non-zero vertex count is required
+   */
+
+  @Value.Parameter
+  @Value.Default
+  default SMFSchemaRequireVertices requireVertices()
+  {
+    return SMFSchemaRequireVertices.SMF_VERTICES_NOT_REQUIRED;
+  }
 
   /**
    * Check preconditions for the type.

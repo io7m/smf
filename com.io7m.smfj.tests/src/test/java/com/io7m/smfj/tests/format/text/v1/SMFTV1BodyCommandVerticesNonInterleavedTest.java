@@ -23,6 +23,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
+import com.io7m.smfj.format.text.implementation.Flags;
 import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVerticesNonInterleaved;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
@@ -36,6 +37,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.smfj.core.SMFComponentType.ELEMENT_TYPE_FLOATING;
@@ -52,11 +54,13 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFTLineReaderType reader)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new StrictExpectations()
     {{
@@ -67,6 +71,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
     Assert.assertEquals(SUCCESS, r);
+    Assert.assertTrue(state.get(Flags.VERTICES_RECEIVED));
   }
 
   @Test
@@ -75,11 +80,13 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFTLineReaderType reader)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -105,6 +112,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -124,7 +133,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -147,6 +156,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -158,7 +169,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -183,6 +194,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -193,7 +206,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -222,6 +235,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -240,7 +255,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -268,6 +283,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -286,7 +303,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -314,6 +331,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -332,7 +351,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -360,6 +380,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -378,7 +400,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -406,6 +429,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -424,7 +449,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -458,6 +484,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -476,7 +504,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -510,6 +539,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -528,7 +559,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -562,6 +594,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -580,7 +614,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -614,6 +649,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -632,7 +669,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -660,6 +698,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -678,7 +718,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -706,6 +747,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -724,7 +767,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -752,6 +796,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -770,7 +816,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -798,6 +845,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -816,7 +865,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -850,6 +900,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -868,7 +920,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -902,6 +955,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -920,7 +975,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -954,6 +1010,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -972,7 +1030,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1006,6 +1065,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1024,7 +1085,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1052,6 +1114,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1070,7 +1134,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1098,6 +1163,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1116,7 +1183,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1144,6 +1212,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1162,7 +1232,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1190,6 +1261,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1208,7 +1281,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1242,6 +1316,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1260,7 +1336,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1294,6 +1371,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1312,7 +1391,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{
@@ -1346,6 +1426,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -1364,7 +1446,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
+                                                        state);
 
     new Expectations()
     {{

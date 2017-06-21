@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.ieee754b16.Binary16.packDouble;
@@ -65,6 +66,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
         URI.create("urn:test"),
@@ -85,7 +88,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -132,6 +135,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 64;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 4;
@@ -173,7 +178,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -202,6 +207,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 64;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 3;
@@ -239,7 +246,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -268,6 +275,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 64;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 2;
@@ -303,7 +312,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -332,6 +341,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 64;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 1;
@@ -365,7 +376,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -395,6 +406,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 32;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 4;
@@ -434,7 +447,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -463,6 +476,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 32;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 3;
@@ -500,7 +515,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -529,6 +544,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 32;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 2;
@@ -564,7 +581,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -593,6 +610,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 32;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 1;
@@ -626,7 +645,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -655,6 +674,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 16;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 4;
@@ -694,7 +715,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -723,6 +744,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 16;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 3;
@@ -760,7 +783,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -789,6 +812,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 16;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 2;
@@ -824,7 +849,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()
@@ -853,6 +878,8 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
     final @Mocked SMFParserEventsDataAttributeValuesType events_values,
     final @Mocked SMFParserEventsBodyType events_body)
   {
+    final BitSet state = new BitSet();
+
     final int componentSizeBits = 16;
     final int componentSizeOctets = componentSizeBits / 8;
     final int componentCount = 1;
@@ -886,7 +913,7 @@ public final class SMFBv1SectionParserVerticesNonInterleavedFloatingTest
         .build();
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
-      new SMFBv1SectionParserVerticesNonInterleaved();
+      new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
     new StrictExpectations()

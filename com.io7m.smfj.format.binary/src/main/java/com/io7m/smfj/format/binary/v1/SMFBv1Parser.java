@@ -46,9 +46,12 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.jfunctional.Unit.unit;
+import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
+import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 import static javaslang.control.Validation.invalid;
 import static javaslang.control.Validation.valid;
@@ -70,23 +73,28 @@ public final class SMFBv1Parser implements SMFParserSequentialType
   private final SMFBSectionParserType sections;
   private final SMFFormatVersion version;
   private final HashMap<Long, SMFBBodySectionParserType> section_parsers;
+  private final BitSet state;
   private SMFHeader header;
 
   /**
    * Construct a parser.
    *
    * @param in_version       The format version
+   * @param in_state         The current parser state
    * @param in_reader        A data stream reader
    * @param in_events_header An event receiver
    */
 
   public SMFBv1Parser(
     final SMFFormatVersion in_version,
+    final BitSet in_state,
     final SMFBDataStreamReaderType in_reader,
     final SMFParserEventsHeaderType in_events_header)
   {
     this.version =
       NullCheck.notNull(in_version, "Version");
+    this.state =
+      NullCheck.notNull(in_state, "State");
     this.reader =
       NullCheck.notNull(in_reader, "Reader");
     this.events_header =
@@ -98,13 +106,13 @@ public final class SMFBv1Parser implements SMFParserSequentialType
       HashMap.<Long, SMFBBodySectionParserType>empty()
         .put(
           Long.valueOf(SMFBSectionTriangles.MAGIC),
-          new SMFBv1SectionParserTriangles())
+          new SMFBv1SectionParserTriangles(this.state))
         .put(
           Long.valueOf(SMFBSectionMetadata.MAGIC),
           new SMFBv1SectionParserMetadata())
         .put(
           Long.valueOf(SMFBSectionVerticesNonInterleaved.MAGIC),
-          new SMFBv1SectionParserVerticesNonInterleaved());
+          new SMFBv1SectionParserVerticesNonInterleaved(this.state));
 
     Preconditions.checkPreconditionI(
       this.version.major(),
@@ -222,6 +230,12 @@ public final class SMFBv1Parser implements SMFParserSequentialType
 
     final SMFHeader result_header = header_result.get();
     this.header = result_header;
+
+    this.state.set(
+      VERTICES_REQUIRED, this.header.vertexCount() != 0L);
+    this.state.set(
+      TRIANGLES_REQUIRED, this.header.triangles().triangleCount() != 0L);
+
     return valid(this.events_header.onHeaderParsed(result_header));
   }
 

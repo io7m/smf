@@ -111,6 +111,62 @@ public abstract class SMFSchemaParserContract
   }
 
   @Test
+  public final void testInvalidRequireVertices0()
+    throws Exception
+  {
+    try (final SMFSchemaParserType parser = this.resourceParser(
+      "invalid-require-vertices-0.smfs")) {
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      showErrors(r);
+      Assert.assertFalse(r.isValid());
+      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+        "Could not parse vertices requirement")));
+    }
+  }
+
+  @Test
+  public final void testInvalidRequireVertices1()
+    throws Exception
+  {
+    try (final SMFSchemaParserType parser = this.resourceParser(
+      "invalid-require-vertices-1.smfs")) {
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      showErrors(r);
+      Assert.assertFalse(r.isValid());
+      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+        "Could not parse vertices requirement")));
+    }
+  }
+
+  @Test
+  public final void testInvalidRequireTriangles0()
+    throws Exception
+  {
+    try (final SMFSchemaParserType parser = this.resourceParser(
+      "invalid-require-triangles-0.smfs")) {
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      showErrors(r);
+      Assert.assertFalse(r.isValid());
+      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+        "Could not parse triangle requirement")));
+    }
+  }
+
+  @Test
+  public final void testInvalidRequireTriangles1()
+    throws Exception
+  {
+    try (final SMFSchemaParserType parser = this.resourceParser(
+      "invalid-require-triangles-1.smfs")) {
+      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      showErrors(r);
+      Assert.assertFalse(r.isValid());
+      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+        "Could not parse triangle requirement")));
+    }
+  }
+
+  @Test
   public final void testInvalidAttribute0()
     throws Exception
   {

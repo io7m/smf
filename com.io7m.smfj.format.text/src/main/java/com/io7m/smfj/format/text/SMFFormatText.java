@@ -49,9 +49,14 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
+import java.util.BitSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.io7m.smfj.format.text.implementation.Flags.TRIANGLES_RECEIVED;
+import static com.io7m.smfj.format.text.implementation.Flags.TRIANGLES_REQUIRED;
+import static com.io7m.smfj.format.text.implementation.Flags.VERTICES_RECEIVED;
+import static com.io7m.smfj.format.text.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
@@ -295,11 +300,12 @@ public final class SMFFormatText
           return;
         }
 
+        final BitSet state = new BitSet(8);
         final SMFFormatVersion version = result.get();
         switch (version.major()) {
           case 1: {
-            try (final SMFParserSequentialType p =
-                   new SMFTV1Parser(version, this.events, this.reader)) {
+            try (final SMFTV1Parser p =
+                   new SMFTV1Parser(version, state, this.events, this.reader)) {
               p.parse();
             }
             break;
@@ -312,6 +318,20 @@ public final class SMFFormatText
               Optional.empty()));
             break;
           }
+        }
+
+        if (state.get(VERTICES_REQUIRED) && !state.get(VERTICES_RECEIVED)) {
+          this.events.onError(SMFParseError.of(
+            this.reader.position(),
+            "A non-zero vertex count was specified, but no vertices were provided.",
+            Optional.empty()));
+        }
+
+        if (state.get(TRIANGLES_REQUIRED) && !state.get(TRIANGLES_RECEIVED)) {
+          this.events.onError(SMFParseError.of(
+            this.reader.position(),
+            "A non-zero triangle count was specified, but no triangles were provided.",
+            Optional.empty()));
         }
 
       } catch (final Exception e) {

@@ -419,25 +419,31 @@ public final class SMFByteBufferPackedMeshes
     final boolean want_triangles = this.events.onShouldPackTriangles();
     if (want_triangles) {
       final SMFTriangles triangles = this.header.triangles();
-      final long size_tri =
-        Math.multiplyExact(
-          triangles.triangleSizeOctets(),
-          triangles.triangleCount());
 
-      LOG.debug("allocating triangle buffer");
-      this.tri_buffer =
-        this.events.onAllocateTriangleBuffer(triangles, size_tri);
+      if (Long.compareUnsigned(triangles.triangleCount(), 0L) > 0) {
+        final long size_tri =
+          Math.multiplyExact(
+            Integer.toUnsignedLong(triangles.triangleSizeOctets()),
+            triangles.triangleCount());
 
-      Invariants.checkInvariantL(
-        (long) this.tri_buffer.capacity(),
-        (long) this.tri_buffer.capacity() == size_tri,
-        x -> "Triangle buffer size must be " + size_tri);
+        LOG.debug("allocating triangle buffer");
+        this.tri_buffer =
+          this.events.onAllocateTriangleBuffer(triangles, size_tri);
 
-      this.tri_packer = new SMFByteBufferTrianglePacker(
-        this,
-        this.tri_buffer,
-        Math.toIntExact(triangles.triangleIndexSizeBits()),
-        triangles.triangleCount());
+        Invariants.checkInvariantL(
+          (long) this.tri_buffer.capacity(),
+          (long) this.tri_buffer.capacity() == size_tri,
+          x -> "Triangle buffer size must be " + size_tri);
+
+        this.tri_packer =
+          new SMFByteBufferTrianglePacker(
+            this,
+            this.tri_buffer,
+            triangles.triangleIndexSizeBits(),
+            triangles.triangleCount());
+      } else {
+        LOG.debug("triangle packing requested, but no triangles are available");
+      }
     } else {
       LOG.debug("no triangle buffer required");
     }

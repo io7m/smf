@@ -3,6 +3,24 @@
   <c:project>com.io7m.smfj</c:project>
 
   <c:release c:ticket-system="com.github.io7m.smf">
+    <c:date>2017-06-21</c:date>
+    <c:version>0.14.0</c:version>
+
+    <c:item>
+      <c:date>2017-06-20</c:date>
+      <c:type-code-fix/>
+      <c:ticket>51</c:ticket>
+      <c:summary>Correctly handle a lack of triangles and vertex data in the byte buffer packer.</c:summary>
+    </c:item>
+
+    <c:item>
+      <c:date>2017-06-20</c:date>
+      <c:type-code-change/>
+      <c:summary>Require parsers to fail on missing triangles and vertices.</c:summary>
+    </c:item>
+  </c:release>
+
+  <c:release c:ticket-system="com.github.io7m.smf">
     <c:date>2017-06-18</c:date>
     <c:version>0.13.0</c:version>
 

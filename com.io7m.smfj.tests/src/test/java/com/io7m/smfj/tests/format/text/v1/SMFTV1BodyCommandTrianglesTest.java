@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
+import com.io7m.smfj.format.text.implementation.Flags;
 import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
@@ -34,6 +35,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URI;
+import java.util.BitSet;
 import java.util.Optional;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
@@ -47,11 +49,13 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFTLineReaderType reader)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFHeader.Builder header_b = SMFHeader.builder();
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new StrictExpectations()
     {{
@@ -62,6 +66,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
     Assert.assertEquals(SUCCESS, r);
+    Assert.assertTrue(state.get(Flags.TRIANGLES_RECEIVED));
   }
 
   @Test
@@ -69,6 +74,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -82,7 +89,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -106,6 +113,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -119,7 +128,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -148,6 +157,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -160,7 +171,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -189,6 +200,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -202,7 +215,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -231,6 +244,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -244,7 +259,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{
@@ -273,6 +288,8 @@ public final class SMFTV1BodyCommandTrianglesTest
     final @Mocked SMFParserEventsBodyType events)
     throws Exception
   {
+    final BitSet state = new BitSet();
+
     final SMFTLineReaderType reader =
       SMFTLineReaderList.create(
         URI.create("urn:x"),
@@ -286,7 +303,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader);
+      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
     new Expectations()
     {{

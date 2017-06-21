@@ -1,0 +1,9 @@
+smf 1 0
+vertices 0
+coordinates +x +y -z counter-clockwise
+attribute "x" float 1 16
+end
+
+vertices-noninterleaved
+attribute "x"
+end

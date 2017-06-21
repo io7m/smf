@@ -173,9 +173,10 @@ class SMFMesh:
     assert type(index) == int
     assert type(vertex) == SMFVertex
 
-    self.__logger.debug("SMFMesh: addVertex: %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
-    self.__logger.debug("SMFMesh: addVertex: uv %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
-    self.__logger.debug("SMFMesh: addVertex: groups %s %s" % (self.groups, sorted(vertex.groups.keys())))
+    self.__logger.debug("SMFMesh: addVertex: position %.15f %.15f %.15f %s" % (vertex.position.x, vertex.position.y, vertex.position.z, vertex))
+    self.__logger.debug("SMFMesh: addVertex: normal   %.15f %.15f %.15f %s" % (vertex.normal.x, vertex.normal.y, vertex.normal.z, vertex))
+    self.__logger.debug("SMFMesh: addVertex: uv       %s %s" % (self.uv_attributes, sorted(vertex.uv.keys())))
+    self.__logger.debug("SMFMesh: addVertex: groups   %s %s" % (self.groups, sorted(vertex.groups.keys())))
 
     # Ensure that all incoming vertices have the same UV configuration
     if self.uv_attributes != None:
@@ -202,7 +203,8 @@ class SMFMesh:
     assert existing.uv.keys() == vertex.uv.keys()
     assert existing.groups.keys() == vertex.groups.keys()
 
-    if existing.uv == vertex.uv and existing.groups == vertex.groups:
+    compatible = existing.uv == vertex.uv and existing.groups == vertex.groups and existing.normal == vertex.normal
+    if compatible:
       self.__logger.debug("SMFMesh: addVertex: [%d] vertices are compatible, reusing" % index)
       return index
     #endif
@@ -293,7 +295,7 @@ class SMFExporter:
     self.__logger.debug("__buildMeshCopyWithModifiersAppliedAndTriangulated: triangulating %s (%s)" % (mesh.name, mesh_copy))
 
     bm = bmesh.new()
-    bm.from_mesh(mesh_copy)
+    bm.from_mesh(mesh_copy, face_normals=True)
     bmesh.ops.triangulate(bm, faces=bm.faces)
 
     return SMFTriangulatedInputMesh(self.__logger, mesh.vertex_groups, mesh_copy, bm)
@@ -321,17 +323,45 @@ class SMFExporter:
       face_vertex_2 = face.verts[2]
       assert type(face_vertex_2) == bmesh.types.BMVert
 
+      face_normal = self.__transformTranslationToExport(face.normal);
+      self.__logger.debug("__buildSMFMeshFromTriangulated: face smooth: %s" % (face.smooth))
+      self.__logger.debug("__buildSMFMeshFromTriangulated: face normal: %s" % (face_normal))
+
       v0 = SMFVertex()
       v0.position = self.__transformTranslationToExport(face_vertex_0.co)
-      v0.normal   = self.__transformTranslationToExport(face_vertex_0.normal)
+
+      if face.smooth:
+        v0.normal = self.__transformTranslationToExport(face_vertex_0.normal)
+      else:
+        v0.normal = face_normal
+      #end
+
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v0.position: %s" % (v0.position))
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v0.normal:   %s" % (v0.normal))
 
       v1 = SMFVertex()
       v1.position = self.__transformTranslationToExport(face_vertex_1.co)
-      v1.normal   = self.__transformTranslationToExport(face_vertex_1.normal)
+
+      if face.smooth:
+        v1.normal = self.__transformTranslationToExport(face_vertex_1.normal)
+      else:
+        v1.normal = face_normal
+      #end
+
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v1.position: %s" % (v1.position))
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v1.normal:   %s" % (v1.normal))
 
       v2 = SMFVertex()
       v2.position = self.__transformTranslationToExport(face_vertex_2.co)
-      v2.normal   = self.__transformTranslationToExport(face_vertex_2.normal)
+
+      if face.smooth:
+        v2.normal = self.__transformTranslationToExport(face_vertex_2.normal)
+      else:
+        v2.normal = face_normal
+      #end
+
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v2.position: %s" % (v2.position))
+      self.__logger.debug("__buildSMFMeshFromTriangulated: v2.normal:   %s" % (v2.normal))
 
       #
       # UV coordinate information is stored "per-loop". The Blender documentation

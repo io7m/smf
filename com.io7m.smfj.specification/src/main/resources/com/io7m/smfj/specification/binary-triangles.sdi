@@ -6,7 +6,7 @@ The [term [type type] triangles] section specifies triangle data.
 
 [subsection [title Cardinality/Ordering] [id smfb.sections.triangles.cardinality]]
 [paragraph]
-An [term [type type] triangles] section can appear [term [type expression] "[0, 1]"]
+A [term [type type] triangles] section can appear [term [type expression] "[0, 1]"]
 times in an [term [type type] SMF/B] file.
 
 [paragraph]

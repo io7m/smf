@@ -54,8 +54,13 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
+import java.util.BitSet;
 import java.util.Optional;
 
+import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_RECEIVED;
+import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
+import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_RECEIVED;
+import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
 import static javaslang.control.Validation.invalid;
@@ -325,6 +330,7 @@ public final class SMFFormatBinary
         final Optional<SMFParserEventsHeaderType> events_header_opt =
           this.events.onVersionReceived(version);
 
+        final BitSet state = new BitSet(8);
         if (events_header_opt.isPresent()) {
           final SMFParserEventsHeaderType events_header =
             events_header_opt.get();
@@ -334,6 +340,7 @@ public final class SMFFormatBinary
               this.parser =
                 new SMFBv1Parser(
                   version,
+                  state,
                   SMFBDataStreamReader.create(this.uri, this.stream),
                   events_header);
               this.parser.parse();
@@ -343,6 +350,20 @@ public final class SMFFormatBinary
               throw new UnsupportedOperationException(notSupported(version));
             }
           }
+        }
+
+        if (state.get(VERTICES_REQUIRED) && !state.get(VERTICES_RECEIVED)) {
+          this.events.onError(SMFParseError.of(
+            LexicalPosition.of(0, 0, Optional.of(this.uri)),
+            "A non-zero vertex count was specified, but no vertices were provided.",
+            Optional.empty()));
+        }
+
+        if (state.get(TRIANGLES_REQUIRED) && !state.get(TRIANGLES_RECEIVED)) {
+          this.events.onError(SMFParseError.of(
+            LexicalPosition.of(0, 0, Optional.of(this.uri)),
+            "A non-zero triangle count was specified, but no triangles were provided.",
+            Optional.empty()));
         }
 
       } catch (final Exception e) {

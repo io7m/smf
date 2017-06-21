@@ -13,7 +13,7 @@
 
   <groupId>com.io7m.smfj</groupId>
   <artifactId>com.io7m.smfj</artifactId>
-  <version>0.13.0</version>
+  <version>0.14.0</version>
 
   <packaging>pom</packaging>
   <name>com.io7m.smfj</name>

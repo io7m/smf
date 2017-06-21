@@ -74,7 +74,8 @@ final class Metadata
 
     final long meta_header_size =
       SMFBAlignment.alignNext(
-        Integer.toUnsignedLong(meta_header_buffer.length), SMFBSection.SECTION_ALIGNMENT);
+        Integer.toUnsignedLong(meta_header_buffer.length),
+        SMFBSection.SECTION_ALIGNMENT);
     final long meta_data_size =
       SMFBAlignment.alignNext(
         Integer.toUnsignedLong(data.length), SMFBSection.SECTION_ALIGNMENT);
