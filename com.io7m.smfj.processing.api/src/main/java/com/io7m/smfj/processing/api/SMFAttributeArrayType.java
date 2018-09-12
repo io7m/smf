@@ -49,6 +49,8 @@ public interface SMFAttributeArrayType
    * @throws E If any of the functions raise {@code E}
    */
 
+  // Unavoidable "too many parameters" issue.
+  // CHECKSTYLE:OFF
   <A, B, E extends Exception>
   B matchArray(
     A context,
@@ -65,6 +67,7 @@ public interface SMFAttributeArrayType
     PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
     PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
     throws E;
+  // CHECKSTYLE:ON
 
   /**
    * @return The size of the array

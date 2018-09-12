@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -37,6 +36,7 @@ import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import javaslang.collection.Vector;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -97,112 +97,6 @@ public final class SMFMemoryMeshParser
     {
       this.mesh = Objects.requireNonNull(in_mesh, "Mesh");
       this.events = Objects.requireNonNull(in_events, "Events");
-    }
-
-    @Override
-    public void parse()
-    {
-      this.events.onStart();
-
-      try {
-        final Optional<SMFParserEventsHeaderType> r_opt =
-          this.events.onVersionReceived(SMFFormatVersion.of(1, 0));
-
-        if (r_opt.isPresent()) {
-          final SMFParserEventsHeaderType r = r_opt.get();
-          this.parseBody(r.onHeaderParsed(this.mesh.header()));
-        }
-
-      } finally {
-        this.events.onFinish();
-      }
-    }
-
-    private void parseBody(
-      final Optional<SMFParserEventsBodyType> b_opt)
-    {
-      if (b_opt.isPresent()) {
-        final SMFParserEventsBodyType b = b_opt.get();
-        this.parseDataNonInterleaved(b);
-        this.parseDataTriangles(b);
-        this.parseDataMeta(b);
-      }
-    }
-
-    private void parseDataMeta(
-      final SMFParserEventsBodyType b)
-    {
-      final Vector<SMFMetadata> metas = this.mesh.metadata();
-      for (int index = 0; index < metas.size(); ++index) {
-        final SMFMetadata meta = metas.get(index);
-        final Optional<SMFParserEventsDataMetaType> m_opt =
-          b.onMeta(meta.schema());
-        if (m_opt.isPresent()) {
-          final SMFParserEventsDataMetaType m = m_opt.get();
-          m.onMetaData(meta.schema(), meta.data());
-        }
-      }
-    }
-
-    private void parseDataTriangles(
-      final SMFParserEventsBodyType b)
-    {
-      final Optional<SMFParserEventsDataTrianglesType> t_opt = b.onTriangles();
-      if (t_opt.isPresent()) {
-        final SMFParserEventsDataTrianglesType t = t_opt.get();
-        try {
-          final Vector<Vector3L> triangles = this.mesh.triangles();
-          for (int index = 0; index < triangles.size(); ++index) {
-            final Vector3L tri = triangles.get(index);
-            t.onDataTriangle(tri.x(), tri.y(), tri.z());
-          }
-        } finally {
-          t.onDataTrianglesFinish();
-        }
-      }
-    }
-
-    private void parseDataNonInterleaved(
-      final SMFParserEventsBodyType b)
-    {
-      final Optional<SMFParserEventsDataAttributesNonInterleavedType> ni_opt =
-        b.onAttributesNonInterleaved();
-
-      if (ni_opt.isPresent()) {
-        final SMFParserEventsDataAttributesNonInterleavedType ni = ni_opt.get();
-        try {
-          this.mesh.header().attributesInOrder().forEach(a -> {
-            final Optional<SMFParserEventsDataAttributeValuesType> av_opt =
-              ni.onDataAttributeStart(a);
-
-            if (av_opt.isPresent()) {
-              final SMFParserEventsDataAttributeValuesType av = av_opt.get();
-              try {
-                final SMFAttributeArrayType array =
-                  this.mesh.arrays().get(a.name()).get();
-                array.matchArray(
-                  av,
-                  Sequential::sendArray4D,
-                  Sequential::sendArray3D,
-                  Sequential::sendArray2D,
-                  Sequential::sendArray1D,
-                  Sequential::sendArray4UL,
-                  Sequential::sendArray3UL,
-                  Sequential::sendArray2UL,
-                  Sequential::sendArray1UL,
-                  Sequential::sendArray4L,
-                  Sequential::sendArray3L,
-                  Sequential::sendArray2L,
-                  Sequential::sendArray1L);
-              } finally {
-                av.onDataAttributeValueFinish();
-              }
-            }
-          });
-        } finally {
-          ni.onDataAttributesNonInterleavedFinish();
-        }
-      }
     }
 
     private static Boolean sendArray4D(
@@ -347,6 +241,112 @@ public final class SMFMemoryMeshParser
         events.onDataAttributeValueIntegerUnsigned1(v.longValue());
       }
       return Boolean.TRUE;
+    }
+
+    @Override
+    public void parse()
+    {
+      this.events.onStart();
+
+      try {
+        final Optional<SMFParserEventsHeaderType> r_opt =
+          this.events.onVersionReceived(SMFFormatVersion.of(1, 0));
+
+        if (r_opt.isPresent()) {
+          final SMFParserEventsHeaderType r = r_opt.get();
+          this.parseBody(r.onHeaderParsed(this.mesh.header()));
+        }
+
+      } finally {
+        this.events.onFinish();
+      }
+    }
+
+    private void parseBody(
+      final Optional<SMFParserEventsBodyType> b_opt)
+    {
+      if (b_opt.isPresent()) {
+        final SMFParserEventsBodyType b = b_opt.get();
+        this.parseDataNonInterleaved(b);
+        this.parseDataTriangles(b);
+        this.parseDataMeta(b);
+      }
+    }
+
+    private void parseDataMeta(
+      final SMFParserEventsBodyType b)
+    {
+      final Vector<SMFMetadata> metas = this.mesh.metadata();
+      for (int index = 0; index < metas.size(); ++index) {
+        final SMFMetadata meta = metas.get(index);
+        final Optional<SMFParserEventsDataMetaType> m_opt =
+          b.onMeta(meta.schema());
+        if (m_opt.isPresent()) {
+          final SMFParserEventsDataMetaType m = m_opt.get();
+          m.onMetaData(meta.schema(), meta.data());
+        }
+      }
+    }
+
+    private void parseDataTriangles(
+      final SMFParserEventsBodyType b)
+    {
+      final Optional<SMFParserEventsDataTrianglesType> t_opt = b.onTriangles();
+      if (t_opt.isPresent()) {
+        final SMFParserEventsDataTrianglesType t = t_opt.get();
+        try {
+          final Vector<Vector3L> triangles = this.mesh.triangles();
+          for (int index = 0; index < triangles.size(); ++index) {
+            final Vector3L tri = triangles.get(index);
+            t.onDataTriangle(tri.x(), tri.y(), tri.z());
+          }
+        } finally {
+          t.onDataTrianglesFinish();
+        }
+      }
+    }
+
+    private void parseDataNonInterleaved(
+      final SMFParserEventsBodyType b)
+    {
+      final Optional<SMFParserEventsDataAttributesNonInterleavedType> ni_opt =
+        b.onAttributesNonInterleaved();
+
+      if (ni_opt.isPresent()) {
+        final SMFParserEventsDataAttributesNonInterleavedType ni = ni_opt.get();
+        try {
+          this.mesh.header().attributesInOrder().forEach(a -> {
+            final Optional<SMFParserEventsDataAttributeValuesType> av_opt =
+              ni.onDataAttributeStart(a);
+
+            if (av_opt.isPresent()) {
+              final SMFParserEventsDataAttributeValuesType av = av_opt.get();
+              try {
+                final SMFAttributeArrayType array =
+                  this.mesh.arrays().get(a.name()).get();
+                array.matchArray(
+                  av,
+                  Sequential::sendArray4D,
+                  Sequential::sendArray3D,
+                  Sequential::sendArray2D,
+                  Sequential::sendArray1D,
+                  Sequential::sendArray4UL,
+                  Sequential::sendArray3UL,
+                  Sequential::sendArray2UL,
+                  Sequential::sendArray1UL,
+                  Sequential::sendArray4L,
+                  Sequential::sendArray3L,
+                  Sequential::sendArray2L,
+                  Sequential::sendArray1L);
+              } finally {
+                av.onDataAttributeValueFinish();
+              }
+            }
+          });
+        } finally {
+          ni.onDataAttributesNonInterleavedFinish();
+        }
+      }
     }
 
     @Override

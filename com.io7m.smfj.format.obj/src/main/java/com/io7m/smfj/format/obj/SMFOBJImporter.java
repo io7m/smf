@@ -21,8 +21,6 @@ import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jlexing.core.LexicalPositions;
-import java.util.Objects;
-import com.io7m.jnull.Nullable;
 import com.io7m.jobj.core.JOParser;
 import com.io7m.jobj.core.JOParserErrorCode;
 import com.io7m.jobj.core.JOParserType;
@@ -55,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.jcoords.core.conversion.CAxis.AXIS_NEGATIVE_Z;
@@ -750,9 +749,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
   private static final class Vertex
   {
-    private final @Nullable Vector3D position;
-    private final @Nullable Vector3D normal;
-    private final @Nullable Vector2D uv;
+    private final Vector3D position;
+    private final Vector3D normal;
+    private final Vector2D uv;
 
     Vertex(
       final Vector3D in_position,

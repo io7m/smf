@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -30,6 +29,7 @@ import javaslang.collection.List;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -58,8 +58,8 @@ public final class SMFTV1HeaderCommandAttribute
   /**
    * Construct a parser.
    *
-   * @param in_attributes_lines A map that keeps track of the line numbers of
-   *                            other attribute commands
+   * @param in_attributes_lines A map that keeps track of the line numbers of other attribute
+   *                            commands
    * @param in_attributes_list  The current attributes in declaration order
    * @param in_reader           A line reader
    * @param in_header           A header builder

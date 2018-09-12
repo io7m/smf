@@ -40,7 +40,7 @@ public interface SMFBBodySectionParserType
    */
 
   void parse(
-    final SMFHeader header,
-    final SMFParserEventsBodyType events,
-    final SMFBDataStreamReaderType reader);
+    SMFHeader header,
+    SMFParserEventsBodyType events,
+    SMFBDataStreamReaderType reader);
 }

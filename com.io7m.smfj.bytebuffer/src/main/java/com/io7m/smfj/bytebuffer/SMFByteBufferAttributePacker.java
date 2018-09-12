@@ -77,87 +77,126 @@ public final class SMFByteBufferAttributePacker
     if (Long.compareUnsigned(in_vertices, 0L) > 0) {
       switch (attribute.componentType()) {
         case ELEMENT_TYPE_INTEGER_SIGNED: {
-          switch (attribute.componentCount()) {
-            case 1: {
-              this.cursor_signed1 = SMFByteBufferCursors.createSigned1(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 2: {
-              this.cursor_signed2 = SMFByteBufferCursors.createSigned2(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 3: {
-              this.cursor_signed3 = SMFByteBufferCursors.createSigned3(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 4: {
-              this.cursor_signed4 = SMFByteBufferCursors.createSigned4(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            default:
-              throw new UnreachableCodeException();
-          }
+          this.createIntegerSignedCursor(
+            in_attribute_buffer,
+            in_packed_config,
+            in_packed_attribute,
+            attribute);
           break;
         }
         case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-          switch (attribute.componentCount()) {
-            case 1: {
-              this.cursor_unsigned1 = SMFByteBufferCursors.createUnsigned1(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 2: {
-              this.cursor_unsigned2 = SMFByteBufferCursors.createUnsigned2(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 3: {
-              this.cursor_unsigned3 = SMFByteBufferCursors.createUnsigned3(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 4: {
-              this.cursor_unsigned4 = SMFByteBufferCursors.createUnsigned4(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            default:
-              throw new UnreachableCodeException();
-          }
+          this.createIntegerUnsignedCursor(
+            in_attribute_buffer,
+            in_packed_config,
+            in_packed_attribute,
+            attribute);
           break;
         }
         case ELEMENT_TYPE_FLOATING: {
-          switch (attribute.componentCount()) {
-            case 1: {
-              this.cursor_float1 = SMFByteBufferCursors.createFloat1(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 2: {
-              this.cursor_float2 = SMFByteBufferCursors.createFloat2(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 3: {
-              this.cursor_float3 = SMFByteBufferCursors.createFloat3(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            case 4: {
-              this.cursor_float4 = SMFByteBufferCursors.createFloat4(
-                in_packed_config, in_packed_attribute, in_attribute_buffer);
-              break;
-            }
-            default:
-              throw new UnreachableCodeException();
-          }
+          this.createFloatingCursor(
+            in_attribute_buffer,
+            in_packed_config,
+            in_packed_attribute,
+            attribute);
           break;
         }
       }
+    }
+  }
+
+  private void createFloatingCursor(
+    final ByteBuffer in_attribute_buffer,
+    final SMFByteBufferPackingConfiguration in_packed_config,
+    final SMFByteBufferPackedAttribute in_packed_attribute,
+    final SMFAttribute attribute)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        this.cursor_float1 = SMFByteBufferCursors.createFloat1(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 2: {
+        this.cursor_float2 = SMFByteBufferCursors.createFloat2(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 3: {
+        this.cursor_float3 = SMFByteBufferCursors.createFloat3(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 4: {
+        this.cursor_float4 = SMFByteBufferCursors.createFloat4(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      default:
+        throw new UnreachableCodeException();
+    }
+  }
+
+  private void createIntegerUnsignedCursor(
+    final ByteBuffer in_attribute_buffer,
+    final SMFByteBufferPackingConfiguration in_packed_config,
+    final SMFByteBufferPackedAttribute in_packed_attribute,
+    final SMFAttribute attribute)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        this.cursor_unsigned1 = SMFByteBufferCursors.createUnsigned1(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 2: {
+        this.cursor_unsigned2 = SMFByteBufferCursors.createUnsigned2(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 3: {
+        this.cursor_unsigned3 = SMFByteBufferCursors.createUnsigned3(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 4: {
+        this.cursor_unsigned4 = SMFByteBufferCursors.createUnsigned4(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      default:
+        throw new UnreachableCodeException();
+    }
+  }
+
+  private void createIntegerSignedCursor(
+    final ByteBuffer in_attribute_buffer,
+    final SMFByteBufferPackingConfiguration in_packed_config,
+    final SMFByteBufferPackedAttribute in_packed_attribute,
+    final SMFAttribute attribute)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        this.cursor_signed1 = SMFByteBufferCursors.createSigned1(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 2: {
+        this.cursor_signed2 = SMFByteBufferCursors.createSigned2(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 3: {
+        this.cursor_signed3 = SMFByteBufferCursors.createSigned3(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      case 4: {
+        this.cursor_signed4 = SMFByteBufferCursors.createSigned4(
+          in_packed_config, in_packed_attribute, in_attribute_buffer);
+        break;
+      }
+      default:
+        throw new UnreachableCodeException();
     }
   }
 

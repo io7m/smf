@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
@@ -37,6 +36,7 @@ import java.net.URI;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
 

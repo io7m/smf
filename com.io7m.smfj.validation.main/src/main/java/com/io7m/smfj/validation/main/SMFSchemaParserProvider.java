@@ -19,7 +19,6 @@ package com.io7m.smfj.validation.main;
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
-import java.util.Objects;
 import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;

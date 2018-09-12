@@ -31,6 +31,8 @@ import org.immutables.value.Value;
 @Value.Immutable
 public interface SMFAttributeArrayFloating1Type extends SMFAttributeArrayType
 {
+  // Unavoidable "too many parameters" issue.
+  // CHECKSTYLE:OFF
   @Override
   default <A, B, E extends Exception> B matchArray(
     final A context,
@@ -47,6 +49,7 @@ public interface SMFAttributeArrayFloating1Type extends SMFAttributeArrayType
     final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
     final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
     throws E
+  // CHECKSTYLE:ON
   {
     return on_f1.call(context, this);
   }

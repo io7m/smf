@@ -18,5 +18,4 @@
  * Core types and functions.
  */
 
- package com.io7m.smfj.tests;
-
+package com.io7m.smfj.tests;

@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
@@ -40,6 +39,7 @@ import javaslang.collection.SortedSet;
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -278,79 +278,103 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
   {
     switch (attribute.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementSigned1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementSigned2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementSigned3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementSigned4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementIntegerSigned(receiver, attribute, line);
       }
 
       case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementUnsigned1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementUnsigned2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementUnsigned3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementUnsigned4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementIntegerUnsigned(receiver, attribute, line);
       }
 
       case ELEMENT_TYPE_FLOATING: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementFloat1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementFloat2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementFloat3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementFloat4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementFloating(receiver, attribute, line);
       }
     }
 
     throw new UnreachableCodeException();
+  }
+
+  private SMFTParsingStatus parseAttributeElementFloating(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementFloat1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementFloat2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementFloat3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementFloat4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private SMFTParsingStatus parseAttributeElementIntegerUnsigned(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementUnsigned1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementUnsigned2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementUnsigned3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementUnsigned4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private SMFTParsingStatus parseAttributeElementIntegerSigned(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementSigned1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementSigned2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementSigned3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementSigned4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
   }
 
   private SMFTParsingStatus parseAttributeElementUnsigned4(

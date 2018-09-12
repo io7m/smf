@@ -17,7 +17,6 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jaffirm.core.Preconditions;
-import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -43,11 +42,11 @@ import javaslang.collection.List;
 import javaslang.collection.Map;
 import javaslang.collection.Vector;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
- * The default implementation of the {@link SMFMemoryMeshProducerType}
- * interface.
+ * The default implementation of the {@link SMFMemoryMeshProducerType} interface.
  */
 
 public final class SMFMemoryMeshProducer
@@ -291,126 +290,141 @@ public final class SMFMemoryMeshProducer
   {
     switch (this.attribute_current.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned4.builder()
-                .setValues(this.elements.map(x -> (Vector4L) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned3.builder()
-                .setValues(this.elements.map(x -> (Vector3L) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned2.builder()
-                .setValues(this.elements.map(x -> (Vector2L) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned1.builder()
-                .setValues(this.elements.map(x -> (Long) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishIntegerSignedAttribute();
         break;
       }
 
       case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned4.builder()
-                .setValues(this.elements.map(x -> (Vector4L) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned3.builder()
-                .setValues(this.elements.map(x -> (Vector3L) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned2.builder()
-                .setValues(this.elements.map(x -> (Vector2L) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned1.builder()
-                .setValues(this.elements.map(x -> (Long) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishIntegerUnsignedAttribute();
         break;
       }
 
       case ELEMENT_TYPE_FLOATING: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating4.builder()
-                .setValues(this.elements.map(x -> (Vector4D) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating3.builder()
-                .setValues(this.elements.map(x -> (Vector3D) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating2.builder()
-                .setValues(this.elements.map(x -> (Vector2D) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating1.builder()
-                .setValues(this.elements.map(x -> (Double) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishFloatingAttribute();
         break;
+      }
+    }
+  }
+
+  private void finishFloatingAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating4.builder()
+            .setValues(this.elements.map(x -> (Vector4D) x))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating3.builder()
+            .setValues(this.elements.map(x -> (Vector3D) x))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating2.builder()
+            .setValues(this.elements.map(x -> (Vector2D) x))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating1.builder()
+            .setValues(this.elements.map(x -> (Double) x))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private void finishIntegerUnsignedAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned4.builder()
+            .setValues(this.elements.map(x -> (Vector4L) x))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned3.builder()
+            .setValues(this.elements.map(x -> (Vector3L) x))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned2.builder()
+            .setValues(this.elements.map(x -> (Vector2L) x))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned1.builder()
+            .setValues(this.elements.map(x -> (Long) x))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private void finishIntegerSignedAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned4.builder()
+            .setValues(this.elements.map(x -> (Vector4L) x))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned3.builder()
+            .setValues(this.elements.map(x -> (Vector3L) x))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned2.builder()
+            .setValues(this.elements.map(x -> (Vector2L) x))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays = this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned1.builder()
+            .setValues(this.elements.map(x -> (Long) x))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
       }
     }
   }

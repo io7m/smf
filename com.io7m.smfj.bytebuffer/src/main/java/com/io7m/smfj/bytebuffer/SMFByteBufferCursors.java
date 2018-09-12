@@ -74,7 +74,10 @@ import static com.io7m.smfj.bytebuffer.SMFByteBufferCursorsUnsigned.Unsigned4b8;
  * Cursors for reading/writing byte buffers.
  */
 
+// Unavoidable class data abstraction problem: Too many references to other classes.
+// CHECKSTYLE:OFF
 public final class SMFByteBufferCursors
+  // CHECKSTYLE:ON
 {
   private SMFByteBufferCursors()
   {

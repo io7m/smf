@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
@@ -34,6 +33,7 @@ import javaslang.collection.List;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 

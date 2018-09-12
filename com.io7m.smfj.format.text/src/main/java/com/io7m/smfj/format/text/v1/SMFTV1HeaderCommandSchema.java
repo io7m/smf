@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
@@ -27,6 +26,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import javaslang.collection.List;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;

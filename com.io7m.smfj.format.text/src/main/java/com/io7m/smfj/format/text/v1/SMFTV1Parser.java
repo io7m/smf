@@ -19,7 +19,6 @@ package com.io7m.smfj.format.text.v1;
 import com.io7m.jaffirm.core.Invariants;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jlexing.core.LexicalPosition;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;

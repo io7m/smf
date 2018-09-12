@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -38,6 +37,7 @@ import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;

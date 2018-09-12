@@ -17,7 +17,6 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jfunctional.Unit;
-import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -34,6 +33,7 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import static com.io7m.jfunctional.Unit.unit;
 

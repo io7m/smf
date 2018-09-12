@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -29,6 +28,7 @@ import javaslang.collection.List;
 import javaslang.control.Validation;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import static javaslang.control.Validation.valid;

@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;

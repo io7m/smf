@@ -16,13 +16,13 @@
 
 package com.io7m.smfj.processing.api;
 
-import java.util.Objects;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.ServiceLoader;
 
 /**

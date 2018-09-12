@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;

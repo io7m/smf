@@ -16,12 +16,12 @@
 
 package com.io7m.smfj.format.text;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -40,8 +40,8 @@ public final class SMFBase64Lines
   }
 
   /**
-   * Serialize the given binary data into lines of at most 72 characters
-   * of Base64 text. The lines do not have terminating line breaks.
+   * Serialize the given binary data into lines of at most 72 characters of Base64 text. The lines
+   * do not have terminating line breaks.
    *
    * @param data The data
    *

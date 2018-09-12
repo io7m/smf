@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text;
 
-import java.util.Objects;
 import javaslang.collection.Iterator;
 import javaslang.collection.List;
 import org.slf4j.Logger;
@@ -24,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * A line reader based on a list of strings.

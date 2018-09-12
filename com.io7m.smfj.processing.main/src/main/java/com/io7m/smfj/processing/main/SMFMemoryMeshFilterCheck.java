@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;

@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -40,6 +39,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 

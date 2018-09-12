@@ -17,7 +17,6 @@
 package com.io7m.smfj.processing.main;
 
 import com.io7m.jfunctional.Pair;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;

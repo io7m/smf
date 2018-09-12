@@ -30,8 +30,10 @@ import javaslang.collection.SortedMap;
 
 import java.io.IOException;
 
-final class NonInterleaved
-  implements SMFSerializerDataAttributesNonInterleavedType
+// Unavoidable class data abstraction coupling style issue: Too many classes referenced.
+// CHECKSTYLE:OFF
+final class NonInterleaved implements SMFSerializerDataAttributesNonInterleavedType
+  // CHECKSTYLE:ON
 {
   private final SMFBDataStreamWriterType writer;
   private final SMFHeader header;

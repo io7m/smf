@@ -16,13 +16,13 @@
 
 package com.io7m.smfj.processing.api;
 
-import java.util.Objects;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
 
+import java.util.Objects;
+
 /**
- * An abstract implementation of the {@link SMFFilterCommandModuleProviderType}
- * interface.
+ * An abstract implementation of the {@link SMFFilterCommandModuleProviderType} interface.
  */
 
 public abstract class SMFFilterCommandModuleProviderAbstract

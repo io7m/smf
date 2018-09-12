@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text;
 
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +25,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * A line reader based on blocking stream IO.

@@ -38,8 +38,8 @@ public final class SMFFilterCommandParsing
   }
 
   /**
-   * Construct an error message that indicates that one sort of input was
-   * expected but another was received.
+   * Construct an error message that indicates that one sort of input was expected but another was
+   * received.
    *
    * @param uri      The URI, if any
    * @param line     The current line number
@@ -61,8 +61,8 @@ public final class SMFFilterCommandParsing
   }
 
   /**
-   * Construct an error message that indicates that one sort of input was
-   * expected but another was received.
+   * Construct an error message that indicates that one sort of input was expected but another was
+   * received.
    *
    * @param uri      The URI, if any
    * @param line     The current line number

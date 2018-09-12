@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -33,6 +32,7 @@ import javaslang.collection.Seq;
 import javaslang.control.Validation;
 
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;

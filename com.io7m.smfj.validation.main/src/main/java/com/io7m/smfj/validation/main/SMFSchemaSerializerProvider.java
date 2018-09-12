@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.validation.main;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
@@ -37,6 +36,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 

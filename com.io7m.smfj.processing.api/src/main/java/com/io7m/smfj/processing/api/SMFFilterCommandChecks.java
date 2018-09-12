@@ -44,8 +44,7 @@ public final class SMFFilterCommandChecks
    * @param attributes The available attributes
    * @param name       The attribute name
    *
-   * @return The list of errors plus an error indicating that the attribute does
-   * not exist
+   * @return The list of errors plus an error indicating that the attribute does not exist
    */
 
   public static Seq<SMFProcessingError> checkAttributeExists(
@@ -87,8 +86,7 @@ public final class SMFFilterCommandChecks
    * @param attributes The available attributes
    * @param name       The attribute name
    *
-   * @return The list of errors plus an error indicating that the attribute
-   * already exists
+   * @return The list of errors plus an error indicating that the attribute already exists
    */
 
   public static Seq<SMFProcessingError> checkAttributeNonexistent(

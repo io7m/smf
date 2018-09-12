@@ -18,7 +18,6 @@ package com.io7m.smfj.format.text;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositions;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.format.text.v1.SMFTV1Parser;
@@ -50,6 +49,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.util.BitSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 

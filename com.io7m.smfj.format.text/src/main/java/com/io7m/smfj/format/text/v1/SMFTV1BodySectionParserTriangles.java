@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTBodySectionParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
@@ -30,6 +29,7 @@ import javaslang.collection.List;
 
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -80,6 +80,59 @@ public final class SMFTV1BodySectionParserTriangles implements
   {
     return data_receiver_opt.orElseGet(
       () -> new SMFParserEventsDataTrianglesIgnoringReceiver(receiver));
+  }
+
+  private static boolean checkTrianglesAreCorrect(
+    final SMFTLineReaderType reader,
+    final SMFParserEventsDataTrianglesType tri_receiver,
+    final long triangle_count,
+    final long triangles_remaining)
+  {
+    if (triangles_remaining < 0L) {
+      tri_receiver.onError(
+        tooManyTriangles(reader, triangle_count, triangles_remaining));
+      return false;
+    }
+
+    if (triangles_remaining > 0L) {
+      tri_receiver.onError(
+        tooFewTriangles(reader, triangle_count, triangles_remaining));
+      return false;
+    }
+
+    return true;
+  }
+
+  private static SMFParseError tooFewTriangles(
+    final SMFTLineReaderType reader,
+    final long triangle_count,
+    final long triangles_remaining)
+  {
+    return errorExpectedGot(
+      "Too few triangles were provided.",
+      triangle_count + " triangles",
+      (triangle_count - triangles_remaining) + " triangles",
+      reader.position());
+  }
+
+  private static SMFParseError tooManyTriangles(
+    final SMFTLineReaderType reader,
+    final long triangle_count,
+    final long triangles_remaining)
+  {
+    return errorExpectedGot(
+      "Too many triangles were provided.",
+      triangle_count + " triangles",
+      (triangle_count - triangles_remaining) + " triangles",
+      reader.position());
+  }
+
+  private static SMFParseError unexpectedEOF(final SMFTLineReaderType reader)
+  {
+    return SMFParseError.of(
+      reader.position(),
+      "Unexpected EOF",
+      Optional.empty());
   }
 
   @Override
@@ -153,59 +206,6 @@ public final class SMFTV1BodySectionParserTriangles implements
     } finally {
       tri_receiver.onDataTrianglesFinish();
     }
-  }
-
-  private static boolean checkTrianglesAreCorrect(
-    final SMFTLineReaderType reader,
-    final SMFParserEventsDataTrianglesType tri_receiver,
-    final long triangle_count,
-    final long triangles_remaining)
-  {
-    if (triangles_remaining < 0L) {
-      tri_receiver.onError(
-        tooManyTriangles(reader, triangle_count, triangles_remaining));
-      return false;
-    }
-
-    if (triangles_remaining > 0L) {
-      tri_receiver.onError(
-        tooFewTriangles(reader, triangle_count, triangles_remaining));
-      return false;
-    }
-
-    return true;
-  }
-
-  private static SMFParseError tooFewTriangles(
-    final SMFTLineReaderType reader,
-    final long triangle_count,
-    final long triangles_remaining)
-  {
-    return errorExpectedGot(
-      "Too few triangles were provided.",
-      triangle_count + " triangles",
-      (triangle_count - triangles_remaining) + " triangles",
-      reader.position());
-  }
-
-  private static SMFParseError tooManyTriangles(
-    final SMFTLineReaderType reader,
-    final long triangle_count,
-    final long triangles_remaining)
-  {
-    return errorExpectedGot(
-      "Too many triangles were provided.",
-      triangle_count + " triangles",
-      (triangle_count - triangles_remaining) + " triangles",
-      reader.position());
-  }
-
-  private static SMFParseError unexpectedEOF(final SMFTLineReaderType reader)
-  {
-    return SMFParseError.of(
-      reader.position(),
-      "Unexpected EOF",
-      Optional.empty());
   }
 
   private SMFTParsingStatus parseAttributeElementUnsigned3(
