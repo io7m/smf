@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
@@ -67,10 +67,10 @@ public final class SMFByteBufferAttributePacker
     final SMFByteBufferPackedAttribute in_packed_attribute,
     final long in_vertices)
   {
-    this.errors = NullCheck.notNull(in_errors, "Errors");
-    NullCheck.notNull(in_attribute_buffer, "Attribute buffer");
-    NullCheck.notNull(in_packed_config, "Packed config");
-    NullCheck.notNull(in_packed_attribute, "Packed attribute");
+    this.errors = Objects.requireNonNull(in_errors, "Errors");
+    Objects.requireNonNull(in_attribute_buffer, "Attribute buffer");
+    Objects.requireNonNull(in_packed_config, "Packed config");
+    Objects.requireNonNull(in_packed_attribute, "Packed attribute");
 
     final SMFAttribute attribute = in_packed_attribute.attribute();
     this.vertices = in_vertices;

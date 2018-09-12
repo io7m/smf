@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -56,7 +56,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
   private SMFMemoryMeshFilterTrianglesOptimize(
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration in_config)
   {
-    this.config = NullCheck.notNull(in_config, "Config");
+    this.config = Objects.requireNonNull(in_config, "Config");
   }
 
   private static SMFProcessingError error(
@@ -106,8 +106,8 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 2) {
       try {
@@ -193,8 +193,8 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     List<SMFProcessingError> errors = List.empty();
     final long vertices = m.header().vertexCount();

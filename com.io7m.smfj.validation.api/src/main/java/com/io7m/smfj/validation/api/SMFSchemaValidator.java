@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -252,8 +252,8 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     final SMFHeader header,
     final SMFSchema schema)
   {
-    NullCheck.notNull(header, "Header");
-    NullCheck.notNull(schema, "Schema");
+    Objects.requireNonNull(header, "Header");
+    Objects.requireNonNull(schema, "Schema");
 
     List<SMFErrorType> errors = List.empty();
 

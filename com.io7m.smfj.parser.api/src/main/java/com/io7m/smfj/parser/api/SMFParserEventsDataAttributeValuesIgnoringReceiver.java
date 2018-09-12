@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.parser.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFWarningType;
 
@@ -39,7 +39,7 @@ public final class SMFParserEventsDataAttributeValuesIgnoringReceiver
   public SMFParserEventsDataAttributeValuesIgnoringReceiver(
     final SMFParserEventsErrorType in_receiver)
   {
-    this.receiver = NullCheck.notNull(in_receiver, "Receiver");
+    this.receiver = Objects.requireNonNull(in_receiver, "Receiver");
   }
 
   @Override

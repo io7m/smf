@@ -19,7 +19,7 @@ package com.io7m.smfj.format.text.v1;
 import com.io7m.jaffirm.core.Invariants;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -85,10 +85,10 @@ public final class SMFTV1Parser implements SMFParserSequentialType
     final SMFParserEventsType in_events,
     final SMFTLineReaderType in_reader)
   {
-    this.version = NullCheck.notNull(in_version, "Version");
-    this.state = NullCheck.notNull(in_state, "State");
-    this.events = NullCheck.notNull(in_events, "Events");
-    this.reader = NullCheck.notNull(in_reader, "Reader");
+    this.version = Objects.requireNonNull(in_version, "Version");
+    this.state = Objects.requireNonNull(in_state, "State");
+    this.events = Objects.requireNonNull(in_events, "Events");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
 
     Preconditions.checkPreconditionI(
       in_version.major(),

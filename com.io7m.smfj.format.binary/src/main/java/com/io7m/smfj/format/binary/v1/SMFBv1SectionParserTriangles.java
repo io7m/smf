@@ -31,7 +31,7 @@ import java.io.IOException;
 import java.util.BitSet;
 import java.util.Optional;
 
-import static com.io7m.jnull.NullCheck.notNull;
+import java.util.Objects;
 
 /**
  * A parser for triangle sections.
@@ -50,7 +50,7 @@ public final class SMFBv1SectionParserTriangles
 
   public SMFBv1SectionParserTriangles(final BitSet in_state)
   {
-    this.state = notNull(in_state, "state");
+    this.state = Objects.requireNonNull(in_state, "state");
   }
 
   @Override
@@ -65,9 +65,9 @@ public final class SMFBv1SectionParserTriangles
     final SMFParserEventsBodyType events,
     final SMFBDataStreamReaderType reader)
   {
-    notNull(header, "Header");
-    notNull(events, "Events");
-    notNull(reader, "Reader");
+    Objects.requireNonNull(header, "Header");
+    Objects.requireNonNull(events, "Events");
+    Objects.requireNonNull(reader, "Reader");
 
     final Optional<SMFParserEventsDataTrianglesType> tri_opt = events.onTriangles();
     if (tri_opt.isPresent()) {

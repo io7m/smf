@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -63,8 +63,8 @@ public final class SMFMemoryMeshParser
     final SMFMemoryMesh mesh,
     final SMFParserEventsType events)
   {
-    NullCheck.notNull(mesh, "mesh");
-    NullCheck.notNull(events, "events");
+    Objects.requireNonNull(mesh, "mesh");
+    Objects.requireNonNull(events, "events");
     throw new UnreachableCodeException();
   }
 
@@ -81,8 +81,8 @@ public final class SMFMemoryMeshParser
     final SMFMemoryMesh mesh,
     final SMFParserEventsType events)
   {
-    NullCheck.notNull(mesh, "mesh");
-    NullCheck.notNull(events, "events");
+    Objects.requireNonNull(mesh, "mesh");
+    Objects.requireNonNull(events, "events");
     return new Sequential(mesh, events);
   }
 
@@ -95,8 +95,8 @@ public final class SMFMemoryMeshParser
       final SMFMemoryMesh in_mesh,
       final SMFParserEventsType in_events)
     {
-      this.mesh = NullCheck.notNull(in_mesh, "Mesh");
-      this.events = NullCheck.notNull(in_events, "Events");
+      this.mesh = Objects.requireNonNull(in_mesh, "Mesh");
+      this.events = Objects.requireNonNull(in_events, "Events");
     }
 
     @Override

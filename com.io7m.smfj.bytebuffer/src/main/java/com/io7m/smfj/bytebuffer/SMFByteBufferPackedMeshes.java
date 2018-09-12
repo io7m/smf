@@ -17,7 +17,7 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.jaffirm.core.Invariants;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
@@ -81,8 +81,8 @@ public final class SMFByteBufferPackedMeshes
     final SMFParserEventsDataMetaOptionalSupplierType in_meta,
     final SMFByteBufferPackerEventsType in_events)
   {
-    this.meta = NullCheck.notNull(in_meta, "Meta");
-    this.events = NullCheck.notNull(in_events, "Events");
+    this.meta = Objects.requireNonNull(in_meta, "Meta");
+    this.events = Objects.requireNonNull(in_events, "Events");
     this.errors = List.empty();
     this.warnings = List.empty();
   }
@@ -405,7 +405,7 @@ public final class SMFByteBufferPackedMeshes
   public Optional<SMFParserEventsBodyType> onHeaderParsed(
     final SMFHeader in_header)
   {
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.header = Objects.requireNonNull(in_header, "Header");
 
     final Validation<List<SMFErrorType>, SortedMap<Integer, SMFByteBufferPackingConfiguration>> result =
       this.events.onHeader(this.header);

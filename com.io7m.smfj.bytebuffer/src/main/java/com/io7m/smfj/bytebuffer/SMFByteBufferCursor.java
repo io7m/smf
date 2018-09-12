@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursorByteReadableType;
 import com.io7m.jpra.runtime.java.JPRAValueType;
 
@@ -35,7 +35,7 @@ abstract class SMFByteBufferCursor implements JPRAValueType
     final int in_size,
     final int in_offset)
   {
-    this.cursor = NullCheck.notNull(in_cursor, "SMFByteBufferCursor");
+    this.cursor = Objects.requireNonNull(in_cursor, "SMFByteBufferCursor");
     this.offset = in_offset;
     this.size = in_size;
   }

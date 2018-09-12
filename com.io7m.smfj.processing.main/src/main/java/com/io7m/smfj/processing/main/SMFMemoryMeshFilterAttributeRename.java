@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -63,8 +63,8 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     final SMFAttributeName in_source,
     final SMFAttributeName in_target)
   {
-    this.source = NullCheck.notNull(in_source, "Source");
-    this.target = NullCheck.notNull(in_target, "Target");
+    this.source = Objects.requireNonNull(in_source, "Source");
+    this.target = Objects.requireNonNull(in_target, "Target");
   }
 
   /**
@@ -82,8 +82,8 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 2) {
       try {
@@ -136,8 +136,8 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       m.header().attributesByName();

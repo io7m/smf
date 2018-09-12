@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.binary.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRAStringTruncation;
 import com.io7m.junreachable.UnreachableCodeException;
@@ -72,9 +72,9 @@ public final class SMFBv1Serializer implements SMFSerializerType
     final URI in_uri,
     final OutputStream in_stream)
   {
-    this.version = NullCheck.notNull(in_version, "Version");
-    this.uri = NullCheck.notNull(in_uri, "URI");
-    this.stream = NullCheck.notNull(in_stream, "Stream");
+    this.version = Objects.requireNonNull(in_version, "Version");
+    this.uri = Objects.requireNonNull(in_uri, "URI");
+    this.stream = Objects.requireNonNull(in_stream, "Stream");
     this.writer = SMFBDataStreamWriter.create(this.uri, this.stream);
   }
 
@@ -114,7 +114,7 @@ public final class SMFBv1Serializer implements SMFSerializerType
     final SMFHeader in_header)
     throws IllegalStateException, IOException
   {
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.header = Objects.requireNonNull(in_header, "Header");
 
     checkAlignment(this.writer);
 

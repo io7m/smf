@@ -12,7 +12,7 @@
   </parent>
   <artifactId>com.io7m.smfj.format.obj</artifactId>
 
-  <packaging>bundle</packaging>
+  <packaging>jar</packaging>
   <name>com.io7m.smfj.format.obj</name>
   <description>Sequential mesh format (Wavefront OBJ importer)</description>
   <url>http://io7m.github.io/smfj/</url>
@@ -38,10 +38,6 @@
     <dependency>
       <groupId>com.io7m.jaffirm</groupId>
       <artifactId>com.io7m.jaffirm.core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>com.io7m.jnull</groupId>
-      <artifactId>com.io7m.jnull.core</artifactId>
     </dependency>
     <dependency>
       <groupId>com.io7m.jcoords</groupId>
@@ -73,6 +69,11 @@
       <artifactId>org.osgi.service.component.annotations</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.osgi</groupId>
+      <artifactId>org.osgi.annotation.bundle</artifactId>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -81,20 +82,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-      </plugin>
-
-      <!-- Produce OSGi bundle -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              com.io7m.smfj.format.obj
-            </Export-Package>
-          </instructions>
-        </configuration>
       </plugin>
     </plugins>
   </build>

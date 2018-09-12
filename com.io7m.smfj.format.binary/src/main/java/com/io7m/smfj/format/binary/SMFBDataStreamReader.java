@@ -18,7 +18,7 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.commons.io.input.CountingInputStream;
@@ -51,9 +51,9 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
     final InputStream in_stream)
   {
     this.uri =
-      NullCheck.notNull(in_uri, "URI");
+      Objects.requireNonNull(in_uri, "URI");
     this.stream =
-      new CountingInputStream(NullCheck.notNull(in_stream, "Stream"));
+      new CountingInputStream(Objects.requireNonNull(in_stream, "Stream"));
 
     this.byte1 = new byte[1];
     this.byte2 = new byte[2];

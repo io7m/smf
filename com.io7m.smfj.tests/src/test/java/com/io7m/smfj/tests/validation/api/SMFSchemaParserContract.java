@@ -18,7 +18,7 @@ package com.io7m.smfj.tests.validation.api;
 
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
@@ -71,9 +71,7 @@ public abstract class SMFSchemaParserContract
   {
     final String path = "/com/io7m/smfj/tests/validation/api/" + name;
     final InputStream stream =
-      NullCheck.notNull(
-        SMFSchemaParserContract.class.getResourceAsStream(path),
-        "Stream");
+      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(path), "Stream");
     return this.create(Paths.get(path), stream);
   }
 

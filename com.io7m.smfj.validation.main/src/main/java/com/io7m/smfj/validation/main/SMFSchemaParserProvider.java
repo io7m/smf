@@ -19,7 +19,7 @@ package com.io7m.smfj.validation.main;
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -555,8 +555,8 @@ public final class SMFSchemaParserProvider
       final URI in_uri,
       final InputStream in_stream)
     {
-      this.uri = NullCheck.notNull(in_uri, "uri");
-      this.stream = NullCheck.notNull(in_stream, "stream");
+      this.uri = Objects.requireNonNull(in_uri, "uri");
+      this.stream = Objects.requireNonNull(in_stream, "stream");
     }
 
     @Override

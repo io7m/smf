@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
@@ -93,8 +93,8 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.isEmpty()) {
       try {
@@ -140,8 +140,8 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final ZonedDateTime time =
       ZonedDateTime.now(ZoneId.of("UTC"));

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
@@ -40,8 +40,8 @@ final class NonInterleaved
     final SMFHeader in_header,
     final SMFBDataStreamWriterType in_writer)
   {
-    this.header = NullCheck.notNull(in_header, "Header");
-    this.writer = NullCheck.notNull(in_writer, "Writer");
+    this.header = Objects.requireNonNull(in_header, "Header");
+    this.writer = Objects.requireNonNull(in_writer, "Writer");
   }
 
   private static SMFSerializerDataAttributesValuesType serializeFloat(

@@ -21,7 +21,7 @@ import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jlexing.core.LexicalPositions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jnull.Nullable;
 import com.io7m.jobj.core.JOParser;
 import com.io7m.jobj.core.JOParserErrorCode;
@@ -95,7 +95,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final InputStream in_stream,
     final SMFParserEventsType in_events)
   {
-    this.events = NullCheck.notNull(in_events, "Events");
+    this.events = Objects.requireNonNull(in_events, "Events");
     this.parser = JOParser.newParserFromStream(in_path, in_stream, this);
     this.positions = new ArrayList<>(8);
     this.normals = new ArrayList<>(8);

@@ -18,6 +18,9 @@
  * Main validation implementation.
  */
 
-@com.io7m.jnull.NonNullByDefault
+@org.osgi.annotation.bundle.Export
+@org.osgi.annotation.bundle.Header(
+  name = "Automatic-Module-Name",
+  value = "com.io7m.smfj.validation.main")
 package com.io7m.smfj.validation.main;
 

@@ -20,6 +20,6 @@
  * <p>This is NOT part of the public API.</p>
  */
 
-@com.io7m.jnull.NonNullByDefault
+
 package com.io7m.smfj.format.text.implementation;
 

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.tests.format.binary;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -72,7 +72,7 @@ public final class SMFB
   private SMFB(
     final String[] in_args)
   {
-    this.args = NullCheck.notNull(in_args, "args");
+    this.args = Objects.requireNonNull(in_args, "args");
   }
 
   public static void main(

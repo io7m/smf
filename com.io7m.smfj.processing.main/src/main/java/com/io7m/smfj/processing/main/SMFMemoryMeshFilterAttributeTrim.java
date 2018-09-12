@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -61,7 +61,7 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
   private SMFMemoryMeshFilterAttributeTrim(
     final Set<SMFAttributeName> in_attributes)
   {
-    this.attributes = NullCheck.notNull(in_attributes, "Attributes");
+    this.attributes = Objects.requireNonNull(in_attributes, "Attributes");
   }
 
   /**
@@ -79,8 +79,8 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() >= 1) {
       try {
@@ -128,8 +128,8 @@ public final class SMFMemoryMeshFilterAttributeTrim implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final SMFHeader header = m.header();
 

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -72,13 +72,13 @@ public final class SMFTV1HeaderCommandAttribute
     final SMFHeader.Builder in_header)
   {
     this.attributes_lines =
-      NullCheck.notNull(in_attributes_lines, "Attribute Lines");
+      Objects.requireNonNull(in_attributes_lines, "Attribute Lines");
     this.attributes_list =
-      NullCheck.notNull(in_attributes_list, "Attributes List");
+      Objects.requireNonNull(in_attributes_list, "Attributes List");
     this.reader =
-      NullCheck.notNull(in_reader, "Reader");
+      Objects.requireNonNull(in_reader, "Reader");
     this.header =
-      NullCheck.notNull(in_header, "Header");
+      Objects.requireNonNull(in_header, "Header");
   }
 
   @Override

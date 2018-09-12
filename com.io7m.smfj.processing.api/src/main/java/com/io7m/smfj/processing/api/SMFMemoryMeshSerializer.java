@@ -17,7 +17,7 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jfunctional.Unit;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -62,8 +62,8 @@ public final class SMFMemoryMeshSerializer
     final SMFSerializerType s)
     throws IOException
   {
-    NullCheck.notNull(mesh, "Mesh");
-    NullCheck.notNull(s, "Serial");
+    Objects.requireNonNull(mesh, "Mesh");
+    Objects.requireNonNull(s, "Serial");
 
     final SMFHeader header = mesh.header();
     s.serializeHeader(header);

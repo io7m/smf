@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.probe.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.collection.Seq;
 import javaslang.control.Validation;
@@ -67,7 +67,7 @@ public final class SMFVersionProbeControllerOSGi
     final SMFVersionProbeProviderType provider)
   {
     synchronized (this.probes) {
-      this.probes.add(NullCheck.notNull(provider, "Provider"));
+      this.probes.add(Objects.requireNonNull(provider, "Provider"));
     }
   }
 
@@ -81,7 +81,7 @@ public final class SMFVersionProbeControllerOSGi
     final SMFVersionProbeProviderType provider)
   {
     synchronized (this.probes) {
-      this.probes.remove(NullCheck.notNull(provider, "Provider"));
+      this.probes.remove(Objects.requireNonNull(provider, "Provider"));
     }
   }
 

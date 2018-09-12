@@ -18,6 +18,9 @@
  * Version probe API.
  */
 
-@com.io7m.jnull.NonNullByDefault
+@org.osgi.annotation.bundle.Export
+@org.osgi.annotation.bundle.Header(
+  name = "Automatic-Module-Name",
+  value = "com.io7m.smfj.probe.api")
 package com.io7m.smfj.probe.api;
 

@@ -19,7 +19,7 @@ package com.io7m.smfj.format.binary.v1;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jfunctional.Unit;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
@@ -92,13 +92,13 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     final SMFParserEventsHeaderType in_events_header)
   {
     this.version =
-      NullCheck.notNull(in_version, "Version");
+      Objects.requireNonNull(in_version, "Version");
     this.state =
-      NullCheck.notNull(in_state, "State");
+      Objects.requireNonNull(in_state, "State");
     this.reader =
-      NullCheck.notNull(in_reader, "Reader");
+      Objects.requireNonNull(in_reader, "Reader");
     this.events_header =
-      NullCheck.notNull(in_events_header, "Events Header");
+      Objects.requireNonNull(in_events_header, "Events Header");
     this.sections =
       new SMFBSectionParser(this.reader);
 

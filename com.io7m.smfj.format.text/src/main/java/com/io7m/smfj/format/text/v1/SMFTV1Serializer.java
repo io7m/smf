@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.text.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jnull.Nullable;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
@@ -75,7 +75,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
     final URI in_uri,
     final OutputStream in_stream)
   {
-    this.version = NullCheck.notNull(in_version, "Version");
+    this.version = Objects.requireNonNull(in_version, "Version");
 
     Preconditions.checkPreconditionI(
       in_version.major(),
@@ -91,7 +91,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
     final SMFHeader in_header)
     throws IOException
   {
-    NullCheck.notNull(in_header, "Header");
+    Objects.requireNonNull(in_header, "Header");
 
     if (this.done_header) {
       throw new IllegalStateException("Header has already been serialized");
@@ -275,8 +275,8 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final BufferedWriter in_writer,
       final SMFHeader in_header)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
-      this.header = NullCheck.notNull(in_header, "Header");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
+      this.header = Objects.requireNonNull(in_header, "Header");
       this.queue = new LinkedList<>();
       this.header.attributesInOrder().forEach(this.queue::add);
     }
@@ -286,7 +286,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final SMFAttributeName name)
       throws IllegalArgumentException, IOException
     {
-      NullCheck.notNull(name, "Name");
+      Objects.requireNonNull(name, "Name");
 
       if (this.queue.isEmpty()) {
         throw new IllegalStateException("No more attributes to serialize.");
@@ -352,9 +352,9 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final long in_vertices,
       final SMFAttribute in_attribute)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
       this.vertices = in_vertices;
-      this.attribute = NullCheck.notNull(in_attribute, "Attribute");
+      this.attribute = Objects.requireNonNull(in_attribute, "Attribute");
     }
 
     @Override
@@ -636,8 +636,8 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final BufferedWriter in_writer,
       final SMFHeader in_header)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
-      this.header = NullCheck.notNull(in_header, "Header");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
+      this.header = Objects.requireNonNull(in_header, "Header");
       this.remaining = this.header.triangles().triangleCount();
     }
 

@@ -40,10 +40,10 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import javaslang.collection.List;
+import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -92,9 +92,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
           if (r == -1) {
             break;
           }
-          LOG.debug(
-            "{}",
-            DatatypeConverter.printHexBinary(Arrays.copyOf(buffer, r)));
+          LOG.debug("{}", Hex.encodeHex(Arrays.copyOf(buffer, r)));
         }
       }
 
@@ -134,9 +132,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
           if (r == -1) {
             break;
           }
-          LOG.debug(
-            "{}",
-            DatatypeConverter.printHexBinary(Arrays.copyOf(buffer, r)));
+          LOG.debug("{}", Hex.encodeHex(Arrays.copyOf(buffer, r)));
         }
       }
 

@@ -17,7 +17,7 @@
 package com.io7m.smfj.processing.main;
 
 import com.io7m.jfunctional.Pair;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
@@ -66,8 +66,8 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     final Optional<SMFSchemaName> in_schema_name,
     final Optional<Pair<Integer, Integer>> in_version)
   {
-    this.name = NullCheck.notNull(in_schema_name, "Schema name");
-    this.version = NullCheck.notNull(in_version, "Version");
+    this.name = Objects.requireNonNull(in_schema_name, "Schema name");
+    this.version = Objects.requireNonNull(in_version, "Version");
   }
 
   /**
@@ -101,8 +101,8 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() > 0 && text.length() <= 3) {
       try {
@@ -159,8 +159,8 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Vector<SMFMetadata> filtered = m.metadata().removeAll(meta -> {
       final boolean version_matches;

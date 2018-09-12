@@ -21,7 +21,7 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.io7m.jfunctional.Unit;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -94,7 +94,7 @@ public final class Main implements Runnable
 
   private Main(final String[] in_args)
   {
-    this.args = NullCheck.notNull(in_args, "Arguments");
+    this.args = Objects.requireNonNull(in_args, "Arguments");
 
     final CommandRoot r = new CommandRoot();
     final CommandFormats formats = new CommandFormats();

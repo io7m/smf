@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,8 +39,8 @@ final class SMFBDataFileChannelReader
     final URI in_uri,
     final FileChannel in_channel)
   {
-    this.uri = NullCheck.notNull(in_uri, "URI");
-    this.channel = NullCheck.notNull(in_channel, "Channel");
+    this.uri = Objects.requireNonNull(in_uri, "URI");
+    this.channel = Objects.requireNonNull(in_channel, "Channel");
     this.buffer8 = ByteBuffer.allocate(8);
     this.buffer8.order(ByteOrder.BIG_ENDIAN);
     this.buffer4 = ByteBuffer.allocate(4);

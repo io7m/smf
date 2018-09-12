@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.core;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 
 /**
@@ -48,7 +48,7 @@ public enum SMFComponentType
   SMFComponentType(
     final String in_name)
   {
-    this.name = NullCheck.notNull(in_name, "Name");
+    this.name = Objects.requireNonNull(in_name, "Name");
   }
 
   /**

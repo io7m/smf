@@ -18,7 +18,6 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFFormatDescription;
@@ -40,12 +39,12 @@ import javaslang.collection.SortedSet;
 import javaslang.collection.TreeSet;
 import javaslang.collection.Vector;
 import javaslang.control.Validation;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -55,6 +54,7 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_RECEIVED;
@@ -171,9 +171,9 @@ public final class SMFFormatBinary
     final URI in_uri,
     final InputStream in_stream)
   {
-    NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_uri, "URI");
-    NullCheck.notNull(in_stream, "Stream");
+    Objects.requireNonNull(in_events, "Events");
+    Objects.requireNonNull(in_uri, "URI");
+    Objects.requireNonNull(in_stream, "Stream");
 
     return new ParserSequential(in_events, in_stream, in_uri);
   }
@@ -185,9 +185,9 @@ public final class SMFFormatBinary
     final FileChannel in_channel)
     throws UnsupportedOperationException
   {
-    NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_uri, "URI");
-    NullCheck.notNull(in_channel, "Channel");
+    Objects.requireNonNull(in_events, "Events");
+    Objects.requireNonNull(in_uri, "URI");
+    Objects.requireNonNull(in_channel, "Channel");
 
     throw new UnimplementedCodeException();
   }
@@ -229,7 +229,7 @@ public final class SMFFormatBinary
   public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
     final InputStream stream)
   {
-    NullCheck.notNull(stream, "stream");
+    Objects.requireNonNull(stream, "stream");
 
     try {
       final byte[] data =
@@ -263,10 +263,10 @@ public final class SMFFormatBinary
       sb.append("Bad magic number.");
       sb.append(System.lineSeparator());
       sb.append("  Expected: ");
-      sb.append(DatatypeConverter.printHexBinary(MAGIC_NUMBER));
+      sb.append(Hex.encodeHexString(MAGIC_NUMBER));
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(DatatypeConverter.printHexBinary(magic));
+      sb.append(Hex.encodeHexString(magic));
       sb.append(System.lineSeparator());
       return invalid(Vector.of(errorWithMessage(sb.toString())));
     } catch (final Exception e) {
@@ -287,9 +287,9 @@ public final class SMFFormatBinary
       final InputStream in_stream,
       final URI in_uri)
     {
-      this.events = NullCheck.notNull(in_events, "Events");
-      this.uri = NullCheck.notNull(in_uri, "URI");
-      this.stream = NullCheck.notNull(in_stream, "Stream");
+      this.events = Objects.requireNonNull(in_events, "Events");
+      this.uri = Objects.requireNonNull(in_uri, "URI");
+      this.stream = Objects.requireNonNull(in_stream, "Stream");
       this.reader = SMFBDataStreamReader.create(in_uri, this.stream);
     }
 
@@ -308,10 +308,10 @@ public final class SMFFormatBinary
               .append("Bad magic number.")
               .append(System.lineSeparator())
               .append("  Expected: ")
-              .append(DatatypeConverter.printHexBinary(MAGIC_NUMBER))
+              .append(Hex.encodeHexString(MAGIC_NUMBER))
               .append(System.lineSeparator())
               .append("  Received: ")
-              .append(DatatypeConverter.printHexBinary(magic))
+              .append(Hex.encodeHexString(magic))
               .append(System.lineSeparator())
               .toString();
           this.events.onError(SMFParseError.of(

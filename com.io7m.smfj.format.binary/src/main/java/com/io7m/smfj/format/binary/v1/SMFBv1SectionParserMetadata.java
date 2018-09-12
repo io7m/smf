@@ -34,7 +34,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Optional;
 
-import static com.io7m.jnull.NullCheck.notNull;
+import java.util.Objects;
 
 /**
  * A parser for metadata sections.
@@ -70,9 +70,9 @@ public final class SMFBv1SectionParserMetadata
     final SMFParserEventsBodyType events,
     final SMFBDataStreamReaderType reader)
   {
-    notNull(header, "Header");
-    notNull(events, "Events");
-    notNull(reader, "Reader");
+    Objects.requireNonNull(header, "Header");
+    Objects.requireNonNull(events, "Events");
+    Objects.requireNonNull(reader, "Reader");
 
     try {
       final byte[] buffer =

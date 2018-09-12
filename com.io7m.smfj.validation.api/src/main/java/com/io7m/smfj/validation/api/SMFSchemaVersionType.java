@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
@@ -47,7 +47,7 @@ public interface SMFSchemaVersionType extends Comparable<SMFSchemaVersionType>
   @Override
   default int compareTo(final SMFSchemaVersionType o)
   {
-    NullCheck.notNull(o, "Other");
+    Objects.requireNonNull(o, "Other");
 
     final int r = Integer.compareUnsigned(this.major(), o.major());
     if (r == 0) {

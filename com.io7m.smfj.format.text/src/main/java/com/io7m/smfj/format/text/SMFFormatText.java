@@ -18,7 +18,7 @@ package com.io7m.smfj.format.text;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.format.text.v1.SMFTV1Parser;
@@ -179,9 +179,9 @@ public final class SMFFormatText
     final URI in_uri,
     final InputStream in_stream)
   {
-    NullCheck.notNull(in_events, "Events");
-    NullCheck.notNull(in_uri, "URI");
-    NullCheck.notNull(in_stream, "Stream");
+    Objects.requireNonNull(in_events, "Events");
+    Objects.requireNonNull(in_uri, "URI");
+    Objects.requireNonNull(in_stream, "Stream");
 
     return new Parser(
       in_events, SMFTLineReaderStreamIO.create(in_uri, in_stream));
@@ -228,7 +228,7 @@ public final class SMFFormatText
   public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
     final InputStream stream)
   {
-    NullCheck.notNull(stream, "Stream");
+    Objects.requireNonNull(stream, "Stream");
 
     try (BufferedReader reader =
            new BufferedReader(new InputStreamReader(stream, UTF_8))) {
@@ -265,8 +265,8 @@ public final class SMFFormatText
       final SMFParserEventsType in_events,
       final SMFTLineReaderType in_reader)
     {
-      this.events = NullCheck.notNull(in_events, "Events");
-      this.reader = NullCheck.notNull(in_reader, "Reader");
+      this.events = Objects.requireNonNull(in_events, "Events");
+      this.reader = Objects.requireNonNull(in_reader, "Reader");
     }
 
     @Override

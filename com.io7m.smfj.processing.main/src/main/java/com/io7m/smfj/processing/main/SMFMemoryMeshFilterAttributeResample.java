@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
@@ -60,7 +60,7 @@ public final class SMFMemoryMeshFilterAttributeResample implements
     final SMFAttributeName in_attribute,
     final int in_size)
   {
-    this.attribute = NullCheck.notNull(in_attribute, "Attribute");
+    this.attribute = Objects.requireNonNull(in_attribute, "Attribute");
     this.size = in_size;
   }
 
@@ -79,8 +79,8 @@ public final class SMFMemoryMeshFilterAttributeResample implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 2) {
       try {
@@ -132,8 +132,8 @@ public final class SMFMemoryMeshFilterAttributeResample implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final SMFHeader header = m.header();
 

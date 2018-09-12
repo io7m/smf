@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTBodySectionParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
@@ -69,9 +69,9 @@ public final class SMFTV1BodySectionParserTriangles implements
     final SMFTLineReaderType in_reader,
     final BitSet in_state)
   {
-    this.header_get = NullCheck.notNull(in_header_get, "Header");
-    this.reader = NullCheck.notNull(in_reader, "Reader");
-    this.state = NullCheck.notNull(in_state, "State");
+    this.header_get = Objects.requireNonNull(in_header_get, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
+    this.state = Objects.requireNonNull(in_state, "State");
   }
 
   private static SMFParserEventsDataTrianglesType makeTriangleReceiver(

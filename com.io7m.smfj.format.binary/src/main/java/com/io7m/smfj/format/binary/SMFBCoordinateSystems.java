@@ -19,7 +19,7 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
@@ -48,7 +48,7 @@ public final class SMFBCoordinateSystems
   public static SMFCoordinateSystem unpack(
     final SMFBv1CoordinateSystemsReadableType input)
   {
-    NullCheck.notNull(input, "input");
+    Objects.requireNonNull(input, "input");
 
     final CAxis right = axisFromIndex(input.getRight());
     final CAxis up = axisFromIndex(input.getUp());
@@ -112,8 +112,8 @@ public final class SMFBCoordinateSystems
     final SMFCoordinateSystem system,
     final SMFBv1CoordinateSystemsWritableType out)
   {
-    NullCheck.notNull(system, "system");
-    NullCheck.notNull(out, "out");
+    Objects.requireNonNull(system, "system");
+    Objects.requireNonNull(out, "out");
 
     out.setRight(axisToIndex(system.axes().right()));
     out.setUp(axisToIndex(system.axes().up()));

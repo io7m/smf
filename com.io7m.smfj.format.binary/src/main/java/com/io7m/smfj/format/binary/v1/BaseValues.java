@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
@@ -35,8 +35,8 @@ abstract class BaseValues
     final SMFBDataStreamWriterType in_writer,
     final SMFAttribute in_attribute)
   {
-    this.writer = NullCheck.notNull(in_writer, "Writer");
-    this.attribute = NullCheck.notNull(in_attribute, "Attribute");
+    this.writer = Objects.requireNonNull(in_writer, "Writer");
+    this.attribute = Objects.requireNonNull(in_attribute, "Attribute");
   }
 
   @Override

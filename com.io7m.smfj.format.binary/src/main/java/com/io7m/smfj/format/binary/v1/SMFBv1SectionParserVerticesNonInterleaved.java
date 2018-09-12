@@ -33,7 +33,7 @@ import java.io.IOException;
 import java.util.BitSet;
 import java.util.Optional;
 
-import static com.io7m.jnull.NullCheck.notNull;
+import java.util.Objects;
 
 /**
  * A parser for non-interleaved vertex data.
@@ -52,7 +52,7 @@ public final class SMFBv1SectionParserVerticesNonInterleaved
 
   public SMFBv1SectionParserVerticesNonInterleaved(final BitSet in_state)
   {
-    this.state = notNull(in_state, "state");
+    this.state = Objects.requireNonNull(in_state, "state");
   }
 
   private static void processAttributes(
@@ -138,9 +138,9 @@ public final class SMFBv1SectionParserVerticesNonInterleaved
     final SMFParserEventsBodyType events,
     final SMFBDataStreamReaderType reader)
   {
-    notNull(header, "Header");
-    notNull(events, "Events");
-    notNull(reader, "Reader");
+    Objects.requireNonNull(header, "Header");
+    Objects.requireNonNull(events, "Events");
+    Objects.requireNonNull(reader, "Reader");
 
     final Optional<SMFParserEventsDataAttributesNonInterleavedType> events_vni_opt =
       events.onAttributesNonInterleaved();

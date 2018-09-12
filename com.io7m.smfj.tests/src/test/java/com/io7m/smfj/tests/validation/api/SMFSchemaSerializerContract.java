@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.tests.validation.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
@@ -62,9 +62,7 @@ public abstract class SMFSchemaSerializerContract
   {
     final String path = "/com/io7m/smfj/tests/validation/api/" + name;
     final InputStream stream =
-      NullCheck.notNull(
-        SMFSchemaParserContract.class.getResourceAsStream(path),
-        "Stream");
+      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(path), "Stream");
     return this.createParser(Paths.get(path), stream);
   }
 

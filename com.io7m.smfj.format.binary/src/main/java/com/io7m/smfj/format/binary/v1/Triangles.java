@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
@@ -34,8 +34,8 @@ abstract class Triangles implements SMFSerializerDataTrianglesType
     final SMFBDataStreamWriterType in_writer,
     final SMFHeader in_header)
   {
-    this.writer = NullCheck.notNull(in_writer, "Writer");
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.writer = Objects.requireNonNull(in_writer, "Writer");
+    this.header = Objects.requireNonNull(in_header, "Header");
   }
 
   protected final SMFBDataStreamWriterType writer()

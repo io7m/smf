@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
@@ -52,8 +52,8 @@ public final class SMFTV1HeaderCommandVertices
     final SMFTLineReaderType in_reader,
     final SMFHeader.Builder in_header)
   {
-    this.reader = NullCheck.notNull(in_reader, "Reader");
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
+    this.header = Objects.requireNonNull(in_header, "Header");
   }
 
   @Override

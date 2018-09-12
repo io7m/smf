@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.frontend;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -62,7 +62,7 @@ public final class SMFFCopier
   private SMFFCopier(
     final SMFSerializerType in_serializer)
   {
-    this.serializer = NullCheck.notNull(in_serializer, "Serializer");
+    this.serializer = Objects.requireNonNull(in_serializer, "Serializer");
     this.errors = List.empty();
     this.warnings = List.empty();
   }

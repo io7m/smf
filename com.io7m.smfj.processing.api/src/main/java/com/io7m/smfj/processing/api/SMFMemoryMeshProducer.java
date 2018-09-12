@@ -17,7 +17,7 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -117,7 +117,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsHeaderType> onVersionReceived(
     final SMFFormatVersion version)
   {
-    NullCheck.notNull(version, "Version");
+    Objects.requireNonNull(version, "Version");
     return Optional.of(this);
   }
 
@@ -434,7 +434,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsBodyType> onHeaderParsed(
     final SMFHeader in_header)
   {
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.header = Objects.requireNonNull(in_header, "Header");
     return Optional.of(this);
   }
 
@@ -442,7 +442,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
     final SMFAttribute attribute)
   {
-    NullCheck.notNull(attribute, "Attribute");
+    Objects.requireNonNull(attribute, "Attribute");
     this.attribute_current = attribute;
     this.elements = Vector.empty();
     return Optional.of(this);
@@ -459,8 +459,8 @@ public final class SMFMemoryMeshProducer
     final SMFSchemaIdentifier schema,
     final byte[] data)
   {
-    NullCheck.notNull(schema, "Schema");
-    NullCheck.notNull(data, "Data");
+    Objects.requireNonNull(schema, "Schema");
+    Objects.requireNonNull(data, "Data");
     this.metadata = this.metadata.append(SMFMetadata.of(schema, data));
   }
 
@@ -468,7 +468,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsDataMetaType> onMeta(
     final SMFSchemaIdentifier schema)
   {
-    NullCheck.notNull(schema, "Schema");
+    Objects.requireNonNull(schema, "Schema");
     return Optional.of(this);
   }
 }

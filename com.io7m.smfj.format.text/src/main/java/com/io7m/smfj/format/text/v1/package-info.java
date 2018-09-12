@@ -18,6 +18,6 @@
  * Parser implementation for the 1.* text encoding.
  */
 
-@com.io7m.jnull.NonNullByDefault
+
 package com.io7m.smfj.format.text.v1;
 

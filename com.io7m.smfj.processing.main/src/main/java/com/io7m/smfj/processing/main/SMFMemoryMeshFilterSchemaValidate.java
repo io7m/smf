@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -71,7 +71,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
   private SMFMemoryMeshFilterSchemaValidate(
     final Path in_file)
   {
-    this.schema_file = NullCheck.notNull(in_file, "File");
+    this.schema_file = Objects.requireNonNull(in_file, "File");
   }
 
   /**
@@ -103,8 +103,8 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 1) {
       try {
@@ -164,8 +164,8 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Path file = context.resolvePath(this.schema_file);
     LOG.debug("resolved schema file: {}", file);

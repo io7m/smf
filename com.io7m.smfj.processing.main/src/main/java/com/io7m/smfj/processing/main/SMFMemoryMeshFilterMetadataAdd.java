@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -71,8 +71,8 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     final SMFSchemaIdentifier in_schema,
     final Path in_file)
   {
-    this.schema_id = NullCheck.notNull(in_schema, "Schema");
-    this.meta_file = NullCheck.notNull(in_file, "File");
+    this.schema_id = Objects.requireNonNull(in_schema, "Schema");
+    this.meta_file = Objects.requireNonNull(in_file, "File");
   }
 
   /**
@@ -106,8 +106,8 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 4) {
       try {
@@ -145,8 +145,8 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Path file = context.resolvePath(this.meta_file);
     LOG.debug("resolved metadata file: {}", file);

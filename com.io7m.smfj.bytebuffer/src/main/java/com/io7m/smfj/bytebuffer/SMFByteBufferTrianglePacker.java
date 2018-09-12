@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFSupportedSizes;
@@ -53,13 +53,13 @@ public final class SMFByteBufferTrianglePacker implements
     final long in_triangles)
   {
     final ByteBuffer buffer =
-      NullCheck.notNull(in_triangle_buffer, "Triangle Buffer");
+      Objects.requireNonNull(in_triangle_buffer, "Triangle Buffer");
     final int size = SMFSupportedSizes.checkIntegerUnsignedSupported(in_size);
     final int stride = Math.multiplyExact(size / 8, 3);
     this.cursor = SMFByteBufferCursors.createUnsigned3Raw(
       buffer, in_size, 0, stride);
     this.triangles = in_triangles;
-    this.events = NullCheck.notNull(in_events, "in_events");
+    this.events = Objects.requireNonNull(in_events, "in_events");
   }
 
   private <T> void cursorNext(

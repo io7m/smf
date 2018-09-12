@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
@@ -68,8 +68,8 @@ public final class SMFTV1BodySectionParserMetadata
     final Supplier<SMFHeader> in_header_get,
     final SMFTLineReaderType in_reader)
   {
-    this.header_get = NullCheck.notNull(in_header_get, "Header");
-    this.reader = NullCheck.notNull(in_reader, "Reader");
+    this.header_get = Objects.requireNonNull(in_header_get, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
   }
 
   private static SMFParserEventsDataMetaType makeMetadataReceiver(
@@ -191,7 +191,7 @@ public final class SMFTV1BodySectionParserMetadata
     IgnoringMetaReceiver(
       final SMFParserEventsBodyType in_receiver)
     {
-      this.receiver = NullCheck.notNull(in_receiver, "Receiver");
+      this.receiver = Objects.requireNonNull(in_receiver, "Receiver");
     }
 
     @Override

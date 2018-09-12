@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.core;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 
 import java.util.regex.Pattern;
@@ -43,7 +43,7 @@ public final class SMFAttributeNames
 
   static {
     PATTERN_TEXT = "[\\p{IsAlphabetic}\\p{IsDigit}_\\-\\.:]{1,63}";
-    PATTERN = NullCheck.notNull(
+    PATTERN = Objects.requireNonNull(
       Pattern.compile(PATTERN_TEXT, Pattern.UNICODE_CHARACTER_CLASS),
       "Pattern");
   }

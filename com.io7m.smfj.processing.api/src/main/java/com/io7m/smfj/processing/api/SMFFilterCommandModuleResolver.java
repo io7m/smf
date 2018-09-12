@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
 import org.slf4j.Logger;
@@ -47,7 +47,7 @@ public final class SMFFilterCommandModuleResolver implements
   private SMFFilterCommandModuleResolver(
     final SortedMap<String, SMFFilterCommandModuleType> in_modules)
   {
-    this.modules = NullCheck.notNull(in_modules, "Modules");
+    this.modules = Objects.requireNonNull(in_modules, "Modules");
   }
 
   /**

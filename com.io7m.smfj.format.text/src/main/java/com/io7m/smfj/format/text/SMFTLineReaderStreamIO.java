@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
     super(in_uri, 1);
     this.reader = new BufferedReader(
       new InputStreamReader(
-        NullCheck.notNull(in_stream, "stream"), StandardCharsets.UTF_8));
+        Objects.requireNonNull(in_stream, "stream"), StandardCharsets.UTF_8));
   }
 
   /**

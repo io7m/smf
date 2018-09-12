@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.text;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 
 import java.util.Arrays;
@@ -51,7 +51,7 @@ public final class SMFBase64Lines
   public static List<String> toBase64Lines(
     final byte[] data)
   {
-    NullCheck.notNull(data, "Data");
+    Objects.requireNonNull(data, "Data");
     final Base64.Encoder encoder = Base64.getUrlEncoder();
     final String text = encoder.encodeToString(data);
     return Arrays.asList(SPLIT_PATTERN.split(text));
@@ -68,7 +68,7 @@ public final class SMFBase64Lines
   public static byte[] fromBase64Lines(
     final List<String> lines)
   {
-    NullCheck.notNull(lines, "Lines");
+    Objects.requireNonNull(lines, "Lines");
 
     final String text =
       lines.stream().map(String::trim).collect(Collectors.joining()).trim();

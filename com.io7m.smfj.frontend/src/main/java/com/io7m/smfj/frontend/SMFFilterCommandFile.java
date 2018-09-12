@@ -18,7 +18,7 @@ package com.io7m.smfj.frontend;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.format.text.SMFTLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
@@ -77,9 +77,9 @@ public final class SMFFilterCommandFile
     final InputStream stream)
     throws IOException
   {
-    NullCheck.notNull(resolver, "Resolver");
-    NullCheck.notNull(path_opt, "Path");
-    NullCheck.notNull(stream, "Stream");
+    Objects.requireNonNull(resolver, "Resolver");
+    Objects.requireNonNull(path_opt, "Path");
+    Objects.requireNonNull(stream, "Stream");
 
     final SMFTLineLexer lexer = new SMFTLineLexer();
 

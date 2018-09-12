@@ -102,10 +102,6 @@
       <artifactId>com.io7m.junreachable.core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.io7m.jnull</groupId>
-      <artifactId>com.io7m.jnull.core</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.io7m.ieee754b16</groupId>
       <artifactId>com.io7m.ieee754b16.core</artifactId>
     </dependency>

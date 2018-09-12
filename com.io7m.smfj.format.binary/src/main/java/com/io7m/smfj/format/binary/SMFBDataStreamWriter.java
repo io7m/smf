@@ -18,7 +18,7 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import org.apache.commons.io.output.CountingOutputStream;
 
 import java.io.IOException;
@@ -48,9 +48,9 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
     final URI in_uri,
     final OutputStream in_stream)
   {
-    this.uri = NullCheck.notNull(in_uri, "URI");
+    this.uri = Objects.requireNonNull(in_uri, "URI");
     this.stream =
-      new CountingOutputStream(NullCheck.notNull(in_stream, "Stream"));
+      new CountingOutputStream(Objects.requireNonNull(in_stream, "Stream"));
 
     this.byte8 = new byte[8];
     this.buffer8 = ByteBuffer.wrap(this.byte8);

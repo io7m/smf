@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -59,7 +59,7 @@ public final class SMFMemoryMeshFilterCheck implements
   private SMFMemoryMeshFilterCheck(
     final SMFMemoryMeshFilterCheckConfiguration in_config)
   {
-    this.config = NullCheck.notNull(in_config, "Config");
+    this.config = Objects.requireNonNull(in_config, "Config");
   }
 
   /**
@@ -91,8 +91,8 @@ public final class SMFMemoryMeshFilterCheck implements
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.length() == 4) {
       try {
@@ -158,8 +158,8 @@ public final class SMFMemoryMeshFilterCheck implements
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Map<SMFAttributeName, SMFAttribute> by_name =
       m.header().attributesByName();

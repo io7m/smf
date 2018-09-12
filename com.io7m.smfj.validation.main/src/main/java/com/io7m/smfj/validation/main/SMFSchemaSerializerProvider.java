@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.main;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
@@ -76,9 +76,9 @@ public final class SMFSchemaSerializerProvider implements
     final Path path,
     final OutputStream stream)
   {
-    NullCheck.notNull(version, "Version");
-    NullCheck.notNull(path, "Path");
-    NullCheck.notNull(stream, "Stream");
+    Objects.requireNonNull(version, "Version");
+    Objects.requireNonNull(path, "Path");
+    Objects.requireNonNull(stream, "Stream");
 
     if (version.major() == 1) {
       return new SerializerV1(version, stream);

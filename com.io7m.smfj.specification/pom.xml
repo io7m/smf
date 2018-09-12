@@ -27,13 +27,6 @@
     <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
   </scm>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.io7m.jnull</groupId>
-      <artifactId>com.io7m.jnull.core</artifactId>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
       <!-- Copy specification resources into build directory -->

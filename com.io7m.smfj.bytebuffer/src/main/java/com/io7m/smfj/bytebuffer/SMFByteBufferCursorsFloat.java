@@ -17,7 +17,7 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.ieee754b16.Binary16;
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursorByteReadableType;
 import com.io7m.jtensors.storage.heap.VectorMutable2D;
 import com.io7m.jtensors.storage.heap.VectorMutable3D;
@@ -45,7 +45,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -94,7 +94,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -143,7 +143,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -192,7 +192,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -236,7 +236,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -280,7 +280,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -324,7 +324,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -363,7 +363,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -402,7 +402,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -441,7 +441,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -474,7 +474,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override
@@ -507,7 +507,7 @@ final class SMFByteBufferCursorsFloat
       final int in_offset)
     {
       super(in_cursor, in_size, in_offset);
-      this.buffer = NullCheck.notNull(in_buffer, "Buffer");
+      this.buffer = Objects.requireNonNull(in_buffer, "Buffer");
     }
 
     @Override

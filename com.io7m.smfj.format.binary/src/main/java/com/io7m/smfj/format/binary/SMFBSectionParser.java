@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.format.binary;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import com.io7m.smfj.parser.api.SMFParseError;
 import javaslang.control.Validation;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public final class SMFBSectionParser implements SMFBSectionParserType
   public SMFBSectionParser(
     final SMFBDataStreamReaderType in_reader)
   {
-    this.reader = NullCheck.notNull(in_reader, "Reader");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
     this.section_next = 0L;
   }
 

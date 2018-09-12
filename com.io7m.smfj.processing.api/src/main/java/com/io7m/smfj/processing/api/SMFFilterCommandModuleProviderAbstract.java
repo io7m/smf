@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
+import java.util.Objects;
 import javaslang.collection.SortedMap;
 import javaslang.collection.TreeMap;
 
@@ -33,7 +33,7 @@ public abstract class SMFFilterCommandModuleProviderAbstract
   protected SMFFilterCommandModuleProviderAbstract(
     final SMFFilterCommandModuleType... in_modules)
   {
-    NullCheck.notNull(in_modules, "Modules");
+    Objects.requireNonNull(in_modules, "Modules");
 
     SortedMap<String, SMFFilterCommandModuleType> m = TreeMap.empty();
 
