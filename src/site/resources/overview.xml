@@ -1,6 +1,6 @@
 <div xmlns="http://www.w3.org/1999/xhtml">
   <p class="shields">
-      <a href="https://travis-ci.org/io7m/smfj">
+      <a href="https://travis-ci.org/io7m/smf">
          <img src="https://img.shields.io/travis/io7m/smf.png?style=flat-square"
               alt="Build status"/>
       </a>
