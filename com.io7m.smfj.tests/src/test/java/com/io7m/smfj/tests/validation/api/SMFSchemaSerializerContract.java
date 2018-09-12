@@ -16,15 +16,15 @@
 
 package com.io7m.smfj.tests.validation.api;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import javaslang.collection.List;
-import javaslang.collection.SortedSet;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedSet;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 public abstract class SMFSchemaSerializerContract
 {
@@ -72,7 +73,7 @@ public abstract class SMFSchemaSerializerContract
   {
     final SMFSchema schema;
     try (SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
-      final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       Assert.assertTrue(r.isValid());
       schema = r.get();
     }
@@ -87,7 +88,7 @@ public abstract class SMFSchemaSerializerContract
 
       try (InputStream in = new ByteArrayInputStream(out.toByteArray())) {
         try (SMFSchemaParserType parser = this.createParser(out_path, in)) {
-          final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+          final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
           Assert.assertTrue(r.isValid());
           final SMFSchema written_schema = r.get();
           Assert.assertEquals(schema, written_schema);

@@ -18,17 +18,15 @@ package com.io7m.smfj.processing.api;
 
 import com.io7m.jfunctional.PartialBiFunctionType;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Vector;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import io.vavr.collection.Vector;
 import org.immutables.value.Value;
 
 /**
  * The type of 4-element signed integer arrays.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFAttributeArrayIntegerSigned4Type extends
   SMFAttributeArrayType

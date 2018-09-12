@@ -16,12 +16,12 @@
 
 package com.io7m.smfj.core;
 
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import javaslang.control.Option;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
+import io.vavr.control.Option;
 import org.immutables.value.Value;
 
 import java.util.Objects;
@@ -32,8 +32,8 @@ import java.util.Optional;
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
+@ImmutablesStyleType
 public interface SMFHeaderType
 {
   /**

@@ -17,11 +17,9 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Seq;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
 import org.immutables.value.Value;
 
 import java.util.Optional;
@@ -32,8 +30,8 @@ import java.util.stream.Collectors;
  * A mesh that has been packed into a set of byte buffers.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFByteBufferPackedMeshType
 {

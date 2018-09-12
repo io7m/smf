@@ -19,9 +19,9 @@ package com.io7m.smfj.bytebuffer;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
-import javaslang.collection.List;
-import javaslang.collection.SortedMap;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.SortedMap;
+import io.vavr.control.Validation;
 
 import java.nio.ByteBuffer;
 

@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.tests.format.binary;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -44,6 +43,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.util.Objects;
 import java.util.Optional;
 
 public final class SMFB

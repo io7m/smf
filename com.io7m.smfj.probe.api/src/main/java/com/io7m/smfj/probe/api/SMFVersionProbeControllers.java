@@ -19,9 +19,9 @@ package com.io7m.smfj.probe.api;
 import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.Seq;
-import javaslang.collection.Vector;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Vector;
+import io.vavr.control.Validation;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Invariants;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.util.ArrayList;
 

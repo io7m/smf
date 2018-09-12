@@ -26,9 +26,10 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeTrim;
-import javaslang.collection.HashSet;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.HashSet;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   @Test
   public void testParseWrong0()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(Optional.empty(), 1, List.empty());
     Assert.assertTrue(r.isInvalid());
   }
@@ -59,7 +60,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
@@ -70,7 +71,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   @Test
   public void testParseWrong2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
@@ -81,7 +82,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   @Test
   public void testParse0()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
@@ -94,7 +95,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   @Test
   public void testParse1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(
         Optional.empty(),
         1,
@@ -120,7 +121,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeTrim.create(HashSet.of(name_source));
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
@@ -148,7 +149,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
       SMFMemoryMeshFilterAttributeTrim.create(HashSet.of(name_source));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), mesh0);
     Assert.assertTrue(r.isValid());
 

@@ -29,9 +29,10 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeRemove;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -51,7 +52,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
@@ -62,7 +63,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   @Test
   public void testParseWrong2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
@@ -73,7 +74,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
@@ -84,7 +85,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   @Test
   public void testParse()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
@@ -110,7 +111,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeRemove.create(name_source);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 

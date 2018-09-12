@@ -26,17 +26,17 @@ import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
+import static io.vavr.control.Validation.invalid;
 
 /**
  * A filter that removes a mesh attribute.
@@ -85,7 +85,7 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -122,7 +122,7 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {

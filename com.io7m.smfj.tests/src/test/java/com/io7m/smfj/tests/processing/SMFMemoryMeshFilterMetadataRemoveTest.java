@@ -27,8 +27,9 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataRemove;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -49,7 +50,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -60,7 +61,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -71,7 +72,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseWrong4()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -85,7 +86,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseWrong5()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -99,7 +100,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseOK0()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -112,7 +113,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseOK1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -125,7 +126,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseOK2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -138,7 +139,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   @Test
   public void testParseOK3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataRemove.parse(
         Optional.empty(),
         1,
@@ -170,7 +171,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());
@@ -203,7 +204,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());
@@ -236,7 +237,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());
@@ -269,7 +270,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.of(Pair.pair(Integer.valueOf(2), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());
@@ -302,7 +303,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());

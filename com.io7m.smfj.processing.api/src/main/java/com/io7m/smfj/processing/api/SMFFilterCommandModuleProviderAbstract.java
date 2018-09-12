@@ -16,8 +16,8 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
 
 import java.util.Objects;
 

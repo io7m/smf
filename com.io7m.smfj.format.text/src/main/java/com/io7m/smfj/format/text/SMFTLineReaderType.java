@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jlexing.core.LexicalPosition;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.net.URI;

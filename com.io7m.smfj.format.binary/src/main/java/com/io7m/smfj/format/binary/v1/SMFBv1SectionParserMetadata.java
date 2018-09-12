@@ -32,9 +32,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Optional;
-
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A parser for metadata sections.

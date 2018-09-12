@@ -60,11 +60,11 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.Tuple;
-import javaslang.collection.List;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import javaslang.control.Validation;
+import io.vavr.Tuple;
+import io.vavr.collection.List;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -78,7 +78,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
 
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.valid;
 
 public final class SMFByteBufferPackedMeshesTest
 {

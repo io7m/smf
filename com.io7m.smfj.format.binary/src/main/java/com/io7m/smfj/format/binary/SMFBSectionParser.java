@@ -16,17 +16,17 @@
 
 package com.io7m.smfj.format.binary;
 
-import java.util.Objects;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.control.Validation;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Optional;
 
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * The default implementation of the {@link SMFBSectionParserType} interface.

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.SortedMap;
+import io.vavr.collection.SortedMap;
 
 /**
  * The type of module resolvers.

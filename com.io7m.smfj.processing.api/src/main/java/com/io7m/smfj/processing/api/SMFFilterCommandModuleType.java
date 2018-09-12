@@ -16,15 +16,14 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.SortedMap;
+import io.vavr.collection.SortedMap;
 import org.immutables.value.Value;
 
 /**
  * A module containing filter commands.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFFilterCommandModuleType
 {

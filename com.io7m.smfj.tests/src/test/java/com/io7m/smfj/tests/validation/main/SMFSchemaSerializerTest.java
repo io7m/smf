@@ -22,7 +22,7 @@ import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
 import com.io7m.smfj.validation.main.SMFSchemaParserProvider;
 import com.io7m.smfj.validation.main.SMFSchemaSerializerProvider;
-import javaslang.collection.SortedSet;
+import io.vavr.collection.SortedSet;
 
 import java.io.InputStream;
 import java.io.OutputStream;

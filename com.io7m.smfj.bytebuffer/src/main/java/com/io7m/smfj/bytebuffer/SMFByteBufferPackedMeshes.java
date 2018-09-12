@@ -17,7 +17,6 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.jaffirm.core.Invariants;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
@@ -33,17 +32,18 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import javaslang.control.Validation;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.LongFunction;
 

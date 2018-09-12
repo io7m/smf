@@ -19,21 +19,19 @@ package com.io7m.smfj.bytebuffer;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.Tuple;
-import javaslang.collection.HashMap;
-import javaslang.collection.Seq;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import io.vavr.Tuple;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
 import org.immutables.value.Value;
 
 /**
  * The byte buffer packing configuration.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFByteBufferPackingConfigurationType
 {

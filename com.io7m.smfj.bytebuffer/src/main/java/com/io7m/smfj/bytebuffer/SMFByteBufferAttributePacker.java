@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursor1DType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
@@ -26,6 +25,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 /**
  * An event listener that packs data into a given {@link ByteBuffer}.

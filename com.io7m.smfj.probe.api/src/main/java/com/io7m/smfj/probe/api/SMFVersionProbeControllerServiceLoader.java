@@ -17,8 +17,8 @@
 package com.io7m.smfj.probe.api;
 
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 import java.io.InputStream;
 import java.util.ArrayList;

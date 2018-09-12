@@ -17,8 +17,9 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 import java.net.URI;
 import java.util.Optional;
@@ -39,7 +40,7 @@ public interface SMFFilterCommandParserType
    * @return A filter, or a list of reasons why parsing failed
    */
 
-  Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
     Optional<URI> file,
     int line,
     List<String> text);

@@ -190,8 +190,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(
       SMFSchemaName.of("com.io7m.example"), 0, 0));
 
-    javaslang.collection.List<SMFAttribute> attributes =
-      javaslang.collection.List.empty();
+    io.vavr.collection.List<SMFAttribute> attributes =
+      io.vavr.collection.List.empty();
 
     final SMFAttributeName name_position =
       SMFAttributeName.of("POSITION");
@@ -729,7 +729,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
       if (this == o) {
         return true;
       }
-      if (o == null || this.getClass() != o.getClass()) {
+      if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
         return false;
       }
 

@@ -17,8 +17,9 @@
 package com.io7m.smfj.cmdline;
 
 import ch.qos.logback.classic.Level;
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
+
+import java.util.Objects;
 
 /**
  * Log level.

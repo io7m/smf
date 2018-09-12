@@ -28,8 +28,9 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMetadata;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataAdd;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -52,7 +53,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -63,7 +64,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParseWrong2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -74,7 +75,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -85,7 +86,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParseWrong4()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -99,7 +100,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParseWrong5()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -113,7 +114,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   @Test
   public void testParse()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -149,7 +150,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
       SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isInvalid());
@@ -190,7 +191,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
       SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
     Assert.assertTrue(r.isValid());

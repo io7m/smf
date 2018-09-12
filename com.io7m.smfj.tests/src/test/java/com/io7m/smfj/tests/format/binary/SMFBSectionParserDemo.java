@@ -24,7 +24,7 @@ import com.io7m.smfj.format.binary.SMFBSectionEnd;
 import com.io7m.smfj.format.binary.SMFBSectionParser;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.control.Validation;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

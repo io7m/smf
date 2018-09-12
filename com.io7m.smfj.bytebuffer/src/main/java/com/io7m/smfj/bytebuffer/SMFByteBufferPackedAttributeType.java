@@ -17,14 +17,13 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.smfj.core.SMFAttribute;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 /**
  * A packed attribute.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFByteBufferPackedAttributeType extends
   Comparable<SMFByteBufferPackedAttributeType>

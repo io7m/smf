@@ -34,11 +34,11 @@ import com.io7m.smfj.probe.api.SMFVersionProbeProviderType;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.collection.Seq;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
-import javaslang.collection.Vector;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
+import io.vavr.collection.Vector;
+import io.vavr.control.Validation;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Component;
@@ -63,8 +63,8 @@ import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_RECEIVED
 import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * The implementation of the binary format.

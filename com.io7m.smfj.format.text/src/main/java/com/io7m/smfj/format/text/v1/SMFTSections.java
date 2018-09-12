@@ -21,7 +21,7 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.util.Optional;

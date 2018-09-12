@@ -18,7 +18,7 @@ package com.io7m.smfj.format.text;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionMutable;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import org.slf4j.Logger;
 
 import java.io.IOException;

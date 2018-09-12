@@ -16,8 +16,8 @@
 
 package com.io7m.smfj.format.text;
 
-import javaslang.collection.Iterator;
-import javaslang.collection.List;
+import io.vavr.collection.Iterator;
+import io.vavr.collection.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

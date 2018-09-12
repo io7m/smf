@@ -18,7 +18,7 @@ package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
-import javaslang.collection.TreeMap;
+import io.vavr.collection.TreeMap;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;

@@ -16,10 +16,9 @@
 
 package com.io7m.smfj.probe.api;
 
-import java.util.Objects;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -29,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**

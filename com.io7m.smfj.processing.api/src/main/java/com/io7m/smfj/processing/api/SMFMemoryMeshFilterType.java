@@ -16,8 +16,8 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 /**
  * A filter that transforms an in-memory mesh.
@@ -46,7 +46,7 @@ public interface SMFMemoryMeshFilterType
    * @return A filtered mesh, or a list or reasons why the filtering did not work
    */
 
-  Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
     SMFFilterCommandContext context,
     SMFMemoryMesh m);
 }

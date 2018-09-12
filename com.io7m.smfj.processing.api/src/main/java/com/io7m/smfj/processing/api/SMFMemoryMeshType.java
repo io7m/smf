@@ -20,18 +20,16 @@ import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Map;
-import javaslang.collection.Vector;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import io.vavr.collection.Map;
+import io.vavr.collection.Vector;
 import org.immutables.value.Value;
 
 /**
  * An immutable in-memory copy of a mesh.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFMemoryMeshType
 {

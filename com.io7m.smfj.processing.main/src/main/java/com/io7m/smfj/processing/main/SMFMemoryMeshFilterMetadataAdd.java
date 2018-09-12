@@ -24,9 +24,10 @@ import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import javaslang.collection.List;
-import javaslang.collection.Vector;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Vector;
+import io.vavr.control.Validation;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +42,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that adds metadata to a mesh.
@@ -101,7 +102,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -141,7 +142,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {

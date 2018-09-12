@@ -45,8 +45,8 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple2;
-import javaslang.collection.Vector;
+import io.vavr.Tuple2;
+import io.vavr.collection.Vector;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -56,10 +56,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import static com.io7m.jfunctional.Unit.unit;
-import static java.nio.file.StandardOpenOption.*;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public final class SMFMemoryMeshSerializerTest
 {

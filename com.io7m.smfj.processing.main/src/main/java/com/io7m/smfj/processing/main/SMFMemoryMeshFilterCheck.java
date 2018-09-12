@@ -24,9 +24,10 @@ import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 import java.net.URI;
 import java.util.Objects;
@@ -34,8 +35,8 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -85,7 +86,7 @@ public final class SMFMemoryMeshFilterCheck implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -153,7 +154,7 @@ public final class SMFMemoryMeshFilterCheck implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {

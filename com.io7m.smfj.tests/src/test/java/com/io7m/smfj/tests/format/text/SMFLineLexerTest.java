@@ -17,7 +17,7 @@
 package com.io7m.smfj.tests.format.text;
 
 import com.io7m.smfj.format.text.SMFTLineLexer;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import org.junit.Assert;
 import org.junit.Test;
 

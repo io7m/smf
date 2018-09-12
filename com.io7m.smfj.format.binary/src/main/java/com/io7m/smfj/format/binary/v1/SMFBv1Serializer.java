@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.binary.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursor1DByteBufferedChecked;
 import com.io7m.jpra.runtime.java.JPRAStringTruncation;
 import com.io7m.junreachable.UnreachableCodeException;
@@ -46,6 +45,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Objects;
 
 /**
  * A serializer for the 1.* format.

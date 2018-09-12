@@ -17,13 +17,13 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
-import java.util.Objects;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
+import java.util.Objects;
 import java.util.Optional;
 
 final class SMFBDataFileChannelReader

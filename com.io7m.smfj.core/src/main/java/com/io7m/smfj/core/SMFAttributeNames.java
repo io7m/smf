@@ -16,9 +16,9 @@
 
 package com.io7m.smfj.core;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /**

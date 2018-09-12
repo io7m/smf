@@ -19,10 +19,10 @@ package com.io7m.smfj.processing.api;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import javaslang.Tuple2;
-import javaslang.collection.Iterator;
-import javaslang.collection.Map;
-import javaslang.collection.Seq;
+import io.vavr.Tuple2;
+import io.vavr.collection.Iterator;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
 
 import java.util.Optional;
 

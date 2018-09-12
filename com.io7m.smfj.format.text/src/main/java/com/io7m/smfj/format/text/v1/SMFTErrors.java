@@ -20,7 +20,7 @@ import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParseErrors;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.net.URI;
 import java.util.stream.Collectors;

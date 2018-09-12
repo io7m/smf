@@ -18,8 +18,8 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
-import javaslang.Tuple;
-import javaslang.collection.TreeMap;
+import io.vavr.Tuple;
+import io.vavr.collection.TreeMap;
 import org.osgi.service.component.annotations.Component;
 
 /**

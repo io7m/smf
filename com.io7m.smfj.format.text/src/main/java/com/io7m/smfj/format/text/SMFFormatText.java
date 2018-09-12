@@ -31,12 +31,12 @@ import com.io7m.smfj.probe.api.SMFVersionProbeProviderType;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.collection.List;
-import javaslang.collection.Seq;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
-import javaslang.collection.Vector;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
+import io.vavr.collection.Vector;
+import io.vavr.control.Validation;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +61,8 @@ import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * The implementation of the text format.

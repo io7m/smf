@@ -19,7 +19,6 @@ package com.io7m.smfj.bytebuffer;
 import com.io7m.jintegers.Unsigned16;
 import com.io7m.jintegers.Unsigned32;
 import com.io7m.jintegers.Unsigned8;
-import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursorByteReadableType;
 import com.io7m.jtensors.storage.heap.VectorMutable2L;
 import com.io7m.jtensors.storage.heap.VectorMutable3L;
@@ -27,6 +26,7 @@ import com.io7m.jtensors.storage.heap.VectorMutable4L;
 import com.io7m.junreachable.UnreachableCodeException;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 final class SMFByteBufferCursorsUnsigned
 {

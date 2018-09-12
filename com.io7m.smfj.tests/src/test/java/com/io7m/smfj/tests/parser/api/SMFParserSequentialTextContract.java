@@ -22,8 +22,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;

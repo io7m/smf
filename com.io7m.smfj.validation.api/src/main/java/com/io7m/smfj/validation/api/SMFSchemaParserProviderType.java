@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import javaslang.collection.SortedSet;
+import io.vavr.collection.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.InputStream;
@@ -36,8 +36,7 @@ public interface SMFSchemaParserProviderType
   SortedSet<SMFSchemaVersion> schemaSupportedVersions();
 
   /**
-   * @param uri    The URI referred to by the input stream, for diagnostic
-   *               messages
+   * @param uri    The URI referred to by the input stream, for diagnostic messages
    * @param stream An input stream
    *
    * @return A new parser for the schema

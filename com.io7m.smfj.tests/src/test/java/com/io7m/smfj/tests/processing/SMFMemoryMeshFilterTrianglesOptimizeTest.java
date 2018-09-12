@@ -27,9 +27,10 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimize;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimizeConfiguration;
-import javaslang.collection.List;
-import javaslang.collection.Vector;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.Vector;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -84,7 +85,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -95,7 +96,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseWrong2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -106,7 +107,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -117,7 +118,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseWrong4()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -128,7 +129,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseOk0()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -139,7 +140,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseOk1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -150,7 +151,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseOk2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
@@ -177,7 +178,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isInvalid());
 
@@ -207,7 +208,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -243,7 +244,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -280,7 +281,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -316,7 +317,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -352,7 +353,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -388,7 +389,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -426,7 +427,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -464,7 +465,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -502,7 +503,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -538,7 +539,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -576,7 +577,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -614,7 +615,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -652,7 +653,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -688,7 +689,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -726,7 +727,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 
@@ -764,7 +765,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
     Assert.assertTrue(r.isValid());
 

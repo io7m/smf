@@ -65,14 +65,10 @@ public final class SMFSerializerProviders
       final int index = file.lastIndexOf('.');
       if (index != -1) {
         final String suffix = file.substring(index + 1);
-        final Iterator<SMFSerializerProviderType> providers =
-          loader.iterator();
+        final Iterator<SMFSerializerProviderType> providers = loader.iterator();
         while (providers.hasNext()) {
-          final SMFSerializerProviderType current_provider =
-            providers.next();
-          if (Objects.equals(
-            current_provider.serializerFormat().suffix(),
-            suffix)) {
+          final SMFSerializerProviderType current_provider = providers.next();
+          if (Objects.equals(current_provider.serializerFormat().suffix(), suffix)) {
             LOG.debug("using provider: {}", current_provider);
             return Optional.of(current_provider);
           }
@@ -83,14 +79,10 @@ public final class SMFSerializerProviders
     } else {
       final String format = format_opt.get();
       LOG.debug("attempting to find provider for {}", format);
-      final Iterator<SMFSerializerProviderType> providers =
-        loader.iterator();
+      final Iterator<SMFSerializerProviderType> providers = loader.iterator();
       while (providers.hasNext()) {
-        final SMFSerializerProviderType current_provider =
-          providers.next();
-        if (Objects.equals(
-          current_provider.serializerFormat().name(),
-          format)) {
+        final SMFSerializerProviderType current_provider = providers.next();
+        if (Objects.equals(current_provider.serializerFormat().name(), format)) {
           LOG.debug("using provider: {}", current_provider);
           return Optional.of(current_provider);
         }

@@ -38,12 +38,13 @@ import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaRequireTriangles;
 import com.io7m.smfj.validation.api.SMFSchemaRequireVertices;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import javaslang.Tuple;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
-import javaslang.control.Validation;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
+import io.vavr.control.Validation;
 import org.apache.commons.io.IOUtils;
 import org.osgi.service.component.annotations.Component;
 
@@ -60,12 +61,11 @@ import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGL
 import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_NOT_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
- * The default implementation of the {@link SMFSchemaParserProviderType}
- * interface.
+ * The default implementation of the {@link SMFSchemaParserProviderType} interface.
  */
 
 @Component
@@ -87,10 +87,10 @@ public final class SMFSchemaParserProvider
     // Nothing required
   }
 
-  private static <E, T> Validation<List<E>, T> flatten(
-    final Validation<List<List<E>>, T> v)
+  private static <E, T> Validation<Seq<E>, T> flatten(
+    final Validation<Seq<Seq<E>>, T> v)
   {
-    return v.mapError(xs -> xs.fold(List.empty(), List::appendAll));
+    return v.mapError(xs -> xs.fold(List.empty(), Seq::appendAll));
   }
 
   @Override
@@ -126,7 +126,7 @@ public final class SMFSchemaParserProvider
     }
 
     @Override
-    public Validation<List<SMFErrorType>, SMFSchema> parseSchema()
+    public Validation<Seq<SMFErrorType>, SMFSchema> parseSchema()
     {
       final SMFSchema.Builder builder = SMFSchema.builder();
       builder.setAllowExtraAttributes(
@@ -180,7 +180,7 @@ public final class SMFSchemaParserProvider
       switch (name) {
 
         case "schema": {
-          final Validation<List<SMFParseError>, SMFSchemaIdentifier> result =
+          final Validation<Seq<SMFParseError>, SMFSchemaIdentifier> result =
             this.parseStatementIdentifier(line);
           if (result.isValid()) {
             final SMFSchemaIdentifier p = result.get();
@@ -193,7 +193,7 @@ public final class SMFSchemaParserProvider
         }
 
         case "coordinates": {
-          final Validation<List<SMFParseError>, SMFCoordinateSystem> result =
+          final Validation<Seq<SMFParseError>, SMFCoordinateSystem> result =
             this.parseStatementCoordinates(line);
           if (result.isValid()) {
             builder.setRequiredCoordinateSystem(result.get());
@@ -204,7 +204,7 @@ public final class SMFSchemaParserProvider
         }
 
         case "require-vertices": {
-          final Validation<List<SMFParseError>, SMFSchemaRequireVertices> result =
+          final Validation<Seq<SMFParseError>, SMFSchemaRequireVertices> result =
             this.parseStatementRequireVertices(line);
           if (result.isValid()) {
             builder.setRequireVertices(result.get());
@@ -215,7 +215,7 @@ public final class SMFSchemaParserProvider
         }
 
         case "require-triangles": {
-          final Validation<List<SMFParseError>, SMFSchemaRequireTriangles> result =
+          final Validation<Seq<SMFParseError>, SMFSchemaRequireTriangles> result =
             this.parseStatementRequireTriangles(line);
           if (result.isValid()) {
             builder.setRequireTriangles(result.get());
@@ -226,7 +226,7 @@ public final class SMFSchemaParserProvider
         }
 
         case "attribute": {
-          final Validation<List<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>> result =
+          final Validation<Seq<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>> result =
             this.parseStatementAttribute(line);
           if (result.isValid()) {
             final Tuple2<Boolean, SMFSchemaAttribute> p = result.get();
@@ -252,7 +252,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFParseError>, SMFSchemaRequireTriangles>
+    private Validation<Seq<SMFParseError>, SMFSchemaRequireTriangles>
     parseStatementRequireTriangles(
       final List<String> line)
     {
@@ -282,7 +282,7 @@ public final class SMFSchemaParserProvider
         Optional.empty())));
     }
 
-    private Validation<List<SMFParseError>, SMFSchemaRequireVertices>
+    private Validation<Seq<SMFParseError>, SMFSchemaRequireVertices>
     parseStatementRequireVertices(
       final List<String> line)
     {
@@ -312,7 +312,7 @@ public final class SMFSchemaParserProvider
         Optional.empty())));
     }
 
-    private Validation<List<SMFParseError>, SMFCoordinateSystem> parseStatementCoordinates(
+    private Validation<Seq<SMFParseError>, SMFCoordinateSystem> parseStatementCoordinates(
       final List<String> line)
     {
       if (line.size() == 5) {
@@ -369,7 +369,7 @@ public final class SMFSchemaParserProvider
         Optional.empty())));
     }
 
-    private Validation<List<SMFParseError>, Boolean>
+    private Validation<Seq<SMFParseError>, Boolean>
     parseRequired(
       final String text)
     {
@@ -393,7 +393,7 @@ public final class SMFSchemaParserProvider
         Optional.empty())));
     }
 
-    private Validation<List<SMFParseError>, Optional<SMFComponentType>>
+    private Validation<Seq<SMFParseError>, Optional<SMFComponentType>>
     parseComponentType(
       final String text)
     {
@@ -411,7 +411,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFParseError>, OptionalInt>
+    private Validation<Seq<SMFParseError>, OptionalInt>
     parseComponentCount(
       final String text)
     {
@@ -429,7 +429,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFParseError>, OptionalInt>
+    private Validation<Seq<SMFParseError>, OptionalInt>
     parseComponentSize(
       final String text)
     {
@@ -447,7 +447,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFParseError>, SMFAttributeName>
+    private Validation<Seq<SMFParseError>, SMFAttributeName>
     parseName(
       final String text)
     {
@@ -461,7 +461,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFParseError>, SMFSchemaIdentifier>
+    private Validation<Seq<SMFParseError>, SMFSchemaIdentifier>
     parseStatementIdentifier(
       final List<String> text)
     {
@@ -492,7 +492,7 @@ public final class SMFSchemaParserProvider
         Optional.empty())));
     }
 
-    private Validation<List<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>>
+    private Validation<Seq<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>>
     parseStatementAttribute(
       final List<String> line)
     {
@@ -503,15 +503,15 @@ public final class SMFSchemaParserProvider
         final String text_count = line.get(4);
         final String text_size = line.get(5);
 
-        final Validation<List<SMFParseError>, Boolean> v_req =
+        final Validation<Seq<SMFParseError>, Boolean> v_req =
           this.parseRequired(text_req);
-        final Validation<List<SMFParseError>, SMFAttributeName> v_name =
+        final Validation<Seq<SMFParseError>, SMFAttributeName> v_name =
           this.parseName(text_name);
-        final Validation<List<SMFParseError>, Optional<SMFComponentType>> v_type =
+        final Validation<Seq<SMFParseError>, Optional<SMFComponentType>> v_type =
           this.parseComponentType(text_type);
-        final Validation<List<SMFParseError>, OptionalInt> v_count =
+        final Validation<Seq<SMFParseError>, OptionalInt> v_count =
           this.parseComponentCount(text_count);
-        final Validation<List<SMFParseError>, OptionalInt> v_size =
+        final Validation<Seq<SMFParseError>, OptionalInt> v_size =
           this.parseComponentSize(text_size);
 
         return flatten(
@@ -559,7 +559,7 @@ public final class SMFSchemaParserProvider
     }
 
     @Override
-    public Validation<List<SMFErrorType>, SMFSchema> parseSchema()
+    public Validation<Seq<SMFErrorType>, SMFSchema> parseSchema()
     {
       try {
         final List<String> lines =
@@ -570,7 +570,7 @@ public final class SMFSchemaParserProvider
         try {
           final Optional<List<String>> line = reader.line();
           if (line.isPresent()) {
-            final Validation<List<SMFErrorType>, SMFSchemaVersion> r_version =
+            final Validation<Seq<SMFErrorType>, SMFSchemaVersion> r_version =
               this.parseVersion(reader.position(), line.get());
             if (r_version.isInvalid()) {
               return invalid(r_version.getError());
@@ -603,7 +603,7 @@ public final class SMFSchemaParserProvider
       }
     }
 
-    private Validation<List<SMFErrorType>, SMFSchemaVersion> parseVersion(
+    private Validation<Seq<SMFErrorType>, SMFSchemaVersion> parseVersion(
       final LexicalPosition<URI> position,
       final List<String> line)
     {

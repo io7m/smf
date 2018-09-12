@@ -16,9 +16,10 @@
 
 package com.io7m.smfj.parser.api;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFWarningType;
+
+import java.util.Objects;
 
 /**
  * A convenient implementation of the {@link SMFParserEventsDataTrianglesType}

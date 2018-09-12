@@ -16,8 +16,10 @@
 
 package com.io7m.smfj.core;
 
-import java.util.Objects;
+import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
+
+import java.util.Objects;
 
 /**
  * A format version.
@@ -25,7 +27,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @Value.Modifiable
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFFormatVersionType extends Comparable<SMFFormatVersionType>
 {
   /**

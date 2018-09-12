@@ -16,14 +16,13 @@
 
 package com.io7m.smfj.format.binary;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
 
 /**
  * A parsed section.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFBSectionType
 {

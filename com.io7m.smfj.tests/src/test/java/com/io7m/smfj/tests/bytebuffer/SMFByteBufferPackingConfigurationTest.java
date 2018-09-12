@@ -20,7 +20,7 @@ import com.io7m.smfj.bytebuffer.SMFByteBufferPackingConfiguration;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import org.junit.Assert;
 import org.junit.Test;
 

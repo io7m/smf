@@ -37,10 +37,10 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.collection.HashMap;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.Vector;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Vector;
 
 import java.util.Objects;
 import java.util.Optional;

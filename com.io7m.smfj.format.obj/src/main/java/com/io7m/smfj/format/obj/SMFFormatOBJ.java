@@ -22,8 +22,8 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.InputStream;

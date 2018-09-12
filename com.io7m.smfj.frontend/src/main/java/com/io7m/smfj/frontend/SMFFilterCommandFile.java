@@ -18,17 +18,17 @@ package com.io7m.smfj.frontend;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
-import java.util.Objects;
 import com.io7m.smfj.format.text.SMFTLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
 import com.io7m.smfj.processing.api.SMFFilterCommandParserType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.SortedMap;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Map;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedMap;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,6 +38,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -64,13 +65,12 @@ public final class SMFFilterCommandFile
    * @param stream   An input stream
    * @param resolver A filter command module resolver
    *
-   * @return A sequence of filters, or a list of errors encountered during
-   * parsing
+   * @return A sequence of filters, or a list of errors encountered during parsing
    *
    * @throws IOException On I/O errors
    */
 
-  public static Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>>
+  public static Validation<Seq<SMFParseError>, List<SMFMemoryMeshFilterType>>
   parseFromStream(
     final SMFFilterCommandModuleResolverType resolver,
     final Optional<URI> path_opt,
@@ -111,7 +111,7 @@ public final class SMFFilterCommandFile
           final String module_name = segments[0];
           final String command_name = segments[1];
 
-          final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> result =
+          final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> result =
             resolveCommand(
               modules,
               position,
@@ -141,7 +141,7 @@ public final class SMFFilterCommandFile
     return Validation.invalid(errors);
   }
 
-  private static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
+  private static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType>
   resolveCommand(
     final SortedMap<String, SMFFilterCommandModuleType> modules,
     final LexicalPosition<URI> position,

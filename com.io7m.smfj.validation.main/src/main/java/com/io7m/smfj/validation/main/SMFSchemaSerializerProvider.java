@@ -25,9 +25,9 @@ import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import javaslang.Tuple2;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
+import io.vavr.Tuple2;
+import io.vavr.collection.SortedSet;
+import io.vavr.collection.TreeSet;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.BufferedWriter;
@@ -41,13 +41,11 @@ import java.util.Optional;
 import java.util.OptionalInt;
 
 /**
- * The default implementation of the {@link SMFSchemaSerializerProviderType}
- * interface.
+ * The default implementation of the {@link SMFSchemaSerializerProviderType} interface.
  */
 
 @Component
-public final class SMFSchemaSerializerProvider implements
-  SMFSchemaSerializerProviderType
+public final class SMFSchemaSerializerProvider implements SMFSchemaSerializerProviderType
 {
   private static final SortedSet<SMFSchemaVersion> SUPPORTED;
 

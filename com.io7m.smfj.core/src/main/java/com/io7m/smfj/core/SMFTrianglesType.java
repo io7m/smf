@@ -16,16 +16,17 @@
 
 package com.io7m.smfj.core;
 
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
+import org.immutables.vavr.encodings.VavrEncodingEnabled;
 
 /**
  * Information about triangles in a mesh.
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@VavrEncodingEnabled
+@ImmutablesStyleType
 public interface SMFTrianglesType
 {
   /**

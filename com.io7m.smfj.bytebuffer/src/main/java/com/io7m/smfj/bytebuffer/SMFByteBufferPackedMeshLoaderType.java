@@ -19,7 +19,7 @@ package com.io7m.smfj.bytebuffer;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 /**
  * The type of packed meshes.

@@ -39,7 +39,7 @@ import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import org.apache.commons.codec.binary.Hex;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -33,7 +33,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.Vector;
+import io.vavr.collection.Vector;
 
 import java.io.IOException;
 import java.util.Objects;

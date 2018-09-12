@@ -23,7 +23,7 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandSchema;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
 import mockit.StrictExpectations;

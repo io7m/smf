@@ -25,8 +25,9 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterSchemaValidate;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.apache.commons.io.IOUtils;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,7 +52,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
@@ -62,7 +63,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
@@ -73,7 +74,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   @Test
   public void testParseOk0()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
@@ -112,7 +113,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
     if (r.isInvalid()) {
@@ -152,7 +153,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
     if (r.isInvalid()) {
@@ -184,7 +185,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
     if (r.isInvalid()) {

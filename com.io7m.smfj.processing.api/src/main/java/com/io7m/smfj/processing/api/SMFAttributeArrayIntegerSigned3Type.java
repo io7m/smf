@@ -18,17 +18,15 @@ package com.io7m.smfj.processing.api;
 
 import com.io7m.jfunctional.PartialBiFunctionType;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Vector;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import io.vavr.collection.Vector;
 import org.immutables.value.Value;
 
 /**
  * The type of 3-element signed integer arrays.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFAttributeArrayIntegerSigned3Type extends
   SMFAttributeArrayType

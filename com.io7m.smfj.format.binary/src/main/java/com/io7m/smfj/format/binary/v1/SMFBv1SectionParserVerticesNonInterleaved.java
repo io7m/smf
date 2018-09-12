@@ -31,9 +31,8 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 
 import java.io.IOException;
 import java.util.BitSet;
-import java.util.Optional;
-
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A parser for non-interleaved vertex data.

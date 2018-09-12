@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
@@ -24,6 +23,7 @@ import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 
 import java.io.IOException;
+import java.util.Objects;
 
 abstract class Triangles implements SMFSerializerDataTrianglesType
 {

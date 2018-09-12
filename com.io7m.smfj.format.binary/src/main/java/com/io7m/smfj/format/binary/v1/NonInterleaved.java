@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.binary.v1;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
@@ -26,9 +25,10 @@ import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import javaslang.collection.SortedMap;
+import io.vavr.collection.SortedMap;
 
 import java.io.IOException;
+import java.util.Objects;
 
 // Unavoidable class data abstraction coupling style issue: Too many classes referenced.
 // CHECKSTYLE:OFF

@@ -21,7 +21,6 @@ import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
 import com.io7m.jfunctional.Unit;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -52,10 +51,10 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.collection.List;
-import javaslang.collection.Seq;
-import javaslang.collection.SortedSet;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedSet;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,6 +68,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
@@ -440,7 +440,7 @@ public final class Main implements Runnable
         final SMFMemoryMeshFilterType filter = filters.get(index);
         LOG.debug("evaluating filter: {}", filter.name());
 
-        final Validation<List<SMFProcessingError>, SMFMemoryMesh> result =
+        final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> result =
           filter.filter(context, mesh_current);
         if (result.isValid()) {
           mesh_current = result.get();
@@ -487,11 +487,9 @@ public final class Main implements Runnable
         SMFFilterCommandModuleResolver.create();
 
       try (InputStream stream = Files.newInputStream(path_commands)) {
-        final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
+        final Validation<Seq<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
-            resolver,
-            Optional.of(path_commands.toUri()),
-            stream);
+            resolver, Optional.of(path_commands.toUri()), stream);
         if (r.isValid()) {
           return Optional.of(r.get());
         }

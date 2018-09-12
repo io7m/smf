@@ -64,14 +64,10 @@ public final class SMFParserProviders
       final int index = file.lastIndexOf('.');
       if (index != -1) {
         final String suffix = file.substring(index + 1);
-        final Iterator<SMFParserProviderType> providers =
-          loader.iterator();
+        final Iterator<SMFParserProviderType> providers = loader.iterator();
         while (providers.hasNext()) {
-          final SMFParserProviderType current_provider =
-            providers.next();
-          if (Objects.equals(
-            current_provider.parserFormat().suffix(),
-            suffix)) {
+          final SMFParserProviderType current_provider = providers.next();
+          if (Objects.equals(current_provider.parserFormat().suffix(), suffix)) {
             LOG.debug("using provider: {}", current_provider);
             return Optional.of(current_provider);
           }
@@ -82,11 +78,9 @@ public final class SMFParserProviders
     } else {
       final String format = format_opt.get();
       LOG.debug("attempting to find provider for {}", format);
-      final Iterator<SMFParserProviderType> providers =
-        loader.iterator();
+      final Iterator<SMFParserProviderType> providers = loader.iterator();
       while (providers.hasNext()) {
-        final SMFParserProviderType current_provider =
-          providers.next();
+        final SMFParserProviderType current_provider = providers.next();
         if (Objects.equals(current_provider.parserFormat().name(), format)) {
           LOG.debug("using provider: {}", current_provider);
           return Optional.of(current_provider);

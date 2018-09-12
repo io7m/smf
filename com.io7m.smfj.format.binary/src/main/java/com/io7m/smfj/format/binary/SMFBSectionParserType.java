@@ -17,7 +17,7 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.control.Validation;
+import io.vavr.control.Validation;
 
 /**
  * The type of section parsers.

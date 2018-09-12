@@ -19,8 +19,9 @@ package com.io7m.smfj.processing.api;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 import java.net.URI;
 import java.util.Optional;
@@ -49,7 +50,7 @@ public final class SMFFilterCommandParsing
    * @return An error message
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType>
+  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType>
   errorExpectedGotValidation(
     final Optional<URI> uri,
     final int line,

@@ -16,9 +16,9 @@
 
 package com.io7m.smfj.validation.api;
 
-import java.util.Objects;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import org.immutables.value.Value;
+
+import java.util.Objects;
 
 /**
  * A schema version.
@@ -27,7 +27,7 @@ import org.immutables.value.Value;
  */
 
 @Value.Immutable
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFSchemaVersionType extends Comparable<SMFSchemaVersionType>
 {
   /**

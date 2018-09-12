@@ -18,8 +18,6 @@ package com.io7m.smfj.validation.api;
 
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 import java.util.Optional;
@@ -29,8 +27,8 @@ import java.util.OptionalInt;
  * A schema for a specific attribute.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFSchemaAttributeType
 {

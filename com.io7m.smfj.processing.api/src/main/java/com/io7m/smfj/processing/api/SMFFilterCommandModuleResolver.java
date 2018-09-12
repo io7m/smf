@@ -16,8 +16,8 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.TreeMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

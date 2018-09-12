@@ -18,7 +18,6 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jlexing.core.LexicalPosition;
-import java.util.Objects;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.input.BoundedInputStream;
 import org.apache.commons.io.input.CountingInputStream;
@@ -28,6 +27,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Objects;
 import java.util.Optional;
 
 /**

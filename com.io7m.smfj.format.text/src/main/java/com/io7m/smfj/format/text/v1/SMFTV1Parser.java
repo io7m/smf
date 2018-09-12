@@ -34,7 +34,7 @@ import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.net.URI;

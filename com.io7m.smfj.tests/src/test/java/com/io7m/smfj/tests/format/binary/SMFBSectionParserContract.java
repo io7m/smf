@@ -19,7 +19,7 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.control.Validation;
+import io.vavr.control.Validation;
 import org.junit.Assert;
 import org.junit.Test;
 

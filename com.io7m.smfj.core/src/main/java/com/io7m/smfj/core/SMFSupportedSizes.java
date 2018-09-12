@@ -17,7 +17,7 @@
 package com.io7m.smfj.core;
 
 import com.io7m.junreachable.UnreachableCodeException;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.util.stream.Collectors;
 
@@ -59,8 +59,7 @@ public final class SMFSupportedSizes
   /**
    * @param bits The size in bits
    *
-   * @return {@code true} if an unsigned integer type with the given size is
-   * supported
+   * @return {@code true} if an unsigned integer type with the given size is supported
    */
 
   public static boolean isIntegerUnsignedSupported(
@@ -92,8 +91,7 @@ public final class SMFSupportedSizes
   /**
    * @param bits The size in bits
    *
-   * @return {@code true} if a signed integer type with the given size is
-   * supported
+   * @return {@code true} if a signed integer type with the given size is supported
    */
 
   public static boolean isIntegerSignedSupported(
@@ -125,8 +123,7 @@ public final class SMFSupportedSizes
   /**
    * @param bits The size in bits
    *
-   * @return {@code true} if a floating point type with the given size is
-   * supported
+   * @return {@code true} if a floating point type with the given size is supported
    */
 
   public static boolean isFloatSupported(

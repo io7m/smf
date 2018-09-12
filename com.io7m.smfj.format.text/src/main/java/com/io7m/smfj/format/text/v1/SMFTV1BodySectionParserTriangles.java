@@ -25,7 +25,7 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesIgnoringReceiver;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.util.BitSet;

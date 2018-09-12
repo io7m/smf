@@ -18,8 +18,8 @@ package com.io7m.smfj.validation.api;
 
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 
 /**
  * The type of schema validators.
@@ -36,7 +36,7 @@ public interface SMFSchemaValidatorType
    * @return The validated header or a list of validation errors
    */
 
-  Validation<List<SMFErrorType>, SMFHeader> validate(
+  Validation<Seq<SMFErrorType>, SMFHeader> validate(
     SMFHeader header,
     SMFSchema schema);
 }

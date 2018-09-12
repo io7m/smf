@@ -17,7 +17,6 @@
 package com.io7m.smfj.bytebuffer;
 
 import com.io7m.ieee754b16.Binary16;
-import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursorByteReadableType;
 import com.io7m.jtensors.storage.heap.VectorMutable2D;
 import com.io7m.jtensors.storage.heap.VectorMutable3D;
@@ -25,6 +24,7 @@ import com.io7m.jtensors.storage.heap.VectorMutable4D;
 import com.io7m.junreachable.UnreachableCodeException;
 
 import java.nio.ByteBuffer;
+import java.util.Objects;
 
 final class SMFByteBufferCursorsFloat
 {

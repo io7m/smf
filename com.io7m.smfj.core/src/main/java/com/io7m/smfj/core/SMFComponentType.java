@@ -16,8 +16,9 @@
 
 package com.io7m.smfj.core;
 
-import java.util.Objects;
 import com.io7m.junreachable.UnreachableCodeException;
+
+import java.util.Objects;
 
 /**
  * The kind of components.
@@ -58,8 +59,7 @@ public enum SMFComponentType
    *
    * @return A component type
    *
-   * @throws IllegalArgumentException If the name does not refer to a recognized
-   *                                  type
+   * @throws IllegalArgumentException If the name does not refer to a recognized type
    */
 
   public static SMFComponentType of(
@@ -89,8 +89,7 @@ public enum SMFComponentType
    *
    * @return A component type
    *
-   * @throws IllegalArgumentException If the value does not refer to a
-   *                                  recognized type
+   * @throws IllegalArgumentException If the value does not refer to a recognized type
    */
 
   public static SMFComponentType ofInteger(

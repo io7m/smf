@@ -27,8 +27,9 @@ import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,15 +45,14 @@ import java.util.Optional;
 import java.util.ServiceLoader;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that validates the current mesh against a schema.
  */
 
-public final class SMFMemoryMeshFilterSchemaValidate implements
-  SMFMemoryMeshFilterType
+public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFilterType
 {
   /**
    * The command name.
@@ -98,7 +98,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -160,7 +160,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -176,10 +176,10 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     try (InputStream stream = Files.newInputStream(file)) {
       try (SMFSchemaParserType parser =
              parser_provider.schemaParserCreate(file.toUri(), stream)) {
-        final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
+        final Validation<Seq<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
         if (result_schema.isValid()) {
           final SMFSchema schema = result_schema.get();
-          final Validation<List<SMFErrorType>, SMFHeader> result_valid =
+          final Validation<Seq<SMFErrorType>, SMFHeader> result_valid =
             validator.validate(m.header(), schema);
 
           if (result_valid.isValid()) {

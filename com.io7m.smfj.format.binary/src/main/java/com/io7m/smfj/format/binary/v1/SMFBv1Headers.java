@@ -35,10 +35,10 @@ import com.io7m.smfj.format.binary.SMFBCoordinateSystems;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.TreeMap;
-import javaslang.control.Validation;
+import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.collection.TreeMap;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +47,8 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Optional;
 
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * Functions to parse version 1.* headers.

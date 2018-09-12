@@ -19,7 +19,7 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
-import javaslang.collection.SortedMap;
+import io.vavr.collection.SortedMap;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

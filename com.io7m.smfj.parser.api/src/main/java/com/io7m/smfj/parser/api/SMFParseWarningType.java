@@ -17,7 +17,6 @@
 package com.io7m.smfj.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import com.io7m.smfj.core.SMFWarningType;
 import org.immutables.value.Value;
 
@@ -29,7 +28,7 @@ import java.util.Optional;
  */
 
 @Value.Immutable
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFParseWarningType extends SMFWarningType
 {
   /**

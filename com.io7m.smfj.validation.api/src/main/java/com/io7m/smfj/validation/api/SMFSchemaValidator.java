@@ -23,11 +23,12 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.SortedMap;
-import javaslang.collection.SortedSet;
-import javaslang.control.Validation;
+import io.vavr.Tuple2;
+import io.vavr.collection.List;
+import io.vavr.collection.Seq;
+import io.vavr.collection.SortedMap;
+import io.vavr.collection.SortedSet;
+import io.vavr.control.Validation;
 import org.osgi.service.component.annotations.Component;
 
 import java.util.Objects;
@@ -37,8 +38,8 @@ import java.util.OptionalInt;
 import static com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * The default implementation of the {@link SMFSchemaValidatorType} interface.
@@ -246,36 +247,6 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
       Optional.empty());
   }
 
-  @Override
-  public Validation<List<SMFErrorType>, SMFHeader> validate(
-    final SMFHeader header,
-    final SMFSchema schema)
-  {
-    Objects.requireNonNull(header, "Header");
-    Objects.requireNonNull(schema, "Schema");
-
-    List<SMFErrorType> errors = List.empty();
-
-    final Optional<SMFSchemaIdentifier> file_id_opt = header.schemaIdentifier();
-    if (file_id_opt.isPresent()) {
-      final SMFSchemaIdentifier file_id = file_id_opt.get();
-      final SMFSchemaIdentifier schema_id = schema.schemaIdentifier();
-      if (!Objects.equals(schema_id, file_id)) {
-        errors = errors.append(errorWrongSchemaID(schema_id, file_id));
-      }
-    }
-
-    errors = checkVerticesAndTriangles(header, schema, errors);
-    errors = checkAttributes(header, schema, errors);
-    errors = checkCoordinateSystem(header, schema, errors);
-
-    if (errors.isEmpty()) {
-      return valid(header);
-    }
-
-    return invalid(errors);
-  }
-
   private static List<SMFErrorType> checkVerticesAndTriangles(
     final SMFHeader header,
     final SMFSchema schema,
@@ -357,6 +328,36 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     error_x = error_x.appendAll(
       missing.toList().map(SMFSchemaValidator::errorMissingAttribute));
     return error_x;
+  }
+
+  @Override
+  public Validation<Seq<SMFErrorType>, SMFHeader> validate(
+    final SMFHeader header,
+    final SMFSchema schema)
+  {
+    Objects.requireNonNull(header, "Header");
+    Objects.requireNonNull(schema, "Schema");
+
+    List<SMFErrorType> errors = List.empty();
+
+    final Optional<SMFSchemaIdentifier> file_id_opt = header.schemaIdentifier();
+    if (file_id_opt.isPresent()) {
+      final SMFSchemaIdentifier file_id = file_id_opt.get();
+      final SMFSchemaIdentifier schema_id = schema.schemaIdentifier();
+      if (!Objects.equals(schema_id, file_id)) {
+        errors = errors.append(errorWrongSchemaID(schema_id, file_id));
+      }
+    }
+
+    errors = checkVerticesAndTriangles(header, schema, errors);
+    errors = checkAttributes(header, schema, errors);
+    errors = checkCoordinateSystem(header, schema, errors);
+
+    if (errors.isEmpty()) {
+      return valid(header);
+    }
+
+    return invalid(errors);
   }
 
 }

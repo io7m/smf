@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.frontend;
 
-import java.util.Objects;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -33,10 +32,11 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.collection.List;
+import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Objects;
 import java.util.Optional;
 
 /**

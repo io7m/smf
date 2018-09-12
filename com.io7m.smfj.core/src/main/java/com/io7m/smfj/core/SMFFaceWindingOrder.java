@@ -101,8 +101,7 @@ public enum SMFFaceWindingOrder
   }
 
   /**
-   * @return The face winding order as a humanly readable name such as
-   * "counter-clockwise"
+   * @return The face winding order as a humanly readable name such as "counter-clockwise"
    */
 
   public String toName()

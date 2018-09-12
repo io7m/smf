@@ -16,8 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
 import org.immutables.value.Value;
 
 import java.nio.file.Path;
@@ -27,8 +25,8 @@ import java.nio.file.Path;
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@org.immutables.vavr.encodings.VavrEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFFilterCommandContextType
 {
   /**

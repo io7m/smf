@@ -43,8 +43,8 @@ import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import javaslang.collection.List;
-import javaslang.control.Validation;
+import io.vavr.collection.List;
+import io.vavr.control.Validation;
 import mockit.Mocked;
 import org.junit.Assert;
 import org.junit.Test;
@@ -57,7 +57,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Arrays;
 
 import static com.io7m.smfj.core.SMFComponentType.ELEMENT_TYPE_FLOATING;
 

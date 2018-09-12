@@ -16,9 +16,10 @@
 
 package com.io7m.smfj.bytebuffer;
 
-import java.util.Objects;
 import com.io7m.jpra.runtime.java.JPRACursorByteReadableType;
 import com.io7m.jpra.runtime.java.JPRAValueType;
+
+import java.util.Objects;
 
 /**
  * The base cursor implementation.

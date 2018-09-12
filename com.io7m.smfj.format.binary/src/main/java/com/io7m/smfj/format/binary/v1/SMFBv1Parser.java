@@ -19,7 +19,6 @@ package com.io7m.smfj.format.binary.v1;
 import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jfunctional.Unit;
 import com.io7m.jlexing.core.LexicalPosition;
-import java.util.Objects;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
@@ -37,24 +36,25 @@ import com.io7m.smfj.parser.api.SMFParseWarning;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.HashMap;
-import javaslang.collection.List;
-import javaslang.control.Option;
-import javaslang.control.Validation;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
+import io.vavr.control.Validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
 import java.util.BitSet;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.jfunctional.Unit.unit;
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
 import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
+import static io.vavr.control.Validation.invalid;
+import static io.vavr.control.Validation.valid;
 
 /**
  * A parser for version 1.* files.
