@@ -15,17 +15,11 @@
   <packaging>jar</packaging>
   <name>com.io7m.smfj.documentation</name>
   <description>Sequential mesh format (Documentation)</description>
-  <url>http://io7m.github.io/smfj/</url>
+  <url>https://www.io7m.com/software/smfj/</url>
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
   </properties>
-
-  <scm>
-    <url>${project.parent.scm.url}</url>
-    <connection>${project.parent.scm.connection}</connection>
-    <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-  </scm>
 
   <profiles>
     <profile>

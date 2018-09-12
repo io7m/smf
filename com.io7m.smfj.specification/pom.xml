@@ -15,17 +15,11 @@
   <packaging>jar</packaging>
   <name>com.io7m.smfj.specification</name>
   <description>Sequential mesh format (Specification)</description>
-  <url>http://io7m.github.io/smfj/</url>
+  <url>https://www.io7m.com/software/smfj/</url>
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
   </properties>
-
-  <scm>
-    <url>${project.parent.scm.url}</url>
-    <connection>${project.parent.scm.connection}</connection>
-    <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-  </scm>
 
   <build>
     <plugins>
@@ -173,7 +167,7 @@
         </executions>
       </plugin>
 
-      <!-- Unpack the specification archive to the parent's generated site staging directory. -->
+      <!-- Unpack the specification archive to the parent's generated site minisite directory. -->
       <!-- This is arguably abusive, but there appears to be no other way to achieve it. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -190,7 +184,7 @@
               <verbose>true</verbose>
               <fileset>
                 <directory>${project.build.directory}/${project.name}-${project.version}.zip/${project.name}-${project.version}/</directory>
-                <outputDirectory>${project.parent.build.directory}/staging/specification/</outputDirectory>
+                <outputDirectory>${project.parent.build.directory}/minisite/specification/</outputDirectory>
               </fileset>
             </configuration>
           </execution>

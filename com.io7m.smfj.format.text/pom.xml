@@ -15,13 +15,7 @@
   <packaging>jar</packaging>
   <name>com.io7m.smfj.format.text</name>
   <description>Sequential mesh format (Text format)</description>
-  <url>http://io7m.github.io/smfj/</url>
-
-  <scm>
-    <url>${project.parent.scm.url}</url>
-    <connection>${project.parent.scm.connection}</connection>
-    <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-  </scm>
+  <url>https://www.io7m.com/software/smfj/</url>
 
   <dependencies>
     <dependency>

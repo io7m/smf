@@ -76,9 +76,9 @@
 
   <distributionManagement>
     <site>
-      <id>GitHub</id>
-      <name>GitHub</name>
-      <url>http://io7m.github.io/smf</url>
+      <id>io7m.com</id>
+      <name>io7m</name>
+      <url>https://www.io7m.com/software/smfj</url>
     </site>
     <repository>
       <id>sonatype-nexus-staging</id>
@@ -296,6 +296,15 @@
         </plugin>
       </plugins>
     </pluginManagement>
+
+    <plugins>
+      <!-- Generate a site -->
+      <plugin>
+        <groupId>com.io7m.minisite</groupId>
+        <artifactId>com.io7m.minisite.maven_plugin</artifactId>
+        <inherited>false</inherited>
+      </plugin>
+    </plugins>
   </build>
 
 </project>
