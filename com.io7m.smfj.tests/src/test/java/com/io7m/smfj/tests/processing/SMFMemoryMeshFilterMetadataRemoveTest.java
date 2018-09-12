@@ -30,8 +30,8 @@ import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataRemove;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +55,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -66,7 +66,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of("x", "y", "z", "w"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -80,7 +80,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
           "x",
           "0",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -94,7 +94,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
           "0",
           "x",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -105,9 +105,9 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of("com.io7m.smf.example", "1", "0"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
+    Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
   }
 
   @Test
@@ -118,9 +118,9 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of("com.io7m.smf.example", "-"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
+    Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
   }
 
   @Test
@@ -131,9 +131,9 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of("-"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
+    Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
   }
 
   @Test
@@ -144,9 +144,9 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
         Optional.empty(),
         1,
         List.of("-", "-"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
+    Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataRemove.NAME);
   }
 
   @Test
@@ -174,12 +174,12 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(0L, (long) mesh1.metadata().size());
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(0L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -207,12 +207,12 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(1L, (long) mesh1.metadata().size());
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(1L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -240,12 +240,12 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(3L, (long) mesh1.metadata().size());
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(3L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -273,12 +273,12 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(3L, (long) mesh1.metadata().size());
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(3L, (long) mesh1.metadata().size());
   }
 
   @Test
@@ -306,11 +306,11 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(3L, (long) mesh1.metadata().size());
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(3L, (long) mesh1.metadata().size());
   }
 }

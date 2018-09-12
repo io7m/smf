@@ -20,8 +20,8 @@ import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -38,52 +38,52 @@ public abstract class SMFBSectionParserContract
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1020304050607080L, s.id());
-      Assert.assertEquals(0L, s.offset());
-      Assert.assertEquals(0L, s.sizeOfData());
-      Assert.assertEquals(16L, s.sizeTotal());
+      Assertions.assertEquals(0x1020304050607080L, s.id());
+      Assertions.assertEquals(0L, s.offset());
+      Assertions.assertEquals(0L, s.sizeOfData());
+      Assertions.assertEquals(16L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1121314151617181L, s.id());
-      Assert.assertEquals(16L, s.offset());
-      Assert.assertEquals(0L, s.sizeOfData());
-      Assert.assertEquals(16L, s.sizeTotal());
+      Assertions.assertEquals(0x1121314151617181L, s.id());
+      Assertions.assertEquals(16L, s.offset());
+      Assertions.assertEquals(0L, s.sizeOfData());
+      Assertions.assertEquals(16L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1222324252627282L, s.id());
-      Assert.assertEquals(32L, s.offset());
-      Assert.assertEquals(0L, s.sizeOfData());
-      Assert.assertEquals(16L, s.sizeTotal());
+      Assertions.assertEquals(0x1222324252627282L, s.id());
+      Assertions.assertEquals(32L, s.offset());
+      Assertions.assertEquals(0L, s.sizeOfData());
+      Assertions.assertEquals(16L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1323334353637383L, s.id());
-      Assert.assertEquals(48L, s.offset());
-      Assert.assertEquals(0L, s.sizeOfData());
-      Assert.assertEquals(16L, s.sizeTotal());
+      Assertions.assertEquals(0x1323334353637383L, s.id());
+      Assertions.assertEquals(48L, s.offset());
+      Assertions.assertEquals(0L, s.sizeOfData());
+      Assertions.assertEquals(16L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1424344454647484L, s.id());
-      Assert.assertEquals(64L, s.offset());
-      Assert.assertEquals(0L, s.sizeOfData());
-      Assert.assertEquals(16L, s.sizeTotal());
+      Assertions.assertEquals(0x1424344454647484L, s.id());
+      Assertions.assertEquals(64L, s.offset());
+      Assertions.assertEquals(0L, s.sizeOfData());
+      Assertions.assertEquals(16L, s.sizeTotal());
     }
   }
 
@@ -95,52 +95,52 @@ public abstract class SMFBSectionParserContract
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1020304050607080L, s.id());
-      Assert.assertEquals(0L, s.offset());
-      Assert.assertEquals(16L, s.sizeOfData());
-      Assert.assertEquals(32L, s.sizeTotal());
+      Assertions.assertEquals(0x1020304050607080L, s.id());
+      Assertions.assertEquals(0L, s.offset());
+      Assertions.assertEquals(16L, s.sizeOfData());
+      Assertions.assertEquals(32L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1121314151617181L, s.id());
-      Assert.assertEquals(32L, s.offset());
-      Assert.assertEquals(32L, s.sizeOfData());
-      Assert.assertEquals(48L, s.sizeTotal());
+      Assertions.assertEquals(0x1121314151617181L, s.id());
+      Assertions.assertEquals(32L, s.offset());
+      Assertions.assertEquals(32L, s.sizeOfData());
+      Assertions.assertEquals(48L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1222324252627282L, s.id());
-      Assert.assertEquals(80L, s.offset());
-      Assert.assertEquals(48L, s.sizeOfData());
-      Assert.assertEquals(64L, s.sizeTotal());
+      Assertions.assertEquals(0x1222324252627282L, s.id());
+      Assertions.assertEquals(80L, s.offset());
+      Assertions.assertEquals(48L, s.sizeOfData());
+      Assertions.assertEquals(64L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1323334353637383L, s.id());
-      Assert.assertEquals(144L, s.offset());
-      Assert.assertEquals(64L, s.sizeOfData());
-      Assert.assertEquals(80L, s.sizeTotal());
+      Assertions.assertEquals(0x1323334353637383L, s.id());
+      Assertions.assertEquals(144L, s.offset());
+      Assertions.assertEquals(64L, s.sizeOfData());
+      Assertions.assertEquals(80L, s.sizeTotal());
     }
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFBSection s = r.get();
-      Assert.assertEquals(0x1424344454647484L, s.id());
-      Assert.assertEquals(224L, s.offset());
-      Assert.assertEquals(80L, s.sizeOfData());
-      Assert.assertEquals(96L, s.sizeTotal());
+      Assertions.assertEquals(0x1424344454647484L, s.id());
+      Assertions.assertEquals(224L, s.offset());
+      Assertions.assertEquals(80L, s.sizeOfData());
+      Assertions.assertEquals(96L, s.sizeTotal());
     }
   }
 
@@ -152,8 +152,8 @@ public abstract class SMFBSectionParserContract
 
     {
       final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assert.assertTrue(r.isInvalid());
-      Assert.assertTrue(r.getError().message().contains("Section sizes must be multiples of"));
+      Assertions.assertTrue(r.isInvalid());
+      Assertions.assertTrue(r.getError().message().contains("Section sizes must be multiples of"));
     }
   }
 }

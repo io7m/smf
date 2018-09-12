@@ -31,8 +31,8 @@ import com.io7m.smfj.processing.main.SMFMemoryMeshFilterCheckConfiguration;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +59,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -70,7 +70,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
         Optional.empty(),
         1,
         List.of("x", "<#@"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -81,7 +81,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -95,7 +95,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
           "x",
           "y",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -110,7 +110,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
           "float",
           "z",
           "32"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -121,9 +121,9 @@ public final class SMFMemoryMeshFilterCheckTest extends
         Optional.empty(),
         1,
         List.of("x", "float", "4", "32"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "check");
+    Assertions.assertEquals(c.name(), "check");
   }
 
   @Test
@@ -134,9 +134,9 @@ public final class SMFMemoryMeshFilterCheckTest extends
         Optional.empty(),
         1,
         List.of("x", "-", "-", "-"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "check");
+    Assertions.assertEquals(c.name(), "check");
   }
 
   @Test
@@ -161,8 +161,8 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isValid());
-    Assert.assertEquals(loader.mesh(), r.get());
+    Assertions.assertTrue(r.isValid());
+    Assertions.assertEquals(loader.mesh(), r.get());
   }
 
   @Test
@@ -187,7 +187,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -217,7 +217,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -247,7 +247,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -277,7 +277,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -302,7 +302,7 @@ public final class SMFMemoryMeshFilterCheckTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());

@@ -27,9 +27,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,22 +54,22 @@ public final class SMFTV1HeaderCommandAttributeTest
       new SMFTV1HeaderCommandAttribute(
         attributes_lines, attributes_list, reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
 
     }};
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("attribute", "position", "float", "3", "32"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
 
     final SMFAttribute attr = result.attributesInOrder().get(0);
-    Assert.assertEquals("position", attr.name().value());
-    Assert.assertEquals("float", attr.componentType().getName());
-    Assert.assertEquals(3L, (long) attr.componentCount());
-    Assert.assertEquals(32L, (long) attr.componentSizeBits());
+    Assertions.assertEquals("position", attr.name().value());
+    Assertions.assertEquals("float", attr.componentType().getName());
+    Assertions.assertEquals(3L, (long) attr.componentCount());
+    Assertions.assertEquals(32L, (long) attr.componentSizeBits());
   }
 
   @Test
@@ -85,7 +85,7 @@ public final class SMFTV1HeaderCommandAttributeTest
       new SMFTV1HeaderCommandAttribute(
         attributes_lines, attributes_list, reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -98,10 +98,10 @@ public final class SMFTV1HeaderCommandAttributeTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("attribute"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(0L, result.vertexCount());
+    Assertions.assertEquals(0L, result.vertexCount());
   }
 
   @Test
@@ -117,7 +117,7 @@ public final class SMFTV1HeaderCommandAttributeTest
       new SMFTV1HeaderCommandAttribute(
         attributes_lines, attributes_list, reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -130,9 +130,9 @@ public final class SMFTV1HeaderCommandAttributeTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("attribute", "0", "1", "2", "3"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(0L, result.vertexCount());
+    Assertions.assertEquals(0L, result.vertexCount());
   }
 }

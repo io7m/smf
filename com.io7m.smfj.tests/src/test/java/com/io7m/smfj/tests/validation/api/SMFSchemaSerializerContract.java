@@ -25,8 +25,8 @@ import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.collection.SortedSet;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public abstract class SMFSchemaSerializerContract
     final SMFSchema schema;
     try (SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       schema = r.get();
     }
 
@@ -89,9 +89,9 @@ public abstract class SMFSchemaSerializerContract
       try (InputStream in = new ByteArrayInputStream(out.toByteArray())) {
         try (SMFSchemaParserType parser = this.createParser(out_path, in)) {
           final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
-          Assert.assertTrue(r.isValid());
+          Assertions.assertTrue(r.isValid());
           final SMFSchema written_schema = r.get();
-          Assert.assertEquals(schema, written_schema);
+          Assertions.assertEquals(schema, written_schema);
         }
       }
     }

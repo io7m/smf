@@ -31,10 +31,11 @@ import com.io7m.smfj.format.binary.v1.SMFBv1SectionParserMetadata;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import mockit.Delegate;
+import mockit.Expectations;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -57,9 +58,9 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFHeader header = SMFHeader.builder().build();
 
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
-    Assert.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -115,9 +116,9 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFHeader header = SMFHeader.builder().build();
 
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
-    Assert.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onMeta(SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"),
@@ -173,9 +174,9 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFHeader header = SMFHeader.builder().build();
 
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
-    Assert.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onMeta(SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"),

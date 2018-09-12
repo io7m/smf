@@ -27,8 +27,8 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -76,7 +76,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onError(this.with(new Delegate<SMFErrorType>()
@@ -104,7 +104,7 @@ public abstract class SMFParserSequentialTextContract
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -125,7 +125,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -155,7 +155,7 @@ public abstract class SMFParserSequentialTextContract
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -186,7 +186,7 @@ public abstract class SMFParserSequentialTextContract
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -213,7 +213,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -240,7 +240,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onError(this.with(new Delegate<SMFErrorType>()
@@ -265,7 +265,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onError(this.with(new Delegate<SMFErrorType>()
@@ -290,7 +290,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onError(this.with(new Delegate<SMFErrorType>()
@@ -315,7 +315,7 @@ public abstract class SMFParserSequentialTextContract
     final @Mocked SMFParserEventsType events)
     throws Exception
   {
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onError(this.with(new Delegate<SMFErrorType>()
@@ -344,7 +344,7 @@ public abstract class SMFParserSequentialTextContract
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -377,7 +377,7 @@ public abstract class SMFParserSequentialTextContract
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -412,7 +412,7 @@ public abstract class SMFParserSequentialTextContract
     header_builder.setVertexCount(1L);
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));
@@ -446,7 +446,7 @@ public abstract class SMFParserSequentialTextContract
     header_builder.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onStart();
       events.onVersionReceived(SMFFormatVersion.of(1, 0));

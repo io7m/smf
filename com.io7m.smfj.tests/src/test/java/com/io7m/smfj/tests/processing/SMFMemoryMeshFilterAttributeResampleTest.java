@@ -33,8 +33,8 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -72,7 +72,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
         Optional.empty(),
         1,
         List.of("x", "<#@"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -83,7 +83,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -97,7 +97,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
           "x",
           "y",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -108,9 +108,9 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
         Optional.empty(),
         1,
         List.of("x", "32"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "resample");
+    Assertions.assertEquals(c.name(), "resample");
   }
 
   @Test
@@ -131,7 +131,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -157,7 +157,7 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -189,21 +189,21 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
     final SMFHeader header0 = mesh0.header();
     final SMFHeader header1 = mesh1.header();
 
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals((long) arrays0.size(), (long) arrays1.size());
-    Assert.assertEquals(
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals((long) arrays0.size(), (long) arrays1.size());
+    Assertions.assertEquals(
       (long) header0.attributesByName().size(),
       (long) header1.attributesByName().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (long) header0.attributesInOrder().size(),
       (long) header1.attributesInOrder().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.schemaIdentifier(),
       header1.schemaIdentifier());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       mesh0.metadata(),
       mesh1.metadata());
 
@@ -211,10 +211,10 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
       final SMFAttribute attr0 = header0.attributesInOrder().get(index);
       final SMFAttribute attr1 = header1.attributesInOrder().get(index);
       if (Objects.equals(attr0.name(), name_source)) {
-        Assert.assertEquals(16L, (long) attr0.componentSizeBits());
-        Assert.assertEquals(32L, (long) attr1.componentSizeBits());
+        Assertions.assertEquals(16L, (long) attr0.componentSizeBits());
+        Assertions.assertEquals(32L, (long) attr1.componentSizeBits());
       } else {
-        Assert.assertEquals(attr0, attr1);
+        Assertions.assertEquals(attr0, attr1);
       }
     }
   }

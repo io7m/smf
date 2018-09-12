@@ -26,9 +26,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -45,7 +45,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
     final SMFTV1HeaderCommandCoordinates cmd =
       new SMFTV1HeaderCommandCoordinates(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
 
     }};
@@ -54,11 +54,11 @@ public final class SMFTV1HeaderCommandCoordinatesTest
       cmd.parse(
         events,
         List.of("coordinates", "+x", "+y", "-z", "counter-clockwise"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
     final SMFCoordinateSystem system = result.coordinateSystem();
-    Assert.assertEquals("+x +y -z counter-clockwise", system.toHumanString());
+    Assertions.assertEquals("+x +y -z counter-clockwise", system.toHumanString());
   }
 
   @Test
@@ -71,7 +71,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
     final SMFTV1HeaderCommandCoordinates cmd =
       new SMFTV1HeaderCommandCoordinates(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -84,7 +84,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("coordinates"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -97,7 +97,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
     final SMFTV1HeaderCommandCoordinates cmd =
       new SMFTV1HeaderCommandCoordinates(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -112,7 +112,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
       cmd.parse(
         events,
         List.of("coordinates", "a", "b", "c", "counter-clockwise"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -125,7 +125,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
     final SMFTV1HeaderCommandCoordinates cmd =
       new SMFTV1HeaderCommandCoordinates(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -138,7 +138,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("coordinates", "+x", "+y", "-z", "q"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -151,7 +151,7 @@ public final class SMFTV1HeaderCommandCoordinatesTest
     final SMFTV1HeaderCommandCoordinates cmd =
       new SMFTV1HeaderCommandCoordinates(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -166,6 +166,6 @@ public final class SMFTV1HeaderCommandCoordinatesTest
       cmd.parse(
         events,
         List.of("coordinates", "+x", "+x", "+x", "counter-clockwise"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 }

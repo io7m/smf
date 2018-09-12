@@ -24,8 +24,8 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshParser;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import io.vavr.Tuple2;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,15 +57,15 @@ public final class SMFMemoryMeshParserTest
     }
 
     final SMFMemoryMesh mesh1 = loader1.mesh();
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(mesh0.metadata(), mesh1.metadata());
+    Assertions.assertEquals(mesh0.header(), mesh1.header());
+    Assertions.assertEquals(mesh0.metadata(), mesh1.metadata());
 
     for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
       final SMFAttributeArrayType array0 = pair._2;
       final SMFAttributeArrayType array1 = mesh1.arrays().get(pair._1).get();
-      Assert.assertEquals(array0, array1);
+      Assertions.assertEquals(array0, array1);
     }
 
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
   }
 }

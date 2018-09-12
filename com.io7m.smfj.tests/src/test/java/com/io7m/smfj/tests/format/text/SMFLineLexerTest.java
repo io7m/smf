@@ -18,8 +18,8 @@ package com.io7m.smfj.tests.format.text;
 
 import com.io7m.smfj.format.text.SMFTLineLexer;
 import io.vavr.collection.List;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public final class SMFLineLexerTest
@@ -27,56 +27,56 @@ public final class SMFLineLexerTest
   @Test
   public void testLexEmpty()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.empty(), new SMFTLineLexer().lex(""));
   }
 
   @Test
   public void testLexABC()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("a", "b", "c"), new SMFTLineLexer().lex("a b c"));
   }
 
   @Test
   public void testLexAAA()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("aaa"), new SMFTLineLexer().lex("aaa"));
   }
 
   @Test
   public void testLexqAAA()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("aaa"), new SMFTLineLexer().lex("\"aaa\""));
   }
 
   @Test
   public void testLexAqBC()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("a", "b", "c"), new SMFTLineLexer().lex("a \"b\" c"));
   }
 
   @Test
   public void testLexAqB()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("a", "b"), new SMFTLineLexer().lex("a\"b\""));
   }
 
   @Test
   public void testLexQEscape0()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("a", "\\b"), new SMFTLineLexer().lex("a \"\\\\b\""));
   }
 
   @Test
   public void testLexQEscape1()
   {
-    Assert.assertEquals(
+    Assertions.assertEquals(
       List.of("a", "\"b"), new SMFTLineLexer().lex("a \"\\\"b\""));
   }
 

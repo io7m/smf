@@ -25,9 +25,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -44,17 +44,17 @@ public final class SMFTV1HeaderCommandVerticesTest
     final SMFTV1HeaderCommandVertices cmd =
       new SMFTV1HeaderCommandVertices(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
 
     }};
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "100"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(100L, result.vertexCount());
+    Assertions.assertEquals(100L, result.vertexCount());
   }
 
   @Test
@@ -67,7 +67,7 @@ public final class SMFTV1HeaderCommandVerticesTest
     final SMFTV1HeaderCommandVertices cmd =
       new SMFTV1HeaderCommandVertices(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -80,10 +80,10 @@ public final class SMFTV1HeaderCommandVerticesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(0L, result.vertexCount());
+    Assertions.assertEquals(0L, result.vertexCount());
   }
 
   @Test
@@ -96,7 +96,7 @@ public final class SMFTV1HeaderCommandVerticesTest
     final SMFTV1HeaderCommandVertices cmd =
       new SMFTV1HeaderCommandVertices(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -109,10 +109,10 @@ public final class SMFTV1HeaderCommandVerticesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "z"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(0L, result.vertexCount());
+    Assertions.assertEquals(0L, result.vertexCount());
   }
 
   @Test
@@ -125,7 +125,7 @@ public final class SMFTV1HeaderCommandVerticesTest
     final SMFTV1HeaderCommandVertices cmd =
       new SMFTV1HeaderCommandVertices(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -138,9 +138,9 @@ public final class SMFTV1HeaderCommandVerticesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "3", "4"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(0L, result.vertexCount());
+    Assertions.assertEquals(0L, result.vertexCount());
   }
 }

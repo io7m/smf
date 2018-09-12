@@ -19,24 +19,22 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
 import io.vavr.collection.TreeMap;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class SMFFilterCommandModuleProviderAbstractTest
 {
-  @Rule public ExpectedException expected = ExpectedException.none();
-
   @Test
   public void testDuplicateModule()
   {
     final SMFFilterCommandModule m =
       SMFFilterCommandModule.of("a", TreeMap.empty());
 
-    this.expected.expect(IllegalArgumentException.class);
-    new SMFFilterCommandModuleProviderAbstract(m, m)
-    {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new SMFFilterCommandModuleProviderAbstract(m, m)
+      {
 
-    };
+      };
+    });
   }
 }

@@ -47,8 +47,8 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import io.vavr.Tuple2;
 import io.vavr.collection.Vector;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector4D> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -91,7 +91,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector3D> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -105,7 +105,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector2D> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -119,7 +119,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Double> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -133,7 +133,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector4L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -147,7 +147,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector3L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -161,7 +161,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector2L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -175,7 +175,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Long> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -189,7 +189,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector4L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -203,7 +203,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector3L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -217,7 +217,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Vector2L> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -231,7 +231,7 @@ public final class SMFMemoryMeshSerializerTest
     final Vector<Long> v1 = a1.values();
 
     for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
     return unit();
@@ -248,7 +248,7 @@ public final class SMFMemoryMeshSerializerTest
       // Parse already called by SMFTestFiles.createParser
     }
 
-    Assert.assertTrue(loader0.errors().isEmpty());
+    Assertions.assertTrue(loader0.errors().isEmpty());
 
     final SMFMemoryMesh mesh0 = loader0.mesh();
     final SMFFormatText fmt = new SMFFormatText();
@@ -275,8 +275,8 @@ public final class SMFMemoryMeshSerializerTest
     LOG.debug("mesh0: {} ", mesh0);
     LOG.debug("mesh1: {} ", mesh1);
 
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(mesh0.header(), mesh1.header());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
 
     for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
       final SMFAttributeName name = pair._1;

@@ -45,15 +45,11 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMetadata;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class SMFMemoryMeshProducerTest
 {
-  @Rule public ExpectedException expected = ExpectedException.none();
-
   private static void checkVector4F(
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
     final String name)
@@ -62,24 +58,24 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector4D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(1.0, v.z(), 0.0);
-      Assert.assertEquals(127.0, v.w(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(1.0, v.z(), 0.0001);
+      Assertions.assertEquals(127.0, v.w(), 0.0001);
     }
     {
       final Vector4D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(1.0, v.z(), 0.0);
-      Assert.assertEquals(127.0, v.w(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(1.0, v.z(), 0.0001);
+      Assertions.assertEquals(127.0, v.w(), 0.0001);
     }
     {
       final Vector4D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(1.0, v.z(), 0.0);
-      Assert.assertEquals(127.0, v.w(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(1.0, v.z(), 0.0001);
+      Assertions.assertEquals(127.0, v.w(), 0.0001);
     }
   }
 
@@ -91,21 +87,21 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector3D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(127.0, v.z(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(127.0, v.z(), 0.0001);
     }
     {
       final Vector3D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(127.0, v.z(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(127.0, v.z(), 0.0001);
     }
     {
       final Vector3D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(0.0, v.y(), 0.0);
-      Assert.assertEquals(127.0, v.z(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(0.0, v.y(), 0.0001);
+      Assertions.assertEquals(127.0, v.z(), 0.0001);
     }
   }
 
@@ -117,18 +113,18 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector2D v = a.values().get(0);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(127.0, v.y(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(127.0, v.y(), 0.0001);
     }
     {
       final Vector2D v = a.values().get(1);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(127.0, v.y(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(127.0, v.y(), 0.0001);
     }
     {
       final Vector2D v = a.values().get(2);
-      Assert.assertEquals(-127.0, v.x(), 0.0);
-      Assert.assertEquals(127.0, v.y(), 0.0);
+      Assertions.assertEquals(-127.0, v.x(), 0.0001);
+      Assertions.assertEquals(127.0, v.y(), 0.0001);
     }
   }
 
@@ -140,15 +136,15 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Double v = a.values().get(0);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+      Assertions.assertEquals(127.0, v.doubleValue(), 0.0001);
     }
     {
       final Double v = a.values().get(1);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+      Assertions.assertEquals(127.0, v.doubleValue(), 0.0001);
     }
     {
       final Double v = a.values().get(2);
-      Assert.assertEquals(127.0, v.doubleValue(), 0.0);
+      Assertions.assertEquals(127.0, v.doubleValue(), 0.0001);
     }
   }
 
@@ -160,24 +156,24 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector4L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
     {
       final Vector4L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
     {
       final Vector4L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
   }
 
@@ -189,21 +185,21 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector3L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
     {
       final Vector3L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
     {
       final Vector3L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
   }
 
@@ -215,18 +211,18 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector2L v = a.values().get(0);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
     {
       final Vector2L v = a.values().get(1);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
     {
       final Vector2L v = a.values().get(2);
-      Assert.assertEquals(-127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(-127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
   }
 
@@ -238,15 +234,15 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Long v = a.values().get(0);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
     {
       final Long v = a.values().get(1);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
     {
       final Long v = a.values().get(2);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
   }
 
@@ -258,24 +254,24 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector4L v = a.values().get(0);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
     {
       final Vector4L v = a.values().get(1);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
     {
       final Vector4L v = a.values().get(2);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(1L, v.z());
-      Assert.assertEquals(127L, v.w());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(1L, v.z());
+      Assertions.assertEquals(127L, v.w());
     }
   }
 
@@ -287,21 +283,21 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector3L v = a.values().get(0);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
     {
       final Vector3L v = a.values().get(1);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
     {
       final Vector3L v = a.values().get(2);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(0L, v.y());
-      Assert.assertEquals(127L, v.z());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(0L, v.y());
+      Assertions.assertEquals(127L, v.z());
     }
   }
 
@@ -313,18 +309,18 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Vector2L v = a.values().get(0);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
     {
       final Vector2L v = a.values().get(1);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
     {
       final Vector2L v = a.values().get(2);
-      Assert.assertEquals(127L, v.x());
-      Assert.assertEquals(127L, v.y());
+      Assertions.assertEquals(127L, v.x());
+      Assertions.assertEquals(127L, v.y());
     }
   }
 
@@ -336,15 +332,15 @@ public final class SMFMemoryMeshProducerTest
       arrays.get(SMFAttributeName.of(name)).get();
     {
       final Long v = a.values().get(0);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
     {
       final Long v = a.values().get(1);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
     {
       final Long v = a.values().get(2);
-      Assert.assertEquals(127L, v.longValue());
+      Assertions.assertEquals(127L, v.longValue());
     }
   }
 
@@ -359,17 +355,17 @@ public final class SMFMemoryMeshProducerTest
       // Parse already called by SMFTestFiles.createParser
     }
 
-    Assert.assertEquals(0L, (long) loader.errors().size());
+    Assertions.assertEquals(0L, (long) loader.errors().size());
 
     try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Parse already called by SMFTestFiles.createParser
     }
 
-    Assert.assertEquals(1L, (long) loader.errors().size());
+    Assertions.assertEquals(1L, (long) loader.errors().size());
 
     final SMFErrorType e = loader.errors().get(0);
-    Assert.assertTrue(e.exception().get() instanceof IllegalStateException);
+    Assertions.assertTrue(e.exception().get() instanceof IllegalStateException);
   }
 
   @Test
@@ -383,7 +379,7 @@ public final class SMFMemoryMeshProducerTest
       // Parse already called by SMFTestFiles.createParser
     }
 
-    Assert.assertTrue(loader.errors().isEmpty());
+    Assertions.assertTrue(loader.errors().isEmpty());
 
     final SMFMemoryMesh mesh = loader.mesh();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = mesh.arrays();
@@ -392,89 +388,91 @@ public final class SMFMemoryMeshProducerTest
 
     {
       final SMFMetadata m = metas.get(0);
-      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
-      Assert.assertEquals(0L, (long) m.schema().versionMajor());
-      Assert.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
+      Assertions.assertEquals(0L, (long) m.schema().versionMajor());
+      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(1);
-      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
-      Assert.assertEquals(1L, (long) m.schema().versionMajor());
-      Assert.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
+      Assertions.assertEquals(1L, (long) m.schema().versionMajor());
+      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(2);
-      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example.different"),  m.schema().name());
-      Assert.assertEquals(1L, (long) m.schema().versionMajor());
-      Assert.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(
+        SMFSchemaName.of("com.io7m.smf.example.different"),
+        m.schema().name());
+      Assertions.assertEquals(1L, (long) m.schema().versionMajor());
+      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(3);
-      Assert.assertEquals(SMFSchemaName.of("com.io7m.smf.example"),  m.schema().name());
-      Assert.assertEquals(2L, (long) m.schema().versionMajor());
-      Assert.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
+      Assertions.assertEquals(2L, (long) m.schema().versionMajor());
+      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
     }
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f32_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f64_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i64_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i32_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i16_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("i8_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u64_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u32_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u16_1")));
 
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_4")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_3")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_2")));
-    Assert.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_1")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_4")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_3")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_2")));
+    Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_1")));
 
-    Assert.assertEquals(44L, (long) arrays.size());
-    Assert.assertEquals(1L, (long) triangles.size());
+    Assertions.assertEquals(44L, (long) arrays.size());
+    Assertions.assertEquals(1L, (long) triangles.size());
 
     checkVector4F(arrays, "f16_4");
     checkVector3F(arrays, "f16_3");

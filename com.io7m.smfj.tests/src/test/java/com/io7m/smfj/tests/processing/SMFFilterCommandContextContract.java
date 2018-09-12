@@ -17,10 +17,8 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +32,6 @@ public abstract class SMFFilterCommandContextContract
   static {
     LOG = LoggerFactory.getLogger(SMFFilterCommandContextContract.class);
   }
-
-  @Rule public ExpectedException expected = ExpectedException.none();
 
   private static void tryResolve(
     final Path source_root,
@@ -51,9 +47,9 @@ public abstract class SMFFilterCommandContextContract
     final SMFFilterCommandContext c =
       SMFFilterCommandContext.of(source_root, current_path);
 
-    Assert.assertEquals(source_root, c.sourceRoot());
-    Assert.assertEquals(current_path, c.currentPath());
-    Assert.assertEquals(resolved, c.resolvePath(target));
+    Assertions.assertEquals(source_root, c.sourceRoot());
+    Assertions.assertEquals(current_path, c.currentPath());
+    Assertions.assertEquals(resolved, c.resolvePath(target));
   }
 
   protected abstract FileSystem newFilesystem();
@@ -63,8 +59,9 @@ public abstract class SMFFilterCommandContextContract
     throws Exception
   {
     try (FileSystem fs = this.newFilesystem()) {
-      this.expected.expect(IllegalArgumentException.class);
-      SMFFilterCommandContext.of(fs.getPath("a"), fs.getPath("a"));
+      Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        SMFFilterCommandContext.of(fs.getPath("a"), fs.getPath("a"));
+      });
     }
   }
 
@@ -107,8 +104,9 @@ public abstract class SMFFilterCommandContextContract
       final Path target = fs.getPath("../m");
       final Path resolved = root.resolve("x/m");
 
-      this.expected.expect(IllegalArgumentException.class);
-      tryResolve(source_root, current_path, target, resolved);
+      Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        tryResolve(source_root, current_path, target, resolved);
+      });
     }
   }
 }

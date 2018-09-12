@@ -20,8 +20,8 @@ import com.io7m.smfj.format.text.SMFBase64Lines;
 import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import net.java.quickcheck.generator.support.ByteArrayGenerator;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
@@ -51,7 +51,7 @@ public final class SMFBase64LinesTest
         {
           final List<String> lines = SMFBase64Lines.toBase64Lines(data);
           final byte[] r_data = SMFBase64Lines.fromBase64Lines(lines);
-          Assert.assertArrayEquals(data, r_data);
+          Assertions.assertArrayEquals(data, r_data);
         }
       });
   }

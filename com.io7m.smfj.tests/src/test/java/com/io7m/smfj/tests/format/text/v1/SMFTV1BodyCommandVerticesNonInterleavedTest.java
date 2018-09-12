@@ -32,9 +32,9 @@ import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.BitSet;
@@ -62,7 +62,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
       new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       reader.line();
       this.result = Optional.of(List.of("end"));
@@ -70,8 +70,8 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
-    Assert.assertTrue(state.get(Flags.VERTICES_RECEIVED));
+    Assertions.assertEquals(SUCCESS, r);
+    Assertions.assertTrue(state.get(Flags.VERTICES_RECEIVED));
   }
 
   @Test
@@ -104,7 +104,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -148,7 +148,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -184,7 +184,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -225,7 +225,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -273,7 +273,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -321,7 +321,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -370,7 +370,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -419,7 +419,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -474,7 +474,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -529,7 +529,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -584,7 +584,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -639,7 +639,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -688,7 +688,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -737,7 +737,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -786,7 +786,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -835,7 +835,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -890,7 +890,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -945,7 +945,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1000,7 +1000,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1055,7 +1055,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1104,7 +1104,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -1153,7 +1153,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -1202,7 +1202,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -1251,7 +1251,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -1306,7 +1306,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1361,7 +1361,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1416,7 +1416,7 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -1471,6 +1471,6 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 }

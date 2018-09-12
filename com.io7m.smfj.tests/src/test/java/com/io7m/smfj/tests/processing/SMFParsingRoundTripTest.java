@@ -27,8 +27,8 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import io.vavr.Tuple2;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,19 +93,19 @@ public final class SMFParsingRoundTripTest
     });
 
     final SMFMemoryMesh mesh1 = loader1.mesh();
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(
+    Assertions.assertEquals(mesh0.header(), mesh1.header());
+    Assertions.assertEquals(
       (long) mesh0.arrays().size(),
       (long) mesh1.arrays().size());
 
     for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
       final SMFAttributeArrayType array0 = pair._2;
       final SMFAttributeArrayType array1 = mesh1.arrays().get(pair._1).get();
-      Assert.assertEquals(array0, array1);
+      Assertions.assertEquals(array0, array1);
     }
 
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(mesh0.metadata(), mesh1.metadata());
-    Assert.assertEquals(mesh0, mesh1);
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(mesh0.metadata(), mesh1.metadata());
+    Assertions.assertEquals(mesh0, mesh1);
   }
 }

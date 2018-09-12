@@ -32,9 +32,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -87,9 +87,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -177,9 +177,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -245,9 +245,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -311,9 +311,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -375,9 +375,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -446,9 +446,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -514,9 +514,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -580,9 +580,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -644,9 +644,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -714,9 +714,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -782,9 +782,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -848,9 +848,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -912,9 +912,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -982,9 +982,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -1050,9 +1050,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -1116,9 +1116,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);
@@ -1180,9 +1180,9 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 
     final SMFBv1SectionParserVerticesNonInterleaved p =
       new SMFBv1SectionParserVerticesNonInterleaved(state);
-    Assert.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onAttributesNonInterleaved();
       this.result = Optional.of(events_ni);

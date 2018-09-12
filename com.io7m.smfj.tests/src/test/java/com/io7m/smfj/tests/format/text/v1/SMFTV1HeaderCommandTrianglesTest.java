@@ -25,9 +25,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -44,18 +44,18 @@ public final class SMFTV1HeaderCommandTrianglesTest
     final SMFTV1HeaderCommandTriangles cmd =
       new SMFTV1HeaderCommandTriangles(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
 
     }};
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles", "100", "32"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
-    Assert.assertEquals(100L, result.triangles().triangleCount());
-    Assert.assertEquals(32L, result.triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(100L, result.triangles().triangleCount());
+    Assertions.assertEquals(32L, result.triangles().triangleIndexSizeBits());
   }
 
   @Test
@@ -68,7 +68,7 @@ public final class SMFTV1HeaderCommandTrianglesTest
     final SMFTV1HeaderCommandTriangles cmd =
       new SMFTV1HeaderCommandTriangles(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -81,7 +81,7 @@ public final class SMFTV1HeaderCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -94,7 +94,7 @@ public final class SMFTV1HeaderCommandTrianglesTest
     final SMFTV1HeaderCommandTriangles cmd =
       new SMFTV1HeaderCommandTriangles(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -107,7 +107,7 @@ public final class SMFTV1HeaderCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles", "z", "32"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -120,7 +120,7 @@ public final class SMFTV1HeaderCommandTrianglesTest
     final SMFTV1HeaderCommandTriangles cmd =
       new SMFTV1HeaderCommandTriangles(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -133,6 +133,6 @@ public final class SMFTV1HeaderCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles", "100", "z"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 }

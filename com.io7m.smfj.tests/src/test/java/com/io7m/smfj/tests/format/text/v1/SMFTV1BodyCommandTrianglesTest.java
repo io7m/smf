@@ -30,9 +30,9 @@ import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.BitSet;
@@ -57,7 +57,7 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       reader.line();
       this.result = Optional.of(List.of("end"));
@@ -65,8 +65,8 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(SUCCESS, r);
-    Assert.assertTrue(state.get(Flags.TRIANGLES_RECEIVED));
+    Assertions.assertEquals(SUCCESS, r);
+    Assertions.assertTrue(state.get(Flags.TRIANGLES_RECEIVED));
   }
 
   @Test
@@ -104,7 +104,7 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles", "what?"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -148,7 +148,7 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -191,7 +191,7 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -235,7 +235,7 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -279,7 +279,7 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -315,6 +315,6 @@ public final class SMFTV1BodyCommandTrianglesTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("triangles"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 }

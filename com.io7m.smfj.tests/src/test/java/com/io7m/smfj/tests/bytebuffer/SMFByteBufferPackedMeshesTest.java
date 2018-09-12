@@ -65,10 +65,8 @@ import io.vavr.collection.List;
 import io.vavr.collection.SortedMap;
 import io.vavr.collection.TreeMap;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +80,9 @@ import static io.vavr.control.Validation.valid;
 
 public final class SMFByteBufferPackedMeshesTest
 {
-  @Rule public ExpectedException expected = ExpectedException.none();
+  private static final double COMPARISON_DELTA = 0.000_000_001;
+
+  private static final double COMPARISON_DELTA_16 = 0.001;
 
   private static SMFParserSequentialType createParser(
     final SMFParserEventsType loader,
@@ -115,21 +115,21 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
 
           c.setElementIndex(0);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0L, v.get1UL());
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0L, v.get1UL());
 
           c.setElementIndex(1);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(128L, v.get1UL());
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(128L, v.get1UL());
 
           c.setElementIndex(2);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(255L, v.get1UL());
+          Assertions.assertEquals(255L, vz);
+          Assertions.assertEquals(255L, v.get1UL());
         }
         break;
       }
@@ -144,36 +144,36 @@ public final class SMFByteBufferPackedMeshesTest
           c.setElementIndex(0);
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(255L, vy);
 
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(255L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(255L, o.y());
         }
 
         {
           c.setElementIndex(1);
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 2);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 3);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(255L, vy);
 
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(255L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(255L, o.y());
         }
 
         {
           c.setElementIndex(2);
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 4);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(255L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(255L, vy);
 
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(255L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(255L, o.y());
         }
         break;
       }
@@ -189,14 +189,14 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
 
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
         }
 
         {
@@ -204,14 +204,14 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 3);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 4);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 5);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
 
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
         }
 
         {
@@ -219,14 +219,14 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Unsigned8.unpackFromBuffer(rb, 6);
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 7);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 8);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
 
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
         }
         break;
       }
@@ -243,16 +243,16 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 1);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 2);
           final long vw = (long) Unsigned8.unpackFromBuffer(rb, 3);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
+          Assertions.assertEquals(128L, vw);
 
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
-          Assert.assertEquals(128L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
+          Assertions.assertEquals(128L, o.w());
         }
 
         {
@@ -261,16 +261,16 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 5);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 6);
           final long vw = (long) Unsigned8.unpackFromBuffer(rb, 7);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
+          Assertions.assertEquals(128L, vw);
 
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
-          Assert.assertEquals(128L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
+          Assertions.assertEquals(128L, o.w());
         }
 
         {
@@ -279,16 +279,16 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned8.unpackFromBuffer(rb, 9);
           final long vz = (long) Unsigned8.unpackFromBuffer(rb, 10);
           final long vw = (long) Unsigned8.unpackFromBuffer(rb, 11);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(128L, vy);
-          Assert.assertEquals(255L, vz);
-          Assert.assertEquals(128L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(128L, vy);
+          Assertions.assertEquals(255L, vz);
+          Assertions.assertEquals(128L, vw);
 
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(128L, o.y());
-          Assert.assertEquals(255L, o.z());
-          Assert.assertEquals(128L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(128L, o.y());
+          Assertions.assertEquals(255L, o.z());
+          Assertions.assertEquals(128L, o.w());
         }
         break;
       }
@@ -314,17 +314,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 4);
 
-          Assert.assertEquals(0L, vx);
+          Assertions.assertEquals(0L, vx);
           c.setElementIndex(0);
-          Assert.assertEquals(0L, v.get1UL());
+          Assertions.assertEquals(0L, v.get1UL());
 
-          Assert.assertEquals(32768L, vy);
+          Assertions.assertEquals(32768L, vy);
           c.setElementIndex(1);
-          Assert.assertEquals(32768L, v.get1UL());
+          Assertions.assertEquals(32768L, v.get1UL());
 
-          Assert.assertEquals(65535L, vz);
+          Assertions.assertEquals(65535L, vz);
           c.setElementIndex(2);
-          Assert.assertEquals(65535L, v.get1UL());
+          Assertions.assertEquals(65535L, v.get1UL());
         }
         break;
       }
@@ -338,37 +338,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(65535L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(65535L, vy);
 
           c.setElementIndex(0);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(65535L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(65535L, o.y());
         }
 
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 4);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 6);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(65535L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(65535L, vy);
 
           c.setElementIndex(1);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(65535L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(65535L, o.y());
         }
 
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 8);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 10);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(65535L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(65535L, vy);
 
           c.setElementIndex(2);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(65535L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(65535L, o.y());
         }
         break;
       }
@@ -383,45 +383,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 0);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 4);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
 
           c.setElementIndex(0);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
         }
 
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 6);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 8);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 10);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
 
           c.setElementIndex(1);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
         }
 
         {
           final long vx = (long) Unsigned16.unpackFromBuffer(rb, 12);
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 14);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 16);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
 
           c.setElementIndex(2);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
         }
         break;
       }
@@ -437,17 +437,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 2);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 4);
           final long vw = (long) Unsigned16.unpackFromBuffer(rb, 6);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -455,17 +455,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 10);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 12);
           final long vw = (long) Unsigned16.unpackFromBuffer(rb, 14);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -473,17 +473,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Unsigned16.unpackFromBuffer(rb, 18);
           final long vz = (long) Unsigned16.unpackFromBuffer(rb, 20);
           final long vw = (long) Unsigned16.unpackFromBuffer(rb, 22);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(32768L, vy);
-          Assert.assertEquals(65535L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(32768L, vy);
+          Assertions.assertEquals(65535L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(32768L, o.y());
-          Assert.assertEquals(65535L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(32768L, o.y());
+          Assertions.assertEquals(65535L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -508,17 +508,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
           final long vz = Unsigned32.unpackFromBuffer(rb, 8);
 
-          Assert.assertEquals(0L, vx);
+          Assertions.assertEquals(0L, vx);
           c.setElementIndex(0);
-          Assert.assertEquals(0L, v.get1UL());
+          Assertions.assertEquals(0L, v.get1UL());
 
-          Assert.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(2147483648L, vy);
           c.setElementIndex(1);
-          Assert.assertEquals(2147483648L, v.get1UL());
+          Assertions.assertEquals(2147483648L, v.get1UL());
 
-          Assert.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(4294967295L, vz);
           c.setElementIndex(2);
-          Assert.assertEquals(4294967295L, v.get1UL());
+          Assertions.assertEquals(4294967295L, v.get1UL());
         }
         break;
       }
@@ -532,37 +532,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(4294967295L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(4294967295L, vy);
 
           c.setElementIndex(0);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(4294967295L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(4294967295L, o.y());
         }
 
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 8);
           final long vy = Unsigned32.unpackFromBuffer(rb, 12);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(4294967295L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(4294967295L, vy);
 
           c.setElementIndex(1);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(4294967295L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(4294967295L, o.y());
         }
 
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 16);
           final long vy = Unsigned32.unpackFromBuffer(rb, 20);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(4294967295L, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(4294967295L, vy);
 
           c.setElementIndex(2);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(4294967295L, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(4294967295L, o.y());
         }
         break;
       }
@@ -577,45 +577,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = Unsigned32.unpackFromBuffer(rb, 0);
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
           final long vz = Unsigned32.unpackFromBuffer(rb, 8);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
 
           c.setElementIndex(0);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
         }
 
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 12);
           final long vy = Unsigned32.unpackFromBuffer(rb, 16);
           final long vz = Unsigned32.unpackFromBuffer(rb, 20);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
 
           c.setElementIndex(1);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
         }
 
         {
           final long vx = Unsigned32.unpackFromBuffer(rb, 24);
           final long vy = Unsigned32.unpackFromBuffer(rb, 28);
           final long vz = Unsigned32.unpackFromBuffer(rb, 32);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
 
           c.setElementIndex(2);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
         }
         break;
       }
@@ -631,17 +631,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 4);
           final long vz = Unsigned32.unpackFromBuffer(rb, 8);
           final long vw = Unsigned32.unpackFromBuffer(rb, 12);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -649,17 +649,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 20);
           final long vz = Unsigned32.unpackFromBuffer(rb, 24);
           final long vw = Unsigned32.unpackFromBuffer(rb, 28);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -667,17 +667,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = Unsigned32.unpackFromBuffer(rb, 36);
           final long vz = Unsigned32.unpackFromBuffer(rb, 40);
           final long vw = Unsigned32.unpackFromBuffer(rb, 44);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(2147483648L, vy);
-          Assert.assertEquals(4294967295L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(2147483648L, vy);
+          Assertions.assertEquals(4294967295L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(2147483648L, o.y());
-          Assert.assertEquals(4294967295L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(2147483648L, o.y());
+          Assertions.assertEquals(4294967295L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -699,17 +699,17 @@ public final class SMFByteBufferPackedMeshesTest
         final SMFByteBufferIntegerUnsigned1Type v = c.getElementView();
 
         {
-          Assert.assertEquals(0L, rb.getLong(0));
+          Assertions.assertEquals(0L, rb.getLong(0));
           c.setElementIndex(0);
-          Assert.assertEquals(0L, v.get1UL());
+          Assertions.assertEquals(0L, v.get1UL());
 
-          Assert.assertEquals(0x8000000000000000L, rb.getLong(8));
+          Assertions.assertEquals(0x8000000000000000L, rb.getLong(8));
           c.setElementIndex(1);
-          Assert.assertEquals(0x8000000000000000L, v.get1UL());
+          Assertions.assertEquals(0x8000000000000000L, v.get1UL());
 
-          Assert.assertEquals(0xffffffffffffffffL, rb.getLong(16));
+          Assertions.assertEquals(0xffffffffffffffffL, rb.getLong(16));
           c.setElementIndex(2);
-          Assert.assertEquals(0xffffffffffffffffL, v.get1UL());
+          Assertions.assertEquals(0xffffffffffffffffL, v.get1UL());
         }
         break;
       }
@@ -723,37 +723,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0xffffffffffffffffL, vy);
 
           c.setElementIndex(0);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0xffffffffffffffffL, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0xffffffffffffffffL, o.y());
         }
 
         {
           final long vx = rb.getLong(16);
           final long vy = rb.getLong(24);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0xffffffffffffffffL, vy);
 
           c.setElementIndex(1);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0xffffffffffffffffL, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0xffffffffffffffffL, o.y());
         }
 
         {
           final long vx = rb.getLong(32);
           final long vy = rb.getLong(40);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0xffffffffffffffffL, vy);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0xffffffffffffffffL, vy);
 
           c.setElementIndex(2);
           v.get2UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0xffffffffffffffffL, o.y());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0xffffffffffffffffL, o.y());
         }
         break;
       }
@@ -768,45 +768,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
           final long vz = rb.getLong(16);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
 
           c.setElementIndex(0);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
         }
 
         {
           final long vx = rb.getLong(24);
           final long vy = rb.getLong(32);
           final long vz = rb.getLong(40);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
 
           c.setElementIndex(1);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
         }
 
         {
           final long vx = rb.getLong(48);
           final long vy = rb.getLong(56);
           final long vz = rb.getLong(64);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
 
           c.setElementIndex(2);
           v.get3UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
         }
         break;
       }
@@ -822,17 +822,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(8);
           final long vz = rb.getLong(16);
           final long vw = rb.getLong(24);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -840,17 +840,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(40);
           final long vz = rb.getLong(48);
           final long vw = rb.getLong(56);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -858,17 +858,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(72);
           final long vz = rb.getLong(80);
           final long vw = rb.getLong(88);
-          Assert.assertEquals(0L, vx);
-          Assert.assertEquals(0x8000000000000000L, vy);
-          Assert.assertEquals(0xffffffffffffffffL, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(0L, vx);
+          Assertions.assertEquals(0x8000000000000000L, vy);
+          Assertions.assertEquals(0xffffffffffffffffL, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4UL(o);
-          Assert.assertEquals(0L, o.x());
-          Assert.assertEquals(0x8000000000000000L, o.y());
-          Assert.assertEquals(0xffffffffffffffffL, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(0L, o.x());
+          Assertions.assertEquals(0x8000000000000000L, o.y());
+          Assertions.assertEquals(0xffffffffffffffffL, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -891,16 +891,16 @@ public final class SMFByteBufferPackedMeshesTest
         final SMFByteBufferIntegerSigned1Type v = c.getElementView();
 
         c.setElementIndex(0);
-        Assert.assertEquals(-127L, v.get1SL());
-        Assert.assertEquals(-127L, (long) rb.get(0));
+        Assertions.assertEquals(-127L, v.get1SL());
+        Assertions.assertEquals(-127L, (long) rb.get(0));
 
         c.setElementIndex(1);
-        Assert.assertEquals(0L, v.get1SL());
-        Assert.assertEquals(0L, (long) rb.get(1));
+        Assertions.assertEquals(0L, v.get1SL());
+        Assertions.assertEquals(0L, (long) rb.get(1));
 
         c.setElementIndex(2);
-        Assert.assertEquals(127L, v.get1SL());
-        Assert.assertEquals(127L, (long) rb.get(2));
+        Assertions.assertEquals(127L, v.get1SL());
+        Assertions.assertEquals(127L, (long) rb.get(2));
         break;
       }
 
@@ -911,25 +911,25 @@ public final class SMFByteBufferPackedMeshesTest
         final VectorMutable2L o = new VectorMutable2L();
 
         c.setElementIndex(0);
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
+        Assertions.assertEquals(-127L, (long) rb.get(0));
+        Assertions.assertEquals(0L, (long) rb.get(1));
         v.get2SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
 
         c.setElementIndex(1);
-        Assert.assertEquals(0L, (long) rb.get(2));
-        Assert.assertEquals(0L, (long) rb.get(3));
+        Assertions.assertEquals(0L, (long) rb.get(2));
+        Assertions.assertEquals(0L, (long) rb.get(3));
         v.get2SL(o);
-        Assert.assertEquals(0L, o.x());
-        Assert.assertEquals(0L, o.y());
+        Assertions.assertEquals(0L, o.x());
+        Assertions.assertEquals(0L, o.y());
 
         c.setElementIndex(2);
-        Assert.assertEquals(127L, (long) rb.get(4));
-        Assert.assertEquals(0L, (long) rb.get(5));
+        Assertions.assertEquals(127L, (long) rb.get(4));
+        Assertions.assertEquals(0L, (long) rb.get(5));
         v.get2SL(o);
-        Assert.assertEquals(127L, o.x());
-        Assert.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.x());
+        Assertions.assertEquals(0L, o.y());
         break;
       }
 
@@ -940,31 +940,31 @@ public final class SMFByteBufferPackedMeshesTest
         final VectorMutable3L o = new VectorMutable3L();
 
         c.setElementIndex(0);
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(127L, (long) rb.get(2));
+        Assertions.assertEquals(-127L, (long) rb.get(0));
+        Assertions.assertEquals(0L, (long) rb.get(1));
+        Assertions.assertEquals(127L, (long) rb.get(2));
         v.get3SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
 
         c.setElementIndex(1);
-        Assert.assertEquals(-127L, (long) rb.get(3));
-        Assert.assertEquals(0L, (long) rb.get(4));
-        Assert.assertEquals(127L, (long) rb.get(5));
+        Assertions.assertEquals(-127L, (long) rb.get(3));
+        Assertions.assertEquals(0L, (long) rb.get(4));
+        Assertions.assertEquals(127L, (long) rb.get(5));
         v.get3SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
 
         c.setElementIndex(2);
-        Assert.assertEquals(-127L, (long) rb.get(6));
-        Assert.assertEquals(0L, (long) rb.get(7));
-        Assert.assertEquals(127L, (long) rb.get(8));
+        Assertions.assertEquals(-127L, (long) rb.get(6));
+        Assertions.assertEquals(0L, (long) rb.get(7));
+        Assertions.assertEquals(127L, (long) rb.get(8));
         v.get3SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
         break;
       }
 
@@ -975,37 +975,37 @@ public final class SMFByteBufferPackedMeshesTest
         final VectorMutable4L o = new VectorMutable4L();
 
         c.setElementIndex(0);
-        Assert.assertEquals(-127L, (long) rb.get(0));
-        Assert.assertEquals(0L, (long) rb.get(1));
-        Assert.assertEquals(127L, (long) rb.get(2));
-        Assert.assertEquals(0L, (long) rb.get(3));
+        Assertions.assertEquals(-127L, (long) rb.get(0));
+        Assertions.assertEquals(0L, (long) rb.get(1));
+        Assertions.assertEquals(127L, (long) rb.get(2));
+        Assertions.assertEquals(0L, (long) rb.get(3));
         v.get4SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
-        Assert.assertEquals(0L, o.w());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
+        Assertions.assertEquals(0L, o.w());
 
         c.setElementIndex(1);
-        Assert.assertEquals(-127L, (long) rb.get(4));
-        Assert.assertEquals(0L, (long) rb.get(5));
-        Assert.assertEquals(127L, (long) rb.get(6));
-        Assert.assertEquals(0L, (long) rb.get(7));
+        Assertions.assertEquals(-127L, (long) rb.get(4));
+        Assertions.assertEquals(0L, (long) rb.get(5));
+        Assertions.assertEquals(127L, (long) rb.get(6));
+        Assertions.assertEquals(0L, (long) rb.get(7));
         v.get4SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
-        Assert.assertEquals(0L, o.w());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
+        Assertions.assertEquals(0L, o.w());
 
         c.setElementIndex(2);
-        Assert.assertEquals(-127L, (long) rb.get(8));
-        Assert.assertEquals(0L, (long) rb.get(9));
-        Assert.assertEquals(127L, (long) rb.get(10));
-        Assert.assertEquals(0L, (long) rb.get(11));
+        Assertions.assertEquals(-127L, (long) rb.get(8));
+        Assertions.assertEquals(0L, (long) rb.get(9));
+        Assertions.assertEquals(127L, (long) rb.get(10));
+        Assertions.assertEquals(0L, (long) rb.get(11));
         v.get4SL(o);
-        Assert.assertEquals(-127L, o.x());
-        Assert.assertEquals(0L, o.y());
-        Assert.assertEquals(127L, o.z());
-        Assert.assertEquals(0L, o.w());
+        Assertions.assertEquals(-127L, o.x());
+        Assertions.assertEquals(0L, o.y());
+        Assertions.assertEquals(127L, o.z());
+        Assertions.assertEquals(0L, o.w());
 
         break;
       }
@@ -1030,17 +1030,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 4);
 
-          Assert.assertEquals(-32767L, vx);
+          Assertions.assertEquals(-32767L, vx);
           c.setElementIndex(0);
-          Assert.assertEquals(-32767L, v.get1SL());
+          Assertions.assertEquals(-32767L, v.get1SL());
 
-          Assert.assertEquals(0L, vy);
+          Assertions.assertEquals(0L, vy);
           c.setElementIndex(1);
-          Assert.assertEquals(0L, v.get1SL());
+          Assertions.assertEquals(0L, v.get1SL());
 
-          Assert.assertEquals(32767L, vz);
+          Assertions.assertEquals(32767L, vz);
           c.setElementIndex(2);
-          Assert.assertEquals(32767L, v.get1SL());
+          Assertions.assertEquals(32767L, v.get1SL());
         }
         break;
       }
@@ -1054,37 +1054,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(32767L, vy);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(32767L, vy);
 
           c.setElementIndex(0);
           v.get2SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(32767L, o.y());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(32767L, o.y());
         }
 
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 4);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 6);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(32767L, vy);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(32767L, vy);
 
           c.setElementIndex(1);
           v.get2SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(32767L, o.y());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(32767L, o.y());
         }
 
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 8);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 10);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(32767L, vy);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(32767L, vy);
 
           c.setElementIndex(2);
           v.get2SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(32767L, o.y());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(32767L, o.y());
         }
         break;
       }
@@ -1099,45 +1099,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Signed16.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 4);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
 
           c.setElementIndex(0);
           v.get3SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
         }
 
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 6);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 8);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 10);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
 
           c.setElementIndex(1);
           v.get3SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
         }
 
         {
           final long vx = (long) Signed16.unpackFromBuffer(rb, 12);
           final long vy = (long) Signed16.unpackFromBuffer(rb, 14);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 16);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
 
           c.setElementIndex(2);
           v.get3SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
         }
         break;
       }
@@ -1153,17 +1153,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 2);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 4);
           final long vw = (long) Signed16.unpackFromBuffer(rb, 6);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1171,17 +1171,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 10);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 12);
           final long vw = (long) Signed16.unpackFromBuffer(rb, 14);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1189,17 +1189,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed16.unpackFromBuffer(rb, 18);
           final long vz = (long) Signed16.unpackFromBuffer(rb, 20);
           final long vw = (long) Signed16.unpackFromBuffer(rb, 22);
-          Assert.assertEquals(-32767L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(32767L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-32767L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(32767L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4SL(o);
-          Assert.assertEquals(-32767L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(32767L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-32767L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(32767L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -1220,17 +1220,17 @@ public final class SMFByteBufferPackedMeshesTest
         final SMFByteBufferIntegerSigned1Type v = c.getElementView();
 
         {
-          Assert.assertEquals(-2147483648L, (long) rb.getInt(0));
+          Assertions.assertEquals(-2147483648L, (long) rb.getInt(0));
           c.setElementIndex(0);
-          Assert.assertEquals(-2147483648L, v.get1SL());
+          Assertions.assertEquals(-2147483648L, v.get1SL());
 
-          Assert.assertEquals(0L, (long) rb.getInt(4));
+          Assertions.assertEquals(0L, (long) rb.getInt(4));
           c.setElementIndex(1);
-          Assert.assertEquals(0L, v.get1SL());
+          Assertions.assertEquals(0L, v.get1SL());
 
-          Assert.assertEquals(2147483647L, (long) rb.getInt(8));
+          Assertions.assertEquals(2147483647L, (long) rb.getInt(8));
           c.setElementIndex(2);
-          Assert.assertEquals(2147483647L, v.get1SL());
+          Assertions.assertEquals(2147483647L, v.get1SL());
         }
         break;
       }
@@ -1244,37 +1244,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(2147483647L, vy);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(2147483647L, vy);
 
           c.setElementIndex(0);
           v.get2SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(2147483647L, o.y());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(2147483647L, o.y());
         }
 
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 8);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 12);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(2147483647L, vy);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(2147483647L, vy);
 
           c.setElementIndex(1);
           v.get2SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(2147483647L, o.y());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(2147483647L, o.y());
         }
 
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 16);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 20);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(2147483647L, vy);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(2147483647L, vy);
 
           c.setElementIndex(2);
           v.get2SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(2147483647L, o.y());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(2147483647L, o.y());
         }
         break;
       }
@@ -1289,45 +1289,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = (long) Signed32.unpackFromBuffer(rb, 0);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 8);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
 
           c.setElementIndex(0);
           v.get3SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
         }
 
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 12);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 16);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 20);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
 
           c.setElementIndex(0);
           v.get3SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
         }
 
         {
           final long vx = (long) Signed32.unpackFromBuffer(rb, 24);
           final long vy = (long) Signed32.unpackFromBuffer(rb, 28);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 32);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
 
           c.setElementIndex(0);
           v.get3SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
         }
         break;
       }
@@ -1343,17 +1343,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed32.unpackFromBuffer(rb, 4);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 8);
           final long vw = (long) Signed32.unpackFromBuffer(rb, 12);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1361,17 +1361,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed32.unpackFromBuffer(rb, 20);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 24);
           final long vw = (long) Signed32.unpackFromBuffer(rb, 28);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1379,17 +1379,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = (long) Signed32.unpackFromBuffer(rb, 36);
           final long vz = (long) Signed32.unpackFromBuffer(rb, 40);
           final long vw = (long) Signed32.unpackFromBuffer(rb, 44);
-          Assert.assertEquals(-2147483648L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(2147483647L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-2147483648L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(2147483647L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4SL(o);
-          Assert.assertEquals(-2147483648L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(2147483647L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-2147483648L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(2147483647L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -1410,17 +1410,17 @@ public final class SMFByteBufferPackedMeshesTest
         final SMFByteBufferIntegerSigned1Type v = c.getElementView();
 
         {
-          Assert.assertEquals(-9223372036854775808L, rb.getLong(0));
+          Assertions.assertEquals(-9223372036854775808L, rb.getLong(0));
           c.setElementIndex(0);
-          Assert.assertEquals(-9223372036854775808L, v.get1SL());
+          Assertions.assertEquals(-9223372036854775808L, v.get1SL());
 
-          Assert.assertEquals(0L, rb.getLong(8));
+          Assertions.assertEquals(0L, rb.getLong(8));
           c.setElementIndex(1);
-          Assert.assertEquals(0L, v.get1SL());
+          Assertions.assertEquals(0L, v.get1SL());
 
-          Assert.assertEquals(9223372036854775807L, rb.getLong(16));
+          Assertions.assertEquals(9223372036854775807L, rb.getLong(16));
           c.setElementIndex(2);
-          Assert.assertEquals(9223372036854775807L, v.get1SL());
+          Assertions.assertEquals(9223372036854775807L, v.get1SL());
         }
         break;
       }
@@ -1434,37 +1434,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(9223372036854775807L, vy);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(9223372036854775807L, vy);
 
           c.setElementIndex(0);
           v.get2SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(9223372036854775807L, o.y());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(9223372036854775807L, o.y());
         }
 
         {
           final long vx = rb.getLong(16);
           final long vy = rb.getLong(24);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(9223372036854775807L, vy);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(9223372036854775807L, vy);
 
           c.setElementIndex(1);
           v.get2SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(9223372036854775807L, o.y());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(9223372036854775807L, o.y());
         }
 
         {
           final long vx = rb.getLong(32);
           final long vy = rb.getLong(40);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(9223372036854775807L, vy);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(9223372036854775807L, vy);
 
           c.setElementIndex(2);
           v.get2SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(9223372036854775807L, o.y());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(9223372036854775807L, o.y());
         }
         break;
       }
@@ -1479,45 +1479,45 @@ public final class SMFByteBufferPackedMeshesTest
           final long vx = rb.getLong(0);
           final long vy = rb.getLong(8);
           final long vz = rb.getLong(16);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
 
           c.setElementIndex(0);
           v.get3SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
         }
 
         {
           final long vx = rb.getLong(24);
           final long vy = rb.getLong(32);
           final long vz = rb.getLong(40);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
 
           c.setElementIndex(1);
           v.get3SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
         }
 
         {
           final long vx = rb.getLong(48);
           final long vy = rb.getLong(56);
           final long vz = rb.getLong(64);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
 
           c.setElementIndex(2);
           v.get3SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
         }
         break;
       }
@@ -1533,17 +1533,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(8);
           final long vz = rb.getLong(16);
           final long vw = rb.getLong(24);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(0);
           v.get4SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1551,17 +1551,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(40);
           final long vz = rb.getLong(48);
           final long vw = rb.getLong(56);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(1);
           v.get4SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
 
         {
@@ -1569,17 +1569,17 @@ public final class SMFByteBufferPackedMeshesTest
           final long vy = rb.getLong(72);
           final long vz = rb.getLong(80);
           final long vw = rb.getLong(88);
-          Assert.assertEquals(-9223372036854775808L, vx);
-          Assert.assertEquals(0L, vy);
-          Assert.assertEquals(9223372036854775807L, vz);
-          Assert.assertEquals(1L, vw);
+          Assertions.assertEquals(-9223372036854775808L, vx);
+          Assertions.assertEquals(0L, vy);
+          Assertions.assertEquals(9223372036854775807L, vz);
+          Assertions.assertEquals(1L, vw);
 
           c.setElementIndex(2);
           v.get4SL(o);
-          Assert.assertEquals(-9223372036854775808L, o.x());
-          Assert.assertEquals(0L, o.y());
-          Assert.assertEquals(9223372036854775807L, o.z());
-          Assert.assertEquals(1L, o.w());
+          Assertions.assertEquals(-9223372036854775808L, o.x());
+          Assertions.assertEquals(0L, o.y());
+          Assertions.assertEquals(9223372036854775807L, o.z());
+          Assertions.assertEquals(1L, o.w());
         }
         break;
       }
@@ -1600,23 +1600,20 @@ public final class SMFByteBufferPackedMeshesTest
           SMFByteBufferCursors.createFloat1Raw(rb, 16, 0, 1 * 2);
         final SMFByteBufferFloat1Type v = c.getElementView();
 
-        Assert.assertEquals(
-          -1000.0, Binary16.unpackDouble(rb.getChar(0)), 0.0);
+        Assertions.assertEquals(
+          -1000.0, Binary16.unpackDouble(rb.getChar(0)), COMPARISON_DELTA);
         c.setElementIndex(0);
-        Assert.assertEquals(
-          -1000.0, v.get1D(), 0.0);
+        Assertions.assertEquals(-1000.0, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(
-          0.0, Binary16.unpackDouble(rb.getChar(2)), 0.0);
+        Assertions.assertEquals(
+          0.0, Binary16.unpackDouble(rb.getChar(2)), COMPARISON_DELTA);
         c.setElementIndex(1);
-        Assert.assertEquals(
-          0.0, v.get1D(), 0.0);
+        Assertions.assertEquals(0.0, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(
-          1000.0, Binary16.unpackDouble(rb.getChar(4)), 0.0);
+        Assertions.assertEquals(
+          1000.0, Binary16.unpackDouble(rb.getChar(4)), COMPARISON_DELTA);
         c.setElementIndex(2);
-        Assert.assertEquals(
-          1000.0, v.get1D(), 0.0);
+        Assertions.assertEquals(1000.0, v.get1D(), COMPARISON_DELTA);
         break;
       }
 
@@ -1629,37 +1626,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = Binary16.unpackDouble(rb.getChar(4));
           final double vy = Binary16.unpackDouble(rb.getChar(6));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = Binary16.unpackDouble(rb.getChar(8));
           final double vy = Binary16.unpackDouble(rb.getChar(10));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1674,45 +1671,45 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = Binary16.unpackDouble(rb.getChar(0));
           final double vy = Binary16.unpackDouble(rb.getChar(2));
           final double vz = Binary16.unpackDouble(rb.getChar(4));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = Binary16.unpackDouble(rb.getChar(6));
           final double vy = Binary16.unpackDouble(rb.getChar(8));
           final double vz = Binary16.unpackDouble(rb.getChar(10));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = Binary16.unpackDouble(rb.getChar(12));
           final double vy = Binary16.unpackDouble(rb.getChar(14));
           final double vz = Binary16.unpackDouble(rb.getChar(16));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1728,17 +1725,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(2));
           final double vz = Binary16.unpackDouble(rb.getChar(4));
           final double vw = Binary16.unpackDouble(rb.getChar(6));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.001);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA_16);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.001);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA_16);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -1746,17 +1743,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(10));
           final double vz = Binary16.unpackDouble(rb.getChar(12));
           final double vw = Binary16.unpackDouble(rb.getChar(14));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.001);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA_16);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.001);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA_16);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -1764,17 +1761,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = Binary16.unpackDouble(rb.getChar(18));
           final double vz = Binary16.unpackDouble(rb.getChar(20));
           final double vw = Binary16.unpackDouble(rb.getChar(22));
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.001);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA_16);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.001);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA_16);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1796,17 +1793,17 @@ public final class SMFByteBufferPackedMeshesTest
           SMFByteBufferCursors.createFloat1Raw(rb, 32, 0, 1 * 4);
         final SMFByteBufferFloat1Type v = c.getElementView();
 
-        Assert.assertEquals(-1000.0f, rb.getFloat(0), 0.0f);
+        Assertions.assertEquals(-1000.0f, rb.getFloat(0), COMPARISON_DELTA);
         c.setElementIndex(0);
-        Assert.assertEquals(-1000.0f, v.get1D(), 0.0f);
+        Assertions.assertEquals(-1000.0f, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(0.0f, rb.getFloat(4), 0.0f);
+        Assertions.assertEquals(0.0f, rb.getFloat(4), COMPARISON_DELTA);
         c.setElementIndex(1);
-        Assert.assertEquals(0.0f, v.get1D(), 0.0f);
+        Assertions.assertEquals(0.0f, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(1000.0f, rb.getFloat(8), 0.0f);
+        Assertions.assertEquals(1000.0f, rb.getFloat(8), COMPARISON_DELTA);
         c.setElementIndex(2);
-        Assert.assertEquals(1000.0f, v.get1D(), 0.0f);
+        Assertions.assertEquals(1000.0f, v.get1D(), COMPARISON_DELTA);
         break;
       }
 
@@ -1819,37 +1816,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = (double) rb.getFloat(0);
           final double vy = (double) rb.getFloat(4);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = (double) rb.getFloat(8);
           final double vy = (double) rb.getFloat(12);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = (double) rb.getFloat(16);
           final double vy = (double) rb.getFloat(20);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1864,45 +1861,45 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = (double) rb.getFloat(0);
           final double vy = (double) rb.getFloat(4);
           final double vz = (double) rb.getFloat(8);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = (double) rb.getFloat(12);
           final double vy = (double) rb.getFloat(16);
           final double vz = (double) rb.getFloat(20);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = (double) rb.getFloat(24);
           final double vy = (double) rb.getFloat(28);
           final double vz = (double) rb.getFloat(32);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1918,17 +1915,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(4);
           final double vz = (double) rb.getFloat(8);
           final double vw = (double) rb.getFloat(12);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -1936,17 +1933,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(20);
           final double vz = (double) rb.getFloat(24);
           final double vw = (double) rb.getFloat(28);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -1954,17 +1951,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = (double) rb.getFloat(36);
           final double vz = (double) rb.getFloat(40);
           final double vw = (double) rb.getFloat(44);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -1986,17 +1983,17 @@ public final class SMFByteBufferPackedMeshesTest
           SMFByteBufferCursors.createFloat1Raw(rb, 64, 0, 1 * 8);
         final SMFByteBufferFloat1Type v = c.getElementView();
 
-        Assert.assertEquals(-1000.0, rb.getDouble(0), 0.0);
+        Assertions.assertEquals(-1000.0, rb.getDouble(0), COMPARISON_DELTA);
         c.setElementIndex(0);
-        Assert.assertEquals(-1000.0, v.get1D(), 0.0);
+        Assertions.assertEquals(-1000.0, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(0.0, rb.getDouble(8), 0.0);
+        Assertions.assertEquals(0.0, rb.getDouble(8), COMPARISON_DELTA);
         c.setElementIndex(1);
-        Assert.assertEquals(0.0, v.get1D(), 0.0);
+        Assertions.assertEquals(0.0, v.get1D(), COMPARISON_DELTA);
 
-        Assert.assertEquals(1000.0, rb.getDouble(16), 0.0);
+        Assertions.assertEquals(1000.0, rb.getDouble(16), COMPARISON_DELTA);
         c.setElementIndex(2);
-        Assert.assertEquals(1000.0, v.get1D(), 0.0);
+        Assertions.assertEquals(1000.0, v.get1D(), COMPARISON_DELTA);
         break;
       }
 
@@ -2010,37 +2007,37 @@ public final class SMFByteBufferPackedMeshesTest
         {
           final double vx = rb.getDouble(0);
           final double vy = rb.getDouble(8);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = rb.getDouble(16);
           final double vy = rb.getDouble(24);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = rb.getDouble(32);
           final double vy = rb.getDouble(40);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(1000.0, vy, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vy, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get2D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -2056,45 +2053,45 @@ public final class SMFByteBufferPackedMeshesTest
           final double vx = rb.getDouble(0);
           final double vy = rb.getDouble(8);
           final double vz = rb.getDouble(16);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = rb.getDouble(24);
           final double vy = rb.getDouble(32);
           final double vz = rb.getDouble(40);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
 
         {
           final double vx = rb.getDouble(48);
           final double vy = rb.getDouble(56);
           final double vz = rb.getDouble(64);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1000.0, vz, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vz, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get3D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -2111,17 +2108,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(8);
           final double vz = rb.getDouble(16);
           final double vw = rb.getDouble(24);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(0);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -2129,17 +2126,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(40);
           final double vz = rb.getDouble(48);
           final double vw = rb.getDouble(56);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(1);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
 
         {
@@ -2147,17 +2144,17 @@ public final class SMFByteBufferPackedMeshesTest
           final double vy = rb.getDouble(72);
           final double vz = rb.getDouble(80);
           final double vw = rb.getDouble(88);
-          Assert.assertEquals(-1000.0, vx, 0.0);
-          Assert.assertEquals(0.0, vy, 0.0);
-          Assert.assertEquals(1.0, vz, 0.0);
-          Assert.assertEquals(1000.0, vw, 0.0);
+          Assertions.assertEquals(-1000.0, vx, COMPARISON_DELTA);
+          Assertions.assertEquals(0.0, vy, COMPARISON_DELTA);
+          Assertions.assertEquals(1.0, vz, COMPARISON_DELTA);
+          Assertions.assertEquals(1000.0, vw, COMPARISON_DELTA);
 
           c.setElementIndex(2);
           v.get4D(o);
-          Assert.assertEquals(o.x(), -1000.0, 0.0);
-          Assert.assertEquals(o.y(), 0.0, 0.0);
-          Assert.assertEquals(o.z(), 1.0, 0.0);
-          Assert.assertEquals(o.w(), 1000.0, 0.0);
+          Assertions.assertEquals(o.x(), -1000.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.y(), 0.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.z(), 1.0, COMPARISON_DELTA);
+          Assertions.assertEquals(o.w(), 1000.0, COMPARISON_DELTA);
         }
         break;
       }
@@ -2256,16 +2253,16 @@ public final class SMFByteBufferPackedMeshesTest
   {
     final SMFByteBufferPackedMesh mesh = this.parseMesh(name);
 
-    Assert.assertEquals(1L, mesh.attributeSets().size());
+    Assertions.assertEquals(1L, mesh.attributeSets().size());
 
     final ByteBuffer ab = mesh.attributeSets().iterator().next().byteBuffer();
     checkType(type, component_count, component_size, ab);
 
     final SMFByteBufferPackedTriangles t = mesh.triangles().get();
     final ByteBuffer tb = t.byteBuffer();
-    Assert.assertEquals(0L, (long) tb.get(0));
-    Assert.assertEquals(1L, (long) tb.get(1));
-    Assert.assertEquals(2L, (long) tb.get(2));
+    Assertions.assertEquals(0L, (long) tb.get(0));
+    Assertions.assertEquals(1L, (long) tb.get(1));
+    Assertions.assertEquals(2L, (long) tb.get(2));
   }
 
   private SMFByteBufferPackedMesh parseMesh(
@@ -2324,7 +2321,7 @@ public final class SMFByteBufferPackedMeshesTest
       // Nothing
     }
 
-    Assert.assertTrue(loader.errors().isEmpty());
+    Assertions.assertTrue(loader.errors().isEmpty());
     return loader.mesh();
   }
 
@@ -2335,16 +2332,16 @@ public final class SMFByteBufferPackedMeshesTest
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle8.smft");
     final SMFByteBufferPackedTriangles t = mesh.triangles().get();
     final ByteBuffer b = t.byteBuffer();
-    Assert.assertEquals(0L, (long) b.get(0));
-    Assert.assertEquals(1L, (long) b.get(1));
-    Assert.assertEquals(2L, (long) b.get(2));
+    Assertions.assertEquals(0L, (long) b.get(0));
+    Assertions.assertEquals(1L, (long) b.get(1));
+    Assertions.assertEquals(2L, (long) b.get(2));
 
     final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
     final VectorMutable3L out = new VectorMutable3L();
     c.getElementView().get3UL(out);
-    Assert.assertEquals(0L, out.x());
-    Assert.assertEquals(1L, out.y());
-    Assert.assertEquals(2L, out.z());
+    Assertions.assertEquals(0L, out.x());
+    Assertions.assertEquals(1L, out.y());
+    Assertions.assertEquals(2L, out.z());
   }
 
   @Test
@@ -2354,16 +2351,16 @@ public final class SMFByteBufferPackedMeshesTest
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle16.smft");
     final SMFByteBufferPackedTriangles t = mesh.triangles().get();
     final ByteBuffer b = t.byteBuffer();
-    Assert.assertEquals(0L, (long) b.getChar(0));
-    Assert.assertEquals(1L, (long) b.getChar(2));
-    Assert.assertEquals(2L, (long) b.getChar(4));
+    Assertions.assertEquals(0L, (long) b.getChar(0));
+    Assertions.assertEquals(1L, (long) b.getChar(2));
+    Assertions.assertEquals(2L, (long) b.getChar(4));
 
     final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
     final VectorMutable3L out = new VectorMutable3L();
     c.getElementView().get3UL(out);
-    Assert.assertEquals(0L, out.x());
-    Assert.assertEquals(1L, out.y());
-    Assert.assertEquals(2L, out.z());
+    Assertions.assertEquals(0L, out.x());
+    Assertions.assertEquals(1L, out.y());
+    Assertions.assertEquals(2L, out.z());
   }
 
   @Test
@@ -2373,16 +2370,16 @@ public final class SMFByteBufferPackedMeshesTest
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle32.smft");
     final SMFByteBufferPackedTriangles t = mesh.triangles().get();
     final ByteBuffer b = t.byteBuffer();
-    Assert.assertEquals(0L, (long) b.getInt(0));
-    Assert.assertEquals(1L, (long) b.getInt(4));
-    Assert.assertEquals(2L, (long) b.getInt(8));
+    Assertions.assertEquals(0L, (long) b.getInt(0));
+    Assertions.assertEquals(1L, (long) b.getInt(4));
+    Assertions.assertEquals(2L, (long) b.getInt(8));
 
     final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
     final VectorMutable3L out = new VectorMutable3L();
     c.getElementView().get3UL(out);
-    Assert.assertEquals(0L, out.x());
-    Assert.assertEquals(1L, out.y());
-    Assert.assertEquals(2L, out.z());
+    Assertions.assertEquals(0L, out.x());
+    Assertions.assertEquals(1L, out.y());
+    Assertions.assertEquals(2L, out.z());
   }
 
   @Test
@@ -2392,16 +2389,16 @@ public final class SMFByteBufferPackedMeshesTest
     final SMFByteBufferPackedMesh mesh = this.parseMesh("triangle64.smft");
     final SMFByteBufferPackedTriangles t = mesh.triangles().get();
     final ByteBuffer b = t.byteBuffer();
-    Assert.assertEquals(0L, b.getLong(0));
-    Assert.assertEquals(1L, b.getLong(8));
-    Assert.assertEquals(2L, b.getLong(16));
+    Assertions.assertEquals(0L, b.getLong(0));
+    Assertions.assertEquals(1L, b.getLong(8));
+    Assertions.assertEquals(2L, b.getLong(16));
 
     final JPRACursor1DType<SMFByteBufferIntegerUnsigned3Type> c = t.cursor();
     final VectorMutable3L out = new VectorMutable3L();
     c.getElementView().get3UL(out);
-    Assert.assertEquals(0L, out.x());
-    Assert.assertEquals(1L, out.y());
-    Assert.assertEquals(2L, out.z());
+    Assertions.assertEquals(0L, out.x());
+    Assertions.assertEquals(1L, out.y());
+    Assertions.assertEquals(2L, out.z());
   }
 
   @Test
@@ -3025,11 +3022,11 @@ public final class SMFByteBufferPackedMeshesTest
       // Nothing
     }
 
-    Assert.assertTrue(loader.errors().isEmpty());
+    Assertions.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertTrue(mesh.attributeSets().isEmpty());
-    Assert.assertFalse(mesh.triangles().isPresent());
+    Assertions.assertTrue(mesh.attributeSets().isEmpty());
+    Assertions.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
@@ -3087,11 +3084,11 @@ public final class SMFByteBufferPackedMeshesTest
       // Nothing
     }
 
-    Assert.assertTrue(loader.errors().isEmpty());
+    Assertions.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertFalse(mesh.attributeSets().isEmpty());
-    Assert.assertFalse(mesh.triangles().isPresent());
+    Assertions.assertFalse(mesh.attributeSets().isEmpty());
+    Assertions.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
@@ -3143,11 +3140,11 @@ public final class SMFByteBufferPackedMeshesTest
       // Nothing
     }
 
-    Assert.assertTrue(loader.errors().isEmpty());
+    Assertions.assertTrue(loader.errors().isEmpty());
 
     final SMFByteBufferPackedMesh mesh = loader.mesh();
-    Assert.assertTrue(mesh.attributeSets().isEmpty());
-    Assert.assertFalse(mesh.triangles().isPresent());
+    Assertions.assertTrue(mesh.attributeSets().isEmpty());
+    Assertions.assertFalse(mesh.triangles().isPresent());
   }
 
   @Test
@@ -3207,9 +3204,10 @@ public final class SMFByteBufferPackedMeshesTest
       // Nothing
     }
 
-    Assert.assertFalse(loader.errors().isEmpty());
+    Assertions.assertFalse(loader.errors().isEmpty());
 
-    this.expected.expect(IllegalStateException.class);
-    loader.mesh();
+    Assertions.assertThrows(IllegalStateException.class, () -> {
+      loader.mesh();
+    });
   }
 }

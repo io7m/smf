@@ -24,8 +24,8 @@ import com.io7m.smfj.probe.api.SMFVersionProbed;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
 import org.apache.commons.io.input.BrokenInputStream;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,8 +68,8 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> new ByteArrayInputStream(new byte[0]));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.getError().size() >= 1);
   }
 
   @Test
@@ -84,11 +84,11 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smft"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFVersionProbed v = r.get();
-    Assert.assertEquals(1L, (long) v.version().major());
-    Assert.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(1L, (long) v.version().major());
+    Assertions.assertEquals(0L, (long) v.version().minor());
   }
 
   @Test
@@ -103,8 +103,8 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smft"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.getError().size() >= 1);
   }
 
   @Test
@@ -119,11 +119,11 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFVersionProbed v = r.get();
-    Assert.assertEquals(1L, (long) v.version().major());
-    Assert.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(1L, (long) v.version().major());
+    Assertions.assertEquals(0L, (long) v.version().minor());
   }
 
   @Test
@@ -138,8 +138,8 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.getError().size() >= 1);
   }
 
   @Test
@@ -154,8 +154,8 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/garbage.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.getError().size() >= 1);
   }
 
   @Test
@@ -170,7 +170,7 @@ public final class SMFVersionProbeControllerOSGiTest
       c.probe(() -> new BrokenInputStream());
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.getError().size() >= 1);
   }
 }

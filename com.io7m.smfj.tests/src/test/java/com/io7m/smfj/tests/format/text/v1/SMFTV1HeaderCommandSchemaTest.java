@@ -26,9 +26,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -45,21 +45,21 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
 
     }};
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "com.io7m.example", "1", "2"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
     final SMFSchemaIdentifier schema = result.schemaIdentifier().get();
 
-    Assert.assertEquals("com.io7m.example", schema.name().value());
-    Assert.assertEquals(1L, (long) schema.versionMajor());
-    Assert.assertEquals(2L, (long) schema.versionMinor());
+    Assertions.assertEquals("com.io7m.example", schema.name().value());
+    Assertions.assertEquals(1L, (long) schema.versionMajor());
+    Assertions.assertEquals(2L, (long) schema.versionMinor());
   }
 
   @Test
@@ -72,7 +72,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -85,7 +85,7 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -98,7 +98,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -111,7 +111,7 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "0"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -124,7 +124,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -137,7 +137,7 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "0", "1"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -150,7 +150,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -163,7 +163,7 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "0", "1", "2"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -176,7 +176,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -189,7 +189,7 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "x", "1", "2", "3"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -202,7 +202,7 @@ public final class SMFTV1HeaderCommandSchemaTest
     final SMFTV1HeaderCommandSchema cmd =
       new SMFTV1HeaderCommandSchema(reader, header);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -215,6 +215,6 @@ public final class SMFTV1HeaderCommandSchemaTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("schema", "0", "1", "2", "3", "4"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 }

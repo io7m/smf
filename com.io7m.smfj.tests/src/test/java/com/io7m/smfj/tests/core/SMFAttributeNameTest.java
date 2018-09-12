@@ -18,10 +18,8 @@ package com.io7m.smfj.tests.core;
 
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFAttributeNames;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,8 +30,6 @@ public final class SMFAttributeNameTest
   static {
     LOG = LoggerFactory.getLogger(SMFAttributeNameTest.class);
   }
-
-  @Rule public final ExpectedException expected = ExpectedException.none();
 
   @Test
   public void testValid()
@@ -72,7 +68,7 @@ public final class SMFAttributeNameTest
     }
 
     if (!all_ok) {
-      Assert.fail();
+      Assertions.fail();
     }
   }
 
@@ -115,7 +111,7 @@ public final class SMFAttributeNameTest
     }
 
     if (!all_ok) {
-      Assert.fail();
+      Assertions.fail();
     }
   }
 }

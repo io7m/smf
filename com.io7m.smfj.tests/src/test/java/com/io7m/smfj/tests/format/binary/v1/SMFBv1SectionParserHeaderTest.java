@@ -46,8 +46,8 @@ import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import io.vavr.collection.List;
 import io.vavr.control.Validation;
 import mockit.Mocked;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,37 +85,37 @@ public final class SMFBv1SectionParserHeaderTest
         SMFFormatVersion.of(1, 0), reader, section);
 
     dumpErrors(r);
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
   public void testSizesAlignment()
   {
-    Assert.assertTrue(
-      "Fields size is 4 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaFieldsSizeStaticOffsetFromType() % 4 == 0);
-    Assert.assertTrue(
-      "Schema is 4 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaSchemaStaticOffsetFromType() % 4 == 0);
-    Assert.assertTrue(
-      "Vertex count is 8 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaVertexCountStaticOffsetFromType() % 8 == 0);
-    Assert.assertTrue(
-      "Triangle count is 8 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaTriangleCountStaticOffsetFromType() % 8 == 0);
-    Assert.assertTrue(
-      "Triangle size is 4 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaTriangleIndexSizeBitsStaticOffsetFromType() % 4 == 0);
-    Assert.assertTrue(
-      "Attribute count is 4 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaAttributeCountStaticOffsetFromType() % 4 == 0);
-    Assert.assertTrue(
-      "Attribute count is 2 octet aligned",
-      SMFBv1_0HeaderByteBuffered.metaCoordinateSystemStaticOffsetFromType() % 2 == 0);
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaFieldsSizeStaticOffsetFromType() % 4 == 0,
+      "Fields size is 4 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaSchemaStaticOffsetFromType() % 4 == 0,
+      "Schema is 4 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaVertexCountStaticOffsetFromType() % 8 == 0,
+      "Vertex count is 8 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaTriangleCountStaticOffsetFromType() % 8 == 0,
+      "Triangle count is 8 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaTriangleIndexSizeBitsStaticOffsetFromType() % 4 == 0,
+      "Triangle size is 4 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaAttributeCountStaticOffsetFromType() % 4 == 0,
+      "Attribute count is 4 octet aligned");
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.metaCoordinateSystemStaticOffsetFromType() % 2 == 0,
+      "Attribute count is 2 octet aligned");
 
-    Assert.assertTrue(
-      "Size of header is divisible by 16",
-      SMFBv1_0HeaderByteBuffered.sizeInOctets() % 16 == 0);
+    Assertions.assertTrue(
+      SMFBv1_0HeaderByteBuffered.sizeInOctets() % 16 == 0,
+      "Size of header is divisible by 16");
   }
 
   @Test
@@ -195,19 +195,19 @@ public final class SMFBv1SectionParserHeaderTest
         SMFFormatVersion.of(1, 0), reader, section);
 
     dumpErrors(r);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFHeader header = r.get();
-    Assert.assertEquals(23L, header.vertexCount());
-    Assert.assertEquals(SMFTriangles.of(17L, 32), header.triangles());
-    Assert.assertEquals(system, header.coordinateSystem());
-    Assert.assertEquals(List.of(SMFAttribute.of(
+    Assertions.assertEquals(23L, header.vertexCount());
+    Assertions.assertEquals(SMFTriangles.of(17L, 32), header.triangles());
+    Assertions.assertEquals(system, header.coordinateSystem());
+    Assertions.assertEquals(List.of(SMFAttribute.of(
       SMFAttributeName.of("attr0"),
       SMFComponentType.ELEMENT_TYPE_FLOATING,
       4,
       32
     )), header.attributesInOrder());
-    Assert.assertEquals(schema_id, header.schemaIdentifier().get());
+    Assertions.assertEquals(schema_id, header.schemaIdentifier().get());
   }
 
   private static void dumpErrors(

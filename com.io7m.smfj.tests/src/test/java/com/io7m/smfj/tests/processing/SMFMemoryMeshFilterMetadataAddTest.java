@@ -31,8 +31,8 @@ import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataAdd;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -69,7 +69,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
         Optional.empty(),
         1,
         List.of("x", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -80,7 +80,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
         Optional.empty(),
         1,
         List.of("x", "y", "z", "w"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -94,7 +94,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
           "x",
           "0",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -108,7 +108,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
           "0",
           "x",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -119,9 +119,9 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
         Optional.empty(),
         1,
         List.of("com.io7m.smf.example", "1", "2", "x"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), SMFMemoryMeshFilterMetadataAdd.NAME);
+    Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataAdd.NAME);
   }
 
   @Test
@@ -153,7 +153,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -194,15 +194,15 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(mesh0.arrays(), mesh1.arrays());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals(mesh0.metadata(), mesh1.metadata().dropRight(1));
+    Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(mesh0.metadata(), mesh1.metadata().dropRight(1));
 
     final SMFMetadata meta = mesh1.metadata().last();
-    Assert.assertEquals(schema_id, meta.schema());
-    Assert.assertArrayEquals(data, meta.data());
+    Assertions.assertEquals(schema_id, meta.schema());
+    Assertions.assertArrayEquals(data, meta.data());
   }
 }

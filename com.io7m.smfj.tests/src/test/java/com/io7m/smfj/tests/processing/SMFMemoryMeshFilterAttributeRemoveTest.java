@@ -33,8 +33,8 @@ import io.vavr.collection.List;
 import io.vavr.collection.Map;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -68,7 +68,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
         Optional.empty(),
         1,
         List.of("<#@"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -79,7 +79,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
         Optional.empty(),
         1,
         List.of("x", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -90,9 +90,9 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
         Optional.empty(),
         1,
         List.of("x"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "remove");
+    Assertions.assertEquals(c.name(), "remove");
   }
 
   @Test
@@ -113,7 +113,7 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -145,30 +145,30 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
     final SMFHeader header0 = mesh0.header();
     final SMFHeader header1 = mesh1.header();
 
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals((long) arrays0.size() - 1L, (long) arrays1.size());
-    Assert.assertEquals(
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals((long) arrays0.size() - 1L, (long) arrays1.size());
+    Assertions.assertEquals(
       (long) header0.attributesByName().size() - 1L,
       (long) header1.attributesByName().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (long) header0.attributesInOrder().size() - 1L,
       (long) header1.attributesInOrder().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.schemaIdentifier(),
       header1.schemaIdentifier());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       mesh0.metadata(),
       mesh1.metadata());
 
     final SMFAttribute attr =
       header0.attributesByName().get(name_source).get();
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header1.attributesInOrder(),
       header0.attributesInOrder().remove(attr));
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.attributesByName().remove(name_source),
       header1.attributesByName());
   }

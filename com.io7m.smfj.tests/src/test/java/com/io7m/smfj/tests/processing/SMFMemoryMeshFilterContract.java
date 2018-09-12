@@ -17,8 +17,8 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.nio.file.FileSystem;
 import java.nio.file.Path;
@@ -31,13 +31,13 @@ public abstract class SMFMemoryMeshFilterContract
 {
   protected FileSystem filesystem;
 
-  @Before
+  @BeforeEach
   public final void setUp()
   {
     this.filesystem = SMFTestFilesystems.makeEmptyUnixFilesystem();
   }
 
-  @After
+  @AfterEach
   public final void tearDown()
     throws Exception
   {

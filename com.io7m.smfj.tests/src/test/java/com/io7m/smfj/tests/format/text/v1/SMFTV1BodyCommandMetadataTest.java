@@ -29,9 +29,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import io.vavr.collection.List;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.Optional;
@@ -60,7 +60,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"), 1, 0));
@@ -70,7 +70,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTParsingStatus r =
       cmd.parse(
         events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 
   @Test
@@ -85,7 +85,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -98,7 +98,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata", "x"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -119,7 +119,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(
         SMFSchemaIdentifier.of(
@@ -137,7 +137,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTParsingStatus r =
       cmd.parse(
         events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -164,7 +164,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(id);
       this.result = Optional.of(events_meta);
@@ -181,7 +181,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTParsingStatus r =
       cmd.parse(
         events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -208,7 +208,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(id);
       this.result = Optional.of(events_meta);
@@ -225,7 +225,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTParsingStatus r =
       cmd.parse(
         events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -250,7 +250,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(id);
       this.result = Optional.of(events_meta);
@@ -267,7 +267,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTParsingStatus r =
       cmd.parse(
         events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -288,7 +288,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -301,7 +301,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -322,7 +322,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -335,7 +335,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -356,7 +356,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -369,7 +369,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -390,7 +390,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -403,7 +403,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -424,7 +424,7 @@ public final class SMFTV1BodyCommandMetadataTest
     final SMFTV1BodySectionParserMetadata cmd =
       new SMFTV1BodySectionParserMetadata(() -> header, reader);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onError(this.with(new Delegate<SMFErrorType>()
       {
@@ -437,7 +437,7 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata"));
-    Assert.assertEquals(FAILURE, r);
+    Assertions.assertEquals(FAILURE, r);
   }
 
   @Test
@@ -464,7 +464,7 @@ public final class SMFTV1BodyCommandMetadataTest
       SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"), 1, 0);
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events.onMeta(id0);
       this.result = Optional.of(events_meta);
@@ -473,6 +473,6 @@ public final class SMFTV1BodyCommandMetadataTest
 
     final SMFTParsingStatus r =
       cmd.parse(events, List.of("metadata", "com.io7m.smf.example", "1", "0", "1"));
-    Assert.assertEquals(SUCCESS, r);
+    Assertions.assertEquals(SUCCESS, r);
   }
 }

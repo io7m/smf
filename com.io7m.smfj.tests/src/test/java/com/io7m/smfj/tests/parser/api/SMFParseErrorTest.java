@@ -18,8 +18,8 @@ package com.io7m.smfj.tests.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.parser.api.SMFParseError;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,7 +48,7 @@ public final class SMFParseErrorTest
         Optional.empty());
 
     LOG.error(e.fullMessage());
-    Assert.assertEquals("file:///x/y.txt:23:127: Failed", e.fullMessage());
+    Assertions.assertEquals("file:///x/y.txt:23:127: Failed", e.fullMessage());
   }
 
   @Test
@@ -64,7 +64,7 @@ public final class SMFParseErrorTest
         Optional.of(new IOException("Printer on fire")));
 
     LOG.error(e.fullMessage());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       "file:///x/y.txt:23:127: Failed (java.io.IOException: Printer on fire)",
       e.fullMessage());
   }
@@ -82,7 +82,7 @@ public final class SMFParseErrorTest
         Optional.of(new IOException("Printer on fire")));
 
     LOG.error(e.fullMessage());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       "23:127: Failed (java.io.IOException: Printer on fire)",
       e.fullMessage());
   }
@@ -100,6 +100,6 @@ public final class SMFParseErrorTest
         Optional.empty());
 
     LOG.error(e.fullMessage());
-    Assert.assertEquals("23:127: Failed", e.fullMessage());
+    Assertions.assertEquals("23:127: Failed", e.fullMessage());
   }
 }

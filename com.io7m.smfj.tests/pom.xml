@@ -137,15 +137,19 @@
       <artifactId>commons-codec</artifactId>
     </dependency>
 
-    <!-- JMockit MUST appear before junit, until junit 5 is released -->
     <dependency>
       <groupId>org.jmockit</groupId>
       <artifactId>jmockit</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -171,6 +175,16 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
+      </plugin>
+
+      <!-- Configure a Java agent for JMockit -->
+      <plugin>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <argLine>
+            -javaagent:${settings.localRepository}/org/jmockit/jmockit/${com.io7m.smfj.jmockit.version}/jmockit-${com.io7m.smfj.jmockit.version}.jar
+          </argLine>
+        </configuration>
       </plugin>
     </plugins>
   </build>

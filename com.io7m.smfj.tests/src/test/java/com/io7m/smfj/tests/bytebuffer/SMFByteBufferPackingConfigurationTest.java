@@ -21,8 +21,8 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import io.vavr.collection.List;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class SMFByteBufferPackingConfigurationTest
 {
@@ -438,22 +438,22 @@ public final class SMFByteBufferPackingConfigurationTest
 
     final SMFByteBufferPackingConfiguration c =
       SMFByteBufferPackingConfiguration.of(List.of(attr));
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (long) (component_count * (component_size / 8)),
       (long) c.vertexSizeOctets());
-    Assert.assertEquals(1L, (long) c.attributesOrdered().size());
-    Assert.assertTrue(c.attributesOrdered().contains(attr));
-    Assert.assertEquals(1L, (long) c.packedAttributesByName().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(1L, (long) c.attributesOrdered().size());
+    Assertions.assertTrue(c.attributesOrdered().contains(attr));
+    Assertions.assertEquals(1L, (long) c.packedAttributesByName().size());
+    Assertions.assertEquals(
       attr,
       c.packedAttributesByName().get(attr_name).get().attribute());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       attr,
       c.packedAttributesByOffset().get(Integer.valueOf(0)).get().attribute());
-    Assert.assertEquals(0L, c.offsetOctetsForIndex(0, 0L));
-    Assert.assertEquals(
+    Assertions.assertEquals(0L, c.offsetOctetsForIndex(0, 0L));
+    Assertions.assertEquals(
       (long) c.vertexSizeOctets(), c.offsetOctetsForIndex(0, 1L));
-    Assert.assertEquals(
+    Assertions.assertEquals(
       (long) (c.vertexSizeOctets() * 2), c.offsetOctetsForIndex(0, 2L));
   }
 }

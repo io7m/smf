@@ -33,8 +33,8 @@ import io.vavr.collection.Seq;
 import io.vavr.collection.TreeMap;
 import io.vavr.control.Validation;
 import org.apache.commons.io.input.BrokenInputStream;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,14 +85,14 @@ public abstract class SMFSchemaParserContract
       new BrokenInputStream())) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "I/O error")));
     } catch (final IOException e) {
       LOG.debug("caught: ", e);
       caught = true;
     }
-    Assert.assertTrue(caught);
+    Assertions.assertTrue(caught);
   }
 
   @Test
@@ -103,8 +103,8 @@ public abstract class SMFSchemaParserContract
       "invalid-unknown-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Unrecognized schema statement")));
     }
   }
@@ -117,8 +117,8 @@ public abstract class SMFSchemaParserContract
       "invalid-require-vertices-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse vertices requirement")));
     }
   }
@@ -131,8 +131,8 @@ public abstract class SMFSchemaParserContract
       "invalid-require-vertices-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse vertices requirement")));
     }
   }
@@ -145,8 +145,8 @@ public abstract class SMFSchemaParserContract
       "invalid-require-triangles-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse triangle requirement")));
     }
   }
@@ -159,8 +159,8 @@ public abstract class SMFSchemaParserContract
       "invalid-require-triangles-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse triangle requirement")));
     }
   }
@@ -173,8 +173,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Incorrect number of arguments")));
     }
   }
@@ -187,8 +187,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse requirement")));
     }
   }
@@ -201,8 +201,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-2.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse attribute name")));
     }
   }
@@ -215,8 +215,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-3.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Unrecognized type")));
     }
   }
@@ -229,8 +229,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-4.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse component count")));
     }
   }
@@ -243,8 +243,8 @@ public abstract class SMFSchemaParserContract
       "invalid-attribute-5.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse component size")));
     }
   }
@@ -256,8 +256,8 @@ public abstract class SMFSchemaParserContract
     try (SMFSchemaParserType parser = this.resourceParser("empty.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Empty file: Must begin with an smf-schema version declaration")));
     }
   }
@@ -270,8 +270,8 @@ public abstract class SMFSchemaParserContract
       "missing-ident.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Must specify a schema identifier")));
     }
   }
@@ -284,8 +284,8 @@ public abstract class SMFSchemaParserContract
       "invalid-schema-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Incorrect number of arguments")));
     }
   }
@@ -298,8 +298,8 @@ public abstract class SMFSchemaParserContract
       "invalid-version-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -312,8 +312,8 @@ public abstract class SMFSchemaParserContract
       "invalid-version-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -326,8 +326,8 @@ public abstract class SMFSchemaParserContract
       "invalid-version-2.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -340,8 +340,8 @@ public abstract class SMFSchemaParserContract
       "invalid-schema-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
         "NumberFormatException")));
     }
   }
@@ -354,8 +354,8 @@ public abstract class SMFSchemaParserContract
       "invalid-coords-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -368,8 +368,8 @@ public abstract class SMFSchemaParserContract
       "invalid-coords-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -382,8 +382,8 @@ public abstract class SMFSchemaParserContract
       "invalid-coords-2.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -396,8 +396,8 @@ public abstract class SMFSchemaParserContract
       "invalid-coords-3.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertFalse(r.isValid());
-      Assert.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isValid());
+      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -410,14 +410,14 @@ public abstract class SMFSchemaParserContract
       "valid-minimal.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
-      Assert.assertEquals(
+      Assertions.assertEquals(
         SMFSchemaIdentifier.of(
           SMFSchemaName.of("com.io7m.smf.example"), 1, 2),
         schema.schemaIdentifier());
-      Assert.assertEquals(Optional.empty(), schema.requiredCoordinateSystem());
-      Assert.assertEquals(TreeMap.empty(), schema.requiredAttributes());
+      Assertions.assertEquals(Optional.empty(), schema.requiredCoordinateSystem());
+      Assertions.assertEquals(TreeMap.empty(), schema.requiredAttributes());
     }
   }
 
@@ -429,18 +429,18 @@ public abstract class SMFSchemaParserContract
       "valid-attribute-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
-      Assert.assertEquals(1L, schema.requiredAttributes().size());
+      Assertions.assertEquals(1L, schema.requiredAttributes().size());
       final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name).get();
-      Assert.assertEquals(a_name, a.name());
-      Assert.assertEquals(
+      Assertions.assertEquals(a_name, a.name());
+      Assertions.assertEquals(
         SMFComponentType.ELEMENT_TYPE_FLOATING,
         a.requiredComponentType().get());
-      Assert.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
-      Assert.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
+      Assertions.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
+      Assertions.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
     }
   }
 
@@ -452,16 +452,16 @@ public abstract class SMFSchemaParserContract
       "valid-attribute-1.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
-      Assert.assertEquals(1L, schema.requiredAttributes().size());
+      Assertions.assertEquals(1L, schema.requiredAttributes().size());
       final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name).get();
-      Assert.assertEquals(a_name, a.name());
-      Assert.assertEquals(Optional.empty(), a.requiredComponentType());
-      Assert.assertEquals(OptionalInt.empty(), a.requiredComponentCount());
-      Assert.assertEquals(OptionalInt.empty(), a.requiredComponentSize());
+      Assertions.assertEquals(a_name, a.name());
+      Assertions.assertEquals(Optional.empty(), a.requiredComponentType());
+      Assertions.assertEquals(OptionalInt.empty(), a.requiredComponentCount());
+      Assertions.assertEquals(OptionalInt.empty(), a.requiredComponentSize());
     }
   }
 
@@ -473,18 +473,18 @@ public abstract class SMFSchemaParserContract
       "valid-attribute-2.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
-      Assert.assertEquals(1L, schema.optionalAttributes().size());
+      Assertions.assertEquals(1L, schema.optionalAttributes().size());
       final SMFSchemaAttribute a = schema.optionalAttributes().get(a_name).get();
-      Assert.assertEquals(a_name, a.name());
-      Assert.assertEquals(
+      Assertions.assertEquals(a_name, a.name());
+      Assertions.assertEquals(
         SMFComponentType.ELEMENT_TYPE_FLOATING,
         a.requiredComponentType().get());
-      Assert.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
-      Assert.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
+      Assertions.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
+      Assertions.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
     }
   }
 
@@ -496,13 +496,13 @@ public abstract class SMFSchemaParserContract
       "valid-coords-0.smfs")) {
       final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assert.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isValid());
       final SMFSchema schema = r.get();
-      Assert.assertEquals(
+      Assertions.assertEquals(
         SMFSchemaIdentifier.of(
           SMFSchemaName.of("com.io7m.smf.example"), 1, 2),
         schema.schemaIdentifier());
-      Assert.assertEquals(
+      Assertions.assertEquals(
         Optional.of(SMFCoordinateSystem.of(
           CAxisSystem.of(
             CAxis.AXIS_POSITIVE_X,
@@ -510,7 +510,7 @@ public abstract class SMFSchemaParserContract
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE)),
         schema.requiredCoordinateSystem());
-      Assert.assertEquals(TreeMap.empty(), schema.requiredAttributes());
+      Assertions.assertEquals(TreeMap.empty(), schema.requiredAttributes());
     }
   }
 }

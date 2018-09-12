@@ -20,15 +20,11 @@ import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
 import io.vavr.collection.SortedMap;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class SMFFilterCommandModuleResolverTest
 {
-  @Rule public ExpectedException expected = ExpectedException.none();
-
   @Test
   public void testResolver()
     throws Exception
@@ -36,7 +32,7 @@ public final class SMFFilterCommandModuleResolverTest
     final SMFFilterCommandModuleResolverType r = SMFFilterCommandModuleResolver.create();
     final SortedMap<String, SMFFilterCommandModuleType> m = r.available();
 
-    Assert.assertEquals(1L, (long) m.size());
-    Assert.assertTrue(m.containsKey("com.io7m.smf"));
+    Assertions.assertEquals(1L, (long) m.size());
+    Assertions.assertTrue(m.containsKey("com.io7m.smf"));
   }
 }

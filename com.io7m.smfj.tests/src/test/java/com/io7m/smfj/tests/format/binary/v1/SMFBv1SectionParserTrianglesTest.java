@@ -27,9 +27,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import mockit.Delegate;
 import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
+import mockit.Expectations;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -60,9 +60,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);
@@ -103,9 +103,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.empty();
@@ -133,9 +133,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);
@@ -164,9 +164,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);
@@ -208,9 +208,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);
@@ -252,9 +252,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);
@@ -296,9 +296,9 @@ public final class SMFBv1SectionParserTrianglesTest
 
     final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
       state);
-    Assert.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
+    Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new StrictExpectations()
+    new Expectations()
     {{
       events_body.onTriangles();
       this.result = Optional.of(events_tri);

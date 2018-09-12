@@ -29,8 +29,8 @@ import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
 import org.apache.commons.io.IOUtils;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +57,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -68,7 +68,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -79,9 +79,9 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
         Optional.empty(),
         1,
         List.of("file.txt"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "schema-validate");
+    Assertions.assertEquals(c.name(), "schema-validate");
   }
 
   @Test
@@ -120,8 +120,8 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
       r.getError().forEach(e -> LOG.error(e.message()));
     }
 
-    Assert.assertTrue(r.isValid());
-    Assert.assertEquals(loader.mesh(), r.get());
+    Assertions.assertTrue(r.isValid());
+    Assertions.assertEquals(loader.mesh(), r.get());
   }
 
   @Test
@@ -160,7 +160,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
       r.getError().forEach(e -> LOG.error(e.message()));
     }
 
-    Assert.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isValid());
   }
 
   @Test
@@ -192,6 +192,6 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
       r.getError().forEach(e -> LOG.error(e.message()));
     }
 
-    Assert.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isValid());
   }
 }

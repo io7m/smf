@@ -31,8 +31,8 @@ import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,11 +102,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "A required attribute is missing")));
   }
 
@@ -144,11 +144,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "The mesh contains an extra attribute but the schema does not permit them")));
   }
 
@@ -197,11 +197,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "The mesh has an unexpected coordinate system")));
   }
 
@@ -242,7 +242,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -287,7 +287,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -332,11 +332,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute is not of the expected type")));
   }
 
@@ -382,11 +382,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute component count is not the expected count")));
   }
 
@@ -432,7 +432,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -477,11 +477,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute component size is not the expected size")));
   }
 
@@ -527,7 +527,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -572,7 +572,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -617,11 +617,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute is not of the expected type")));
   }
 
@@ -667,11 +667,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute component count is not the expected count")));
   }
 
@@ -717,7 +717,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -762,11 +762,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "Attribute component size is not the expected size")));
   }
 
@@ -812,7 +812,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -856,7 +856,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
   }
 
   @Test
@@ -890,11 +890,11 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     final Seq<SMFErrorType> errors = r.getError();
     errors.forEach(e -> LOG.error("{}", e));
-    Assert.assertTrue(errors.exists(e -> e.message().contains(
+    Assertions.assertTrue(errors.exists(e -> e.message().contains(
       "The mesh schema identifier does not match the identifier in the schema")));
   }
 
@@ -926,7 +926,7 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isValid());
   }
 
   @Test
@@ -957,6 +957,6 @@ public abstract class SMFSchemaValidatorContract
     final Validation<Seq<SMFErrorType>, SMFHeader> r =
       this.create().validate(header, schema);
 
-    Assert.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isValid());
   }
 }

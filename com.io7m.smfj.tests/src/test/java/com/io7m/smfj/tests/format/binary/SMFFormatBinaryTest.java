@@ -19,6 +19,8 @@ package com.io7m.smfj.tests.format.binary;
 import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -42,6 +44,12 @@ public final class SMFFormatBinaryTest extends SMFFormatBinaryContract
     } catch (final URISyntaxException e) {
       throw new IllegalArgumentException(e);
     }
+  }
+
+  @Override
+  protected Logger logger()
+  {
+    return LoggerFactory.getLogger(SMFFormatBinaryTest.class);
   }
 
   @Override

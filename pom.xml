@@ -45,6 +45,7 @@
   <properties>
     <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
+    <com.io7m.smfj.jmockit.version>1.42</com.io7m.smfj.jmockit.version>
   </properties>
 
   <licenses>
@@ -104,27 +105,27 @@
       <dependency>
         <groupId>com.io7m.junreachable</groupId>
         <artifactId>com.io7m.junreachable.core</artifactId>
-        <version>[1.0.0, 2.0.0)</version>
+        <version>2.1.1</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jintegers</groupId>
         <artifactId>com.io7m.jintegers.core</artifactId>
-        <version>[1.0.0, 2.0.0)</version>
+        <version>2.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jfunctional</groupId>
         <artifactId>com.io7m.jfunctional.core</artifactId>
-        <version>[1.0.0, 2.0.0)</version>
+        <version>1.3.1</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.ieee754b16</groupId>
         <artifactId>com.io7m.ieee754b16.core</artifactId>
-        <version>[1.0.2, 2.0.0)</version>
+        <version>2.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jobj</groupId>
         <artifactId>com.io7m.jobj.core</artifactId>
-        <version>0.2.1</version>
+        <version>0.3.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jtensors</groupId>
@@ -154,17 +155,17 @@
       <dependency>
         <groupId>com.io7m.jcoords</groupId>
         <artifactId>com.io7m.jcoords.core</artifactId>
-        <version>0.2.0</version>
+        <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jfsm</groupId>
         <artifactId>com.io7m.jfsm.core</artifactId>
-        <version>0.1.1</version>
+        <version>1.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.mutable.numbers</groupId>
         <artifactId>com.io7m.mutable.numbers.core</artifactId>
-        <version>[1.0.0, 2.0.0)</version>
+        <version>2.0.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.immutables.style</groupId>
@@ -180,7 +181,7 @@
       <dependency>
         <groupId>org.immutables</groupId>
         <artifactId>value</artifactId>
-        <version>2.6.0-alpha1</version>
+        <version>2.7.1</version>
       </dependency>
       <dependency>
         <groupId>org.immutables.vavr</groupId>
@@ -190,22 +191,22 @@
       <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
-        <version>1.7.22</version>
+        <version>1.8.0-beta2</version>
       </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
-        <version>1.2.3</version>
+        <version>1.3.0-alpha4</version>
       </dependency>
       <dependency>
         <groupId>com.beust</groupId>
         <artifactId>jcommander</artifactId>
-        <version>1.69</version>
+        <version>1.72</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
-        <version>2.5</version>
+        <version>2.6</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -226,7 +227,7 @@
       <dependency>
         <groupId>org.osgi</groupId>
         <artifactId>org.osgi.service.component.annotations</artifactId>
-        <version>1.3.0</version>
+        <version>1.4.0</version>
       </dependency>
       <dependency>
         <groupId>org.osgi</groupId>
@@ -242,17 +243,27 @@
       <dependency>
         <groupId>com.github.marschall</groupId>
         <artifactId>memoryfilesystem</artifactId>
-        <version>0.9.1</version>
+        <version>1.2.2</version>
       </dependency>
       <dependency>
         <groupId>org.jmockit</groupId>
         <artifactId>jmockit</artifactId>
-        <version>1.31</version>
+        <version>1.42</version>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>4.12</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-engine</artifactId>
+        <version>5.3.1</version>
+      </dependency>
+      <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter-api</artifactId>
+        <version>5.3.1</version>
       </dependency>
       <dependency>
         <groupId>org.hamcrest</groupId>

@@ -30,8 +30,8 @@ import io.vavr.collection.HashSet;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
   {
     final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeTrim.parse(Optional.empty(), 1, List.empty());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -65,7 +65,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -76,7 +76,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
         Optional.empty(),
         1,
         List.of("~#@"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
   }
 
   @Test
@@ -87,9 +87,9 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
         Optional.empty(),
         1,
         List.of("x"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "trim");
+    Assertions.assertEquals(c.name(), "trim");
   }
 
   @Test
@@ -100,9 +100,9 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
         Optional.empty(),
         1,
         List.of("x", "y", "z"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "trim");
+    Assertions.assertEquals(c.name(), "trim");
   }
 
   @Test
@@ -123,7 +123,7 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
 
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isInvalid());
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
@@ -151,17 +151,17 @@ public final class SMFMemoryMeshFilterAttributeTrimTest extends
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
       filter.filter(this.createContext(), mesh0);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isValid());
 
     final SMFMemoryMesh mesh1 = r.get();
-    Assert.assertEquals(1L, (long) mesh1.arrays().size());
-    Assert.assertEquals(1L, (long) mesh1.header().attributesInOrder().size());
-    Assert.assertEquals(1L, (long) mesh1.header().attributesByName().size());
+    Assertions.assertEquals(1L, (long) mesh1.arrays().size());
+    Assertions.assertEquals(1L, (long) mesh1.header().attributesInOrder().size());
+    Assertions.assertEquals(1L, (long) mesh1.header().attributesByName().size());
 
-    Assert.assertTrue(
+    Assertions.assertTrue(
       mesh1.header().attributesByName().containsKey(name_source));
 
-    Assert.assertEquals(
+    Assertions.assertEquals(
       mesh0.arrays().get(name_source).get(),
       mesh1.arrays().get(name_source).get());
   }
