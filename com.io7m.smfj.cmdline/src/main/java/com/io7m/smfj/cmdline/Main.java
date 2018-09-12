@@ -412,8 +412,8 @@ public final class Main implements Runnable
         final Path path_out = Paths.get(this.file_out);
 
         LOG.debug("serializing to {}", path_out);
-        try (final OutputStream os = Files.newOutputStream(path_out)) {
-          try (final SMFSerializerType serializer =
+        try (OutputStream os = Files.newOutputStream(path_out)) {
+          try (SMFSerializerType serializer =
                  provider_serializer.serializerCreate(
                    provider_serializer.serializerSupportedVersions().last(),
                    path_out.toUri(),
@@ -464,8 +464,8 @@ public final class Main implements Runnable
       final SMFMemoryMeshProducerType loader =
         SMFMemoryMeshProducer.create();
 
-      try (final InputStream is = Files.newInputStream(path_in)) {
-        try (final SMFParserSequentialType parser =
+      try (InputStream is = Files.newInputStream(path_in)) {
+        try (SMFParserSequentialType parser =
                provider_parser.parserCreateSequential(
                  loader, path_in.toUri(), is)) {
           parser.parse();
@@ -486,7 +486,7 @@ public final class Main implements Runnable
       final SMFFilterCommandModuleResolverType resolver =
         SMFFilterCommandModuleResolver.create();
 
-      try (final InputStream stream = Files.newInputStream(path_commands)) {
+      try (InputStream stream = Files.newInputStream(path_commands)) {
         final Validation<List<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
           SMFFilterCommandFile.parseFromStream(
             resolver,
@@ -551,8 +551,8 @@ public final class Main implements Runnable
         format.mimeType(),
         version.version().toHumanString());
 
-      try (final InputStream stream = Files.newInputStream(path_in)) {
-        try (final SMFParserSequentialType p = version.provider()
+      try (InputStream stream = Files.newInputStream(path_in)) {
+        try (SMFParserSequentialType p = version.provider()
           .parserCreateSequential(this, path_in.toUri(), stream)) {
           p.parse();
         }

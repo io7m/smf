@@ -40,7 +40,7 @@ public interface SMFFilterCommandParserType
    */
 
   Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
-    final Optional<URI> file,
-    final int line,
-    final List<String> text);
+    Optional<URI> file,
+    int line,
+    List<String> text);
 }

@@ -45,7 +45,7 @@ public final class SMFTestFiles
     final String name)
     throws IOException
   {
-    try (final InputStream stream = resourceStream(name)) {
+    try (InputStream stream = resourceStream(name)) {
       final SMFParserProviderType fmt = new SMFFormatText();
       final String rpath = "/com/io7m/smfj/tests/processing/" + name;
       final Path path = Paths.get(rpath);

@@ -73,21 +73,21 @@ public abstract class SMFSchemaSerializerContract
     throws Exception
   {
     final SMFSchema schema;
-    try (final SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
+    try (SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       Assert.assertTrue(r.isValid());
       schema = r.get();
     }
 
     final SortedSet<SMFSchemaVersion> versions = this.serializerVersions();
-    try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       final Path out_path = Paths.get("/output");
-      try (final SMFSchemaSerializerType serial =
+      try (SMFSchemaSerializerType serial =
              this.createSerializer(versions.last(), out_path, out)) {
         serial.serializeSchema(schema);
       }
 
-      try (final InputStream in = new ByteArrayInputStream(out.toByteArray())) {
+      try (InputStream in = new ByteArrayInputStream(out.toByteArray())) {
         try (SMFSchemaParserType parser = this.createParser(out_path, in)) {
           final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
           Assert.assertTrue(r.isValid());

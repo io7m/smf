@@ -54,7 +54,7 @@ public abstract class SMFTextTest implements SMFTextTestType
 
       LOG.debug("path: {}", target);
 
-      try (final OutputStream os =
+      try (OutputStream os =
              Files.newOutputStream(
                target,
                StandardOpenOption.CREATE,
@@ -72,7 +72,7 @@ public abstract class SMFTextTest implements SMFTextTestType
 
       LOG.debug("wrote {} octets", Long.valueOf(Files.size(target)));
 
-      try (final InputStream is = Files.newInputStream(target)) {
+      try (InputStream is = Files.newInputStream(target)) {
         final byte[] buffer = new byte[16];
         while (true) {
           final int r = is.read(buffer);

@@ -164,7 +164,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "bad_triangle.smft")) {
       // Nothing
     }
@@ -193,7 +193,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
       // Nothing
     }
@@ -229,7 +229,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
       // Nothing
     }
@@ -266,7 +266,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
       // Nothing
     }
@@ -302,7 +302,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
       // Nothing
     }
@@ -338,7 +338,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
       // Nothing
     }
@@ -374,7 +374,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
       // Nothing
     }
@@ -412,7 +412,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
       // Nothing
     }
@@ -450,7 +450,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
       // Nothing
     }
@@ -488,7 +488,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
       // Nothing
     }
@@ -524,7 +524,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
       // Nothing
     }
@@ -562,7 +562,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
       // Nothing
     }
@@ -600,7 +600,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
       // Nothing
     }
@@ -638,7 +638,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
       // Nothing
     }
@@ -674,7 +674,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
       // Nothing
     }
@@ -712,7 +712,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
       // Nothing
     }
@@ -750,7 +750,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
       // Nothing
     }

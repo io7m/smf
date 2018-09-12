@@ -62,7 +62,7 @@ public abstract class SMFFilterCommandContextContract
   public final void testSourceRootNotAbsolute()
     throws Exception
   {
-    try (final FileSystem fs = this.newFilesystem()) {
+    try (FileSystem fs = this.newFilesystem()) {
       this.expected.expect(IllegalArgumentException.class);
       SMFFilterCommandContext.of(fs.getPath("a"), fs.getPath("a"));
     }
@@ -72,7 +72,7 @@ public abstract class SMFFilterCommandContextContract
   public final void testResolveOK_0()
     throws Exception
   {
-    try (final FileSystem fs = this.newFilesystem()) {
+    try (FileSystem fs = this.newFilesystem()) {
       final Path root = fs.getRootDirectories().iterator().next();
       final Path source_root = root.resolve("x/y");
       final Path current_path = root.resolve("x/y/a/b");
@@ -86,7 +86,7 @@ public abstract class SMFFilterCommandContextContract
   public final void testResolveOK_1()
     throws Exception
   {
-    try (final FileSystem fs = this.newFilesystem()) {
+    try (FileSystem fs = this.newFilesystem()) {
       final Path root = fs.getRootDirectories().iterator().next();
       final Path source_root = root.resolve("x/y");
       final Path current_path = root.resolve("x/y/a/b");
@@ -100,7 +100,7 @@ public abstract class SMFFilterCommandContextContract
   public final void testResolveError_0()
     throws Exception
   {
-    try (final FileSystem fs = this.newFilesystem()) {
+    try (FileSystem fs = this.newFilesystem()) {
       final Path root = fs.getRootDirectories().iterator().next();
       final Path source_root = root.resolve("x/y");
       final Path current_path = root.resolve("x/y");

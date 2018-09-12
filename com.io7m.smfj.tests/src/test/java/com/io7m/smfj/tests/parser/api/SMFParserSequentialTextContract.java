@@ -91,7 +91,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "empty.smft")) {
       p.parse();
     }
@@ -115,7 +115,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "minimal.smft")) {
       p.parse();
     }
@@ -142,7 +142,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_early_eof.smft")) {
       p.parse();
     }
@@ -173,7 +173,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_unrecognized.smft")) {
       p.parse();
     }
@@ -203,7 +203,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_malformed_end.smft")) {
       p.parse();
     }
@@ -230,7 +230,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_attribute_duplicate.smft")) {
       p.parse();
     }
@@ -255,7 +255,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_version_unsupported.smft")) {
       p.parse();
     }
@@ -280,7 +280,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_version_broken0.smft")) {
       p.parse();
     }
@@ -305,7 +305,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_version_broken1.smft")) {
       p.parse();
     }
@@ -330,7 +330,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "header_version_broken2.smft")) {
       p.parse();
     }
@@ -363,7 +363,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "body_unrecognized0.smft")) {
       p.parse();
     }
@@ -397,7 +397,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "body_unrecognized1.smft")) {
       p.parse();
     }
@@ -431,7 +431,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "vertices_missing.smft")) {
       p.parse();
     }
@@ -465,7 +465,7 @@ public abstract class SMFParserSequentialTextContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.parser(events, "triangles_missing.smft")) {
       p.parse();
     }

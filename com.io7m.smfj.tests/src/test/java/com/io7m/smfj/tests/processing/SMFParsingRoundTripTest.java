@@ -53,7 +53,7 @@ public final class SMFParsingRoundTripTest
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader0, "all.smft")) {
       // createParser calls parse()
     }
@@ -70,9 +70,9 @@ public final class SMFParsingRoundTripTest
 
     final SMFFormatText fmt = new SMFFormatText();
 
-    try (final OutputStream out = Files.newOutputStream(tmp)) {
+    try (OutputStream out = Files.newOutputStream(tmp)) {
       final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
-      try (final SMFSerializerType s =
+      try (SMFSerializerType s =
              fmt.serializerCreate(version, tmp.toUri(), out)) {
         SMFMemoryMeshSerializer.serialize(loader0.mesh(), s);
       }
@@ -80,8 +80,8 @@ public final class SMFParsingRoundTripTest
 
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
 
-    try (final InputStream stream = Files.newInputStream(tmp, READ)) {
-      try (final SMFParserSequentialType p =
+    try (InputStream stream = Files.newInputStream(tmp, READ)) {
+      try (SMFParserSequentialType p =
              fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
         p.parse();
       }

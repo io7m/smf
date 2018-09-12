@@ -60,8 +60,8 @@ public final class FOBJ
   {
     final SMFFormatOBJ fmt = new SMFFormatOBJ();
     final Path path = Paths.get("test.obj");
-    try (final InputStream is = Files.newInputStream(path)) {
-      try (final SMFParserSequentialType p = fmt.parserCreateSequential(
+    try (InputStream is = Files.newInputStream(path)) {
+      try (SMFParserSequentialType p = fmt.parserCreateSequential(
         new Events(),
         path.toUri(),
         is)) {

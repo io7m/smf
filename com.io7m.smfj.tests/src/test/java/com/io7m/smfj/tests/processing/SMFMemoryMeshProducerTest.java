@@ -354,14 +354,14 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Parse already called by SMFTestFiles.createParser
     }
 
     Assert.assertEquals(0L, (long) loader.errors().size());
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Parse already called by SMFTestFiles.createParser
     }
@@ -378,7 +378,7 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Parse already called by SMFTestFiles.createParser
     }

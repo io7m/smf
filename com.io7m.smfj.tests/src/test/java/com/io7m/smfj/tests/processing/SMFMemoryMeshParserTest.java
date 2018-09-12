@@ -45,7 +45,7 @@ public final class SMFMemoryMeshParserTest
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader0, "all.smft")) {
       // Nothing
     }
@@ -53,7 +53,7 @@ public final class SMFMemoryMeshParserTest
     final SMFMemoryMesh mesh0 = loader0.mesh();
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFMemoryMeshParser.createSequential(mesh0, loader1)) {
       parser.parse();
     }

@@ -243,7 +243,7 @@ public final class SMFMemoryMeshSerializerTest
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser0 =
+    try (SMFParserSequentialType parser0 =
            SMFTestFiles.createParser(loader0, "all.smft")) {
       // Parse already called by SMFTestFiles.createParser
     }
@@ -253,18 +253,18 @@ public final class SMFMemoryMeshSerializerTest
     final SMFMemoryMesh mesh0 = loader0.mesh();
     final SMFFormatText fmt = new SMFFormatText();
     final Path tmp = Files.createTempFile("smf-memory-", ".smft");
-    try (final OutputStream stream =
+    try (OutputStream stream =
            Files.newOutputStream(tmp, CREATE, TRUNCATE_EXISTING)) {
       final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
-      try (final SMFSerializerType serial =
+      try (SMFSerializerType serial =
              fmt.serializerCreate(version, tmp.toUri(), stream)) {
         SMFMemoryMeshSerializer.serialize(mesh0, serial);
       }
     }
 
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
-    try (final InputStream stream = Files.newInputStream(tmp)) {
-      try (final SMFParserSequentialType parser1 =
+    try (InputStream stream = Files.newInputStream(tmp)) {
+      try (SMFParserSequentialType parser1 =
              fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
         parser1.parse();
       }

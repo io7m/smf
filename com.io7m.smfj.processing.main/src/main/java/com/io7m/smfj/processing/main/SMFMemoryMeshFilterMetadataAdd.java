@@ -151,7 +151,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     final Path file = context.resolvePath(this.meta_file);
     LOG.debug("resolved metadata file: {}", file);
 
-    try (final InputStream stream = Files.newInputStream(file)) {
+    try (InputStream stream = Files.newInputStream(file)) {
       final byte[] data = IOUtils.toByteArray(stream);
       final SMFMetadata meta = SMFMetadata.of(this.schema_id, data);
 

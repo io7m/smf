@@ -51,7 +51,7 @@ public final class SMFBSectionParserDemo
     final String[] args)
     throws Exception
   {
-    try (final FileInputStream stream = new FileInputStream(args[0])) {
+    try (FileInputStream stream = new FileInputStream(args[0])) {
       stream.skip(16L);
 
       final SMFBDataStreamReaderType reader =

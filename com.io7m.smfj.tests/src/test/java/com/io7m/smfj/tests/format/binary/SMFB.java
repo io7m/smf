@@ -86,14 +86,14 @@ public final class SMFB
     throws Exception
   {
     final SMFFormatBinary fmt = new SMFFormatBinary();
-    try (final FileOutputStream out = new FileOutputStream("/tmp/x.bin")) {
-      try (final SMFSerializerType serial = fmt.serializerCreate(
+    try (FileOutputStream out = new FileOutputStream("/tmp/x.bin")) {
+      try (SMFSerializerType serial = fmt.serializerCreate(
         SMFFormatVersion.of(1, 0),
         URI.create("urn:out"),
         out)) {
         this.serial = serial;
-        try (final FileInputStream stream = new FileInputStream(this.args[0])) {
-          try (final SMFParserSequentialType parser =
+        try (FileInputStream stream = new FileInputStream(this.args[0])) {
+          try (SMFParserSequentialType parser =
                  fmt.parserCreateSequential(
                    this,
                    URI.create("urn:file:" + this.args[0]),

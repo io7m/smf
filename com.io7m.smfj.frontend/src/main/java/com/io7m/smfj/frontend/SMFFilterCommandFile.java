@@ -90,7 +90,7 @@ public final class SMFFilterCommandFile
     List<SMFMemoryMeshFilterType> filters = List.empty();
     LexicalPosition<URI> position = LexicalPosition.of(1, 0, path_opt);
 
-    try (final BufferedReader reader =
+    try (BufferedReader reader =
            new BufferedReader(new InputStreamReader(
              stream,
              StandardCharsets.UTF_8))) {

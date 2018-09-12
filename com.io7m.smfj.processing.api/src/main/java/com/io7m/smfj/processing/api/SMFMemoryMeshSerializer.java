@@ -87,7 +87,7 @@ public final class SMFMemoryMeshSerializer
     final SMFSerializerType s)
     throws IOException
   {
-    try (final SMFSerializerDataTrianglesType st = s.serializeTrianglesStart()) {
+    try (SMFSerializerDataTrianglesType st = s.serializeTrianglesStart()) {
       for (final Vector3L t : mesh.triangles()) {
         st.serializeTriangle(t.x(), t.y(), t.z());
       }
@@ -100,11 +100,11 @@ public final class SMFMemoryMeshSerializer
     final SMFHeader header)
     throws IOException
   {
-    try (final SMFSerializerDataAttributesNonInterleavedType sv =
+    try (SMFSerializerDataAttributesNonInterleavedType sv =
            s.serializeVertexDataNonInterleavedStart()) {
       for (final SMFAttribute attribute : header.attributesInOrder()) {
         final SMFAttributeName name = attribute.name();
-        try (final SMFSerializerDataAttributesValuesType sav =
+        try (SMFSerializerDataAttributesValuesType sav =
                sv.serializeData(name)) {
           final SMFAttributeArrayType array = mesh.arrays().get(name).get();
           array.matchArray(

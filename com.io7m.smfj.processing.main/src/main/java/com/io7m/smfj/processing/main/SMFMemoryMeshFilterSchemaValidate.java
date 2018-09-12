@@ -173,8 +173,8 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
     final SMFSchemaParserProviderType parser_provider = findParserProvider();
     final SMFSchemaValidatorType validator = findValidator();
 
-    try (final InputStream stream = Files.newInputStream(file)) {
-      try (final SMFSchemaParserType parser =
+    try (InputStream stream = Files.newInputStream(file)) {
+      try (SMFSchemaParserType parser =
              parser_provider.schemaParserCreate(file.toUri(), stream)) {
         final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
         if (result_schema.isValid()) {

@@ -230,7 +230,7 @@ public final class SMFFormatText
   {
     NullCheck.notNull(stream, "Stream");
 
-    try (final BufferedReader reader =
+    try (BufferedReader reader =
            new BufferedReader(new InputStreamReader(stream, UTF_8))) {
 
       final String line = reader.readLine();
@@ -304,7 +304,7 @@ public final class SMFFormatText
         final SMFFormatVersion version = result.get();
         switch (version.major()) {
           case 1: {
-            try (final SMFTV1Parser p =
+            try (SMFTV1Parser p =
                    new SMFTV1Parser(version, state, this.events, this.reader)) {
               p.parse();
             }

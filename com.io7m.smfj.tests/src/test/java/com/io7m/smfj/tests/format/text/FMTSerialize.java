@@ -50,7 +50,7 @@ public final class FMTSerialize
   {
     final SMFFormatText fmt = new SMFFormatText();
     final Path path = Paths.get("mesh-ascii.txt");
-    try (final InputStream stream = Files.newInputStream(path)) {
+    try (InputStream stream = Files.newInputStream(path)) {
 
       final SMFParserSequentialType p =
         fmt.parserCreateSequential(new Events(), path.toUri(), stream);

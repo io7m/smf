@@ -55,8 +55,8 @@ final class SMFVersionProbeControllers
     final Iterable<SMFVersionProbeProviderType> probes)
   {
     Vector<SMFParseError> errors = Vector.empty();
-    for (final SMFVersionProbeProviderType probe : probes) {
-      try (final InputStream stream = streams.get()) {
+    for (SMFVersionProbeProviderType probe : probes) {
+      try (InputStream stream = streams.get()) {
         final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
           probe.probe(stream);
         if (r.isInvalid()) {

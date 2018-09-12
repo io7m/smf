@@ -56,7 +56,7 @@ public abstract class SMFFormatBinaryContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.createParser("bad-magic.smfb", events)) {
       p.parse();
     }
@@ -83,7 +83,7 @@ public abstract class SMFFormatBinaryContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.createParser("unsupported.smfb", events)) {
       p.parse();
     }
@@ -114,7 +114,7 @@ public abstract class SMFFormatBinaryContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.createParser("missing_triangles.smfb", events)) {
       p.parse();
     }
@@ -145,7 +145,7 @@ public abstract class SMFFormatBinaryContract
       events.onFinish();
     }};
 
-    try (final SMFParserSequentialType p =
+    try (SMFParserSequentialType p =
            this.createParser("missing_vertices.smfb", events)) {
       p.parse();
     }

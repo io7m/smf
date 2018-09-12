@@ -90,7 +90,7 @@ public final class SMFByteBufferPackedMeshesTest
     throws IOException
   {
     final String rpath = "/com/io7m/smfj/tests/bytebuffer/" + name;
-    try (final InputStream stream =
+    try (InputStream stream =
            SMFByteBufferPackedMeshesTest.class.getResourceAsStream(rpath)) {
       final SMFParserProviderType fmt = new SMFFormatText();
       final Path path = Paths.get(rpath);
@@ -2320,7 +2320,7 @@ public final class SMFByteBufferPackedMeshesTest
           }
         });
 
-    try (final SMFParserSequentialType parser = createParser(loader, name)) {
+    try (SMFParserSequentialType parser = createParser(loader, name)) {
       // Nothing
     }
 
@@ -3020,7 +3020,7 @@ public final class SMFByteBufferPackedMeshesTest
           }
         });
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            createParser(loader, "float64_4.smft")) {
       // Nothing
     }
@@ -3082,7 +3082,7 @@ public final class SMFByteBufferPackedMeshesTest
           }
         });
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            createParser(loader, "no_triangles.smft")) {
       // Nothing
     }
@@ -3138,7 +3138,7 @@ public final class SMFByteBufferPackedMeshesTest
           }
         });
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            createParser(loader, "no_attributes.smft")) {
       // Nothing
     }
@@ -3202,7 +3202,7 @@ public final class SMFByteBufferPackedMeshesTest
           }
         });
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            createParser(loader, "broken.smft")) {
       // Nothing
     }

@@ -89,7 +89,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -97,8 +97,8 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final Path file = this.filesystem.getPath("/schema.smfs");
     Files.deleteIfExists(file);
 
-    try (final InputStream in = SMFTestFiles.resourceStream("all.smfs")) {
-      try (final OutputStream out = Files.newOutputStream(file)) {
+    try (InputStream in = SMFTestFiles.resourceStream("all.smfs")) {
+      try (OutputStream out = Files.newOutputStream(file)) {
         IOUtils.copy(in, out);
         out.flush();
       }
@@ -129,7 +129,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -137,8 +137,8 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final Path file = this.filesystem.getPath("/schema.smfs");
     Files.deleteIfExists(file);
 
-    try (final InputStream in = SMFTestFiles.resourceStream("empty.smfs")) {
-      try (final OutputStream out = Files.newOutputStream(file)) {
+    try (InputStream in = SMFTestFiles.resourceStream("empty.smfs")) {
+      try (OutputStream out = Files.newOutputStream(file)) {
         IOUtils.copy(in, out);
         out.flush();
       }
@@ -168,7 +168,7 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }

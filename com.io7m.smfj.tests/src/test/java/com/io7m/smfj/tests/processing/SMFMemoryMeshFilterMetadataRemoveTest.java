@@ -154,7 +154,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -187,7 +187,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -220,7 +220,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -253,7 +253,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -286,7 +286,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }

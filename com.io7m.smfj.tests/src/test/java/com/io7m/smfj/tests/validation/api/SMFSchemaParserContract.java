@@ -81,7 +81,7 @@ public abstract class SMFSchemaParserContract
   public final void testIOError()
   {
     boolean caught = false;
-    try (final SMFSchemaParserType parser = this.create(
+    try (SMFSchemaParserType parser = this.create(
       Paths.get("/invalid"),
       new BrokenInputStream())) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
@@ -100,7 +100,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidUnknown0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-unknown-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -114,7 +114,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidRequireVertices0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-vertices-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -128,7 +128,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidRequireVertices1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-vertices-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -142,7 +142,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidRequireTriangles0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-triangles-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -156,7 +156,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidRequireTriangles1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-triangles-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -170,7 +170,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -184,7 +184,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -198,7 +198,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute2()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-2.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -212,7 +212,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute3()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-3.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -226,7 +226,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute4()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-4.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -240,7 +240,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidAttribute5()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-5.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -254,7 +254,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidEmpty()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser("empty.smfs")) {
+    try (SMFSchemaParserType parser = this.resourceParser("empty.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
       Assert.assertFalse(r.isValid());
@@ -267,7 +267,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidMissingIdentifier()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "missing-ident.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -281,7 +281,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidSchema0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -295,7 +295,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidVersion0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -309,7 +309,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidVersion1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -323,7 +323,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidVersion2()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-2.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -337,7 +337,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidSchema1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -351,7 +351,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidBadCoordinateSystem0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -365,7 +365,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidBadCoordinateSystem1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -379,7 +379,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidBadCoordinateSystem2()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-2.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -393,7 +393,7 @@ public abstract class SMFSchemaParserContract
   public final void testInvalidBadCoordinateSystem3()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-3.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -407,7 +407,7 @@ public abstract class SMFSchemaParserContract
   public final void testValidMinimal()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "valid-minimal.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -426,7 +426,7 @@ public abstract class SMFSchemaParserContract
   public final void testValidAttribute0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -449,7 +449,7 @@ public abstract class SMFSchemaParserContract
   public final void testValidAttribute1()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-1.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -470,7 +470,7 @@ public abstract class SMFSchemaParserContract
   public final void testValidAttribute2()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-2.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);
@@ -493,7 +493,7 @@ public abstract class SMFSchemaParserContract
   public final void testValidCoords0()
     throws Exception
   {
-    try (final SMFSchemaParserType parser = this.resourceParser(
+    try (SMFSchemaParserType parser = this.resourceParser(
       "valid-coords-0.smfs")) {
       final Validation<List<SMFErrorType>, SMFSchema> r = parser.parseSchema();
       showErrors(r);

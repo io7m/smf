@@ -143,7 +143,7 @@ public final class SMFMemoryMeshFilterSchemaSetTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }

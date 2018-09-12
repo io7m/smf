@@ -129,7 +129,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -161,7 +161,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (SMFParserSequentialType parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
       // Nothing
     }
@@ -172,7 +172,7 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
     final byte[] data = {(byte) 0x0, (byte) 0x1, (byte) 0x2, (byte) 0x3};
 
     Files.deleteIfExists(path);
-    try (final OutputStream out = Files.newOutputStream(path)) {
+    try (OutputStream out = Files.newOutputStream(path)) {
       out.write(data);
       out.flush();
     }

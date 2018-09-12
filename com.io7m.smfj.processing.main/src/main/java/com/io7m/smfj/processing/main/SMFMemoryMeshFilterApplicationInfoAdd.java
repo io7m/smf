@@ -148,7 +148,7 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
     final String time_text =
       time.format(DateTimeFormatter.ofPattern("YYYY-mm-dd'T'HH:MM:SSZ"));
 
-    try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       final Properties props = new Properties();
       props.setProperty("time", time_text);
       props.setProperty("app.role", "filter");
