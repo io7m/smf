@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jfunctional.PartialBiFunctionType;
+import com.io7m.smfj.core.SMFPartialBiFunctionType;
 
 /**
  * The type of arrays.
@@ -54,18 +54,18 @@ public interface SMFAttributeArrayType
   <A, B, E extends Exception>
   B matchArray(
     A context,
-    PartialBiFunctionType<A, SMFAttributeArrayFloating4Type, B, E> on_f4,
-    PartialBiFunctionType<A, SMFAttributeArrayFloating3Type, B, E> on_f3,
-    PartialBiFunctionType<A, SMFAttributeArrayFloating2Type, B, E> on_f2,
-    PartialBiFunctionType<A, SMFAttributeArrayFloating1Type, B, E> on_f1,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned4Type, B, E> on_u4,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned3Type, B, E> on_u3,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned2Type, B, E> on_u2,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned1Type, B, E> on_u1,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned4Type, B, E> on_i4,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned3Type, B, E> on_i3,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
-    PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
+    SMFPartialBiFunctionType<A, SMFAttributeArrayFloating4Type, B, E> on_f4,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayFloating3Type, B, E> on_f3,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayFloating2Type, B, E> on_f2,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayFloating1Type, B, E> on_f1,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned4Type, B, E> on_u4,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned3Type, B, E> on_u3,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned2Type, B, E> on_u2,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned1Type, B, E> on_u1,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned4Type, B, E> on_i4,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned3Type, B, E> on_i3,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
+    SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
     throws E;
   // CHECKSTYLE:ON
 

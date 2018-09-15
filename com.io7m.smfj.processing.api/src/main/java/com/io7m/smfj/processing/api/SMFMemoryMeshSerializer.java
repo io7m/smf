@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -27,6 +26,7 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
@@ -35,7 +35,7 @@ import com.io7m.smfj.serializer.api.SMFSerializerType;
 import java.io.IOException;
 import java.util.Objects;
 
-import static com.io7m.jfunctional.Unit.unit;
+import static com.io7m.smfj.core.SMFVoid.void_;
 
 /**
  * A memory mesh serializer.
@@ -126,7 +126,7 @@ public final class SMFMemoryMeshSerializer
     }
   }
 
-  private static Unit serializeSigned1(
+  private static SMFVoid serializeSigned1(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerSigned1Type y)
     throws IOException
@@ -134,10 +134,10 @@ public final class SMFMemoryMeshSerializer
     for (final Long v : y.values()) {
       s.serializeValueIntegerSigned1(v.longValue());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeSigned2(
+  private static SMFVoid serializeSigned2(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerSigned2Type y)
     throws IOException
@@ -145,10 +145,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector2L v : y.values()) {
       s.serializeValueIntegerSigned2(v.x(), v.y());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeSigned3(
+  private static SMFVoid serializeSigned3(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerSigned3Type y)
     throws IOException
@@ -156,10 +156,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector3L v : y.values()) {
       s.serializeValueIntegerSigned3(v.x(), v.y(), v.z());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeSigned4(
+  private static SMFVoid serializeSigned4(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerSigned4Type y)
     throws IOException
@@ -167,10 +167,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector4L v : y.values()) {
       s.serializeValueIntegerSigned4(v.x(), v.y(), v.z(), v.w());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeUnsigned1(
+  private static SMFVoid serializeUnsigned1(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerUnsigned1Type y)
     throws IOException
@@ -178,10 +178,10 @@ public final class SMFMemoryMeshSerializer
     for (final Long v : y.values()) {
       s.serializeValueIntegerUnsigned1(v.longValue());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeUnsigned2(
+  private static SMFVoid serializeUnsigned2(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerUnsigned2Type y)
     throws IOException
@@ -189,10 +189,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector2L v : y.values()) {
       s.serializeValueIntegerUnsigned2(v.x(), v.y());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeUnsigned3(
+  private static SMFVoid serializeUnsigned3(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerUnsigned3Type y)
     throws IOException
@@ -200,10 +200,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector3L v : y.values()) {
       s.serializeValueIntegerUnsigned3(v.x(), v.y(), v.z());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeUnsigned4(
+  private static SMFVoid serializeUnsigned4(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayIntegerUnsigned4Type y)
     throws IOException
@@ -211,10 +211,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector4L v : y.values()) {
       s.serializeValueIntegerUnsigned4(v.x(), v.y(), v.z(), v.w());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeFloat1(
+  private static SMFVoid serializeFloat1(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayFloating1Type y)
     throws IOException
@@ -222,10 +222,10 @@ public final class SMFMemoryMeshSerializer
     for (final Double v : y.values()) {
       s.serializeValueFloat1(v.doubleValue());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeFloat2(
+  private static SMFVoid serializeFloat2(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayFloating2Type y)
     throws IOException
@@ -233,10 +233,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector2D v : y.values()) {
       s.serializeValueFloat2(v.x(), v.y());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeFloat3(
+  private static SMFVoid serializeFloat3(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayFloating3Type y)
     throws IOException
@@ -244,10 +244,10 @@ public final class SMFMemoryMeshSerializer
     for (final Vector3D v : y.values()) {
       s.serializeValueFloat3(v.x(), v.y(), v.z());
     }
-    return unit();
+    return void_();
   }
 
-  private static Unit serializeFloat4(
+  private static SMFVoid serializeFloat4(
     final SMFSerializerDataAttributesValuesType s,
     final SMFAttributeArrayFloating4Type y)
     throws IOException
@@ -255,6 +255,6 @@ public final class SMFMemoryMeshSerializer
     for (final Vector4D v : y.values()) {
       s.serializeValueFloat4(v.x(), v.y(), v.z(), v.w());
     }
-    return unit();
+    return void_();
   }
 }

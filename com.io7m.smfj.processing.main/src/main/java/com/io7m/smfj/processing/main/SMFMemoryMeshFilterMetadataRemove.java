@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jfunctional.Pair;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
@@ -24,6 +23,8 @@ import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
 import com.io7m.smfj.processing.api.SMFProcessingError;
+import io.vavr.Tuple;
+import io.vavr.Tuple2;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.collection.Vector;
@@ -60,11 +61,11 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
   }
 
   private final Optional<SMFSchemaName> name;
-  private final Optional<Pair<Integer, Integer>> version;
+  private final Optional<Tuple2<Integer, Integer>> version;
 
   private SMFMemoryMeshFilterMetadataRemove(
     final Optional<SMFSchemaName> in_schema_name,
-    final Optional<Pair<Integer, Integer>> in_version)
+    final Optional<Tuple2<Integer, Integer>> in_version)
   {
     this.name = Objects.requireNonNull(in_schema_name, "Schema name");
     this.version = Objects.requireNonNull(in_version, "Version");
@@ -81,7 +82,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
 
   public static SMFMemoryMeshFilterType create(
     final Optional<SMFSchemaName> in_schema_name,
-    final Optional<Pair<Integer, Integer>> in_version)
+    final Optional<Tuple2<Integer, Integer>> in_version)
   {
     return new SMFMemoryMeshFilterMetadataRemove(in_schema_name, in_version);
   }
@@ -107,7 +108,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     if (text.length() > 0 && text.length() <= 3) {
       try {
         final Optional<SMFSchemaName> schema_name;
-        Optional<Pair<Integer, Integer>> schema_version = Optional.empty();
+        Optional<Tuple2<Integer, Integer>> schema_version = Optional.empty();
 
         if (Objects.equals(text.get(0), "-")) {
           schema_name = Optional.empty();
@@ -122,7 +123,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
             final int major = Integer.parseUnsignedInt(text.get(1));
             final int minor = Integer.parseUnsignedInt(text.get(2));
             schema_version =
-              Optional.of(Pair.pair(
+              Optional.of(Tuple.of(
                 Integer.valueOf(major),
                 Integer.valueOf(minor)));
           }
@@ -170,10 +171,10 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
         final SMFSchemaName s = this.name.get();
         schema_matches = Objects.equals(meta.schema().name(), s);
         if (this.version.isPresent()) {
-          final Pair<Integer, Integer> v = this.version.get();
+          final Tuple2<Integer, Integer> v = this.version.get();
           version_matches =
-            v.getLeft().intValue() == meta.schema().versionMajor()
-              && v.getRight().intValue() == meta.schema().versionMinor();
+            v._1().intValue() == meta.schema().versionMajor()
+              && v._2().intValue() == meta.schema().versionMinor();
         } else {
           version_matches = true;
         }
@@ -218,10 +219,10 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     sb.append(" ");
     if (this.version.isPresent()) {
       sb.append(Integer.toUnsignedString(
-        this.version.get().getLeft().intValue()));
+        this.version.get()._1().intValue()));
       sb.append(" ");
       sb.append(Integer.toUnsignedString(
-        this.version.get().getRight().intValue()));
+        this.version.get()._2().intValue()));
     } else {
       sb.append("-");
     }

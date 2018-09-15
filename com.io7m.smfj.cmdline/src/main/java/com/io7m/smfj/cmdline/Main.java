@@ -20,7 +20,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.Parameters;
-import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
@@ -72,8 +71,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
-
-import static com.io7m.jfunctional.Unit.unit;
 
 /**
  * The main command line program.
@@ -166,7 +163,7 @@ public final class Main implements Runnable
     }
   }
 
-  private interface CommandType extends Callable<Unit>
+  private interface CommandType extends Callable<Void>
   {
 
   }
@@ -185,14 +182,14 @@ public final class Main implements Runnable
     }
 
     @Override
-    public Unit call()
+    public Void call()
       throws Exception
     {
       final ch.qos.logback.classic.Logger root =
         (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(
           Logger.ROOT_LOGGER_NAME);
       root.setLevel(this.verbose.toLevel());
-      return unit();
+      return null;
     }
   }
 
@@ -205,7 +202,7 @@ public final class Main implements Runnable
     }
 
     @Override
-    public Unit call()
+    public Void call()
       throws Exception
     {
       super.call();
@@ -224,7 +221,7 @@ public final class Main implements Runnable
         }
       }
 
-      return unit();
+      return null;
     }
   }
 
@@ -237,7 +234,7 @@ public final class Main implements Runnable
     }
 
     @Override
-    public Unit call()
+    public Void call()
       throws Exception
     {
       super.call();
@@ -301,7 +298,7 @@ public final class Main implements Runnable
               format.description()));
       }
 
-      return unit();
+      return null;
     }
   }
 
@@ -346,7 +343,7 @@ public final class Main implements Runnable
     }
 
     @Override
-    public Unit call()
+    public Void call()
       throws Exception
     {
       super.call();
@@ -356,7 +353,7 @@ public final class Main implements Runnable
 
       if (!filters_opt.isPresent()) {
         Main.this.exit_code = 1;
-        return unit();
+        return null;
       }
 
       final List<SMFMemoryMeshFilterType> filters = filters_opt.get();
@@ -368,7 +365,7 @@ public final class Main implements Runnable
 
       if (!provider_parser_opt.isPresent()) {
         Main.this.exit_code = 1;
-        return unit();
+        return null;
       }
 
       final SMFParserProviderType provider_parser = provider_parser_opt.get();
@@ -379,7 +376,7 @@ public final class Main implements Runnable
 
       if (!mesh_opt.isPresent()) {
         Main.this.exit_code = 1;
-        return unit();
+        return null;
       }
 
       final SMFFilterCommandContext context =
@@ -392,7 +389,7 @@ public final class Main implements Runnable
 
       if (!filtered_opt.isPresent()) {
         Main.this.exit_code = 1;
-        return unit();
+        return null;
       }
 
       final SMFMemoryMesh filtered = filtered_opt.get();
@@ -404,7 +401,7 @@ public final class Main implements Runnable
 
         if (!provider_serializer_opt.isPresent()) {
           Main.this.exit_code = 1;
-          return unit();
+          return null;
         }
 
         final SMFSerializerProviderType provider_serializer =
@@ -427,7 +424,7 @@ public final class Main implements Runnable
         }
       }
 
-      return unit();
+      return null;
     }
 
     private Optional<SMFMemoryMesh> runFilters(
@@ -447,7 +444,7 @@ public final class Main implements Runnable
         } else {
           result.getError().map(e -> {
             LOG.error("filter: {}: {}", filter.name(), e.message());
-            return unit();
+            return null;
           });
           return Optional.empty();
         }
@@ -516,7 +513,7 @@ public final class Main implements Runnable
     }
 
     @Override
-    public Unit call()
+    public Void call()
       throws Exception
     {
       super.call();
@@ -538,7 +535,7 @@ public final class Main implements Runnable
       if (r.isInvalid()) {
         r.getError().forEach(e -> LOG.error(e.fullMessage()));
         Main.this.exit_code = 1;
-        return unit();
+        return null;
       }
 
       final SMFVersionProbed version = r.get();
@@ -556,7 +553,7 @@ public final class Main implements Runnable
         }
       }
 
-      return unit();
+      return null;
     }
 
     @Override

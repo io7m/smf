@@ -16,10 +16,10 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
@@ -137,7 +137,7 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
-      return Unit.unit();
+      return SMFVoid.void_();
     });
   }
 
@@ -164,7 +164,7 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
 
     r.getError().map(e -> {
       LOG.error("error: {}", e.message());
-      return Unit.unit();
+      return SMFVoid.void_();
     });
   }
 

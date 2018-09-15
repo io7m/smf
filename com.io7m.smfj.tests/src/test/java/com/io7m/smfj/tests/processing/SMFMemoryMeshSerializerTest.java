@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -25,6 +24,7 @@ import com.io7m.jtensors.core.unparameterized.vectors.Vector4D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1Type;
@@ -57,7 +57,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.io7m.jfunctional.Unit.unit;
+import static com.io7m.smfj.core.SMFVoid.void_;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
@@ -69,7 +69,7 @@ public final class SMFMemoryMeshSerializerTest
     LOG = LoggerFactory.getLogger(SMFMemoryMeshSerializerTest.class);
   }
 
-  private static Unit checkFloat4(
+  private static SMFVoid checkFloat4(
     final SMFAttributeArrayFloating4Type a0,
     final SMFAttributeArrayFloating4Type a1)
   {
@@ -80,10 +80,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat3(
+  private static SMFVoid checkFloat3(
     final SMFAttributeArrayFloating3Type a0,
     final SMFAttributeArrayFloating3Type a1)
   {
@@ -94,10 +94,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat2(
+  private static SMFVoid checkFloat2(
     final SMFAttributeArrayFloating2Type a0,
     final SMFAttributeArrayFloating2Type a1)
   {
@@ -108,10 +108,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat1(
+  private static SMFVoid checkFloat1(
     final SMFAttributeArrayFloating1Type a0,
     final SMFAttributeArrayFloating1Type a1)
   {
@@ -122,10 +122,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned4(
+  private static SMFVoid checkUnsigned4(
     final SMFAttributeArrayIntegerUnsigned4Type a0,
     final SMFAttributeArrayIntegerUnsigned4Type a1)
   {
@@ -136,10 +136,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned3(
+  private static SMFVoid checkUnsigned3(
     final SMFAttributeArrayIntegerUnsigned3Type a0,
     final SMFAttributeArrayIntegerUnsigned3Type a1)
   {
@@ -150,10 +150,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned2(
+  private static SMFVoid checkUnsigned2(
     final SMFAttributeArrayIntegerUnsigned2Type a0,
     final SMFAttributeArrayIntegerUnsigned2Type a1)
   {
@@ -164,10 +164,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned1(
+  private static SMFVoid checkUnsigned1(
     final SMFAttributeArrayIntegerUnsigned1Type a0,
     final SMFAttributeArrayIntegerUnsigned1Type a1)
   {
@@ -178,10 +178,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned4(
+  private static SMFVoid checkSigned4(
     final SMFAttributeArrayIntegerSigned4Type a0,
     final SMFAttributeArrayIntegerSigned4Type a1)
   {
@@ -192,10 +192,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned3(
+  private static SMFVoid checkSigned3(
     final SMFAttributeArrayIntegerSigned3Type a0,
     final SMFAttributeArrayIntegerSigned3Type a1)
   {
@@ -206,10 +206,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned2(
+  private static SMFVoid checkSigned2(
     final SMFAttributeArrayIntegerSigned2Type a0,
     final SMFAttributeArrayIntegerSigned2Type a1)
   {
@@ -220,10 +220,10 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned1(
+  private static SMFVoid checkSigned1(
     final SMFAttributeArrayIntegerSigned1Type a0,
     final SMFAttributeArrayIntegerSigned1Type a1)
   {
@@ -234,7 +234,7 @@ public final class SMFMemoryMeshSerializerTest
       Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
   @Test
@@ -284,7 +284,7 @@ public final class SMFMemoryMeshSerializerTest
       final SMFAttributeArrayType a1 = mesh1.arrays().get(name).get();
 
       a0.matchArray(
-        unit(),
+        void_(),
         (x, y) -> checkFloat4(y, (SMFAttributeArrayFloating4Type) a1),
         (x, y) -> checkFloat3(y, (SMFAttributeArrayFloating3Type) a1),
         (x, y) -> checkFloat2(y, (SMFAttributeArrayFloating2Type) a1),

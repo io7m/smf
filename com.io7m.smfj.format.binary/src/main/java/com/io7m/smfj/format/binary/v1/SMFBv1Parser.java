@@ -17,10 +17,10 @@
 package com.io7m.smfj.format.binary.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jfunctional.Unit;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSection;
@@ -49,7 +49,6 @@ import java.util.BitSet;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.io7m.jfunctional.Unit.unit;
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
 import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
@@ -123,7 +122,7 @@ public final class SMFBv1Parser implements SMFParserSequentialType
   @Override
   public void parse()
   {
-    final Validation<Unit, Optional<SMFParserEventsBodyType>> header_r =
+    final Validation<SMFVoid, Optional<SMFParserEventsBodyType>> header_r =
       this.parseHeader();
     if (header_r.isInvalid()) {
       return;
@@ -192,12 +191,12 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     return Continue.CONTINUE;
   }
 
-  private Validation<Unit, Optional<SMFParserEventsBodyType>> parseHeader()
+  private Validation<SMFVoid, Optional<SMFParserEventsBodyType>> parseHeader()
   {
     final Validation<SMFParseError, SMFBSection> result = this.sections.parse();
     if (result.isInvalid()) {
       this.events_header.onError(result.getError());
-      return invalid(unit());
+      return invalid(SMFVoid.void_());
     }
 
     final LexicalPosition<URI> position = this.reader.positionLexical();
@@ -210,7 +209,7 @@ public final class SMFBv1Parser implements SMFParserSequentialType
           "Section " + Long.toUnsignedString(SMFBSectionHeader.MAGIC, 16),
           "Section " + Long.toUnsignedString(section.id(), 16),
           position));
-      return invalid(unit());
+      return invalid(SMFVoid.void_());
     }
 
     if (LOG.isTraceEnabled()) {
@@ -225,7 +224,7 @@ public final class SMFBv1Parser implements SMFParserSequentialType
 
     if (header_result.isInvalid()) {
       header_result.getError().forEach(this.events_header::onError);
-      return invalid(unit());
+      return invalid(SMFVoid.void_());
     }
 
     final SMFHeader result_header = header_result.get();

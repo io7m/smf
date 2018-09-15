@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.jfunctional.Pair;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
@@ -27,6 +26,7 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataRemove;
+import io.vavr.Tuple;
 import io.vavr.collection.List;
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
@@ -234,7 +234,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
         Optional.of(SMFSchemaName.of("com.io7m.smf.example")),
-        Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
+        Optional.of(Tuple.of(Integer.valueOf(1), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
@@ -267,7 +267,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
         Optional.of(SMFSchemaName.of("com.io7m.smf.example")),
-        Optional.of(Pair.pair(Integer.valueOf(2), Integer.valueOf(0))));
+        Optional.of(Tuple.of(Integer.valueOf(2), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
@@ -300,7 +300,7 @@ public final class SMFMemoryMeshFilterMetadataRemoveTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataRemove.create(
         Optional.of(SMFSchemaName.of("com.io7m.smf.example.different")),
-        Optional.of(Pair.pair(Integer.valueOf(1), Integer.valueOf(0))));
+        Optional.of(Tuple.of(Integer.valueOf(1), Integer.valueOf(0))));
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =

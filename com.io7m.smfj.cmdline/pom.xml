@@ -83,10 +83,6 @@
       <groupId>com.io7m.junreachable</groupId>
       <artifactId>com.io7m.junreachable.core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>com.io7m.jfunctional</groupId>
-      <artifactId>com.io7m.jfunctional.core</artifactId>
-    </dependency>
 
     <dependency>
       <groupId>io.vavr</groupId>
