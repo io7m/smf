@@ -22,11 +22,14 @@ import com.io7m.jbssio.api.BSSReaderType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.binary2.SMFB2Section;
+import com.io7m.smfj.format.support.SMFTriangleTracker;
+import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,13 +68,18 @@ public final class SMFB2ParsingFile
     final BSSReaderType reader,
     final SMFParserEventsBodyType bodyEvents,
     final SMFB2Section section,
+    final SMFTriangleTracker triangleTracker,
     final SMFHeader smf)
     throws IOException
   {
     final var eventHandlerOpt = bodyEvents.onTriangles();
     if (eventHandlerOpt.isPresent()) {
       final var eventHandler = eventHandlerOpt.get();
-      new SMFB2ParsingSectionTriangles(section, smf, eventHandler)
+      new SMFB2ParsingSectionTriangles(
+        section,
+        smf,
+        triangleTracker,
+        eventHandler)
         .parse(context);
     }
     return true;
@@ -82,6 +90,7 @@ public final class SMFB2ParsingFile
     final BSSReaderType reader,
     final SMFParserEventsBodyType bodyEvents,
     final SMFB2Section section,
+    final SMFTriangleTracker triangleTracker,
     final SMFHeader smf)
     throws IOException
   {
@@ -99,6 +108,7 @@ public final class SMFB2ParsingFile
     final BSSReaderType reader,
     final SMFParserEventsBodyType bodyEvents,
     final SMFB2Section section,
+    final SMFTriangleTracker triangleTracker,
     final SMFHeader smf)
     throws IOException
   {
@@ -111,6 +121,7 @@ public final class SMFB2ParsingFile
     final BSSReaderType reader,
     final SMFParserEventsBodyType bodyEvents,
     final SMFB2Section section,
+    final SMFTriangleTracker triangleTracker,
     final SMFHeader smf)
     throws IOException
   {
@@ -159,6 +170,17 @@ public final class SMFB2ParsingFile
     }
 
     final var smf = smfOpt.get();
+
+    final var triangleTracker =
+      new SMFTriangleTracker(
+        (lexical, message) -> {
+          this.events.onError(
+            SMFParseError.of(lexical, message, Optional.empty()));
+        },
+        smf.vertexCount(),
+        smf.triangles().triangleCount()
+      );
+
     final var bodyEventsOpt = headerEvents.onHeaderParsed(smf);
     if (bodyEventsOpt.isEmpty()) {
       LOG.trace("no body events requested");
@@ -178,11 +200,8 @@ public final class SMFB2ParsingFile
           .parse(context);
 
       if (!this.handleSectionHeader(
-        context,
-        reader,
-        bodyEvents,
-        sectionHeader,
-        smf)) {
+        context, reader, bodyEvents, sectionHeader, triangleTracker, smf)) {
+        triangleTracker.check(SMFB2Lexical.ofReader(reader));
         break;
       }
     }
@@ -193,6 +212,7 @@ public final class SMFB2ParsingFile
     final BSSReaderType reader,
     final SMFParserEventsBodyType bodyEvents,
     final SMFB2Section sectionHeader,
+    final SMFTriangleTracker triangleTracker,
     final SMFHeader smf)
     throws IOException
   {
@@ -209,7 +229,13 @@ public final class SMFB2ParsingFile
       return true;
     }
 
-    return handler.parse(context, reader, bodyEvents, sectionHeader, smf);
+    return handler.parse(
+      context,
+      reader,
+      bodyEvents,
+      sectionHeader,
+      triangleTracker,
+      smf);
   }
 
   interface BodyParseHandlerType
@@ -219,6 +245,7 @@ public final class SMFB2ParsingFile
       BSSReaderType reader,
       SMFParserEventsBodyType bodyEvents,
       SMFB2Section sectionHeader,
+      SMFTriangleTracker triangleTracker,
       SMFHeader smf)
       throws IOException;
   }

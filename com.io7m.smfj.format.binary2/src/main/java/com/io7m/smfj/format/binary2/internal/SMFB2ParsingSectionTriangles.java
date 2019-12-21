@@ -22,6 +22,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFPartial;
 import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.binary2.SMFB2Section;
+import com.io7m.smfj.format.support.SMFTriangleTracker;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import java.io.IOException;
 import java.util.Objects;
@@ -40,25 +41,30 @@ public final class SMFB2ParsingSectionTriangles
 
   private final SMFB2Section sectionHeader;
   private final SMFHeader smfHeader;
+  private final SMFTriangleTracker triangleTracker;
   private final SMFParserEventsDataTrianglesType triangles;
 
   /**
    * Construct a parser.
    *
-   * @param inSMFHeader     The SMF header
-   * @param inTriangles     The triangle receiver
-   * @param inSectionHeader The section header for this section
+   * @param inSMFHeader       The SMF header
+   * @param inTriangles       The triangle receiver
+   * @param inTriangleTracker The triangle tracker
+   * @param inSectionHeader   The section header for this section
    */
 
   public SMFB2ParsingSectionTriangles(
     final SMFB2Section inSectionHeader,
     final SMFHeader inSMFHeader,
+    final SMFTriangleTracker inTriangleTracker,
     final SMFParserEventsDataTrianglesType inTriangles)
   {
     this.sectionHeader =
       Objects.requireNonNull(inSectionHeader, "sectionHeader");
     this.smfHeader =
       Objects.requireNonNull(inSMFHeader, "inSMFHeader");
+    this.triangleTracker =
+      Objects.requireNonNull(inTriangleTracker, "inTriangleTracker");
     this.triangles =
       Objects.requireNonNull(inTriangles, "inTriangles");
   }
@@ -115,6 +121,8 @@ public final class SMFB2ParsingSectionTriangles
           final var v0 = reader.readU8("v0");
           final var v1 = reader.readU8("v1");
           final var v2 = reader.readU8("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
           this.triangles.onDataTriangle(v0, v1, v2);
         }
         break;
@@ -126,6 +134,8 @@ public final class SMFB2ParsingSectionTriangles
           final var v0 = reader.readU16BE("v0");
           final var v1 = reader.readU16BE("v1");
           final var v2 = reader.readU16BE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
           this.triangles.onDataTriangle(v0, v1, v2);
         }
         break;
@@ -137,6 +147,8 @@ public final class SMFB2ParsingSectionTriangles
           final var v0 = reader.readU32BE("v0");
           final var v1 = reader.readU32BE("v1");
           final var v2 = reader.readU32BE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
           this.triangles.onDataTriangle(v0, v1, v2);
         }
         break;
@@ -148,6 +160,8 @@ public final class SMFB2ParsingSectionTriangles
           final var v0 = reader.readU64BE("v0");
           final var v1 = reader.readU64BE("v1");
           final var v2 = reader.readU64BE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
           this.triangles.onDataTriangle(v0, v1, v2);
         }
         break;
