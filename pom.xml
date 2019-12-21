@@ -28,7 +28,9 @@
     <module>com.io7m.smfj.documentation</module>
     <module>com.io7m.smfj.format.binary2</module>
     <module>com.io7m.smfj.format.obj</module>
+    <module>com.io7m.smfj.format.support</module>
     <module>com.io7m.smfj.format.text</module>
+    <module>com.io7m.smfj.format.xml</module>
     <module>com.io7m.smfj.frontend</module>
     <module>com.io7m.smfj.parser.api</module>
     <module>com.io7m.smfj.probe.api</module>
@@ -45,6 +47,7 @@
     <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
     <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
+    <com.io7m.blackthorne.version>0.0.4</com.io7m.blackthorne.version>
   </properties>
 
   <licenses>
@@ -122,6 +125,11 @@
         <version>0.3.0</version>
       </dependency>
       <dependency>
+        <groupId>com.io7m.blackthorne</groupId>
+        <artifactId>com.io7m.blackthorne.api</artifactId>
+        <version>${com.io7m.blackthorne.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.io7m.jtensors</groupId>
         <artifactId>com.io7m.jtensors.core</artifactId>
         <version>${com.io7m.smfj.jtensors.versionRange}</version>
@@ -175,6 +183,11 @@
         <groupId>com.io7m.jbssio</groupId>
         <artifactId>com.io7m.jbssio.vanilla</artifactId>
         <version>${com.io7m.jbssio.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jxe</groupId>
+        <artifactId>com.io7m.jxe.core</artifactId>
+        <version>0.0.2</version>
       </dependency>
 
       <dependency>

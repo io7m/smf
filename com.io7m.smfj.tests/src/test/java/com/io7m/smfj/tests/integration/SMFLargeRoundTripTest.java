@@ -22,6 +22,7 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.format.binary2.SMFFormatBinary2;
 import com.io7m.smfj.format.text.SMFFormatText;
+import com.io7m.smfj.format.xml.SMFFormatXML;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1Type;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating2Type;
@@ -40,8 +41,8 @@ import java.nio.file.Files;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.logging.Logger;
-import org.junit.platform.commons.logging.LoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SMFLargeRoundTripTest
 {
@@ -89,6 +90,8 @@ public final class SMFLargeRoundTripTest
 
       final var file =
         directory.resolve(String.format("%d.out", Integer.valueOf(process)));
+
+      LOG.debug("writing {}", file);
 
       try (var output = Files.newOutputStream(file)) {
         try (var writer = format.serializerCreate(
@@ -268,8 +271,10 @@ public final class SMFLargeRoundTripTest
       List.of(
         new SMFFormatText(),
         new SMFFormatBinary2(),
+        new SMFFormatXML(),
         new SMFFormatText(),
-        new SMFFormatBinary2()
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
       ));
   }
 }

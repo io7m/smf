@@ -82,33 +82,6 @@ public enum SMFComponentType
   }
 
   /**
-   * Return a component type for the given integer value.
-   *
-   * @param x The value
-   *
-   * @return A component type
-   *
-   * @throws IllegalArgumentException If the value does not refer to a recognized type
-   */
-
-  public static SMFComponentType ofInteger(
-    final int x)
-  {
-    switch (x) {
-      case 0:
-        return ELEMENT_TYPE_INTEGER_SIGNED;
-      case 1:
-        return ELEMENT_TYPE_INTEGER_UNSIGNED;
-      case 2:
-        return ELEMENT_TYPE_FLOATING;
-      default: {
-        throw new IllegalArgumentException(
-          "Unrecognized type for integer index: " + x);
-      }
-    }
-  }
-
-  /**
    * @return The unique name of the type
    */
 
@@ -117,16 +90,8 @@ public enum SMFComponentType
     return this.name;
   }
 
-  @Override
-  public String toString()
-  {
-    return this.name;
-  }
-
   /**
    * @return An integer value for the current component type
-   *
-   * @see #ofInteger(int)
    */
 
   public int toInteger()

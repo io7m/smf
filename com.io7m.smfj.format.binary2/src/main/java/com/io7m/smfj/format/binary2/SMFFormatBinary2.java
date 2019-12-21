@@ -45,8 +45,6 @@ import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A provider for the binary2 format.
@@ -58,9 +56,6 @@ public final class SMFFormatBinary2
   SMFSerializerProviderType,
   SMFVersionProbeProviderType
 {
-  private static final Logger LOG =
-    LoggerFactory.getLogger(SMFFormatBinary2.class);
-
   private static final SMFFormatDescription FORMAT = makeFormat();
   private static final SortedSet<SMFFormatVersion> SUPPORTED = makeVersion();
   private final BSSReaderProviderType readers;
@@ -135,6 +130,10 @@ public final class SMFFormatBinary2
     final InputStream stream)
     throws UnsupportedOperationException
   {
+    Objects.requireNonNull(events, "events");
+    Objects.requireNonNull(uri, "uri");
+    Objects.requireNonNull(stream, "stream");
+
     return new SMFB2ParserSequential(events, uri, stream, this.parserContexts);
   }
 
@@ -145,6 +144,10 @@ public final class SMFFormatBinary2
     final FileChannel file)
     throws UnsupportedOperationException
   {
+    Objects.requireNonNull(events, "events");
+    Objects.requireNonNull(uri, "uri");
+    Objects.requireNonNull(file, "file");
+
     return new SMFB2ParserRandomAccess(events, uri, file, this.parserContexts);
   }
 
@@ -180,6 +183,10 @@ public final class SMFFormatBinary2
     final OutputStream stream)
     throws UnsupportedOperationException, IOException
   {
+    Objects.requireNonNull(version, "version");
+    Objects.requireNonNull(uri, "uri");
+    Objects.requireNonNull(stream, "stream");
+
     return new SMFB2Serializer(
       version,
       this.writers.createWriterFromStream(uri, stream, "root"));

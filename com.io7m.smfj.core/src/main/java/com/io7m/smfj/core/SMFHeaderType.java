@@ -17,6 +17,7 @@
 package com.io7m.smfj.core;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
+import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -71,6 +72,17 @@ public interface SMFHeaderType
   default SMFCoordinateSystem coordinateSystem()
   {
     return SMFCoordinateSystem.builder().build();
+  }
+
+  /**
+   * @return The endianness of the mesh data
+   */
+
+  @Value.Default
+  @Value.Parameter
+  default ByteOrder dataByteOrder()
+  {
+    return ByteOrder.BIG_ENDIAN;
   }
 
   /**

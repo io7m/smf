@@ -22,11 +22,11 @@ import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.binary2.internal.SMFB2Alignment;
-import com.io7m.smfj.format.binary2.internal.SMFB2Metadata;
 import com.io7m.smfj.format.binary2.internal.SMFB2ParsingSectionTriangles;
 import com.io7m.smfj.format.binary2.internal.SMFB2WritingFileHeader;
 import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionEnd;
@@ -136,7 +136,7 @@ final class SMFB2Serializer implements SMFSerializerType
     this.writer.checkNotClosed();
 
     new SMFB2WritingSectionMetadata()
-      .write(this.writer, new SMFB2Metadata(schema, data));
+      .write(this.writer, SMFMetadataValue.of(schema, data));
   }
 
   @Override

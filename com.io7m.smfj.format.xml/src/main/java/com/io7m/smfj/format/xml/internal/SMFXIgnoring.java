@@ -15,53 +15,31 @@
  * SOFTWARE.
  */
 
+package com.io7m.smfj.format.xml.internal;
 
-package com.io7m.smfj.format.binary2.internal;
+import com.io7m.blackthorne.api.BTElementHandlerType;
+import com.io7m.blackthorne.api.BTElementParsingContextType;
+import com.io7m.blackthorne.api.BTIgnoreUnrecognizedElements;
+import com.io7m.smfj.core.SMFVoid;
 
-import com.io7m.smfj.core.SMFSchemaIdentifier;
-import java.util.Objects;
-
-/**
- * Parsed metadata.
- */
-
-public final class SMFB2Metadata
+public final class SMFXIgnoring implements BTElementHandlerType<Object, SMFVoid>
 {
-  private final SMFSchemaIdentifier identifier;
-  private final byte[] data;
-
-  /**
-   * Construct metadata.
-   *
-   * @param inIdentifier The schema identifier
-   * @param inData       The data
-   */
-
-  public SMFB2Metadata(
-    final SMFSchemaIdentifier inIdentifier,
-    final byte[] inData)
+  public SMFXIgnoring(
+    final BTElementParsingContextType context)
   {
-    this.identifier =
-      Objects.requireNonNull(inIdentifier, "identifier");
-    this.data =
-      Objects.requireNonNull(inData, "data");
+
   }
 
-  /**
-   * @return The schema identifier
-   */
-
-  public SMFSchemaIdentifier identifier()
+  @Override
+  public BTIgnoreUnrecognizedElements onShouldIgnoreUnrecognizedElements(
+    final BTElementParsingContextType context)
   {
-    return this.identifier;
+    return BTIgnoreUnrecognizedElements.IGNORE_UNRECOGNIZED_ELEMENTS;
   }
 
-  /**
-   * @return The metadata
-   */
-
-  public byte[] data()
+  @Override
+  public SMFVoid onElementFinished(final BTElementParsingContextType context)
   {
-    return this.data;
+    return SMFVoid.void_();
   }
 }

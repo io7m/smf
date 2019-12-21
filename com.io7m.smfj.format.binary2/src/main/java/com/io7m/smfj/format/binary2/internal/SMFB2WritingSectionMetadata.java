@@ -19,11 +19,12 @@
 package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSWriterSequentialType;
+import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 
 public final class SMFB2WritingSectionMetadata
-  implements SMFB2StructureWriterType<SMFB2Metadata>
+  implements SMFB2StructureWriterType<SMFMetadataValue>
 {
   public SMFB2WritingSectionMetadata()
   {
@@ -33,7 +34,7 @@ public final class SMFB2WritingSectionMetadata
   @Override
   public void write(
     final BSSWriterSequentialType writer,
-    final SMFB2Metadata value)
+    final SMFMetadataValue value)
     throws IOException
   {
     writer.checkNotClosed();
@@ -55,7 +56,7 @@ public final class SMFB2WritingSectionMetadata
 
     try (var subWriter =
            writer.createSubWriterBounded("metadata", sectionDataSize)) {
-      new SMFB2WritingSchemaIdentifier().write(subWriter, value.identifier());
+      new SMFB2WritingSchemaIdentifier().write(subWriter, value.schemaId());
       subWriter.writeU32BE("dataSize", metaDataSize);
       subWriter.writeBytes(value.data());
       subWriter.padTo(finalSectionDataSize);

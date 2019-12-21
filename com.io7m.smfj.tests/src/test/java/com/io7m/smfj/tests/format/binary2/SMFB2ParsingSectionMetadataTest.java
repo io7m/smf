@@ -19,10 +19,10 @@ package com.io7m.smfj.tests.format.binary2;
 
 import com.io7m.jbssio.vanilla.BSSReaders;
 import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFWarningType;
-import com.io7m.smfj.format.binary2.internal.SMFB2Metadata;
 import com.io7m.smfj.format.binary2.internal.SMFB2ParsingContexts;
 import com.io7m.smfj.format.binary2.internal.SMFB2ParsingSectionHeader;
 import com.io7m.smfj.format.binary2.internal.SMFB2ParsingSectionMetadata;
@@ -83,9 +83,9 @@ public final class SMFB2ParsingSectionMetadataTest
       1);
   }
 
-  private static void checkMeta(final SMFB2Metadata meta)
+  private static void checkMeta(final SMFMetadataValue meta)
   {
-    Assertions.assertEquals(schemaIdentifier(), meta.identifier());
+    Assertions.assertEquals(schemaIdentifier(), meta.schemaId());
     Assertions.assertEquals(
       "Hello world.", new String(meta.data(), StandardCharsets.UTF_8));
   }
@@ -154,7 +154,7 @@ public final class SMFB2ParsingSectionMetadataTest
         checkMeta(meta.get());
 
         Mockito.verify(this.metaReceiver, Mockito.times(1))
-          .onMetaData(meta.get().identifier(), meta.get().data());
+          .onMetaData(meta.get().schemaId(), meta.get().data());
       }
     }
 
@@ -182,7 +182,7 @@ public final class SMFB2ParsingSectionMetadataTest
         checkMeta(meta.get());
 
         Mockito.verify(this.metaReceiver, Mockito.times(1))
-          .onMetaData(meta.get().identifier(), meta.get().data());
+          .onMetaData(meta.get().schemaId(), meta.get().data());
       }
     }
 

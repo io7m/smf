@@ -68,30 +68,6 @@ public enum SMFFaceWindingOrder
   }
 
   /**
-   * @param in_index An order index
-   *
-   * @return A face winding order for the given index
-   *
-   * @throws IllegalArgumentException On unrecognized indices
-   */
-
-  public static SMFFaceWindingOrder fromIndex(
-    final int in_index)
-    throws IllegalArgumentException
-  {
-    switch (in_index) {
-      case 0:
-        return FACE_WINDING_ORDER_CLOCKWISE;
-      case 1:
-        return FACE_WINDING_ORDER_COUNTER_CLOCKWISE;
-      default: {
-        throw new IllegalArgumentException(
-          "Unrecognized face winding order: " + in_index);
-      }
-    }
-  }
-
-  /**
    * @return The integer index of the value
    */
 

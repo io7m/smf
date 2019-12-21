@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+        targetNamespace="urn:com.io7m.smf:xml:2:0"
+        attributeFormDefault="unqualified"
+        elementFormDefault="qualified"
+        xmlns:smfx="urn:com.io7m.smf:xml:2:0">
+
+  <simpleType name="SchemaName">
+    <restriction base="string">
+      <pattern value="[a-z_.0-9]{0,64}"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="SchemaAttributeName">
+    <restriction base="string">
+      <pattern value="[a-z_.0-9]{0,64}"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="Axis">
+    <restriction base="string">
+      <enumeration value="AXIS_POSITIVE_X"/>
+      <enumeration value="AXIS_POSITIVE_Y"/>
+      <enumeration value="AXIS_POSITIVE_Z"/>
+      <enumeration value="AXIS_NEGATIVE_X"/>
+      <enumeration value="AXIS_NEGATIVE_Y"/>
+      <enumeration value="AXIS_NEGATIVE_Z"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="WindingOrder">
+    <restriction base="string">
+      <enumeration value="FACE_WINDING_ORDER_CLOCKWISE"/>
+      <enumeration value="FACE_WINDING_ORDER_COUNTER_CLOCKWISE"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="ComponentKind">
+    <restriction base="string">
+      <enumeration value="ELEMENT_TYPE_FLOATING"/>
+      <enumeration value="ELEMENT_TYPE_INTEGER_SIGNED"/>
+      <enumeration value="ELEMENT_TYPE_INTEGER_UNSIGNED"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="Unsigned64">
+    <restriction base="integer">
+      <minInclusive value="0"/>
+      <maxExclusive value="18446744073709551616"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="Signed64">
+    <restriction base="integer">
+      <minInclusive value="-9223372036854775808"/>
+      <maxExclusive value="9223372036854775808"/>
+    </restriction>
+  </simpleType>
+
+  <simpleType name="Unsigned32">
+    <restriction base="integer">
+      <minInclusive value="0"/>
+      <maxExclusive value="4294967296"/>
+    </restriction>
+  </simpleType>
+
+  <element name="CoordinateSystem">
+    <complexType>
+      <attribute name="right"
+                 type="smfx:Axis"
+                 use="required"/>
+      <attribute name="up"
+                 type="smfx:Axis"
+                 use="required"/>
+      <attribute name="forward"
+                 type="smfx:Axis"
+                 use="required"/>
+      <attribute name="windingOrder"
+                 type="smfx:WindingOrder"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="TriangleSpecification">
+    <complexType>
+      <attribute name="count"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="sizeBits"
+                 type="smfx:Unsigned32"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="SchemaIdentifier">
+    <complexType>
+      <attribute name="name"
+                 type="smfx:SchemaName"
+                 use="required"/>
+      <attribute name="versionMajor"
+                 type="smfx:Unsigned32"
+                 use="required"/>
+      <attribute name="versionMinor"
+                 type="smfx:Unsigned32"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="Attributes">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="smfx:Attribute"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="Header">
+    <complexType>
+      <sequence>
+        <element ref="smfx:CoordinateSystem"/>
+        <element ref="smfx:TriangleSpecification"/>
+        <sequence minOccurs="0"
+                  maxOccurs="1">
+          <element ref="smfx:SchemaIdentifier"/>
+        </sequence>
+        <element ref="smfx:Attributes"/>
+      </sequence>
+      <attribute name="vertexCount"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="Attribute">
+    <complexType>
+      <attribute name="name"
+                 type="smfx:SchemaAttributeName"
+                 use="required"/>
+      <attribute name="componentKind"
+                 type="smfx:ComponentKind"
+                 use="required"/>
+      <attribute name="componentCount"
+                 type="smfx:Unsigned32"
+                 use="required"/>
+      <attribute name="componentSizeBits"
+                 type="smfx:Unsigned32"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeFloat4">
+    <complexType>
+      <attribute name="c0"
+                 type="double"
+                 use="required"/>
+      <attribute name="c1"
+                 type="double"
+                 use="required"/>
+      <attribute name="c2"
+                 type="double"
+                 use="required"/>
+      <attribute name="c3"
+                 type="double"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeFloat3">
+    <complexType>
+      <attribute name="c0"
+                 type="double"
+                 use="required"/>
+      <attribute name="c1"
+                 type="double"
+                 use="required"/>
+      <attribute name="c2"
+                 type="double"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeFloat2">
+    <complexType>
+      <attribute name="c0"
+                 type="double"
+                 use="required"/>
+      <attribute name="c1"
+                 type="double"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeFloat1">
+    <complexType>
+      <attribute name="c0"
+                 type="double"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerSigned4">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c2"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c3"
+                 type="smfx:Signed64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerSigned3">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c2"
+                 type="smfx:Signed64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerSigned2">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Signed64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Signed64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerSigned1">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Signed64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerUnsigned4">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c2"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c3"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerUnsigned3">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c2"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerUnsigned2">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="c1"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeIntegerUnsigned1">
+    <complexType>
+      <attribute name="c0"
+                 type="smfx:Unsigned64"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="AttributeData">
+    <complexType>
+      <choice>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeFloat1"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeFloat2"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeFloat3"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeFloat4"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerSigned1"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerSigned2"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerSigned3"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerSigned4"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerUnsigned1"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerUnsigned2"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerUnsigned3"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:AttributeIntegerUnsigned4"/>
+        </sequence>
+      </choice>
+      <attribute name="name"
+                 type="smfx:SchemaAttributeName"
+                 use="required"/>
+    </complexType>
+  </element>
+
+  <element name="VertexDataNonInterleaved">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="smfx:AttributeData"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="Triangle">
+    <complexType>
+      <attribute type="smfx:Unsigned64"
+                 use="required"
+                 name="v0"/>
+      <attribute type="smfx:Unsigned64"
+                 use="required"
+                 name="v1"/>
+      <attribute type="smfx:Unsigned64"
+                 use="required"
+                 name="v2"/>
+    </complexType>
+  </element>
+
+  <element name="Triangles">
+    <complexType>
+      <sequence minOccurs="0"
+                maxOccurs="unbounded">
+        <element ref="smfx:Triangle"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="Base64Data">
+    <simpleType>
+      <restriction base="base64Binary"/>
+    </simpleType>
+  </element>
+
+  <element name="Metadata">
+    <complexType>
+      <sequence>
+        <element ref="smfx:SchemaIdentifier"/>
+        <element ref="smfx:Base64Data"/>
+      </sequence>
+    </complexType>
+  </element>
+
+  <element name="SMF">
+    <complexType>
+      <sequence>
+        <element ref="smfx:Header"/>
+        <sequence minOccurs="0"
+                  maxOccurs="1">
+          <element ref="smfx:VertexDataNonInterleaved"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="1">
+          <element ref="smfx:Triangles"/>
+        </sequence>
+        <sequence minOccurs="0"
+                  maxOccurs="unbounded">
+          <element ref="smfx:Metadata"/>
+        </sequence>
+      </sequence>
+    </complexType>
+
+    <unique name="AttributeDataSpecifiedOnce">
+      <selector xpath=".//smfx:VertexDataNonInterleaved/smfx:AttributeData"/>
+      <field xpath="@name"/>
+    </unique>
+
+    <key name="AttributeNamePrimaryKey">
+      <selector xpath=".//smfx:Header/smfx:Attributes/smfx:Attribute"/>
+      <field xpath="@name"/>
+    </key>
+
+    <keyref name="AttributeDataRefersToDeclaredAttribute"
+            refer="smfx:AttributeNamePrimaryKey">
+      <selector xpath=".//smfx:VertexDataNonInterleaved/smfx:AttributeData"/>
+      <field xpath="@name"/>
+    </keyref>
+  </element>
+
+</schema>

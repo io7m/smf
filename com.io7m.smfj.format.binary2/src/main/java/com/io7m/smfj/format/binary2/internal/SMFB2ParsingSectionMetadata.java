@@ -17,6 +17,7 @@
 package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSReaderType;
+import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public final class SMFB2ParsingSectionMetadata
-  implements SMFB2StructureParserType<Optional<SMFB2Metadata>>
+  implements SMFB2StructureParserType<Optional<SMFMetadataValue>>
 {
   private static final Logger LOG =
     LoggerFactory.getLogger(SMFB2ParsingSectionMetadata.class);
@@ -67,7 +68,7 @@ public final class SMFB2ParsingSectionMetadata
   }
 
   @Override
-  public Optional<SMFB2Metadata> parse(
+  public Optional<SMFMetadataValue> parse(
     final SMFB2ParsingContextType context)
     throws IOException
   {
@@ -77,7 +78,7 @@ public final class SMFB2ParsingSectionMetadata
       reader -> this.parseWithReader(context, reader));
   }
 
-  private Optional<SMFB2Metadata> parseWithReader(
+  private Optional<SMFMetadataValue> parseWithReader(
     final SMFB2ParsingContextType context,
     final BSSReaderType reader)
     throws IOException
@@ -129,7 +130,7 @@ public final class SMFB2ParsingSectionMetadata
       final var data = new byte[Math.toIntExact(dataSize)];
       reader.readBytes(data);
       receiver.onMetaData(identifier, data);
-      return Optional.of(new SMFB2Metadata(identifier, data));
+      return Optional.of(SMFMetadataValue.of(identifier, data));
     }
 
     return Optional.empty();
