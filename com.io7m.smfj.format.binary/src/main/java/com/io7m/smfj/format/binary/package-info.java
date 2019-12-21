@@ -18,9 +18,11 @@
  * Parser API.
  */
 
-@org.osgi.annotation.bundle.Export
-@org.osgi.annotation.bundle.Header(
+@Export
+@Header(
   name = "Automatic-Module-Name",
   value = "com.io7m.smfj.format.binary")
 package com.io7m.smfj.format.binary;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.bundle.Header;

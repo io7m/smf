@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.format.text.v1;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
@@ -23,35 +24,44 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandSchema;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import io.vavr.collection.List;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.Expectations;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
 
 public final class SMFTV1HeaderCommandSchemaTest
 {
+  private SMFParserEventsHeaderType events;
+  private SMFTLineReaderType reader;
+  private ArgumentCaptor<SMFErrorType> captor;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.events = Mockito.mock(SMFParserEventsHeaderType.class);
+    this.reader = Mockito.mock(SMFTLineReaderType.class);
+    this.captor = ArgumentCaptor.forClass(SMFErrorType.class);
+
+    Mockito.when(this.reader.position())
+      .thenReturn(LexicalPosition.of(0, 0, Optional.empty()));
+  }
+
   @Test
-  public void testOK_0(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testOK_0()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "com.io7m.example", "1", "2"));
+      cmd.parse(this.events, List.of("schema", "com.io7m.example", "1", "2"));
     Assertions.assertEquals(SUCCESS, r);
 
     final SMFHeader result = header.build();
@@ -63,158 +73,104 @@ public final class SMFTV1HeaderCommandSchemaTest
   }
 
   @Test
-  public void testFailure_0(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_0()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema"));
+      cmd.parse(this.events, List.of("schema"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 
   @Test
-  public void testFailure_1(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_1()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "0"));
+      cmd.parse(this.events, List.of("schema", "0"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 
   @Test
-  public void testFailure_2(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_2()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "0", "1"));
+      cmd.parse(this.events, List.of("schema", "0", "1"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 
   @Test
-  public void testFailure_3(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_3()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "0", "1", "2"));
+      cmd.parse(this.events, List.of("schema", "A", "1", "2"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 
   @Test
-  public void testFailure_4(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_4()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "x", "1", "2", "3"));
+      cmd.parse(this.events, List.of("schema", "x", "1", "2", "3"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 
   @Test
-  public void testFailure_5(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_5()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandSchema cmd =
-      new SMFTV1HeaderCommandSchema(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandSchema.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandSchema(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("schema", "0", "1", "2", "3", "4"));
+      cmd.parse(this.events, List.of("schema", "0", "1", "2", "3", "4"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandSchema.SYNTAX));
   }
 }

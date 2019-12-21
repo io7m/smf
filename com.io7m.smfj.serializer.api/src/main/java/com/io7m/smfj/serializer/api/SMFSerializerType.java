@@ -18,7 +18,6 @@ package com.io7m.smfj.serializer.api;
 
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-
 import java.io.Closeable;
 import java.io.IOException;
 

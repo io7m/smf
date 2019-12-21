@@ -19,29 +19,28 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeRemove;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
-public final class SMFMemoryMeshFilterAttributeRemoveTest extends
-  SMFMemoryMeshFilterContract
+public final class SMFMemoryMeshFilterAttributeRemoveTest
+  extends SMFMemoryMeshFilterContract
 {
   private static final Logger LOG;
 
@@ -52,45 +51,45 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
         List.of());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong2()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
         List.of("<#@"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
         List.of("x", "y"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParse()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRemove.parse(
         Optional.empty(),
         1,
         List.of("x"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     final SMFMemoryMeshFilterType c = r.get();
     Assertions.assertEquals(c.name(), "remove");
   }
@@ -101,9 +100,8 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_source = SMFAttributeName.of("nonexistent");
@@ -111,13 +109,12 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeRemove.create(name_source);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e.message());
-      return SMFVoid.void_();
     });
   }
 
@@ -127,9 +124,8 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
@@ -146,13 +142,13 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
     final SMFHeader header1 = mesh1.header();
 
     Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assertions.assertEquals((long) arrays0.size() - 1L, (long) arrays1.size());
+    Assertions.assertEquals((long) arrays0.size() - 1L, arrays1.size());
     Assertions.assertEquals(
       (long) header0.attributesByName().size() - 1L,
-      (long) header1.attributesByName().size());
+      header1.attributesByName().size());
     Assertions.assertEquals(
       (long) header0.attributesInOrder().size() - 1L,
-      (long) header1.attributesInOrder().size());
+      header1.attributesInOrder().size());
     Assertions.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
@@ -164,12 +160,20 @@ public final class SMFMemoryMeshFilterAttributeRemoveTest extends
       mesh1.metadata());
 
     final SMFAttribute attr =
-      header0.attributesByName().get(name_source).get();
+      header0.attributesByName().get(name_source);
+
+    final var removedInOrder = new ArrayList<>(header0.attributesInOrder());
+    removedInOrder.remove(attr);
+
     Assertions.assertEquals(
       header1.attributesInOrder(),
-      header0.attributesInOrder().remove(attr));
+      removedInOrder);
+
+    final var removedByName = new HashMap<>(header0.attributesByName());
+    removedByName.remove(name_source);
+
     Assertions.assertEquals(
-      header0.attributesByName().remove(name_source),
+      removedByName,
       header1.attributesByName());
   }
 }

@@ -20,7 +20,7 @@ import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVoid;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.format.binary.SMFBBodySectionParserType;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSection;
@@ -31,29 +31,24 @@ import com.io7m.smfj.format.binary.SMFBSectionParser;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
 import com.io7m.smfj.format.binary.SMFBSectionTriangles;
 import com.io7m.smfj.format.binary.SMFBSectionVerticesNonInterleaved;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParseWarning;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.List;
-import io.vavr.control.Option;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.BitSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
 import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
+
 
 /**
  * A parser for version 1.* files.
@@ -61,17 +56,14 @@ import static io.vavr.control.Validation.valid;
 
 public final class SMFBv1Parser implements SMFParserSequentialType
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFBv1Parser.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFBv1Parser.class);
 
   private final SMFBDataStreamReaderType reader;
   private final SMFParserEventsHeaderType events_header;
   private final SMFBSectionParserType sections;
   private final SMFFormatVersion version;
-  private final HashMap<Long, SMFBBodySectionParserType> section_parsers;
+  private final Map<Long, SMFBBodySectionParserType> section_parsers;
   private final BitSet state;
   private SMFHeader header;
 
@@ -102,16 +94,16 @@ public final class SMFBv1Parser implements SMFParserSequentialType
       new SMFBSectionParser(this.reader);
 
     this.section_parsers =
-      HashMap.<Long, SMFBBodySectionParserType>empty()
-        .put(
+      Map.ofEntries(
+        Map.entry(
           Long.valueOf(SMFBSectionTriangles.MAGIC),
-          new SMFBv1SectionParserTriangles(this.state))
-        .put(
+          new SMFBv1SectionParserTriangles(this.state)),
+        Map.entry(
           Long.valueOf(SMFBSectionMetadata.MAGIC),
-          new SMFBv1SectionParserMetadata())
-        .put(
+          new SMFBv1SectionParserMetadata()),
+        Map.entry(
           Long.valueOf(SMFBSectionVerticesNonInterleaved.MAGIC),
-          new SMFBv1SectionParserVerticesNonInterleaved(this.state));
+          new SMFBv1SectionParserVerticesNonInterleaved(this.state)));
 
     Preconditions.checkPreconditionI(
       this.version.major(),
@@ -122,14 +114,14 @@ public final class SMFBv1Parser implements SMFParserSequentialType
   @Override
   public void parse()
   {
-    final Validation<SMFVoid, Optional<SMFParserEventsBodyType>> header_r =
+    final SMFPartialLogged<Optional<SMFParserEventsBodyType>> header_r =
       this.parseHeader();
-    if (header_r.isInvalid()) {
+    if (header_r.isFailed()) {
       return;
     }
 
     final Optional<SMFParserEventsBodyType> events_body_opt = header_r.get();
-    if (!events_body_opt.isPresent()) {
+    if (events_body_opt.isEmpty()) {
       return;
     }
 
@@ -141,10 +133,10 @@ public final class SMFBv1Parser implements SMFParserSequentialType
         LOG.trace("current: {}", Long.toUnsignedString(current_position));
       }
 
-      final Validation<SMFParseError, SMFBSection> result =
+      final SMFPartialLogged<SMFBSection> result =
         this.sections.parse();
-      if (result.isInvalid()) {
-        events_body.onError(result.getError());
+      if (result.isFailed()) {
+        result.errors().forEach(events_body::onError);
         return;
       }
 
@@ -167,11 +159,10 @@ public final class SMFBv1Parser implements SMFParserSequentialType
       return Continue.HALT;
     }
 
-    final Option<SMFBBodySectionParserType> opt =
+    final SMFBBodySectionParserType parser =
       this.section_parsers.get(Long.valueOf(magic));
 
-    if (opt.isDefined()) {
-      final SMFBBodySectionParserType parser = opt.get();
+    if (parser != null) {
       parser.parse(
         this.header, events_body, this.reader.withBounds(section.sizeOfData()));
       return Continue.CONTINUE;
@@ -191,12 +182,12 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     return Continue.CONTINUE;
   }
 
-  private Validation<SMFVoid, Optional<SMFParserEventsBodyType>> parseHeader()
+  private SMFPartialLogged<Optional<SMFParserEventsBodyType>> parseHeader()
   {
-    final Validation<SMFParseError, SMFBSection> result = this.sections.parse();
-    if (result.isInvalid()) {
-      this.events_header.onError(result.getError());
-      return invalid(SMFVoid.void_());
+    final SMFPartialLogged<SMFBSection> result = this.sections.parse();
+    if (result.isFailed()) {
+      result.errors().forEach(this.events_header::onError);
+      return SMFPartialLogged.failed(List.of());
     }
 
     final LexicalPosition<URI> position = this.reader.positionLexical();
@@ -209,7 +200,7 @@ public final class SMFBv1Parser implements SMFParserSequentialType
           "Section " + Long.toUnsignedString(SMFBSectionHeader.MAGIC, 16),
           "Section " + Long.toUnsignedString(section.id(), 16),
           position));
-      return invalid(SMFVoid.void_());
+      return SMFPartialLogged.failed(List.of());
     }
 
     if (LOG.isTraceEnabled()) {
@@ -218,13 +209,15 @@ public final class SMFBv1Parser implements SMFParserSequentialType
         Long.toUnsignedString(section.sizeOfData()));
     }
 
-    final Validation<List<SMFParseError>, SMFHeader> header_result =
+    final SMFPartialLogged<SMFHeader> header_result =
       SMFBv1Headers.parse(
         this.version, this.reader.withBounds(section.sizeOfData()), section);
 
-    if (header_result.isInvalid()) {
-      header_result.getError().forEach(this.events_header::onError);
-      return invalid(SMFVoid.void_());
+    header_result.errors().forEach(this.events_header::onError);
+    header_result.warnings().forEach(this.events_header::onWarning);
+
+    if (header_result.isFailed()) {
+      return SMFPartialLogged.failed(List.of());
     }
 
     final SMFHeader result_header = header_result.get();
@@ -235,7 +228,8 @@ public final class SMFBv1Parser implements SMFParserSequentialType
     this.state.set(
       TRIANGLES_REQUIRED, this.header.triangles().triangleCount() != 0L);
 
-    return valid(this.events_header.onHeaderParsed(result_header));
+    return SMFPartialLogged.succeeded(
+      this.events_header.onHeaderParsed(result_header));
   }
 
   @Override

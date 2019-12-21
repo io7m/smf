@@ -18,28 +18,26 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.Tuple;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedMap;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeExists;
 import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeNonexistent;
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
 
 /**
  * A filter that renames a mesh attribute.
@@ -77,7 +75,7 @@ public final class SMFMemoryMeshFilterAttributeRename implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -85,12 +83,11 @@ public final class SMFMemoryMeshFilterAttributeRename implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 2) {
+    if (text.size() == 2) {
       try {
         final SMFAttributeName source = SMFAttributeName.of(text.get(0));
         final SMFAttributeName target = SMFAttributeName.of(text.get(1));
-        return Validation.valid(
-          create(source, target));
+        return SMFPartialLogged.succeeded(create(source, target));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -132,7 +129,7 @@ public final class SMFMemoryMeshFilterAttributeRename implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -141,12 +138,18 @@ public final class SMFMemoryMeshFilterAttributeRename implements
 
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       m.header().attributesByName();
-    Seq<SMFProcessingError> errors =
-      checkAttributeExists(List.empty(), by_name, this.source);
-    errors = checkAttributeNonexistent(errors, by_name, this.target);
+
+    /*
+     * Check the source attribute exists, and check that no attribute
+     * exists with the target name.
+     */
+
+    final var errors = new ArrayList<SMFErrorType>();
+    errors.addAll(checkAttributeExists(List.of(), by_name, this.source));
+    errors.addAll(checkAttributeNonexistent(List.of(), by_name, this.target));
 
     if (!errors.isEmpty()) {
-      return invalid(List.ofAll(errors));
+      return SMFPartialLogged.failed(errors);
     }
 
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
@@ -156,32 +159,40 @@ public final class SMFMemoryMeshFilterAttributeRename implements
      * Rename array.
      */
 
-    final SMFAttributeArrayType array = arrays.get(this.source).get();
-    final Map<SMFAttributeName, SMFAttributeArrayType> renamed_arrays =
-      arrays.replace(
-        Tuple.of(this.source, array),
-        Tuple.of(this.target, array));
+    final HashMap<SMFAttributeName, SMFAttributeArrayType> newArrays =
+      new HashMap<>(arrays);
+
+    final var array = newArrays.get(this.source);
+    newArrays.remove(this.source);
+    newArrays.put(this.target, array);
 
     /*
      * Rename attribute.
      */
 
-    final Map<SMFAttributeName, SMFAttribute> orig_by_name =
-      orig_header.attributesByName();
-    final SMFAttribute orig_attrib =
-      orig_by_name.get(this.source).get();
-    final SMFAttribute new_attrib =
-      orig_attrib.withName(this.target);
+    final var newAttributes =
+      orig_header.attributesInOrder()
+        .stream()
+        .map(this::replaceAttribute)
+        .collect(Collectors.toList());
 
     final SMFHeader new_header =
-      orig_header.withAttributesInOrder(
-        orig_header.attributesInOrder().replace(orig_attrib, new_attrib));
+      orig_header.withAttributesInOrder(newAttributes);
 
-    return Validation.valid(
+    return SMFPartialLogged.succeeded(
       SMFMemoryMesh.builder()
         .from(m)
         .setHeader(new_header)
-        .setArrays(renamed_arrays)
+        .setArrays(newArrays)
         .build());
+  }
+
+  private SMFAttribute replaceAttribute(
+    final SMFAttribute attr)
+  {
+    if (Objects.equals(attr.name(), this.source)) {
+      return attr.withName(this.target);
+    }
+    return attr;
   }
 }

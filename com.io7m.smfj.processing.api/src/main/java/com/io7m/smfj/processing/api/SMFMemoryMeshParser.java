@@ -33,9 +33,8 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import io.vavr.collection.Vector;
-
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -103,7 +102,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayFloating4Type array_4d)
     {
-      final Vector<Vector4D> vv = array_4d.values();
+      final List<Vector4D> vv = array_4d.values();
       for (int index = 0; index < array_4d.size(); ++index) {
         final Vector4D v = vv.get(index);
         events.onDataAttributeValueFloat4(v.x(), v.y(), v.z(), v.w());
@@ -115,7 +114,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayFloating3Type array_3d)
     {
-      final Vector<Vector3D> vv = array_3d.values();
+      final List<Vector3D> vv = array_3d.values();
       for (int index = 0; index < array_3d.size(); ++index) {
         final Vector3D v = vv.get(index);
         events.onDataAttributeValueFloat3(v.x(), v.y(), v.z());
@@ -127,7 +126,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayFloating2Type array_2d)
     {
-      final Vector<Vector2D> vv = array_2d.values();
+      final List<Vector2D> vv = array_2d.values();
       for (int index = 0; index < array_2d.size(); ++index) {
         final Vector2D v = vv.get(index);
         events.onDataAttributeValueFloat2(v.x(), v.y());
@@ -139,7 +138,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayFloating1Type array_1d)
     {
-      final Vector<Double> vv = array_1d.values();
+      final List<Double> vv = array_1d.values();
       for (int index = 0; index < array_1d.size(); ++index) {
         final Double v = vv.get(index);
         events.onDataAttributeValueFloat1(v.doubleValue());
@@ -151,7 +150,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerSigned4Type array_4d)
     {
-      final Vector<Vector4L> vv = array_4d.values();
+      final List<Vector4L> vv = array_4d.values();
       for (int index = 0; index < array_4d.size(); ++index) {
         final Vector4L v = vv.get(index);
         events.onDataAttributeValueIntegerSigned4(v.x(), v.y(), v.z(), v.w());
@@ -163,7 +162,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerSigned3Type array_3d)
     {
-      final Vector<Vector3L> vv = array_3d.values();
+      final List<Vector3L> vv = array_3d.values();
       for (int index = 0; index < array_3d.size(); ++index) {
         final Vector3L v = vv.get(index);
         events.onDataAttributeValueIntegerSigned3(v.x(), v.y(), v.z());
@@ -175,7 +174,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerSigned2Type array_2d)
     {
-      final Vector<Vector2L> vv = array_2d.values();
+      final List<Vector2L> vv = array_2d.values();
       for (int index = 0; index < array_2d.size(); ++index) {
         final Vector2L v = vv.get(index);
         events.onDataAttributeValueIntegerSigned2(v.x(), v.y());
@@ -187,7 +186,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerSigned1Type array_1d)
     {
-      final Vector<Long> vv = array_1d.values();
+      final List<Long> vv = array_1d.values();
       for (int index = 0; index < array_1d.size(); ++index) {
         final Long v = vv.get(index);
         events.onDataAttributeValueIntegerSigned1(v.longValue());
@@ -199,7 +198,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerUnsigned4Type array_4d)
     {
-      final Vector<Vector4L> vv = array_4d.values();
+      final List<Vector4L> vv = array_4d.values();
       for (int index = 0; index < array_4d.size(); ++index) {
         final Vector4L v = vv.get(index);
         events.onDataAttributeValueIntegerUnsigned4(v.x(), v.y(), v.z(), v.w());
@@ -211,7 +210,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerUnsigned3Type array_3d)
     {
-      final Vector<Vector3L> vv = array_3d.values();
+      final List<Vector3L> vv = array_3d.values();
       for (int index = 0; index < array_3d.size(); ++index) {
         final Vector3L v = vv.get(index);
         events.onDataAttributeValueIntegerUnsigned3(v.x(), v.y(), v.z());
@@ -223,7 +222,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerUnsigned2Type array_2d)
     {
-      final Vector<Vector2L> vv = array_2d.values();
+      final List<Vector2L> vv = array_2d.values();
       for (int index = 0; index < array_2d.size(); ++index) {
         final Vector2L v = vv.get(index);
         events.onDataAttributeValueIntegerUnsigned2(v.x(), v.y());
@@ -235,7 +234,7 @@ public final class SMFMemoryMeshParser
       final SMFParserEventsDataAttributeValuesType events,
       final SMFAttributeArrayIntegerUnsigned1Type array_1d)
     {
-      final Vector<Long> vv = array_1d.values();
+      final List<Long> vv = array_1d.values();
       for (int index = 0; index < array_1d.size(); ++index) {
         final Long v = vv.get(index);
         events.onDataAttributeValueIntegerUnsigned1(v.longValue());
@@ -276,7 +275,7 @@ public final class SMFMemoryMeshParser
     private void parseDataMeta(
       final SMFParserEventsBodyType b)
     {
-      final Vector<SMFMetadata> metas = this.mesh.metadata();
+      final List<SMFMetadata> metas = this.mesh.metadata();
       for (int index = 0; index < metas.size(); ++index) {
         final SMFMetadata meta = metas.get(index);
         final Optional<SMFParserEventsDataMetaType> m_opt =
@@ -295,7 +294,7 @@ public final class SMFMemoryMeshParser
       if (t_opt.isPresent()) {
         final SMFParserEventsDataTrianglesType t = t_opt.get();
         try {
-          final Vector<Vector3L> triangles = this.mesh.triangles();
+          final List<Vector3L> triangles = this.mesh.triangles();
           for (int index = 0; index < triangles.size(); ++index) {
             final Vector3L tri = triangles.get(index);
             t.onDataTriangle(tri.x(), tri.y(), tri.z());
@@ -323,7 +322,7 @@ public final class SMFMemoryMeshParser
               final SMFParserEventsDataAttributeValuesType av = av_opt.get();
               try {
                 final SMFAttributeArrayType array =
-                  this.mesh.arrays().get(a.name()).get();
+                  this.mesh.arrays().get(a.name());
                 array.matchArray(
                   av,
                   Sequential::sendArray4D,

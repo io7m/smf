@@ -35,9 +35,6 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +42,8 @@ import java.io.UncheckedIOException;
 import java.net.URI;
 import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SMFB
   implements SMFParserEventsType,
@@ -352,7 +351,7 @@ public final class SMFB
   {
     LOG.debug(
       "{}",
-      Double.toString(x));
+      x);
   }
 
   @Override
@@ -362,8 +361,8 @@ public final class SMFB
   {
     LOG.debug(
       "{} {}",
-      Double.toString(x),
-      Double.toString(y));
+      x,
+      y);
   }
 
   @Override
@@ -374,9 +373,9 @@ public final class SMFB
   {
     LOG.debug(
       "{} {} {}",
-      Double.toString(x),
-      Double.toString(y),
-      Double.toString(z));
+      x,
+      y,
+      z);
   }
 
   @Override
@@ -388,10 +387,10 @@ public final class SMFB
   {
     LOG.debug(
       "{} {} {} {}",
-      Double.toString(x),
-      Double.toString(y),
-      Double.toString(z),
-      Double.toString(w));
+      x,
+      y,
+      z,
+      w);
 
     try {
       this.serial_values.serializeValueFloat4(x, y, z, w);

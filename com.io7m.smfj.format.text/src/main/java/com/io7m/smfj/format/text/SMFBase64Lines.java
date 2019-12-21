@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;

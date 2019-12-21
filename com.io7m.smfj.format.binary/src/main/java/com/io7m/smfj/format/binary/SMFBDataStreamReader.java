@@ -18,10 +18,6 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jlexing.core.LexicalPosition;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.input.BoundedInputStream;
-import org.apache.commons.io.input.CountingInputStream;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -29,6 +25,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Objects;
 import java.util.Optional;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.BoundedInputStream;
+import org.apache.commons.io.input.CountingInputStream;
 
 /**
  * The default implementation of the {@link SMFBDataStreamReaderType} interface.
@@ -99,7 +98,7 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
       IOUtils.readFully(this.stream, b);
     } catch (final IOException e) {
       throw this.makeIOException(
-        name, this.position(), (long) b.length, e.getMessage());
+        name, this.position(), b.length, e.getMessage());
     }
   }
 
@@ -129,7 +128,7 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   {
     try {
       IOUtils.readFully(this.stream, this.byte1);
-      return (long) this.byte1[0];
+      return this.byte1[0];
     } catch (final IOException e) {
       throw this.makeIOException(name, this.position(), 1L, e.getMessage());
     }
@@ -155,7 +154,7 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   {
     try {
       IOUtils.readFully(this.stream, this.byte2);
-      return (long) this.buffer2.getShort(0);
+      return this.buffer2.getShort(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, this.position(), 2L, e.getMessage());
     }
@@ -181,7 +180,7 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   {
     try {
       IOUtils.readFully(this.stream, this.byte4);
-      return (long) this.buffer4.getInt(0);
+      return this.buffer4.getInt(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, this.position(), 4L, e.getMessage());
     }
@@ -266,7 +265,7 @@ public final class SMFBDataStreamReader implements SMFBDataStreamReaderType
   {
     try {
       IOUtils.readFully(this.stream, this.byte4);
-      return (double) this.buffer4.getFloat(0);
+      return this.buffer4.getFloat(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, this.position(), 4L, e.getMessage());
     }

@@ -22,6 +22,7 @@ import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.format.binary.v1.SMFBv1Parser;
 import com.io7m.smfj.format.binary.v1.SMFBv1Serializer;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -34,17 +35,6 @@ import com.io7m.smfj.probe.api.SMFVersionProbeProviderType;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedSet;
-import io.vavr.collection.TreeSet;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.IOUtils;
-import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,8 +44,16 @@ import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 import java.util.Arrays;
 import java.util.BitSet;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.IOUtils;
+import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_RECEIVED;
 import static com.io7m.smfj.format.binary.implementation.Flags.TRIANGLES_REQUIRED;
@@ -63,8 +61,6 @@ import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_RECEIVED
 import static com.io7m.smfj.format.binary.implementation.Flags.VERTICES_REQUIRED;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * The implementation of the binary format.
@@ -76,28 +72,14 @@ public final class SMFFormatBinary
   SMFSerializerProviderType,
   SMFVersionProbeProviderType
 {
-  private static final Logger LOG;
-  private static final SMFFormatDescription FORMAT;
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFFormatBinary.class);
+
+  private static final SMFFormatDescription FORMAT = makeFormat();
+  private static final SortedSet<SMFFormatVersion> SUPPORTED_VERSIONS = makeSupported();
   private static final byte[] MAGIC_NUMBER;
-  private static final SortedSet<SMFFormatVersion> SUPPORTED_VERSIONS;
 
   static {
-    LOG = LoggerFactory.getLogger(SMFFormatBinary.class);
-
-    {
-      final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
-      b.setDescription("A binary encoding of SMF data");
-      b.setMimeType("application/vnd.io7m.smf");
-      b.setName("smf/b");
-      b.setRandomAccess(true);
-      b.setSuffix("smfb");
-      FORMAT = b.build();
-    }
-
-    {
-      SUPPORTED_VERSIONS = TreeSet.of(SMFFormatVersion.of(1, 0));
-    }
-
     {
       MAGIC_NUMBER = new byte[8];
       MAGIC_NUMBER[0] = (byte) (0x89 & 0xff);
@@ -118,6 +100,24 @@ public final class SMFFormatBinary
   public SMFFormatBinary()
   {
 
+  }
+
+  private static SMFFormatDescription makeFormat()
+  {
+    final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
+    b.setDescription("A binary encoding of SMF data");
+    b.setMimeType("application/vnd.io7m.smf");
+    b.setName("smf/b");
+    b.setRandomAccess(true);
+    b.setSuffix("smfb");
+    return b.build();
+  }
+
+  private static SortedSet<SMFFormatVersion> makeSupported()
+  {
+    final var versions = new TreeSet<SMFFormatVersion>();
+    versions.add(SMFFormatVersion.of(1, 0));
+    return Collections.unmodifiableSortedSet(versions);
   }
 
   /**
@@ -201,7 +201,7 @@ public final class SMFFormatBinary
   @Override
   public SortedSet<SMFFormatVersion> serializerSupportedVersions()
   {
-    return TreeSet.of(SMFFormatVersion.of(1, 0));
+    return SUPPORTED_VERSIONS;
   }
 
   @Override
@@ -226,7 +226,7 @@ public final class SMFFormatBinary
   }
 
   @Override
-  public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  public SMFPartialLogged<SMFVersionProbed> probe(
     final InputStream stream)
   {
     Objects.requireNonNull(stream, "stream");
@@ -252,11 +252,11 @@ public final class SMFFormatBinary
           SMFFormatVersion.of((int) major, (int) minor);
 
         if (SUPPORTED_VERSIONS.contains(version)) {
-          return valid(SMFVersionProbed.of(this, version));
+          return SMFPartialLogged.succeeded(
+            SMFVersionProbed.of(this, version));
         }
 
-        return invalid(
-          Vector.of(errorWithMessage(notSupported(version))));
+        return SMFPartialLogged.failed(errorWithMessage(notSupported(version)));
       }
 
       final StringBuilder sb = new StringBuilder(128);
@@ -268,9 +268,9 @@ public final class SMFFormatBinary
       sb.append("  Received: ");
       sb.append(Hex.encodeHexString(magic));
       sb.append(System.lineSeparator());
-      return invalid(Vector.of(errorWithMessage(sb.toString())));
+      return SMFPartialLogged.failed(errorWithMessage(sb.toString()));
     } catch (final Exception e) {
-      return invalid(Vector.of(errorException(e)));
+      return SMFPartialLogged.failed(errorException(e));
     }
   }
 

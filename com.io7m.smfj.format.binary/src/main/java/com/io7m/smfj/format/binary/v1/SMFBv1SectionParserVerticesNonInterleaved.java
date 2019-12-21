@@ -28,7 +28,6 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.Objects;

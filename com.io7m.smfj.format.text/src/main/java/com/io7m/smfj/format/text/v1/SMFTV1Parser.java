@@ -34,14 +34,13 @@ import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
@@ -273,7 +272,7 @@ public final class SMFTV1Parser implements SMFParserSequentialType
         receiver.onWarning(SMFParseWarnings.warningExpectedGot(
           String.format("Unrecognized command '%s'", command_name),
           "One of: " + this.knownBodyCommands(),
-          line.collect(Collectors.joining(" ")),
+          line.stream().collect(Collectors.joining(" ")),
           this.reader.position()));
         continue;
       }
@@ -292,7 +291,6 @@ public final class SMFTV1Parser implements SMFParserSequentialType
       }
     }
   }
-
 
   private SMFTParsingStatus parseHeaderCommands(
     final SMFParserEventsHeaderType receiver)
@@ -315,14 +313,14 @@ public final class SMFTV1Parser implements SMFParserSequentialType
 
       final String command_name = line.get(0);
       if (Objects.equals(command_name, "end")) {
-        if (line.length() == 1) {
+        if (line.size() == 1) {
           return SUCCESS;
         }
 
         receiver.onError(SMFParseErrors.errorExpectedGot(
           "Malformed 'end' command",
           "One of: " + this.knownHeaderCommands(),
-          line.collect(Collectors.joining(" ")),
+          line.stream().collect(Collectors.joining(" ")),
           this.reader.position()));
         return FAILURE;
       }
@@ -334,7 +332,7 @@ public final class SMFTV1Parser implements SMFParserSequentialType
         receiver.onWarning(SMFParseWarnings.warningExpectedGot(
           String.format("Unrecognized command '%s'", command_name),
           "One of: " + this.knownHeaderCommands(),
-          line.collect(Collectors.joining(" ")),
+          line.stream().collect(Collectors.joining(" ")),
           this.reader.position()));
         continue;
       }

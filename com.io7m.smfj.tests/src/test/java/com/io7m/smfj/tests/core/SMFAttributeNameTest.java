@@ -38,11 +38,8 @@ public final class SMFAttributeNameTest
       "abcdefghijklmnopqrstuvwxyz",
       "0123456789",
       "_",
-      "-",
       ".",
       ":",
-      "Ямогуестьстекло",
-      "Μπορώ"
     };
 
     final boolean[] ok = new boolean[valids.length];
@@ -84,7 +81,10 @@ public final class SMFAttributeNameTest
       "$",
       "a a",
       "",
-      "'"
+      "'",
+      "Ямогуестьстекло",
+      "Μπορώ",
+      "-",
     };
 
     final boolean[] ok = new boolean[invalids.length];

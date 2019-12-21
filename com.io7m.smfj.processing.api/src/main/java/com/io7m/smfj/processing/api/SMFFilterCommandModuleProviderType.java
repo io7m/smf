@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import io.vavr.collection.SortedMap;
+import java.util.Map;
 import org.osgi.annotation.versioning.ProviderType;
 
 /**
@@ -30,5 +30,5 @@ public interface SMFFilterCommandModuleProviderType
    * @return A read-only view of the available modules, by module name
    */
 
-  SortedMap<String, SMFFilterCommandModuleType> available();
+  Map<String, SMFFilterCommandModuleType> available();
 }

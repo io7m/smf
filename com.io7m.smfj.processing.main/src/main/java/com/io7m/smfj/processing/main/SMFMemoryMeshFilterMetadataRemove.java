@@ -16,35 +16,28 @@
 
 package com.io7m.smfj.processing.main;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
-import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.Tuple;
-import io.vavr.Tuple2;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
+import java.net.URI;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.URI;
-import java.util.Objects;
-import java.util.Optional;
-
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that removes matching metadata from a mesh.
  */
 
-public final class SMFMemoryMeshFilterMetadataRemove implements
-  SMFMemoryMeshFilterType
+public final class SMFMemoryMeshFilterMetadataRemove
+  implements SMFMemoryMeshFilterType
 {
   /**
    * The command name.
@@ -60,12 +53,26 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataRemove.class);
   }
 
+  public static final class Version
+  {
+    private int major;
+    private int minor;
+
+    public Version(
+      final int inMajor,
+      final int inMinor)
+    {
+      this.major = inMajor;
+      this.minor = inMinor;
+    }
+  }
+
   private final Optional<SMFSchemaName> name;
-  private final Optional<Tuple2<Integer, Integer>> version;
+  private final Optional<Version> version;
 
   private SMFMemoryMeshFilterMetadataRemove(
     final Optional<SMFSchemaName> in_schema_name,
-    final Optional<Tuple2<Integer, Integer>> in_version)
+    final Optional<Version> in_version)
   {
     this.name = Objects.requireNonNull(in_schema_name, "Schema name");
     this.version = Objects.requireNonNull(in_version, "Version");
@@ -82,7 +89,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
 
   public static SMFMemoryMeshFilterType create(
     final Optional<SMFSchemaName> in_schema_name,
-    final Optional<Tuple2<Integer, Integer>> in_version)
+    final Optional<Version> in_version)
   {
     return new SMFMemoryMeshFilterMetadataRemove(in_schema_name, in_version);
   }
@@ -97,7 +104,7 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -105,31 +112,28 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() > 0 && text.length() <= 3) {
+    if (text.size() > 0 && text.size() <= 3) {
       try {
         final Optional<SMFSchemaName> schema_name;
-        Optional<Tuple2<Integer, Integer>> schema_version = Optional.empty();
+        Optional<Version> schema_version = Optional.empty();
 
         if (Objects.equals(text.get(0), "-")) {
           schema_name = Optional.empty();
         } else {
           schema_name = Optional.of(SMFSchemaName.of(text.get(0)));
 
-          if (text.length() == 2) {
+          if (text.size() == 2) {
             schema_version = Optional.empty();
           }
 
-          if (text.length() == 3) {
+          if (text.size() == 3) {
             final int major = Integer.parseUnsignedInt(text.get(1));
             final int minor = Integer.parseUnsignedInt(text.get(2));
-            schema_version =
-              Optional.of(Tuple.of(
-                Integer.valueOf(major),
-                Integer.valueOf(minor)));
+            schema_version = Optional.of(new Version(major, minor));
           }
         }
 
-        return valid(create(schema_name, schema_version));
+        return SMFPartialLogged.succeeded(create(schema_name, schema_version));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -156,56 +160,63 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
     Objects.requireNonNull(context, "Context");
     Objects.requireNonNull(m, "Mesh");
 
-    final Vector<SMFMetadata> filtered = m.metadata().removeAll(meta -> {
-      final boolean version_matches;
-      final boolean schema_matches;
+    final var filteredMeta =
+      m.metadata()
+        .stream()
+        .filter(this::shouldPreserve)
+        .collect(Collectors.toList());
 
-      if (this.name.isPresent()) {
-        final SMFSchemaName s = this.name.get();
-        schema_matches = Objects.equals(meta.schema().name(), s);
-        if (this.version.isPresent()) {
-          final Tuple2<Integer, Integer> v = this.version.get();
-          version_matches =
-            v._1().intValue() == meta.schema().versionMajor()
-              && v._2().intValue() == meta.schema().versionMinor();
-        } else {
-          version_matches = true;
-        }
-      } else {
-        schema_matches = true;
-        version_matches = true;
-      }
-
-      final boolean match = schema_matches && version_matches;
-      if (LOG.isDebugEnabled()) {
-        if (match) {
-          LOG.debug(
-            "removing matched {} -> {}",
-            this.matchString(),
-            meta.schema().toHumanString());
-        } else {
-          LOG.debug(
-            "preserving unmatched {} -> {}",
-            this.matchString(),
-            meta.schema().toHumanString());
-        }
-      }
-
-      return match;
-    });
-
-    return valid(
+    return SMFPartialLogged.succeeded(
       SMFMemoryMesh.builder()
         .from(m)
-        .setMetadata(filtered)
+        .setMetadata(filteredMeta)
         .build());
+  }
+
+  private boolean shouldPreserve(final SMFMetadata meta)
+  {
+    final boolean version_matches;
+    final boolean schema_matches;
+
+    if (this.name.isPresent()) {
+      final SMFSchemaName s = this.name.get();
+      schema_matches = Objects.equals(meta.schema().name(), s);
+      if (this.version.isPresent()) {
+        final Version v = this.version.get();
+        version_matches =
+          v.major == meta.schema().versionMajor()
+            && v.minor == meta.schema().versionMinor();
+      } else {
+        version_matches = true;
+      }
+    } else {
+      schema_matches = true;
+      version_matches = true;
+    }
+
+    final boolean match = schema_matches && version_matches;
+    if (LOG.isDebugEnabled()) {
+      if (match) {
+        LOG.debug(
+          "removing matched {} -> {}",
+          this.matchString(),
+          meta.schema().toHumanString());
+      } else {
+        LOG.debug(
+          "preserving unmatched {} -> {}",
+          this.matchString(),
+          meta.schema().toHumanString());
+      }
+    }
+
+    return !match;
   }
 
   private String matchString()
@@ -218,11 +229,9 @@ public final class SMFMemoryMeshFilterMetadataRemove implements
     }
     sb.append(" ");
     if (this.version.isPresent()) {
-      sb.append(Integer.toUnsignedString(
-        this.version.get()._1().intValue()));
+      sb.append(Integer.toUnsignedString(this.version.get().major));
       sb.append(" ");
-      sb.append(Integer.toUnsignedString(
-        this.version.get()._2().intValue()));
+      sb.append(Integer.toUnsignedString(this.version.get().minor));
     } else {
       sb.append("-");
     }

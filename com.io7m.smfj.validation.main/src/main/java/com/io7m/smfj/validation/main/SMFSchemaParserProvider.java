@@ -25,44 +25,41 @@ import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
+import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.format.text.SMFTLineReaderList;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.validation.api.SMFSchema;
-import com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaRequireTriangles;
 import com.io7m.smfj.validation.api.SMFSchemaRequireVertices;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import io.vavr.Tuple;
-import io.vavr.Tuple2;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedSet;
-import io.vavr.collection.TreeSet;
-import io.vavr.control.Validation;
-import org.apache.commons.io.IOUtils;
-import org.osgi.service.component.annotations.Component;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
+import org.apache.commons.io.IOUtils;
+import org.osgi.service.component.annotations.Component;
 
+import static com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_NOT_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_NOT_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * The default implementation of the {@link SMFSchemaParserProviderType} interface.
@@ -72,10 +69,13 @@ import static io.vavr.control.Validation.valid;
 public final class SMFSchemaParserProvider
   implements SMFSchemaParserProviderType
 {
-  private static final SortedSet<SMFSchemaVersion> SUPPORTED;
+  private static final SortedSet<SMFSchemaVersion> SUPPORTED = makeSupported();
 
-  static {
-    SUPPORTED = TreeSet.of(SMFSchemaVersion.of(1, 0));
+  private static SortedSet<SMFSchemaVersion> makeSupported()
+  {
+    final var versions = new java.util.TreeSet<SMFSchemaVersion>();
+    versions.add(SMFSchemaVersion.of(1, 0));
+    return Collections.unmodifiableSortedSet(versions);
   }
 
   /**
@@ -85,12 +85,6 @@ public final class SMFSchemaParserProvider
   public SMFSchemaParserProvider()
   {
     // Nothing required
-  }
-
-  private static <E, T> Validation<Seq<E>, T> flatten(
-    final Validation<Seq<Seq<E>>, T> v)
-  {
-    return v.mapError(xs -> xs.fold(List.empty(), Seq::appendAll));
   }
 
   @Override
@@ -109,10 +103,15 @@ public final class SMFSchemaParserProvider
 
   private static final class ParserV1 implements SMFSchemaParserType
   {
+    private final TreeMap<SMFAttributeName, SMFSchemaAttribute> requiredAttributes;
+    private final TreeMap<SMFAttributeName, SMFSchemaAttribute> optionalAttributes;
+    private SMFSchema.Builder builder;
+    private boolean received_identifier;
+    private final ArrayList<SMFErrorType> errors;
+    private final ArrayList<SMFWarningType> warnings;
     private final SMFSchemaVersion version;
     private final SMFTLineReaderType reader;
     private final URI uri;
-    private boolean received_identifier;
 
     ParserV1(
       final SMFSchemaVersion in_version,
@@ -123,20 +122,23 @@ public final class SMFSchemaParserProvider
       this.reader = in_reader;
       this.uri = in_uri;
       this.received_identifier = false;
+      this.errors = new ArrayList<>();
+      this.warnings = new ArrayList<>();
+      this.requiredAttributes = new TreeMap<>();
+      this.optionalAttributes = new TreeMap<>();
+      this.builder = SMFSchema.builder();
     }
 
     @Override
-    public Validation<Seq<SMFErrorType>, SMFSchema> parseSchema()
+    public SMFPartialLogged<SMFSchema> parseSchema()
     {
-      final SMFSchema.Builder builder = SMFSchema.builder();
-      builder.setAllowExtraAttributes(
-        SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED);
-      builder.setRequireTriangles(
-        SMF_TRIANGLES_REQUIRED);
-      builder.setRequireVertices(
-        SMF_VERTICES_REQUIRED);
+      this.requiredAttributes.clear();
+      this.optionalAttributes.clear();
 
-      List<SMFErrorType> errors = List.empty();
+      this.builder = SMFSchema.builder();
+      this.builder.setAllowExtraAttributes(SMF_EXTRA_ATTRIBUTES_DISALLOWED);
+      this.builder.setRequireTriangles(SMF_TRIANGLES_REQUIRED);
+      this.builder.setRequireVertices(SMF_VERTICES_REQUIRED);
 
       try {
         while (true) {
@@ -148,111 +150,123 @@ public final class SMFSchemaParserProvider
           if (line.isEmpty()) {
             continue;
           }
-          errors = this.parseStatement(builder, errors, line);
+          this.parseStatement(line);
         }
       } catch (final IOException e) {
-        errors = errors.append(
+        this.errors.add(
           SMFParseError.of(
             this.reader.position(),
             "I/O error",
             Optional.of(e)));
       }
 
-      if (errors.isEmpty()) {
+      if (this.errors.isEmpty()) {
         if (!this.received_identifier) {
-          return invalid(errors.append(SMFParseError.of(
+          this.errors.add(SMFParseError.of(
             this.reader.position(),
             "Must specify a schema identifier",
-            Optional.empty())));
+            Optional.empty()));
+          return SMFPartialLogged.failed(this.errors);
         }
 
-        return valid(builder.build());
+        this.builder.setRequiredAttributes(this.requiredAttributes);
+        this.builder.setOptionalAttributes(this.optionalAttributes);
+        return SMFPartialLogged.succeeded(this.builder.build());
       }
-      return invalid(errors);
+      return SMFPartialLogged.failed(this.errors);
     }
 
-    private List<SMFErrorType> parseStatement(
-      final SMFSchema.Builder builder,
-      final List<SMFErrorType> errors,
+    private void parseStatement(
       final List<String> line)
     {
       final String name = line.get(0);
       switch (name) {
-
         case "schema": {
-          final Validation<Seq<SMFParseError>, SMFSchemaIdentifier> result =
+          final SMFPartialLogged<SMFSchemaIdentifier> result =
             this.parseStatementIdentifier(line);
-          if (result.isValid()) {
+
+          this.warnings.addAll(result.warnings());
+          this.errors.addAll(result.errors());
+
+          if (result.isSucceeded()) {
             final SMFSchemaIdentifier p = result.get();
             this.received_identifier = true;
-            builder.setSchemaIdentifier(p);
-            return errors;
+            this.builder.setSchemaIdentifier(p);
           }
-
-          return errors.appendAll(result.getError());
+          return;
         }
 
         case "coordinates": {
-          final Validation<Seq<SMFParseError>, SMFCoordinateSystem> result =
+          final SMFPartialLogged<SMFCoordinateSystem> result =
             this.parseStatementCoordinates(line);
-          if (result.isValid()) {
-            builder.setRequiredCoordinateSystem(result.get());
-            return errors;
-          }
 
-          return errors.appendAll(result.getError());
+          this.warnings.addAll(result.warnings());
+          this.errors.addAll(result.errors());
+
+          if (result.isSucceeded()) {
+            this.builder.setRequiredCoordinateSystem(result.get());
+          }
+          return;
         }
 
         case "require-vertices": {
-          final Validation<Seq<SMFParseError>, SMFSchemaRequireVertices> result =
+          final SMFPartialLogged<SMFSchemaRequireVertices> result =
             this.parseStatementRequireVertices(line);
-          if (result.isValid()) {
-            builder.setRequireVertices(result.get());
-            return errors;
-          }
 
-          return errors.appendAll(result.getError());
+          this.warnings.addAll(result.warnings());
+          this.errors.addAll(result.errors());
+
+          if (result.isSucceeded()) {
+            this.builder.setRequireVertices(result.get());
+          }
+          return;
         }
 
         case "require-triangles": {
-          final Validation<Seq<SMFParseError>, SMFSchemaRequireTriangles> result =
+          final SMFPartialLogged<SMFSchemaRequireTriangles> result =
             this.parseStatementRequireTriangles(line);
-          if (result.isValid()) {
-            builder.setRequireTriangles(result.get());
-            return errors;
-          }
 
-          return errors.appendAll(result.getError());
+          this.warnings.addAll(result.warnings());
+          this.errors.addAll(result.errors());
+
+          if (result.isSucceeded()) {
+            this.builder.setRequireTriangles(result.get());
+          }
+          return;
         }
 
         case "attribute": {
-          final Validation<Seq<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>> result =
+          final SMFPartialLogged<AttributeRequirement> result =
             this.parseStatementAttribute(line);
-          if (result.isValid()) {
-            final Tuple2<Boolean, SMFSchemaAttribute> p = result.get();
-            final boolean required = p._1.booleanValue();
-            if (required) {
-              builder.putRequiredAttributes(p._2.name(), p._2);
-              return errors;
-            }
-            builder.putOptionalAttributes(p._2.name(), p._2);
-            return errors;
-          }
 
-          return errors.appendAll(result.getError());
+          this.warnings.addAll(result.warnings());
+          this.errors.addAll(result.errors());
+
+          if (result.isSucceeded()) {
+            final AttributeRequirement requirement = result.get();
+            if (requirement.required) {
+              this.requiredAttributes.put(
+                requirement.attribute.name(), requirement.attribute);
+            } else {
+              this.optionalAttributes.put(
+                requirement.attribute.name(), requirement.attribute);
+            }
+          }
+          return;
         }
 
         default: {
-          final SMFParseError error = SMFParseError.of(
-            this.reader.position(),
-            "Unrecognized schema statement: " + name,
-            Optional.empty());
-          return errors.append(error);
+          final SMFParseError error =
+            SMFParseError.of(
+              this.reader.position(),
+              "Unrecognized schema statement: " + name,
+              Optional.empty());
+          this.errors.add(error);
         }
       }
     }
 
-    private Validation<Seq<SMFParseError>, SMFSchemaRequireTriangles>
+    private SMFPartialLogged<SMFSchemaRequireTriangles>
     parseStatementRequireTriangles(
       final List<String> line)
     {
@@ -260,9 +274,9 @@ public final class SMFSchemaParserProvider
         final String text = line.get(1);
         switch (text) {
           case "true":
-            return valid(SMF_TRIANGLES_REQUIRED);
+            return SMFPartialLogged.succeeded(SMF_TRIANGLES_REQUIRED);
           case "false":
-            return valid(SMF_TRIANGLES_NOT_REQUIRED);
+            return SMFPartialLogged.succeeded(SMF_TRIANGLES_NOT_REQUIRED);
           default:
             break;
         }
@@ -274,15 +288,15 @@ public final class SMFSchemaParserProvider
       sb.append("  Expected: require-triangles (true | false)");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(String.join(" ", line));
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
-    private Validation<Seq<SMFParseError>, SMFSchemaRequireVertices>
+    private SMFPartialLogged<SMFSchemaRequireVertices>
     parseStatementRequireVertices(
       final List<String> line)
     {
@@ -290,9 +304,9 @@ public final class SMFSchemaParserProvider
         final String text = line.get(1);
         switch (text) {
           case "true":
-            return valid(SMF_VERTICES_REQUIRED);
+            return SMFPartialLogged.succeeded(SMF_VERTICES_REQUIRED);
           case "false":
-            return valid(SMF_VERTICES_NOT_REQUIRED);
+            return SMFPartialLogged.succeeded(SMF_VERTICES_NOT_REQUIRED);
           default:
             break;
         }
@@ -304,15 +318,15 @@ public final class SMFSchemaParserProvider
       sb.append("  Expected: require-vertices (true | false)");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(String.join(" ", line));
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
-    private Validation<Seq<SMFParseError>, SMFCoordinateSystem> parseStatementCoordinates(
+    private SMFPartialLogged<SMFCoordinateSystem> parseStatementCoordinates(
       final List<String> line)
     {
       if (line.size() == 5) {
@@ -332,7 +346,7 @@ public final class SMFSchemaParserProvider
             throw new IllegalArgumentException("Axes must be perpendicular");
           }
 
-          return valid(SMFCoordinateSystem.of(
+          return SMFPartialLogged.succeeded(SMFCoordinateSystem.of(
             CAxisSystem.of(axis_right, axis_up, axis_forward),
             order));
         } catch (final IllegalArgumentException e) {
@@ -346,12 +360,12 @@ public final class SMFSchemaParserProvider
             "  Expected: coordinates <axis> <axis> <axis> <winding-order>");
           sb.append(System.lineSeparator());
           sb.append("  Received: ");
-          sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+          sb.append(String.join(" ", line));
           sb.append(System.lineSeparator());
-          return invalid(List.of(SMFParseError.of(
+          return SMFPartialLogged.failed(SMFParseError.of(
             this.reader.position(),
             sb.toString(),
-            Optional.of(e))));
+            Optional.of(e)));
         }
       }
 
@@ -361,23 +375,23 @@ public final class SMFSchemaParserProvider
       sb.append("  Expected: coordinates <axis> <axis> <axis> <winding-order>");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(line.stream().collect(Collectors.joining(" ")));
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
-    private Validation<Seq<SMFParseError>, Boolean>
+    private SMFPartialLogged<Boolean>
     parseRequired(
       final String text)
     {
       if (Objects.equals("required", text)) {
-        return valid(Boolean.TRUE);
+        return SMFPartialLogged.succeeded(Boolean.TRUE);
       }
       if (Objects.equals("optional", text)) {
-        return valid(Boolean.FALSE);
+        return SMFPartialLogged.succeeded(Boolean.FALSE);
       }
       final StringBuilder sb = new StringBuilder(128);
       sb.append("Could not parse requirement.");
@@ -387,93 +401,97 @@ public final class SMFSchemaParserProvider
       sb.append("  Received: ");
       sb.append(text);
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
-    private Validation<Seq<SMFParseError>, Optional<SMFComponentType>>
+    private SMFPartialLogged<Optional<SMFComponentType>>
     parseComponentType(
       final String text)
     {
       if (Objects.equals(text, "-")) {
-        return valid(Optional.empty());
+        return SMFPartialLogged.succeeded(Optional.empty());
       }
 
       try {
-        return valid(Optional.of(SMFComponentType.of(text)));
+        return SMFPartialLogged.succeeded(
+          Optional.of(SMFComponentType.of(text)));
       } catch (final IllegalArgumentException e) {
-        return invalid(List.of(SMFParseError.of(
+        return SMFPartialLogged.failed(SMFParseError.of(
           this.reader.position(),
           "Could not parse component type: " + e.getMessage(),
-          Optional.of(e))));
+          Optional.of(e)));
       }
     }
 
-    private Validation<Seq<SMFParseError>, OptionalInt>
+    private SMFPartialLogged<OptionalInt>
     parseComponentCount(
       final String text)
     {
       if (Objects.equals(text, "-")) {
-        return valid(OptionalInt.empty());
+        return SMFPartialLogged.succeeded(OptionalInt.empty());
       }
 
       try {
-        return valid(OptionalInt.of(Integer.parseUnsignedInt(text)));
+        return SMFPartialLogged.succeeded(
+          OptionalInt.of(Integer.parseUnsignedInt(text)));
       } catch (final NumberFormatException e) {
-        return invalid(List.of(SMFParseError.of(
+        return SMFPartialLogged.failed(SMFParseError.of(
           this.reader.position(),
           "Could not parse component count: " + e.getMessage(),
-          Optional.of(e))));
+          Optional.of(e)));
       }
     }
 
-    private Validation<Seq<SMFParseError>, OptionalInt>
+    private SMFPartialLogged<OptionalInt>
     parseComponentSize(
       final String text)
     {
       if (Objects.equals(text, "-")) {
-        return valid(OptionalInt.empty());
+        return SMFPartialLogged.succeeded(OptionalInt.empty());
       }
 
       try {
-        return valid(OptionalInt.of(Integer.parseUnsignedInt(text)));
+        return SMFPartialLogged.succeeded(
+          OptionalInt.of(Integer.parseUnsignedInt(text)));
       } catch (final NumberFormatException e) {
-        return invalid(List.of(SMFParseError.of(
+        return SMFPartialLogged.failed(SMFParseError.of(
           this.reader.position(),
           "Could not parse component size: " + e.getMessage(),
-          Optional.of(e))));
+          Optional.of(e)));
       }
     }
 
-    private Validation<Seq<SMFParseError>, SMFAttributeName>
+    private SMFPartialLogged<SMFAttributeName>
     parseName(
       final String text)
     {
       try {
-        return valid(SMFAttributeName.of(text));
+        return SMFPartialLogged.succeeded(SMFAttributeName.of(text));
       } catch (final IllegalArgumentException e) {
-        return invalid(List.of(SMFParseError.of(
+        return SMFPartialLogged.failed(SMFParseError.of(
           this.reader.position(),
           "Could not parse attribute name: " + e.getMessage(),
-          Optional.of(e))));
+          Optional.of(e)));
       }
     }
 
-    private Validation<Seq<SMFParseError>, SMFSchemaIdentifier>
+    private SMFPartialLogged<SMFSchemaIdentifier>
     parseStatementIdentifier(
       final List<String> text)
     {
-      if (text.length() == 4) {
+      if (text.size() == 4) {
         try {
           final SMFSchemaName schema = SMFSchemaName.of(text.get(1));
           final int major = Integer.parseUnsignedInt(text.get(2));
           final int minor = Integer.parseUnsignedInt(text.get(3));
-          return valid(SMFSchemaIdentifier.of(schema, major, minor));
+          return SMFPartialLogged.succeeded(
+            SMFSchemaIdentifier.of(schema, major, minor));
         } catch (final NumberFormatException e) {
-          return invalid(List.of(SMFParseError.of(
-            this.reader.position(), e.getMessage(), Optional.of(e))));
+          return SMFPartialLogged.failed(SMFParseError.of(
+            this.reader.position(), e.getMessage(), Optional.of(e)));
         }
       }
 
@@ -484,42 +502,64 @@ public final class SMFSchemaParserProvider
         "  Expected: schema <schema> <version-major> <version-minor>");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(text.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(String.join(" ", text));
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
-    private Validation<Seq<SMFParseError>, Tuple2<Boolean, SMFSchemaAttribute>>
+    private static final class AttributeRequirement
+    {
+      private boolean required;
+      private SMFSchemaAttribute attribute;
+
+      AttributeRequirement(
+        final boolean inRequired,
+        final SMFSchemaAttribute inAttribute)
+      {
+        this.required = inRequired;
+        this.attribute = Objects.requireNonNull(inAttribute, "attribute");
+      }
+    }
+
+    private SMFPartialLogged<AttributeRequirement>
     parseStatementAttribute(
       final List<String> line)
     {
-      if (line.length() == 6) {
+      if (line.size() == 6) {
         final String text_req = line.get(1);
         final String text_name = line.get(2);
         final String text_type = line.get(3);
         final String text_count = line.get(4);
         final String text_size = line.get(5);
 
-        final Validation<Seq<SMFParseError>, Boolean> v_req =
+        final SMFPartialLogged<Boolean> v_req =
           this.parseRequired(text_req);
-        final Validation<Seq<SMFParseError>, SMFAttributeName> v_name =
+        final SMFPartialLogged<SMFAttributeName> v_name =
           this.parseName(text_name);
-        final Validation<Seq<SMFParseError>, Optional<SMFComponentType>> v_type =
+        final SMFPartialLogged<Optional<SMFComponentType>> v_type =
           this.parseComponentType(text_type);
-        final Validation<Seq<SMFParseError>, OptionalInt> v_count =
+        final SMFPartialLogged<OptionalInt> v_count =
           this.parseComponentCount(text_count);
-        final Validation<Seq<SMFParseError>, OptionalInt> v_size =
+        final SMFPartialLogged<OptionalInt> v_size =
           this.parseComponentSize(text_size);
 
-        return flatten(
-          Validation.combine(v_req, v_name, v_type, v_count, v_size)
-            .ap((req, name, type, count, size) ->
-                  Tuple.of(
-                    req,
-                    SMFSchemaAttribute.of(name, type, count, size))));
+        return v_req.flatMap(required -> {
+          return v_name.flatMap(name -> {
+            return v_type.flatMap(type -> {
+              return v_count.flatMap(count -> {
+                return v_size.map(size -> {
+                  return new AttributeRequirement(
+                    required.booleanValue(),
+                    SMFSchemaAttribute.of(name, type, count, size)
+                  );
+                });
+              });
+            });
+          });
+        });
       }
 
       final StringBuilder sb = new StringBuilder(128);
@@ -529,12 +569,12 @@ public final class SMFSchemaParserProvider
         "  Expected: attribute <requirement> <name> <type> <count> <size>");
       sb.append(System.lineSeparator());
       sb.append("  Received: ");
-      sb.append(line.toJavaStream().collect(Collectors.joining(" ")));
+      sb.append(line.stream().collect(Collectors.joining(" ")));
       sb.append(System.lineSeparator());
-      return invalid(List.of(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.position(),
         sb.toString(),
-        Optional.empty())));
+        Optional.empty()));
     }
 
     @Override
@@ -559,21 +599,23 @@ public final class SMFSchemaParserProvider
     }
 
     @Override
-    public Validation<Seq<SMFErrorType>, SMFSchema> parseSchema()
+    public SMFPartialLogged<SMFSchema> parseSchema()
     {
       try {
         final List<String> lines =
-          List.ofAll(IOUtils.readLines(this.stream, StandardCharsets.UTF_8));
+          List.copyOf(IOUtils.readLines(this.stream, StandardCharsets.UTF_8));
         final SMFTLineReaderType reader =
           SMFTLineReaderList.create(this.uri, lines, 1);
 
         try {
           final Optional<List<String>> line = reader.line();
           if (line.isPresent()) {
-            final Validation<Seq<SMFErrorType>, SMFSchemaVersion> r_version =
+            final SMFPartialLogged<SMFSchemaVersion> r_version =
               this.parseVersion(reader.position(), line.get());
-            if (r_version.isInvalid()) {
-              return invalid(r_version.getError());
+            if (r_version.isFailed()) {
+              return SMFPartialLogged.failed(
+                r_version.errors(),
+                r_version.warnings());
             }
 
             final SMFSchemaVersion version = r_version.get();
@@ -583,15 +625,17 @@ public final class SMFSchemaParserProvider
 
             throw new UnimplementedCodeException();
           }
-          final SMFParseError error = SMFParseError.of(
-            reader.position(),
-            "Empty file: Must begin with an smf-schema version declaration",
-            Optional.empty());
-          return invalid(List.of(error));
+
+          final SMFParseError error =
+            SMFParseError.of(
+              reader.position(),
+              "Empty file: Must begin with an smf-schema version declaration",
+              Optional.empty());
+          return SMFPartialLogged.failed(error);
         } catch (final IOException e) {
           final SMFParseError error =
             SMFParseError.of(reader.position(), "I/O error", Optional.of(e));
-          return invalid(List.of(error));
+          return SMFPartialLogged.failed(error);
         }
       } catch (final IOException e) {
         final SMFParseError error =
@@ -599,33 +643,33 @@ public final class SMFSchemaParserProvider
             LexicalPosition.of(1, 0, Optional.of(this.uri)),
             "I/O error",
             Optional.of(e));
-        return invalid(List.of(error));
+        return SMFPartialLogged.failed(error);
       }
     }
 
-    private Validation<Seq<SMFErrorType>, SMFSchemaVersion> parseVersion(
+    private SMFPartialLogged<SMFSchemaVersion> parseVersion(
       final LexicalPosition<URI> position,
       final List<String> line)
     {
       if (line.size() == 3) {
         final String name = line.get(0);
         if (!Objects.equals(name, "smf-schema")) {
-          return invalid(List.of(
-            this.unparseableVersionList(line, Optional.empty())));
+          return SMFPartialLogged.failed(
+            this.unparseableVersionList(line, Optional.empty()));
         }
 
         try {
           final int major = Integer.parseUnsignedInt(line.get(1));
           final int minor = Integer.parseUnsignedInt(line.get(2));
-          return valid(SMFSchemaVersion.of(major, minor));
+          return SMFPartialLogged.succeeded(SMFSchemaVersion.of(major, minor));
         } catch (final NumberFormatException e) {
-          return invalid(List.of(
-            this.unparseableVersionList(line, Optional.of(e))));
+          return SMFPartialLogged.failed(
+            this.unparseableVersionList(line, Optional.of(e)));
         }
       }
 
-      return invalid(List.of(
-        this.unparseableVersionList(line, Optional.empty())));
+      return SMFPartialLogged.failed(
+        this.unparseableVersionList(line, Optional.empty()));
     }
 
     private SMFParseError unparseableVersionList(
@@ -633,8 +677,7 @@ public final class SMFSchemaParserProvider
       final Optional<Exception> exception)
     {
       return this.unparseableVersion(
-        line.toJavaStream().collect(Collectors.joining(" ")),
-        exception);
+        String.join(" ", line), exception);
     }
 
     private SMFParseError unparseableVersion(

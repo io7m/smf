@@ -20,7 +20,6 @@ import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -45,7 +44,7 @@ public final class SMFTestFiles
     final String name)
     throws IOException
   {
-    try (InputStream stream = resourceStream(name)) {
+    try (var stream = resourceStream(name)) {
       final SMFParserProviderType fmt = new SMFFormatText();
       final String rpath = "/com/io7m/smfj/tests/processing/" + name;
       final Path path = Paths.get(rpath);

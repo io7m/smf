@@ -16,22 +16,25 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
+import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
+import org.slf4j.Logger;
 
 public abstract class SMFFormatBinaryContract
 {
@@ -42,135 +45,119 @@ public abstract class SMFFormatBinaryContract
     SMFParserEventsType events)
     throws Exception;
 
-  @Test
-  public final void testBadMagicNumber(
-    final @Mocked SMFParserEventsType events)
-    throws Exception
+  private String capturedError()
   {
-    this.logger().debug("testBadMagicNumber");
+    return this.errorCaptor.getValue().message();
+  }
 
-    new Expectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          SMFFormatBinaryContract.this.logger().debug("error: {}", e);
-          return e.message().contains("Bad magic number");
-        }
-      }));
-      events.onFinish();
-    }};
+  private String capturedWarning()
+  {
+    return this.warningCaptor.getValue().message();
+  }
 
-    this.logger().debug("running parser");
+  private ArgumentCaptor<SMFErrorType> errorCaptor;
+  private ArgumentCaptor<SMFWarningType> warningCaptor;
+  private SMFParserEventsType events;
+  private SMFParserEventsHeaderType eventsHeader;
+  private SMFParserEventsBodyType eventsData;
+  private SMFTLineReaderType reader;
 
-    try (SMFParserSequentialType p = this.createParser("bad-magic.smfb", events)) {
-      p.parse();
-    }
+  @BeforeEach
+  public final void testSetup()
+  {
+    this.events =
+      Mockito.mock(SMFParserEventsType.class);
+    this.eventsHeader =
+      Mockito.mock(SMFParserEventsHeaderType.class);
+    this.eventsData =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.reader =
+      Mockito.mock(SMFTLineReaderType.class);
+    this.errorCaptor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+    this.warningCaptor =
+      ArgumentCaptor.forClass(SMFWarningType.class);
+
+    Mockito.when(this.reader.position())
+      .thenReturn(LexicalPosition.of(0, 0, Optional.empty()));
   }
 
   @Test
-  @Disabled("Broken, possibly due to an issue in jmockit")
-  public final void testUnsupported(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public final void testBadMagicNumber()
     throws Exception
   {
-    this.logger().debug("testUnsupported");
-
-    new Expectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(0x7ffffffe, 0));
-      this.result = Optional.of(events_header);
-      events_header.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          SMFFormatBinaryContract.this.logger().debug("error: {}", e);
-          return e.message().contains("not supported");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    this.logger().debug("running parser");
-
-    try (SMFParserSequentialType p = this.createParser("unsupported.smfb", events)) {
+    try (var p = this.createParser("bad-magic.smfb", this.events)) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Bad magic number"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public final void testMissingTriangles(
-    final @Mocked SMFParserEventsBodyType events_body,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public final void testUnsupported()
     throws Exception
   {
-    this.logger().debug("testMissingTriangles");
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(0x7ffffffe, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
 
-    new Expectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(
-        SMFHeader.builder().setTriangles(SMFTriangles.of(1L, 32)).build());
-      this.result = Optional.of(events_body);
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          SMFFormatBinaryContract.this.logger().debug("error: {}", e);
-          return e.message().contains(
-            "A non-zero triangle count was specified, but no triangles were provided");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    this.logger().debug("running parser");
-
-    try (SMFParserSequentialType p = this.createParser("missing_triangles.smfb", events)) {
+    try (var p = this.createParser("unsupported.smfb", this.events)) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("not supported"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public final void testMissingVertices(
-    final @Mocked SMFParserEventsBodyType events_body,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public final void testMissingTriangles()
     throws Exception
   {
-    this.logger().debug("testMissingVertices");
+    final SMFHeader header =
+      SMFHeader.builder()
+        .setTriangles(SMFTriangles.of(1L, 32))
+        .build();
 
-    new Expectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(
-        SMFHeader.builder().setVertexCount(1L).build());
-      this.result = Optional.of(events_body);
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          SMFFormatBinaryContract.this.logger().debug("error: {}", e);
-          return e.message().contains(
-            "A non-zero vertex count was specified, but no vertices were provided");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
 
-    this.logger().debug("running parser");
-
-    try (SMFParserSequentialType p = this.createParser("missing_vertices.smfb", events)) {
+    try (var p = this.createParser("missing_triangles.smfb", this.events)) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("A non-zero triangle count was specified, but no triangles were provided"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
+  }
+
+  @Test
+  public final void testMissingVertices()
+    throws Exception
+  {
+    final SMFHeader header =
+      SMFHeader.builder()
+        .setVertexCount(1L)
+        .build();
+
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
+
+    try (var p = this.createParser("missing_vertices.smfb", this.events)) {
+      p.parse();
+    }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("A non-zero vertex count was specified, but no vertices were provided"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 }

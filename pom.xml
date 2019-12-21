@@ -23,11 +23,11 @@
 
   <modules>
     <module>com.io7m.smfj.blender</module>
-    <module>com.io7m.smfj.bytebuffer</module>
     <module>com.io7m.smfj.cmdline</module>
     <module>com.io7m.smfj.core</module>
     <module>com.io7m.smfj.documentation</module>
     <module>com.io7m.smfj.format.binary</module>
+    <module>com.io7m.smfj.format.binary2</module>
     <module>com.io7m.smfj.format.obj</module>
     <module>com.io7m.smfj.format.text</module>
     <module>com.io7m.smfj.frontend</module>
@@ -45,7 +45,7 @@
   <properties>
     <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
-    <com.io7m.smfj.jmockit.version>1.42</com.io7m.smfj.jmockit.version>
+    <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
   </properties>
 
   <licenses>
@@ -172,6 +172,16 @@
         <artifactId>com.io7m.primogenitor.support</artifactId>
         <version>3.5.0</version>
       </dependency>
+      <dependency>
+        <groupId>com.io7m.jbssio</groupId>
+        <artifactId>com.io7m.jbssio.api</artifactId>
+        <version>${com.io7m.jbssio.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jbssio</groupId>
+        <artifactId>com.io7m.jbssio.vanilla</artifactId>
+        <version>${com.io7m.jbssio.version}</version>
+      </dependency>
 
       <dependency>
         <groupId>io.vavr</groupId>
@@ -246,14 +256,9 @@
         <version>2.1.0</version>
       </dependency>
       <dependency>
-        <groupId>org.jmockit</groupId>
-        <artifactId>jmockit</artifactId>
-        <version>1.48</version>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13-rc-2</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>

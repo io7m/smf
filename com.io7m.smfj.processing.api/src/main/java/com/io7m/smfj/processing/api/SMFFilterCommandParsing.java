@@ -18,14 +18,11 @@ package com.io7m.smfj.processing.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Useful combinators for parsing.
@@ -50,15 +47,14 @@ public final class SMFFilterCommandParsing
    * @return An error message
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType>
+  public static SMFPartialLogged<SMFMemoryMeshFilterType>
   errorExpectedGotValidation(
     final Optional<URI> uri,
     final int line,
     final String expected,
     final List<String> text)
   {
-    return Validation.invalid(List.of(
-      errorExpectedGot(uri, line, expected, text)));
+    return SMFPartialLogged.failed(errorExpectedGot(uri, line, expected, text));
   }
 
   /**
@@ -87,7 +83,7 @@ public final class SMFFilterCommandParsing
     sb.append(expected);
     sb.append(System.lineSeparator());
     sb.append("  Received: ");
-    sb.append(text.toJavaStream().collect(Collectors.joining(" ")));
+    sb.append(String.join(" ", text));
     sb.append(System.lineSeparator());
 
     return SMFParseError.of(

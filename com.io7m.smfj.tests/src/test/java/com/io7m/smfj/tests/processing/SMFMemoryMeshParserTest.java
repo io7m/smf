@@ -23,19 +23,18 @@ import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshParser;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import io.vavr.Tuple2;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
+
 public final class SMFMemoryMeshParserTest
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshParserTest.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshParserTest.class);
 
   @Test
   public void testRoundTripSequential()
@@ -43,15 +42,15 @@ public final class SMFMemoryMeshParserTest
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader0, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMesh mesh0 = loader0.mesh();
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFMemoryMeshParser.createSequential(mesh0, loader1)) {
       parser.parse();
     }
@@ -60,9 +59,9 @@ public final class SMFMemoryMeshParserTest
     Assertions.assertEquals(mesh0.header(), mesh1.header());
     Assertions.assertEquals(mesh0.metadata(), mesh1.metadata());
 
-    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
-      final SMFAttributeArrayType array0 = pair._2;
-      final SMFAttributeArrayType array1 = mesh1.arrays().get(pair._1).get();
+    for (final Map.Entry<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays().entrySet()) {
+      final SMFAttributeArrayType array0 = pair.getValue();
+      final SMFAttributeArrayType array1 = mesh1.arrays().get(pair.getKey());
       Assertions.assertEquals(array0, array1);
     }
 

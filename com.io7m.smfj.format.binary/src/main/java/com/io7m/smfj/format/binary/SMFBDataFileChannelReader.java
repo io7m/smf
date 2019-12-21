@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
-
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
@@ -70,7 +69,7 @@ final class SMFBDataFileChannelReader
       }
     } catch (final IOException e) {
       throw this.makeIOException(
-        name, position, (long) b.length, e.getMessage());
+        name, position, b.length, e.getMessage());
     }
   }
 
@@ -102,7 +101,7 @@ final class SMFBDataFileChannelReader
       if (this.buffer1.position() != 1) {
         throw new IOException("I/O error; too few octets read");
       }
-      return (long) this.buffer1.get(0);
+      return this.buffer1.get(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, position, 1L, e.getMessage());
     }
@@ -136,7 +135,7 @@ final class SMFBDataFileChannelReader
       if (this.buffer2.position() != 2) {
         throw new IOException("I/O error; too few octets read");
       }
-      return (long) this.buffer2.getShort(0);
+      return this.buffer2.getShort(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, position, 2L, e.getMessage());
     }
@@ -170,7 +169,7 @@ final class SMFBDataFileChannelReader
       if (this.buffer4.position() != 4) {
         throw new IOException("I/O error; too few octets read");
       }
-      return (long) this.buffer4.getInt(0);
+      return this.buffer4.getInt(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, position, 4L, e.getMessage());
     }
@@ -269,7 +268,7 @@ final class SMFBDataFileChannelReader
       if (this.buffer4.position() != 4) {
         throw new IOException("I/O error; too few octets read");
       }
-      return (double) this.buffer4.getFloat(0);
+      return this.buffer4.getFloat(0);
     } catch (final IOException e) {
       throw this.makeIOException(name, position, 4L, e.getMessage());
     }

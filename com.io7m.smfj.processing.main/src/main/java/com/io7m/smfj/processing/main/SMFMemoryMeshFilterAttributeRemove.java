@@ -16,27 +16,23 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFFilterCommandChecks;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
 
 /**
  * A filter that removes a mesh attribute.
@@ -85,7 +81,7 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -93,10 +89,10 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 1) {
+    if (text.size() == 1) {
       try {
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
-        return Validation.valid(create(attr));
+        return SMFPartialLogged.succeeded(create(attr));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -122,50 +118,54 @@ public final class SMFMemoryMeshFilterAttributeRemove implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
     Objects.requireNonNull(context, "Context");
     Objects.requireNonNull(m, "Mesh");
 
-    final Seq<SMFProcessingError> errors =
+    final List<SMFProcessingError> errors =
       SMFFilterCommandChecks.checkAttributeExists(
-        List.empty(), m.header().attributesByName(), this.source);
+        List.of(),
+        m.header().attributesByName(),
+        this.source);
+
     if (!errors.isEmpty()) {
-      return invalid(List.ofAll(errors));
+      return SMFPartialLogged.failed(errors);
     }
 
-    final Map<SMFAttributeName, SMFAttributeArrayType> arrays = m.arrays();
-    final SMFHeader orig_header = m.header();
-
     /*
-     * Remove array.
+     * Filter the array from the existing arrays.
      */
 
-    final Map<SMFAttributeName, SMFAttributeArrayType> removed_arrays =
-      arrays.remove(this.source);
+    final Map<SMFAttributeName, SMFAttributeArrayType> newArrays =
+      m.arrays()
+        .entrySet()
+        .stream()
+        .filter(e -> !Objects.equals(e.getKey(), this.source))
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+    final SMFHeader origHeader = m.header();
 
     /*
-     * Remove attribute.
+     * Filter the attribute from the existing attributes.
      */
 
-    final List<SMFAttribute> orig_ordered =
-      orig_header.attributesInOrder();
-    final Map<SMFAttributeName, SMFAttribute> orig_by_name =
-      orig_header.attributesByName();
-    final SMFAttribute orig_attrib =
-      orig_by_name.get(this.source).get();
-    final List<SMFAttribute> new_ordered =
-      orig_ordered.remove(orig_attrib);
-    final SMFHeader new_header =
-      orig_header.withAttributesInOrder(new_ordered);
+    final var newAttributes =
+      origHeader.attributesInOrder()
+        .stream()
+        .filter(attr -> !Objects.equals(attr.name(), this.source))
+        .collect(Collectors.toList());
 
-    return Validation.valid(
+    final SMFHeader newHeader =
+      origHeader.withAttributesInOrder(newAttributes);
+
+    return SMFPartialLogged.succeeded(
       SMFMemoryMesh.builder()
         .from(m)
-        .setHeader(new_header)
-        .setArrays(removed_arrays)
+        .setHeader(newHeader)
+        .setArrays(newArrays)
         .build());
   }
 }

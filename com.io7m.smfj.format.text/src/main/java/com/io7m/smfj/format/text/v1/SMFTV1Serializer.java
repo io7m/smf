@@ -29,7 +29,6 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;

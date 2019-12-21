@@ -18,8 +18,6 @@ package com.io7m.smfj.format.binary;
 
 import com.io7m.ieee754b16.Binary16;
 import com.io7m.jaffirm.core.Preconditions;
-import org.apache.commons.io.output.CountingOutputStream;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -27,6 +25,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import org.apache.commons.io.output.CountingOutputStream;
 
 /**
  * The default implementation of the {@link SMFBDataStreamWriterType} interface.
@@ -133,7 +132,7 @@ public final class SMFBDataStreamWriter implements SMFBDataStreamWriterType
 
     final byte[] data = new byte[maximum];
     System.arraycopy(textb, 0, data, 0, textb.length);
-    this.putU32((long) textb.length);
+    this.putU32(textb.length);
     this.stream.write(data);
   }
 

@@ -20,7 +20,6 @@ import com.io7m.smfj.format.binary.SMFBDataStreamReader;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSectionParser;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;

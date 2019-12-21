@@ -25,14 +25,14 @@ import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-import io.vavr.collection.SortedMap;
-
 import java.io.IOException;
 import java.util.Objects;
+import java.util.SortedMap;
 
 // Unavoidable class data abstraction coupling style issue: Too many classes referenced.
 // CHECKSTYLE:OFF
-final class NonInterleaved implements SMFSerializerDataAttributesNonInterleavedType
+final class NonInterleaved implements
+  SMFSerializerDataAttributesNonInterleavedType
   // CHECKSTYLE:ON
 {
   private final SMFBDataStreamWriterType writer;
@@ -394,7 +394,7 @@ final class NonInterleaved implements SMFSerializerDataAttributesNonInterleavedT
         "No such attribute: " + name.value());
     }
 
-    final SMFAttribute attribute = by_name.get(name).get();
+    final SMFAttribute attribute = by_name.get(name);
     switch (attribute.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
         return serializeSigned(this.writer, attribute);

@@ -19,7 +19,6 @@ package com.io7m.smfj.tests.processing;
 import com.github.marschall.memoryfilesystem.MemoryFileSystemBuilder;
 import com.github.marschall.memoryfilesystem.StringTransformers;
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.DosFileAttributeView;

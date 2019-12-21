@@ -17,9 +17,8 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
+import java.util.List;
 
 /**
  * The type of header command parsers.

@@ -28,7 +28,6 @@ import java.util.OptionalInt;
  */
 
 @com.io7m.immutables.styles.ImmutablesStyleType
-@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFSchemaAttributeType
 {

@@ -21,9 +21,8 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
@@ -59,7 +58,7 @@ final class SMFTSections
       final String command_name = line.get(0);
       switch (command_name) {
         case "end": {
-          if (line.length() == 1) {
+          if (line.size() == 1) {
             return SUCCESS;
           }
 

@@ -19,77 +19,70 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.parser.api.SMFParseError;
-import com.io7m.smfj.parser.api.SMFParserSequentialType;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeResample;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import java.nio.file.FileSystem;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.FileSystem;
-import java.util.Objects;
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.*;
 
 public final class SMFMemoryMeshFilterAttributeResampleTest extends
   SMFMemoryMeshFilterContract
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeResampleTest.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshFilterAttributeResampleTest.class);
 
   private FileSystem filesystem;
 
   @Test
   public void testParseWrong1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeResample.parse(
         Optional.empty(),
         1,
         List.of());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong2()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeResample.parse(
         Optional.empty(),
         1,
         List.of("x", "<#@"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeResample.parse(
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong4()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeResample.parse(
         Optional.empty(),
         1,
@@ -97,18 +90,18 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
           "x",
           "y",
           "z"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParse()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeResample.parse(
         Optional.empty(),
         1,
         List.of("x", "32"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     final SMFMemoryMeshFilterType c = r.get();
     Assertions.assertEquals(c.name(), "resample");
   }
@@ -119,9 +112,8 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_source = SMFAttributeName.of("nonexistent");
@@ -129,15 +121,16 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeResample.create(name_source, 32);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e.message());
-      return SMFVoid.void_();
     });
   }
+
+
 
   @Test
   public void testResampleUnsupported()
@@ -145,9 +138,8 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
@@ -155,13 +147,12 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeResample.create(name_source, 23);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e.message());
-      return SMFVoid.void_();
     });
   }
 
@@ -171,9 +162,8 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
@@ -190,13 +180,13 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
     final SMFHeader header1 = mesh1.header();
 
     Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assertions.assertEquals((long) arrays0.size(), (long) arrays1.size());
+    Assertions.assertEquals(arrays0.size(), arrays1.size());
     Assertions.assertEquals(
-      (long) header0.attributesByName().size(),
-      (long) header1.attributesByName().size());
+      header0.attributesByName().size(),
+      header1.attributesByName().size());
     Assertions.assertEquals(
-      (long) header0.attributesInOrder().size(),
-      (long) header1.attributesInOrder().size());
+      header0.attributesInOrder().size(),
+      header1.attributesInOrder().size());
     Assertions.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
@@ -211,8 +201,8 @@ public final class SMFMemoryMeshFilterAttributeResampleTest extends
       final SMFAttribute attr0 = header0.attributesInOrder().get(index);
       final SMFAttribute attr1 = header1.attributesInOrder().get(index);
       if (Objects.equals(attr0.name(), name_source)) {
-        Assertions.assertEquals(16L, (long) attr0.componentSizeBits());
-        Assertions.assertEquals(32L, (long) attr1.componentSizeBits());
+        Assertions.assertEquals(16L, attr0.componentSizeBits());
+        Assertions.assertEquals(32L, attr1.componentSizeBits());
       } else {
         Assertions.assertEquals(attr0, attr1);
       }

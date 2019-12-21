@@ -39,7 +39,6 @@ import com.io7m.smfj.format.binary.SMFFormatBinary;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
@@ -192,7 +191,7 @@ public final class SMFBv1Serializer implements SMFSerializerType
       final long attribute_size =
         SMFBAlignment.alignNext(
           Math.multiplyExact(
-            (long) attribute.sizeOctets(),
+            attribute.sizeOctets(),
             this.header.vertexCount()),
           SMFBSection.SECTION_ALIGNMENT);
       size = Math.addExact(size, attribute_size);

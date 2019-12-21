@@ -22,9 +22,8 @@ import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
@@ -76,7 +75,7 @@ public final class SMFTV1HeaderCommandTriangles
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 3) {
+    if (line.size() == 3) {
       try {
         final long tri_count = Long.parseUnsignedLong(line.get(1));
         final int tri_size = Integer.parseUnsignedInt(line.get(2));

@@ -21,7 +21,6 @@ import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
-
 import java.io.IOException;
 import java.util.Objects;
 

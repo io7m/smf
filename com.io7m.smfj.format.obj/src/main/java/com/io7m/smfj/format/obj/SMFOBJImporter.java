@@ -190,8 +190,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(
       SMFSchemaName.of("com.io7m.example"), 0, 0));
 
-    io.vavr.collection.List<SMFAttribute> attributes =
-      io.vavr.collection.List.empty();
+    final List<SMFAttribute> attributes =
+      new ArrayList<>();
 
     final SMFAttributeName name_position =
       SMFAttributeName.of("POSITION");
@@ -211,13 +211,13 @@ public final class SMFOBJImporter implements SMFOBJImporterType
       header_b.setVertexCount((long) this.vertices.size());
       final Vertex vertex = this.vertices.get(0);
       if (vertex.position != null) {
-        attributes = attributes.append(this.attrib_position);
+        attributes.add(this.attrib_position);
       }
       if (vertex.normal != null) {
-        attributes = attributes.append(this.attrib_normal);
+        attributes.add(this.attrib_normal);
       }
       if (vertex.uv != null) {
-        attributes = attributes.append(this.attrib_uv);
+        attributes.add(this.attrib_uv);
       }
     }
 

@@ -17,13 +17,12 @@
 package com.io7m.smfj.tests.format.text;
 
 import com.io7m.smfj.format.text.SMFBase64Lines;
+import java.util.List;
 import net.java.quickcheck.QuickCheck;
 import net.java.quickcheck.characteristic.AbstractCharacteristic;
 import net.java.quickcheck.generator.support.ByteArrayGenerator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 public final class SMFBase64LinesTest
 {

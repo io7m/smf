@@ -24,7 +24,6 @@ import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsReadableType;
 import com.io7m.smfj.format.binary.v1.SMFBv1CoordinateSystemsWritableType;
-
 import java.util.Objects;
 
 /**

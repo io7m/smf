@@ -19,7 +19,6 @@ package com.io7m.smfj.tests.validation.main;
 import com.io7m.smfj.tests.validation.api.SMFSchemaParserContract;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.main.SMFSchemaParserProvider;
-
 import java.io.InputStream;
 import java.nio.file.Path;
 

@@ -16,9 +16,8 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
@@ -27,12 +26,6 @@ import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -40,31 +33,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that validates the current mesh against a schema.
  */
 
-public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFilterType
+public final class SMFMemoryMeshFilterSchemaValidate implements
+  SMFMemoryMeshFilterType
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
+
   /**
    * The command name.
    */
 
   public static final String NAME = "schema-validate";
-  private static final Logger LOG;
   private static final String SYNTAX = "<file>";
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
-  }
 
   private final Path schema_file;
 
@@ -98,7 +91,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFil
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -106,9 +99,9 @@ public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFil
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 1) {
+    if (text.size() == 1) {
       try {
-        return valid(create(Paths.get(text.get(0))));
+        return SMFPartialLogged.succeeded(create(Paths.get(text.get(0))));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -160,7 +153,7 @@ public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFil
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -170,34 +163,43 @@ public final class SMFMemoryMeshFilterSchemaValidate implements SMFMemoryMeshFil
     final Path file = context.resolvePath(this.schema_file);
     LOG.debug("resolved schema file: {}", file);
 
-    final SMFSchemaParserProviderType parser_provider = findParserProvider();
-    final SMFSchemaValidatorType validator = findValidator();
+    final SMFSchemaParserProviderType parser_provider =
+      findParserProvider();
+    final SMFSchemaValidatorType validator =
+      findValidator();
 
     try (InputStream stream = Files.newInputStream(file)) {
       try (SMFSchemaParserType parser =
              parser_provider.schemaParserCreate(file.toUri(), stream)) {
-        final Validation<Seq<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
-        if (result_schema.isValid()) {
-          final SMFSchema schema = result_schema.get();
-          final Validation<Seq<SMFErrorType>, SMFHeader> result_valid =
-            validator.validate(m.header(), schema);
 
-          if (result_valid.isValid()) {
-            return valid(m);
-          }
-
-          return invalid(
-            result_valid.getError()
-              .map(e -> SMFProcessingError.of(e.message(), e.exception())));
+        final SMFPartialLogged<SMFSchema> resultSchema = parser.parseSchema();
+        if (resultSchema.isFailed()) {
+          return SMFPartialLogged.failed(
+            resultSchema.errors(),
+            resultSchema.warnings());
         }
 
-        return invalid(
-          result_schema.getError()
-            .map(e -> SMFProcessingError.of(e.message(), e.exception())));
+        final SMFSchema schema = resultSchema.get();
+        final SMFPartialLogged<SMFHeader> validationResult =
+          validator.validate(m.header(), schema);
+
+        if (validationResult.isFailed()) {
+          return resultSchema.flatMap(x -> {
+            return SMFPartialLogged.failed(
+              resultSchema.errors(),
+              resultSchema.warnings());
+          });
+        }
+
+        return resultSchema.flatMap(ignored0 -> {
+          return validationResult.flatMap(ignored1 -> {
+            return SMFPartialLogged.succeeded(m);
+          });
+        });
       }
     } catch (final IOException e) {
-      return invalid(List.of(
-        SMFProcessingError.of(e.getMessage(), Optional.of(e))));
+      return SMFPartialLogged.failed(
+        SMFProcessingError.of(e.getMessage(), Optional.of(e)));
     }
   }
 }

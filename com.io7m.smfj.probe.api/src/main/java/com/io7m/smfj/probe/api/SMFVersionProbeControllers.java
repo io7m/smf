@@ -18,13 +18,15 @@ package com.io7m.smfj.probe.api;
 
 import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFPartialLogged;
+import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -50,29 +52,32 @@ final class SMFVersionProbeControllers
    * @return The result of probing
    */
 
-  static Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  static SMFPartialLogged<SMFVersionProbed> probe(
     final Supplier<InputStream> streams,
     final Iterable<SMFVersionProbeProviderType> probes)
   {
-    Vector<SMFParseError> errors = Vector.empty();
-    for (SMFVersionProbeProviderType probe : probes) {
+    final List<SMFWarningType> warnings = new ArrayList<>();
+    final List<SMFErrorType> errors = new ArrayList<>();
+    for (final SMFVersionProbeProviderType probe : probes) {
       try (InputStream stream = streams.get()) {
-        final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
-          probe.probe(stream);
-        if (r.isInvalid()) {
-          errors = errors.appendAll(r.getError());
+        final var r = probe.probe(stream);
+        if (r.isFailed()) {
+          errors.addAll(r.errors());
+          warnings.addAll(r.warnings());
         } else {
           return r;
         }
       } catch (final IOException e) {
-        errors = errors.append(SMFParseError.of(
-          LexicalPositions.zero(), e.getMessage(), Optional.of(e)));
+        errors.add(SMFParseError.of(
+          LexicalPositions.zero(),
+          e.getMessage(),
+          Optional.of(e)));
       }
     }
 
     if (errors.isEmpty()) {
-      errors = errors.append(errorWithMessage("No format providers available."));
+      errors.add(errorWithMessage("No format providers available."));
     }
-    return Validation.invalid(errors);
+    return SMFPartialLogged.failed(errors, warnings);
   }
 }

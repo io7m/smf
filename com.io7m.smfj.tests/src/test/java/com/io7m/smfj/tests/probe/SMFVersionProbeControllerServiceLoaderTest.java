@@ -16,20 +16,16 @@
 
 package com.io7m.smfj.tests.probe;
 
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerServiceLoader;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.apache.commons.io.input.BrokenInputStream;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 
 public final class SMFVersionProbeControllerServiceLoaderTest
 {
@@ -46,12 +42,13 @@ public final class SMFVersionProbeControllerServiceLoaderTest
   }
 
   private static void dumpValidation(
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
+    final SMFPartialLogged<?> r)
   {
-    if (r.isValid()) {
+    r.errors().forEach(c -> LOG.error("{}", c));
+    r.warnings().forEach(c -> LOG.warn("{}", c));
+
+    if (r.isSucceeded()) {
       LOG.debug("{}", r.get());
-    } else {
-      r.getError().forEach(c -> LOG.error("{}", c));
     }
   }
 
@@ -61,12 +58,12 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> new ByteArrayInputStream(new byte[0]));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isInvalid());
-    Assertions.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -75,15 +72,15 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smft"));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assertions.assertEquals(1L, (long) v.version().major());
-    Assertions.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(1L, v.version().major());
+    Assertions.assertEquals(0L, v.version().minor());
   }
 
   @Test
@@ -92,12 +89,12 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smft"));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isInvalid());
-    Assertions.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -106,15 +103,15 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smfb"));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assertions.assertEquals(1L, (long) v.version().major());
-    Assertions.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(1L, v.version().major());
+    Assertions.assertEquals(0L, v.version().minor());
   }
 
   @Test
@@ -123,12 +120,12 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smfb"));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isInvalid());
-    Assertions.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -137,12 +134,12 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/garbage.smfb"));
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isInvalid());
-    Assertions.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -151,11 +148,11 @@ public final class SMFVersionProbeControllerServiceLoaderTest
     final SMFVersionProbeControllerServiceLoader c =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> new BrokenInputStream());
 
     dumpValidation(r);
-    Assertions.assertTrue(r.isInvalid());
-    Assertions.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 }

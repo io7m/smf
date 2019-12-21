@@ -16,17 +16,13 @@
 
 package com.io7m.smfj.format.binary;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
-
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The default implementation of the {@link SMFBSectionParserType} interface.
@@ -61,7 +57,7 @@ public final class SMFBSectionParser implements SMFBSectionParserType
   }
 
   @Override
-  public Validation<SMFParseError, SMFBSection> parse()
+  public SMFPartialLogged<SMFBSection> parse()
   {
     try {
       this.seekToNextSection();
@@ -88,7 +84,7 @@ public final class SMFBSectionParser implements SMFBSectionParserType
             .append(Long.toUnsignedString(position))
             .append(System.lineSeparator())
             .toString();
-        return invalid(SMFParseError.of(
+        return SMFPartialLogged.failed(SMFParseError.of(
           this.reader.positionLexical(), text, Optional.empty()));
       }
 
@@ -102,9 +98,9 @@ public final class SMFBSectionParser implements SMFBSectionParserType
           Long.toUnsignedString(position));
       }
 
-      return valid(section);
+      return SMFPartialLogged.succeeded(section);
     } catch (final IOException e) {
-      return invalid(SMFParseError.of(
+      return SMFPartialLogged.failed(SMFParseError.of(
         this.reader.positionLexical(), e.getMessage(), Optional.of(e)));
     }
   }

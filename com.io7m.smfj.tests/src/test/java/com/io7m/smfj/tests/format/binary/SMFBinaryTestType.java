@@ -21,18 +21,17 @@ import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-
 import java.io.IOException;
 
 public interface SMFBinaryTestType
 {
   SMFParserRandomAccessType parserRandomFor(
-    final SMFParserEventsType events,
-    final IOConsumerType<SMFBDataStreamWriterType> o);
+    SMFParserEventsType events,
+    IOConsumerType<SMFBDataStreamWriterType> o);
 
   SMFParserSequentialType parserSequentialFor(
-    final SMFParserEventsType events,
-    final IOConsumerType<SMFBDataStreamWriterType> o);
+    SMFParserEventsType events,
+    IOConsumerType<SMFBDataStreamWriterType> o);
 
   interface IOConsumerType<T>
   {

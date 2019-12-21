@@ -19,11 +19,10 @@ package com.io7m.smfj.processing.api;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
-import io.vavr.Tuple2;
-import io.vavr.collection.Iterator;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -47,8 +46,8 @@ public final class SMFFilterCommandChecks
    * @return The list of errors plus an error indicating that the attribute does not exist
    */
 
-  public static Seq<SMFProcessingError> checkAttributeExists(
-    final Seq<SMFProcessingError> errors,
+  public static List<SMFProcessingError> checkAttributeExists(
+    final List<SMFProcessingError> errors,
     final Map<SMFAttributeName, SMFAttribute> attributes,
     final SMFAttributeName name)
   {
@@ -62,18 +61,19 @@ public final class SMFFilterCommandChecks
       sb.append("  Existing:  ");
       sb.append(System.lineSeparator());
 
-      final Iterator<Tuple2<SMFAttributeName, SMFAttribute>> iter =
-        attributes.iterator();
+      final Iterator<Map.Entry<SMFAttributeName, SMFAttribute>> iter =
+        attributes.entrySet().iterator();
 
       while (iter.hasNext()) {
-        final Tuple2<SMFAttributeName, SMFAttribute> tuple = iter.next();
+        final Map.Entry<SMFAttributeName, SMFAttribute> entry = iter.next();
         sb.append("  ");
-        sb.append(tuple._1.value());
+        sb.append(entry.getKey().value());
         sb.append(System.lineSeparator());
       }
 
-      return errors.append(
-        SMFProcessingError.of(sb.toString(), Optional.empty()));
+      final var errorsResult = new ArrayList<>(errors);
+      errorsResult.add(SMFProcessingError.of(sb.toString(), Optional.empty()));
+      return List.copyOf(errorsResult);
     }
 
     return errors;
@@ -89,8 +89,8 @@ public final class SMFFilterCommandChecks
    * @return The list of errors plus an error indicating that the attribute already exists
    */
 
-  public static Seq<SMFProcessingError> checkAttributeNonexistent(
-    final Seq<SMFProcessingError> errors,
+  public static List<SMFProcessingError> checkAttributeNonexistent(
+    final List<SMFProcessingError> errors,
     final Map<SMFAttributeName, SMFAttribute> attributes,
     final SMFAttributeName name)
   {
@@ -104,18 +104,19 @@ public final class SMFFilterCommandChecks
       sb.append("  Existing:  ");
       sb.append(System.lineSeparator());
 
-      final Iterator<Tuple2<SMFAttributeName, SMFAttribute>> iter =
-        attributes.iterator();
+      final Iterator<Map.Entry<SMFAttributeName, SMFAttribute>> iter =
+        attributes.entrySet().iterator();
 
       while (iter.hasNext()) {
-        final Tuple2<SMFAttributeName, SMFAttribute> tuple = iter.next();
+        final Map.Entry<SMFAttributeName, SMFAttribute> entry = iter.next();
         sb.append("  ");
-        sb.append(tuple._1.value());
+        sb.append(entry.getKey().value());
         sb.append(System.lineSeparator());
       }
 
-      return errors.append(
-        SMFProcessingError.of(sb.toString(), Optional.empty()));
+      final var errorsResult = new ArrayList<>(errors);
+      errorsResult.add(SMFProcessingError.of(sb.toString(), Optional.empty()));
+      return List.copyOf(errorsResult);
     }
 
     return errors;

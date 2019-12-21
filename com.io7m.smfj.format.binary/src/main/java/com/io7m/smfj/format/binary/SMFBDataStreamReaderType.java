@@ -17,7 +17,6 @@
 package com.io7m.smfj.format.binary;
 
 import com.io7m.jlexing.core.LexicalPosition;
-
 import java.io.IOException;
 import java.net.URI;
 import java.util.Optional;

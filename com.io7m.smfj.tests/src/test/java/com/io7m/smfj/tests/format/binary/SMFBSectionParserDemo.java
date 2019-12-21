@@ -17,22 +17,21 @@
 package com.io7m.smfj.tests.format.binary;
 
 import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.format.binary.SMFBDataStreamReader;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionEnd;
 import com.io7m.smfj.format.binary.SMFBSectionParser;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
-import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.FileInputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class SMFBSectionParserDemo
 {
@@ -61,8 +60,8 @@ public final class SMFBSectionParserDemo
 
       boolean ended = false;
       while (!ended) {
-        final Validation<SMFParseError, SMFBSection> result = sections.parse();
-        if (result.isValid()) {
+        final SMFPartialLogged<SMFBSection> result = sections.parse();
+        if (result.isSucceeded()) {
           final SMFBSection section = result.get();
           final ByteBuffer buf = ByteBuffer.allocate(8);
           buf.order(ByteOrder.BIG_ENDIAN);
@@ -78,7 +77,7 @@ public final class SMFBSectionParserDemo
 
           ended = section.id() == SMFBSectionEnd.MAGIC;
         } else {
-          final SMFParseError error = result.getError();
+          final SMFErrorType error = result.errors().get(0);
           LOG.error("{}", error.fullMessage());
           error.exception().ifPresent(ex -> LOG.error("exception: ", ex));
         }

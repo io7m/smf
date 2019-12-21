@@ -18,28 +18,28 @@ package com.io7m.smfj.frontend;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
+import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFPartialLogged;
+import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.format.text.SMFTLineLexer;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
 import com.io7m.smfj.processing.api.SMFFilterCommandParserType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedMap;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Convenient functions to parse sequences of filter commands from files.
@@ -47,11 +47,8 @@ import java.util.Optional;
 
 public final class SMFFilterCommandFile
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFFilterCommandFile.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFFilterCommandFile.class);
 
   private SMFFilterCommandFile()
   {
@@ -70,7 +67,7 @@ public final class SMFFilterCommandFile
    * @throws IOException On I/O errors
    */
 
-  public static Validation<Seq<SMFParseError>, List<SMFMemoryMeshFilterType>>
+  public static SMFPartialLogged<List<SMFMemoryMeshFilterType>>
   parseFromStream(
     final SMFFilterCommandModuleResolverType resolver,
     final Optional<URI> path_opt,
@@ -82,13 +79,15 @@ public final class SMFFilterCommandFile
     Objects.requireNonNull(stream, "Stream");
 
     final SMFTLineLexer lexer = new SMFTLineLexer();
-
-    final SortedMap<String, SMFFilterCommandModuleType> modules =
+    final Map<String, SMFFilterCommandModuleType> modules =
       resolver.available();
 
-    List<SMFParseError> errors = List.empty();
-    List<SMFMemoryMeshFilterType> filters = List.empty();
-    LexicalPosition<URI> position = LexicalPosition.of(1, 0, path_opt);
+    final List<SMFWarningType> warnings = new ArrayList<>();
+    final List<SMFErrorType> errors = new ArrayList<>();
+    final List<SMFMemoryMeshFilterType> filters = new ArrayList<>();
+
+    LexicalPosition<URI> position =
+      LexicalPosition.of(1, 0, path_opt);
 
     try (BufferedReader reader =
            new BufferedReader(new InputStreamReader(
@@ -111,7 +110,7 @@ public final class SMFFilterCommandFile
           final String module_name = segments[0];
           final String command_name = segments[1];
 
-          final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> result =
+          final var result =
             resolveCommand(
               modules,
               position,
@@ -120,30 +119,28 @@ public final class SMFFilterCommandFile
               command_name,
               text);
 
-          if (result.isValid()) {
-            filters = filters.append(result.get());
-          } else {
-            errors = errors.appendAll(result.getError());
+          errors.addAll(result.errors());
+          warnings.addAll(result.warnings());
+
+          if (result.isSucceeded()) {
+            filters.add(result.get());
           }
-
         } else {
-          errors = errors.append(
-            notFullyQualified(position, path_opt, qualified));
+          errors.add(notFullyQualified(position, path_opt, qualified));
         }
-
         position = position.withLine(position.line() + 1).withColumn(0);
       }
     }
 
     if (errors.isEmpty()) {
-      return Validation.valid(filters);
+      return SMFPartialLogged.succeeded(filters);
     }
-    return Validation.invalid(errors);
+    return SMFPartialLogged.failed(errors);
   }
 
-  private static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType>
+  private static SMFPartialLogged<SMFMemoryMeshFilterType>
   resolveCommand(
-    final SortedMap<String, SMFFilterCommandModuleType> modules,
+    final Map<String, SMFFilterCommandModuleType> modules,
     final LexicalPosition<URI> position,
     final Optional<URI> path_opt,
     final String module_name,
@@ -151,12 +148,11 @@ public final class SMFFilterCommandFile
     final List<String> text)
   {
     if (modules.containsKey(module_name)) {
-      final SMFFilterCommandModuleType module =
-        modules.get(module_name).get();
+      final SMFFilterCommandModuleType module = modules.get(module_name);
 
       if (module.parsers().containsKey(command_name)) {
         final SMFFilterCommandParserType parser =
-          module.parsers().get(command_name).get();
+          module.parsers().get(command_name);
 
         LOG.debug(
           "resolved {}:{} -> {}",
@@ -164,13 +160,18 @@ public final class SMFFilterCommandFile
           command_name,
           parser);
 
-        return parser.parse(position.file(), position.line(), text.tail());
+        final var lineTail = new ArrayList<>(text);
+        if (!lineTail.isEmpty()) {
+          lineTail.remove(0);
+        }
+
+        return parser.parse(position.file(), position.line(), lineTail);
       }
-      return Validation.invalid(List.of(
-        noSuchCommand(position, path_opt, module, command_name)));
+      return SMFPartialLogged.failed(
+        noSuchCommand(position, path_opt, module, command_name));
     }
-    return Validation.invalid(List.of(
-      noSuchModule(position, path_opt, modules, module_name)));
+    return SMFPartialLogged.failed(
+      noSuchModule(position, path_opt, modules, module_name));
   }
 
   private static SMFParseError notFullyQualified(

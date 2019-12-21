@@ -17,18 +17,15 @@
 package com.io7m.smfj.processing.main;
 
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFTriangles;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
@@ -101,7 +98,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -109,7 +106,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 2) {
+    if (text.size() == 2) {
       try {
         final int size;
         final String size_text = text.get(0);
@@ -135,8 +132,7 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
             "Could not parse validation value: Must be 'validate' | 'no-validate'");
         }
 
-        return Validation.valid(
-          create(builder.build()));
+        return SMFPartialLogged.succeeded(create(builder.build()));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -189,16 +185,16 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
     Objects.requireNonNull(context, "Context");
     Objects.requireNonNull(m, "Mesh");
 
-    List<SMFProcessingError> errors = List.empty();
+    final List<SMFProcessingError> errors = new ArrayList<>();
     final long vertices = m.header().vertexCount();
-    final Vector<Vector3L> triangles = m.triangles();
+    final List<Vector3L> triangles = m.triangles();
     final OptionalInt optimize_opt = this.config.optimize();
 
     long max = 0L;
@@ -211,13 +207,13 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
 
       if (this.config.validate()) {
         if (Long.compareUnsigned(v0, vertices) >= 0) {
-          errors = errors.append(nonexistentVertex(index, v0));
+          errors.add(nonexistentVertex(index, v0));
         }
         if (Long.compareUnsigned(v1, vertices) >= 0) {
-          errors = errors.append(nonexistentVertex(index, v1));
+          errors.add(nonexistentVertex(index, v1));
         }
         if (Long.compareUnsigned(v2, vertices) >= 0) {
-          errors = errors.append(nonexistentVertex(index, v2));
+          errors.add(nonexistentVertex(index, v2));
         }
       }
 
@@ -230,9 +226,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimize implements
     if (errors.isEmpty()) {
       final SMFTriangles new_triangles =
         m.header().triangles().withTriangleIndexSizeBits(triangle_size);
-      return Validation.valid(
+      return SMFPartialLogged.succeeded(
         m.withHeader(m.header().withTriangles(new_triangles)));
     }
-    return Validation.invalid(errors);
+    return SMFPartialLogged.failed(errors);
   }
 }

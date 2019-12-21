@@ -39,11 +39,6 @@ import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import io.vavr.collection.List;
-import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -54,6 +49,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class SMFBinaryTest implements SMFBinaryTestType
 {
@@ -164,7 +163,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
       this.header_builder.setTriangles(
         SMFTriangles.of(0L, 32));
-      this.header_builder.setAttributesInOrder(List.empty());
+      this.header_builder.setAttributesInOrder(List.of());
       this.header_builder.setSchemaIdentifier(
         SMFSchemaIdentifier.of(SMFSchemaName.of("com.io7m.smf.example"), 1, 2));
       this.header_builder.setVertexCount(0L);
@@ -205,7 +204,7 @@ public abstract class SMFBinaryTest implements SMFBinaryTestType
       this.view.setTriangleCount(
         header.triangles().triangleCount());
       this.view.setTriangleIndexSizeBits(
-        (int) header.triangles().triangleIndexSizeBits());
+        header.triangles().triangleIndexSizeBits());
       this.view.setAttributeCount(header.attributesInOrder().size());
 
       final SMFBv1CoordinateSystemsWritableType coords =

@@ -28,6 +28,7 @@ import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
@@ -35,20 +36,14 @@ import com.io7m.smfj.format.binary.SMFBCoordinateSystems;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.Tuple2;
-import io.vavr.collection.List;
-import io.vavr.collection.TreeMap;
-import io.vavr.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Functions to parse version 1.* headers.
@@ -56,23 +51,15 @@ import static io.vavr.control.Validation.valid;
 
 public final class SMFBv1Headers
 {
-  private static final TreeMap<Integer, HeaderParserType> VERSIONS;
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFBv1Headers.class);
-
-    VERSIONS =
-      TreeMap.<Integer, HeaderParserType>empty()
-        .put(Integer.valueOf(0), new HeaderV1_0());
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFBv1Headers.class);
 
   private SMFBv1Headers()
   {
     throw new UnreachableCodeException();
   }
 
-  private static Validation<List<SMFParseError>, List<SMFAttribute>> parseAttributes(
+  private static SMFPartialLogged<List<SMFAttribute>> parseAttributes(
     final int attribute_count,
     final SMFBDataStreamReaderType reader)
   {
@@ -90,8 +77,7 @@ public final class SMFBv1Headers
           wrap, SMFBv1AttributeByteBuffered::newValueWithOffset);
       final SMFBv1AttributeType view = cursor.getElementView();
 
-      List<SMFAttribute> attributes = List.empty();
-
+      final List<SMFAttribute> attributes = new ArrayList<>(attribute_count);
       for (int index = 0;
            Integer.compareUnsigned(index, attribute_count) < 0;
            ++index) {
@@ -112,17 +98,14 @@ public final class SMFBv1Headers
           LOG.trace("count:     {}", Integer.valueOf(count));
         }
 
-        attributes = attributes.append(
+        attributes.add(
           SMFAttribute.of(SMFAttributeName.of(name), kind, count, size));
       }
 
-      return valid(attributes);
+      return SMFPartialLogged.succeeded(attributes);
     } catch (final IOException e) {
-      return invalid(List.of(
-        SMFParseError.of(
-          reader.positionLexical(),
-          e.getMessage(),
-          Optional.of(e))));
+      return SMFPartialLogged.failed(SMFParseError.of(
+        reader.positionLexical(), e.getMessage(), Optional.of(e)));
     }
   }
 
@@ -151,19 +134,12 @@ public final class SMFBv1Headers
    * @return A parsed header, or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFHeader> parse(
+  public static SMFPartialLogged<SMFHeader> parse(
     final SMFFormatVersion version,
     final SMFBDataStreamReaderType reader,
     final SMFBSection section)
   {
-    final Tuple2<Integer, HeaderParserType> newest =
-      VERSIONS.takeUntil(
-        supported -> Integer.compareUnsigned(
-          supported._1.intValue(),
-          version.minor()) > 0)
-        .head();
-
-    final HeaderParserType parser = newest._2;
+    final HeaderParserType parser = new HeaderV1_0();
     if (Long.compareUnsigned(section.sizeOfData(), parser.sizeRequired()) < 0) {
       final String text =
         new StringBuilder(128)
@@ -181,8 +157,8 @@ public final class SMFBv1Headers
           .append(section.sizeOfData())
           .append(System.lineSeparator())
           .toString();
-      return invalid(List.of(
-        SMFParseError.of(reader.positionLexical(), text, Optional.empty())));
+      return SMFPartialLogged.failed(
+        SMFParseError.of(reader.positionLexical(), text, Optional.empty()));
     }
 
     return parser.parse(reader, section);
@@ -190,7 +166,7 @@ public final class SMFBv1Headers
 
   private interface HeaderParserType
   {
-    Validation<List<SMFParseError>, SMFHeader> parse(
+    SMFPartialLogged<SMFHeader> parse(
       SMFBDataStreamReaderType reader,
       SMFBSection section);
 
@@ -215,7 +191,7 @@ public final class SMFBv1Headers
       final long position_now =
         reader.position();
       final long attribute_offset =
-        Math.addExact(position_start, (long) view.getFieldsSize());
+        Math.addExact(position_start, view.getFieldsSize());
       final long seek =
         Math.subtractExact(attribute_offset, position_now);
 
@@ -230,7 +206,7 @@ public final class SMFBv1Headers
     }
 
     @Override
-    public Validation<List<SMFParseError>, SMFHeader> parse(
+    public SMFPartialLogged<SMFHeader> parse(
       final SMFBDataStreamReaderType reader,
       final SMFBSection section)
     {
@@ -280,17 +256,15 @@ public final class SMFBv1Headers
 
         skipAheadToAttributes(current, reader, view);
 
-        return parseAttributes(view.getAttributeCount(), reader).flatMap(
-          attributes -> {
+        return parseAttributes(view.getAttributeCount(), reader)
+          .flatMap(attributes -> {
             header_b.addAllAttributesInOrder(attributes);
-            return valid(header_b.build());
+            return SMFPartialLogged.succeeded(header_b.build());
           });
       } catch (final IOException e) {
-        return invalid(List.of(
+        return SMFPartialLogged.failed(
           SMFParseError.of(
-            reader.positionLexical(),
-            e.getMessage(),
-            Optional.of(e))));
+            reader.positionLexical(), e.getMessage(), Optional.of(e)));
       }
     }
 

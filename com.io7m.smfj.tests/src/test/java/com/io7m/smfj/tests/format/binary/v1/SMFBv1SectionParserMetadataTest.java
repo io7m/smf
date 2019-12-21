@@ -30,25 +30,38 @@ import com.io7m.smfj.format.binary.v1.SMFBv1MetadataIDType;
 import com.io7m.smfj.format.binary.v1.SMFBv1SectionParserMetadata;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.Expectations;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 public final class SMFBv1SectionParserMetadataTest
 {
+  private ArgumentCaptor<SMFErrorType> captor;
+  private SMFParserEventsBodyType eventsBody;
+  private SMFParserEventsDataMetaType eventsMeta;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.eventsBody =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.eventsMeta =
+      Mockito.mock(SMFParserEventsDataMetaType.class);
+    this.captor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+  }
+
   @Test
-  public void testEmpty(
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmpty()
   {
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
@@ -60,27 +73,20 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
     Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.exception().isPresent()
-            && e.exception().get() instanceof IOException
-            && e.message().contains(
-            "Failed to read the required number of octets");
-        }
-      }));
-    }};
+    p.parse(header, this.eventsBody, reader);
 
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsBody, new Times(1))
+      .onError(this.captor.capture());
+
+    final var e = this.captor.getValue();
+    Assertions.assertTrue(
+      e.exception().isPresent()
+        && e.exception().get() instanceof IOException
+        && e.message().contains("Failed to read the required number of octets"));
   }
 
   @Test
-  public void testSimple(
-    final @Mocked SMFParserEventsDataMetaType events_meta,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testSimple()
   {
     final int header_size =
       SMFBv1MetadataIDByteBuffered.sizeInOctets();
@@ -118,27 +124,25 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
     Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onMeta(SMFSchemaIdentifier.of(
+    Mockito.when(this.eventsBody.onMeta(
+      SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"),
         1,
-        2));
-      this.result = Optional.of(events_meta);
+        2)
+    )).thenReturn(Optional.of(this.eventsMeta));
 
-      events_meta.onMetaData(SMFSchemaIdentifier.of(
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsMeta).onMetaData(
+      SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"),
         1,
-        2), new byte[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'});
-    }};
-
-    p.parse(header, events_body, reader);
+        2), new byte[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'}
+    );
   }
 
   @Test
-  public void testSimpleIgnored(
-    final @Mocked SMFParserEventsDataMetaType events_meta,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testSimpleIgnored()
   {
     final int header_size =
       SMFBv1MetadataIDByteBuffered.sizeInOctets();
@@ -176,15 +180,13 @@ public final class SMFBv1SectionParserMetadataTest
     final SMFBv1SectionParserMetadata p = new SMFBv1SectionParserMetadata();
     Assertions.assertEquals(SMFBSectionMetadata.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onMeta(SMFSchemaIdentifier.of(
+    Mockito.when(this.eventsBody.onMeta(
+      SMFSchemaIdentifier.of(
         SMFSchemaName.of("com.io7m.smf.example"),
         1,
-        2));
-      this.result = Optional.empty();
-    }};
+        2)
+    )).thenReturn(Optional.empty());
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
   }
 }

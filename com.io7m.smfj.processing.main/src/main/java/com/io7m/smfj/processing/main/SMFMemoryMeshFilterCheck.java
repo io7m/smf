@@ -19,24 +19,19 @@ package com.io7m.smfj.processing.main;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -86,7 +81,7 @@ public final class SMFMemoryMeshFilterCheck implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -94,7 +89,7 @@ public final class SMFMemoryMeshFilterCheck implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 4) {
+    if (text.size() == 4) {
       try {
         final SMFAttributeName attr = SMFAttributeName.of(text.get(0));
 
@@ -122,7 +117,7 @@ public final class SMFMemoryMeshFilterCheck implements
           size = OptionalInt.of(Integer.parseInt(size_text));
         }
 
-        return valid(create(
+        return SMFPartialLogged.succeeded(create(
           SMFMemoryMeshFilterCheckConfiguration.builder()
             .setComponentCount(count)
             .setComponentSize(size)
@@ -154,7 +149,7 @@ public final class SMFMemoryMeshFilterCheck implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -165,7 +160,7 @@ public final class SMFMemoryMeshFilterCheck implements
       m.header().attributesByName();
 
     if (by_name.containsKey(this.config.name())) {
-      final SMFAttribute attr = by_name.get(this.config.name()).get();
+      final SMFAttribute attr = by_name.get(this.config.name());
 
       boolean size_ok = true;
       if (this.config.componentSize().isPresent()) {
@@ -181,19 +176,22 @@ public final class SMFMemoryMeshFilterCheck implements
       }
 
       if (size_ok && count_ok && type_ok) {
-        return valid(m);
+        return SMFPartialLogged.succeeded(m);
       }
 
-      return invalid(this.expectedGot(
-        String.format(
-          "An attribute '%s' with %d components of type %s with size %d",
-          attr.name().value(),
-          Integer.valueOf(attr.componentCount()),
-          attr.componentType().getName(),
-          Integer.valueOf(attr.componentSizeBits()))));
+      final List<SMFProcessingError> errors =
+        this.expectedGot(
+          String.format(
+            "An attribute '%s' with %d components of type %s with size %d",
+            attr.name().value(),
+            Integer.valueOf(attr.componentCount()),
+            attr.componentType().getName(),
+            Integer.valueOf(attr.componentSizeBits())));
+
+      return SMFPartialLogged.failed(errors);
     }
 
-    return invalid(this.expectedGot("nothing"));
+    return SMFPartialLogged.failed(this.expectedGot("nothing"));
   }
 
   private List<SMFProcessingError> expectedGot(

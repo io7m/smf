@@ -15,7 +15,6 @@
  * SOFTWARE.
  */
 
-
 package com.io7m.smfj.cmdline;
 
 import com.beust.jcommander.Parameter;
@@ -28,7 +27,7 @@ public class CommandRoot implements CommandType
     names = "--verbose",
     converter = SMFLogLevelConverter.class,
     description = "Set the minimum logging verbosity level")
-  private SMFLogLevel verbose = SMFLogLevel.LOG_INFO;
+  private final SMFLogLevel verbose = SMFLogLevel.LOG_INFO;
 
   CommandRoot()
   {

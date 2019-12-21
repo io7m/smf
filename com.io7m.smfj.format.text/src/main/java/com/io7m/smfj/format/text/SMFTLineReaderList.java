@@ -16,14 +16,13 @@
 
 package com.io7m.smfj.format.text;
 
-import io.vavr.collection.Iterator;
-import io.vavr.collection.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A line reader based on a list of strings.

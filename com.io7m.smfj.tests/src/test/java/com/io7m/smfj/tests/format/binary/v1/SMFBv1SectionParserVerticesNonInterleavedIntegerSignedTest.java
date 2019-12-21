@@ -30,12 +30,7 @@ import com.io7m.smfj.format.binary.v1.SMFBv1SectionParserVerticesNonInterleaved;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.Expectations;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -43,6 +38,12 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.BitSet;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
 {
@@ -58,11 +59,32 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
     return new byte[buffer_size];
   }
 
+  private ArgumentCaptor<SMFErrorType> captor0;
+  private ArgumentCaptor<SMFErrorType> captor1;
+  private SMFParserEventsBodyType eventsBody;
+  private SMFParserEventsDataAttributeValuesType eventsValues;
+  private SMFParserEventsDataAttributesNonInterleavedType eventsData;
+  private SMFParserEventsDataTrianglesType eventsTriangles;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.eventsBody =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.eventsTriangles =
+      Mockito.mock(SMFParserEventsDataTrianglesType.class);
+    this.eventsData =
+      Mockito.mock(SMFParserEventsDataAttributesNonInterleavedType.class);
+    this.eventsValues =
+      Mockito.mock(SMFParserEventsDataAttributeValuesType.class);
+    this.captor0 =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+    this.captor1 =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+  }
+
   @Test
-  public void testEmpty(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmpty()
   {
     final BitSet state = new BitSet();
 
@@ -89,49 +111,41 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.exception().isPresent()
-            && e.exception().get() instanceof IOException
-            && e.message().contains(
-            "Failed to read the required number of octets");
-        }
-      }));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onError(this.captor0.capture());
+    Mockito.verify(this.eventsData, new Times(1))
+      .onError(this.captor1.capture());
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
 
-      events_values.onDataAttributeValueFinish();
+    {
+      final var e = this.captor0.getValue();
+      Assertions.assertTrue(
+        e.exception().isPresent()
+          && e.exception().get() instanceof IOException
+          && e.message().contains("Failed to read the required number of octets"));
+    }
 
-      events_ni.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.exception().isPresent()
-            && e.exception().get() instanceof IOException
-            && e.message().contains(
-            "Failed to read the required number of octets");
-        }
-      }));
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    {
+      final var e = this.captor1.getValue();
+      Assertions.assertTrue(
+        e.exception().isPresent()
+          && e.exception().get() instanceof IOException
+          && e.message().contains("Failed to read the required number of octets"));
+    }
   }
 
   @Test
-  public void testVertices_IntegerSigned4_64(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned4_64()
   {
     final BitSet state = new BitSet();
 
@@ -179,31 +193,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned4(
-        10L, 20L, 30L, 40L);
-      events_values.onDataAttributeValueIntegerSigned4(
-        11L, 21L, 31L, 41L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(10L, 20L, 30L, 40L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(11L, 21L, 31L, 41L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned3_64(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned3_64()
   {
     final BitSet state = new BitSet();
 
@@ -247,31 +255,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned3(
-        10L, 20L, 30L);
-      events_values.onDataAttributeValueIntegerSigned3(
-        11L, 21L, 31L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(10L, 20L, 30L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(11L, 21L, 31L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned2_64(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned2_64()
   {
     final BitSet state = new BitSet();
 
@@ -313,31 +315,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned2(
-        10L, 20L);
-      events_values.onDataAttributeValueIntegerSigned2(
-        11L, 21L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(10L, 20L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(11L, 21L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned1_64(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned1_64()
   {
     final BitSet state = new BitSet();
 
@@ -377,32 +373,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned1(
-        10L);
-      events_values.onDataAttributeValueIntegerSigned1(
-        11L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(10L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(11L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
-
   @Test
-  public void testVertices_IntegerSigned4_32(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned4_32()
   {
     final BitSet state = new BitSet();
 
@@ -448,31 +437,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned4(
-        10L, 20L, 30L, 40L);
-      events_values.onDataAttributeValueIntegerSigned4(
-        11L, 21L, 31L, 41L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(10L, 20L, 30L, 40L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(11L, 21L, 31L, 41L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned3_32(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned3_32()
   {
     final BitSet state = new BitSet();
 
@@ -516,31 +499,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned3(
-        10L, 20L, 30L);
-      events_values.onDataAttributeValueIntegerSigned3(
-        11L, 21L, 31L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(10L, 20L, 30L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(11L, 21L, 31L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned2_32(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned2_32()
   {
     final BitSet state = new BitSet();
 
@@ -582,31 +559,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned2(
-        10L, 20L);
-      events_values.onDataAttributeValueIntegerSigned2(
-        11L, 21L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(10L, 20L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(11L, 21L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned1_32(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned1_32()
   {
     final BitSet state = new BitSet();
 
@@ -646,31 +617,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned1(
-        10L);
-      events_values.onDataAttributeValueIntegerSigned1(
-        11L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(10L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(11L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned4_16(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned4_16()
   {
     final BitSet state = new BitSet();
 
@@ -716,31 +681,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned4(
-        10L, 20L, 30L, 40L);
-      events_values.onDataAttributeValueIntegerSigned4(
-        11L, 21L, 31L, 41L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(10L, 20L, 30L, 40L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(11L, 21L, 31L, 41L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned3_16(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned3_16()
   {
     final BitSet state = new BitSet();
 
@@ -784,31 +743,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned3(
-        10L, 20L, 30L);
-      events_values.onDataAttributeValueIntegerSigned3(
-        11L, 21L, 31L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(10L, 20L, 30L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(11L, 21L, 31L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned2_16(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned2_16()
   {
     final BitSet state = new BitSet();
 
@@ -850,31 +803,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned2(
-        10L, 20L);
-      events_values.onDataAttributeValueIntegerSigned2(
-        11L, 21L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(10L, 20L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(11L, 21L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned1_16(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned1_16()
   {
     final BitSet state = new BitSet();
 
@@ -914,31 +861,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned1(
-        10L);
-      events_values.onDataAttributeValueIntegerSigned1(
-        11L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(10L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(11L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned4_8(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned4_8()
   {
     final BitSet state = new BitSet();
 
@@ -984,31 +925,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned4(
-        10L, 20L, 30L, 40L);
-      events_values.onDataAttributeValueIntegerSigned4(
-        11L, 21L, 31L, 41L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(10L, 20L, 30L, 40L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(11L, 21L, 31L, 41L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned3_8(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned3_8()
   {
     final BitSet state = new BitSet();
 
@@ -1052,31 +987,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned3(
-        10L, 20L, 30L);
-      events_values.onDataAttributeValueIntegerSigned3(
-        11L, 21L, 31L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(10L, 20L, 30L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(11L, 21L, 31L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned2_8(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned2_8()
   {
     final BitSet state = new BitSet();
 
@@ -1118,31 +1047,25 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned2(
-        10L, 20L);
-      events_values.onDataAttributeValueIntegerSigned2(
-        11L, 21L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(10L, 20L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(11L, 21L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testVertices_IntegerSigned1_8(
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_ni,
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testVertices_IntegerSigned1_8()
   {
     final BitSet state = new BitSet();
 
@@ -1182,23 +1105,20 @@ public final class SMFBv1SectionParserVerticesNonInterleavedIntegerSignedTest
       new SMFBv1SectionParserVerticesNonInterleaved(state);
     Assertions.assertEquals(SMFBSectionVerticesNonInterleaved.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onAttributesNonInterleaved();
-      this.result = Optional.of(events_ni);
+    Mockito.when(this.eventsBody.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attr0))
+      .thenReturn(Optional.of(this.eventsValues));
 
-      events_ni.onDataAttributeStart(attr0);
-      this.result = Optional.of(events_values);
+    p.parse(header, this.eventsBody, reader);
 
-      events_values.onDataAttributeValueIntegerSigned1(
-        10L);
-      events_values.onDataAttributeValueIntegerSigned1(
-        11L);
-      events_values.onDataAttributeValueFinish();
-
-      events_ni.onDataAttributesNonInterleavedFinish();
-    }};
-
-    p.parse(header, events_body, reader);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(10L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(11L);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 }

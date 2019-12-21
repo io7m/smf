@@ -17,13 +17,12 @@
 package com.io7m.smfj.frontend;
 
 import com.io7m.smfj.parser.api.SMFParserProviderType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
-import java.util.Objects;
+import java.util.List;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Convenience functions to locate parser providers via {@link ServiceLoader}.
@@ -64,32 +63,53 @@ public final class SMFParserProviders
       final int index = file.lastIndexOf('.');
       if (index != -1) {
         final String suffix = file.substring(index + 1);
-        final Iterator<SMFParserProviderType> providers = loader.iterator();
-        while (providers.hasNext()) {
-          final SMFParserProviderType current_provider = providers.next();
-          if (Objects.equals(current_provider.parserFormat().suffix(), suffix)) {
-            LOG.debug("using provider: {}", current_provider);
-            return Optional.of(current_provider);
-          }
-        }
+
+        final var providersWithFormat =
+          loader.stream()
+            .map(ServiceLoader.Provider::get)
+            .filter(p -> p.parserFormat().suffix().equals(suffix))
+            .collect(Collectors.toList());
+
+        return findBestProviderFromList(providersWithFormat);
       }
 
       LOG.error("File {} does not have a recognized suffix", file);
     } else {
       final String format = format_opt.get();
       LOG.debug("attempting to find provider for {}", format);
-      final Iterator<SMFParserProviderType> providers = loader.iterator();
-      while (providers.hasNext()) {
-        final SMFParserProviderType current_provider = providers.next();
-        if (Objects.equals(current_provider.parserFormat().name(), format)) {
-          LOG.debug("using provider: {}", current_provider);
-          return Optional.of(current_provider);
-        }
-      }
 
-      LOG.error("Could not find a provider for the format '{}'", format);
+      final var providersWithFormat =
+        loader.stream()
+          .map(ServiceLoader.Provider::get)
+          .filter(p -> p.parserFormat().name().equals(format))
+          .collect(Collectors.toList());
+
+      return findBestProviderFromList(providersWithFormat);
     }
 
     return Optional.empty();
+  }
+
+  private static Optional<SMFParserProviderType> findBestProviderFromList(
+    final List<SMFParserProviderType> providersWithFormat)
+  {
+    if (providersWithFormat.isEmpty()) {
+      LOG.error("no provider has the specified format");
+      return Optional.empty();
+    }
+
+    SMFParserProviderType providerBest = providersWithFormat.get(0);
+    for (final var providerNow : providersWithFormat) {
+      final var versionBest =
+        providerBest.parserSupportedVersions().last();
+      final var versionNow =
+        providerNow.parserSupportedVersions().last();
+      if (versionNow.compareTo(versionBest) > 0) {
+        providerBest = providerNow;
+      }
+    }
+
+    LOG.debug("using provider: {}", providerBest);
+    return Optional.of(providerBest);
   }
 }

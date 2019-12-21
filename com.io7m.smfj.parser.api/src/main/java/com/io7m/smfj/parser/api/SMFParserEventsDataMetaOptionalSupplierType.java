@@ -17,7 +17,6 @@
 package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-
 import java.util.Optional;
 
 /**

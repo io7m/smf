@@ -20,18 +20,16 @@ import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import io.vavr.collection.SortedMap;
-import io.vavr.collection.SortedSet;
-import org.immutables.value.Value;
-
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * The type of schemas.
  */
 
 @com.io7m.immutables.styles.ImmutablesStyleType
-@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFSchemaType
 {
@@ -50,7 +48,7 @@ public interface SMFSchemaType
    */
 
   @Value.Parameter
-  SortedMap<SMFAttributeName, SMFSchemaAttribute> requiredAttributes();
+  Map<SMFAttributeName, SMFSchemaAttribute> requiredAttributes();
 
   /**
    * A schema may define optional attributes. An attribute is not allowed to be both required and
@@ -60,7 +58,7 @@ public interface SMFSchemaType
    */
 
   @Value.Parameter
-  SortedMap<SMFAttributeName, SMFSchemaAttribute> optionalAttributes();
+  Map<SMFAttributeName, SMFSchemaAttribute> optionalAttributes();
 
   /**
    * @return The required coordinate system, if any
@@ -112,13 +110,12 @@ public interface SMFSchemaType
   @Value.Check
   default void checkPreconditions()
   {
-    final SortedSet<SMFAttributeName> both =
-      this.requiredAttributes().keySet().intersect(
-        this.optionalAttributes().keySet());
+    final var required = new HashSet<>(this.requiredAttributes().keySet());
+    required.retainAll(this.optionalAttributes().keySet());
 
     Preconditions.checkPrecondition(
-      both,
-      both.isEmpty(),
+      required,
+      required.isEmpty(),
       s -> "The intersection of the required and optional attributes must be empty");
   }
 }

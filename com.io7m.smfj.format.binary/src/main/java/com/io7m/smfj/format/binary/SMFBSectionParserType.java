@@ -16,8 +16,7 @@
 
 package com.io7m.smfj.format.binary;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.control.Validation;
+import com.io7m.smfj.core.SMFPartialLogged;
 
 /**
  * The type of section parsers.
@@ -29,5 +28,5 @@ public interface SMFBSectionParserType
    * @return The next section, or a reason why it could not be parsed
    */
 
-  Validation<SMFParseError, SMFBSection> parse();
+  SMFPartialLogged<SMFBSection> parse();
 }

@@ -24,9 +24,11 @@ import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
+import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
@@ -41,36 +43,43 @@ import com.io7m.smfj.format.binary.v1.SMFBv1Headers;
 import com.io7m.smfj.format.binary.v1.SMFBv1SchemaIDWritableType;
 import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderByteBuffered;
 import com.io7m.smfj.format.binary.v1.SMFBv1_0HeaderType;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import io.vavr.collection.List;
-import io.vavr.control.Validation;
-import mockit.Mocked;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.core.SMFComponentType.ELEMENT_TYPE_FLOATING;
 
 public final class SMFBv1SectionParserHeaderTest
 {
-  private static final Logger LOG;
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFBv1SectionParserHeaderTest.class);
 
-  static {
-    LOG = LoggerFactory.getLogger(SMFBv1SectionParserHeaderTest.class);
+  private ArgumentCaptor<SMFErrorType> captor;
+  private SMFParserEventsBodyType events;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.events =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.captor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
   }
 
   @Test
-  public void testEmpty(
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmpty()
   {
     final SMFBDataStreamReaderType reader =
       SMFBDataStreamReader.create(
@@ -80,12 +89,12 @@ public final class SMFBv1SectionParserHeaderTest
     final SMFBSection section =
       SMFBSection.of(SMFBSectionHeader.MAGIC, 0L, 0L);
 
-    final Validation<List<SMFParseError>, SMFHeader> r =
+    final SMFPartialLogged<SMFHeader> r =
       SMFBv1Headers.parse(
         SMFFormatVersion.of(1, 0), reader, section);
 
     dumpErrors(r);
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
@@ -119,8 +128,7 @@ public final class SMFBv1SectionParserHeaderTest
   }
 
   @Test
-  public void testV1_0(
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testV1_0()
     throws Exception
   {
     final int header_size = SMFBv1_0HeaderByteBuffered.sizeInOctets();
@@ -153,7 +161,7 @@ public final class SMFBv1SectionParserHeaderTest
     final SMFSchemaIdentifier schema_id =
       SMFSchemaIdentifier.of(
         SMFSchemaName.of(
-          "AAAAAAAABBBBBBBBCCCCCCCCDDDDDDDDEEEEEEEEFFFFFFFFGGGGGGGGHHHHHHHH"),
+          "aaaaaaaabbbbbbbbccccccccddddddddeeeeeeeeffffffffgggggggghhhhhhhh"),
         1,
         2);
 
@@ -190,12 +198,12 @@ public final class SMFBv1SectionParserHeaderTest
     final SMFBSection section =
       SMFBSection.of(SMFBSectionHeader.MAGIC, header_buffer.length, 0L);
 
-    final Validation<List<SMFParseError>, SMFHeader> r =
+    final SMFPartialLogged<SMFHeader> r =
       SMFBv1Headers.parse(
         SMFFormatVersion.of(1, 0), reader, section);
 
     dumpErrors(r);
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFHeader header = r.get();
     Assertions.assertEquals(23L, header.vertexCount());
@@ -211,10 +219,13 @@ public final class SMFBv1SectionParserHeaderTest
   }
 
   private static void dumpErrors(
-    final Validation<List<SMFParseError>, SMFHeader> r)
+    final SMFPartialLogged<SMFHeader> r)
   {
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error("parse: {}", e.fullMessage()));
-    }
+    r.errors().forEach(e -> {
+      LOG.error("parse: {}: ", e.fullMessage(), e.exception());
+    });
+    r.warnings().forEach(e -> {
+      LOG.warn("parse: {}: ", e.fullMessage(), e.exception());
+    });
   }
 }

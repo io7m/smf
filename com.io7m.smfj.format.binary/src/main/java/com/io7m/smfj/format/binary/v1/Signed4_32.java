@@ -18,7 +18,6 @@ package com.io7m.smfj.format.binary.v1;
 
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
-
 import java.io.IOException;
 
 final class Signed4_32 extends BaseValues

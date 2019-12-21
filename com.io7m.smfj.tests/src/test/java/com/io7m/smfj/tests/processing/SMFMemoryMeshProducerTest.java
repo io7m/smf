@@ -43,19 +43,26 @@ import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMetadata;
-import io.vavr.collection.Map;
-import io.vavr.collection.Vector;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
 public final class SMFMemoryMeshProducerTest
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshParserTest.class);
+
   private static void checkVector4F(
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays,
     final String name)
   {
     final SMFAttributeArrayFloating4 a = (SMFAttributeArrayFloating4)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector4D v = a.values().get(0);
       Assertions.assertEquals(-127.0, v.x(), 0.0001);
@@ -84,7 +91,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayFloating3 a = (SMFAttributeArrayFloating3)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector3D v = a.values().get(0);
       Assertions.assertEquals(-127.0, v.x(), 0.0001);
@@ -110,7 +117,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayFloating2 a = (SMFAttributeArrayFloating2)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector2D v = a.values().get(0);
       Assertions.assertEquals(-127.0, v.x(), 0.0001);
@@ -133,7 +140,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayFloating1 a = (SMFAttributeArrayFloating1)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Double v = a.values().get(0);
       Assertions.assertEquals(127.0, v.doubleValue(), 0.0001);
@@ -153,7 +160,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerSigned4 a = (SMFAttributeArrayIntegerSigned4)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector4L v = a.values().get(0);
       Assertions.assertEquals(-127L, v.x());
@@ -182,7 +189,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerSigned3 a = (SMFAttributeArrayIntegerSigned3)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector3L v = a.values().get(0);
       Assertions.assertEquals(-127L, v.x());
@@ -208,7 +215,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerSigned2 a = (SMFAttributeArrayIntegerSigned2)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector2L v = a.values().get(0);
       Assertions.assertEquals(-127L, v.x());
@@ -231,7 +238,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerSigned1 a = (SMFAttributeArrayIntegerSigned1)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Long v = a.values().get(0);
       Assertions.assertEquals(127L, v.longValue());
@@ -251,7 +258,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerUnsigned4 a = (SMFAttributeArrayIntegerUnsigned4)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector4L v = a.values().get(0);
       Assertions.assertEquals(127L, v.x());
@@ -280,7 +287,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerUnsigned3 a = (SMFAttributeArrayIntegerUnsigned3)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector3L v = a.values().get(0);
       Assertions.assertEquals(127L, v.x());
@@ -306,7 +313,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerUnsigned2 a = (SMFAttributeArrayIntegerUnsigned2)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Vector2L v = a.values().get(0);
       Assertions.assertEquals(127L, v.x());
@@ -329,7 +336,7 @@ public final class SMFMemoryMeshProducerTest
     final String name)
   {
     final SMFAttributeArrayIntegerUnsigned1 a = (SMFAttributeArrayIntegerUnsigned1)
-      arrays.get(SMFAttributeName.of(name)).get();
+      arrays.get(SMFAttributeName.of(name));
     {
       final Long v = a.values().get(0);
       Assertions.assertEquals(127L, v.longValue());
@@ -350,19 +357,19 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Parse already called by SMFTestFiles.createParser
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
-    Assertions.assertEquals(0L, (long) loader.errors().size());
+    Assertions.assertEquals(0L, loader.errors().size());
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Parse already called by SMFTestFiles.createParser
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
-    Assertions.assertEquals(1L, (long) loader.errors().size());
+    Assertions.assertEquals(1L, loader.errors().size());
 
     final SMFErrorType e = loader.errors().get(0);
     Assertions.assertTrue(e.exception().get() instanceof IllegalStateException);
@@ -374,30 +381,34 @@ public final class SMFMemoryMeshProducerTest
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Parse already called by SMFTestFiles.createParser
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     Assertions.assertTrue(loader.errors().isEmpty());
 
     final SMFMemoryMesh mesh = loader.mesh();
     final Map<SMFAttributeName, SMFAttributeArrayType> arrays = mesh.arrays();
-    final Vector<Vector3L> triangles = mesh.triangles();
-    final Vector<SMFMetadata> metas = mesh.metadata();
+    final List<Vector3L> triangles = mesh.triangles();
+    final List<SMFMetadata> metas = mesh.metadata();
 
     {
       final SMFMetadata m = metas.get(0);
-      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
-      Assertions.assertEquals(0L, (long) m.schema().versionMajor());
-      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(
+        SMFSchemaName.of("com.io7m.smf.example"),
+        m.schema().name());
+      Assertions.assertEquals(0L, m.schema().versionMajor());
+      Assertions.assertEquals(0L, m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(1);
-      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
-      Assertions.assertEquals(1L, (long) m.schema().versionMajor());
-      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(
+        SMFSchemaName.of("com.io7m.smf.example"),
+        m.schema().name());
+      Assertions.assertEquals(1L, m.schema().versionMajor());
+      Assertions.assertEquals(0L, m.schema().versionMinor());
     }
 
     {
@@ -405,15 +416,17 @@ public final class SMFMemoryMeshProducerTest
       Assertions.assertEquals(
         SMFSchemaName.of("com.io7m.smf.example.different"),
         m.schema().name());
-      Assertions.assertEquals(1L, (long) m.schema().versionMajor());
-      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(1L, m.schema().versionMajor());
+      Assertions.assertEquals(0L, m.schema().versionMinor());
     }
 
     {
       final SMFMetadata m = metas.get(3);
-      Assertions.assertEquals(SMFSchemaName.of("com.io7m.smf.example"), m.schema().name());
-      Assertions.assertEquals(2L, (long) m.schema().versionMajor());
-      Assertions.assertEquals(0L, (long) m.schema().versionMinor());
+      Assertions.assertEquals(
+        SMFSchemaName.of("com.io7m.smf.example"),
+        m.schema().name());
+      Assertions.assertEquals(2L, m.schema().versionMajor());
+      Assertions.assertEquals(0L, m.schema().versionMinor());
     }
 
     Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("f16_4")));
@@ -471,8 +484,8 @@ public final class SMFMemoryMeshProducerTest
     Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_2")));
     Assertions.assertTrue(arrays.containsKey(SMFAttributeName.of("u8_1")));
 
-    Assertions.assertEquals(44L, (long) arrays.size());
-    Assertions.assertEquals(1L, (long) triangles.size());
+    Assertions.assertEquals(44L, arrays.size());
+    Assertions.assertEquals(1L, triangles.size());
 
     checkVector4F(arrays, "f16_4");
     checkVector3F(arrays, "f16_3");

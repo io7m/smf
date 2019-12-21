@@ -16,20 +16,11 @@
 
 package com.io7m.smfj.tests.validation.api;
 
-import com.io7m.smfj.core.SMFErrorType;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedSet;
-import io.vavr.control.Validation;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -37,6 +28,11 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Objects;
+import java.util.SortedSet;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class SMFSchemaSerializerContract
 {
@@ -63,7 +59,8 @@ public abstract class SMFSchemaSerializerContract
   {
     final String path = "/com/io7m/smfj/tests/validation/api/" + name;
     final InputStream stream =
-      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(path), "Stream");
+      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(
+        path), "Stream");
     return this.createParser(Paths.get(path), stream);
   }
 
@@ -73,8 +70,8 @@ public abstract class SMFSchemaSerializerContract
   {
     final SMFSchema schema;
     try (SMFSchemaParserType parser = this.resourceParser("all.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
+      Assertions.assertTrue(r.isSucceeded());
       schema = r.get();
     }
 
@@ -88,8 +85,8 @@ public abstract class SMFSchemaSerializerContract
 
       try (InputStream in = new ByteArrayInputStream(out.toByteArray())) {
         try (SMFSchemaParserType parser = this.createParser(out_path, in)) {
-          final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
-          Assertions.assertTrue(r.isValid());
+          final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
+          Assertions.assertTrue(r.isSucceeded());
           final SMFSchema written_schema = r.get();
           Assertions.assertEquals(schema, written_schema);
         }

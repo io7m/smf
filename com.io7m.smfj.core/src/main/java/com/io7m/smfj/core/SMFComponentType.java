@@ -17,7 +17,6 @@
 package com.io7m.smfj.core;
 
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.util.Objects;
 
 /**

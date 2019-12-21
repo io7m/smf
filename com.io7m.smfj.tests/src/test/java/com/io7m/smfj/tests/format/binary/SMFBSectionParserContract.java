@@ -16,14 +16,12 @@
 
 package com.io7m.smfj.tests.format.binary;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionParserType;
-import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.control.Validation;
+import java.io.IOException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 public abstract class SMFBSectionParserContract
 {
@@ -37,8 +35,8 @@ public abstract class SMFBSectionParserContract
     final SMFBSectionParserType p = this.parser("sections_zero.bin");
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1020304050607080L, s.id());
       Assertions.assertEquals(0L, s.offset());
@@ -47,8 +45,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1121314151617181L, s.id());
       Assertions.assertEquals(16L, s.offset());
@@ -57,8 +55,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1222324252627282L, s.id());
       Assertions.assertEquals(32L, s.offset());
@@ -67,8 +65,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1323334353637383L, s.id());
       Assertions.assertEquals(48L, s.offset());
@@ -77,8 +75,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1424344454647484L, s.id());
       Assertions.assertEquals(64L, s.offset());
@@ -94,8 +92,8 @@ public abstract class SMFBSectionParserContract
     final SMFBSectionParserType p = this.parser("sections_sized.bin");
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1020304050607080L, s.id());
       Assertions.assertEquals(0L, s.offset());
@@ -104,8 +102,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1121314151617181L, s.id());
       Assertions.assertEquals(32L, s.offset());
@@ -114,8 +112,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1222324252627282L, s.id());
       Assertions.assertEquals(80L, s.offset());
@@ -124,8 +122,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1323334353637383L, s.id());
       Assertions.assertEquals(144L, s.offset());
@@ -134,8 +132,8 @@ public abstract class SMFBSectionParserContract
     }
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isValid());
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isSucceeded());
       final SMFBSection s = r.get();
       Assertions.assertEquals(0x1424344454647484L, s.id());
       Assertions.assertEquals(224L, s.offset());
@@ -151,9 +149,10 @@ public abstract class SMFBSectionParserContract
     final SMFBSectionParserType p = this.parser("sections_bad_size.bin");
 
     {
-      final Validation<SMFParseError, SMFBSection> r = p.parse();
-      Assertions.assertTrue(r.isInvalid());
-      Assertions.assertTrue(r.getError().message().contains("Section sizes must be multiples of"));
+      final SMFPartialLogged<SMFBSection> r = p.parse();
+      Assertions.assertTrue(r.isFailed());
+      Assertions.assertTrue(r.errors().get(0).message().contains(
+        "Section sizes must be multiples of"));
     }
   }
 }

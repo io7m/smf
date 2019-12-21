@@ -33,8 +33,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -54,8 +54,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -73,8 +73,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -90,8 +90,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    *
    * @param x The x value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -109,8 +109,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -130,8 +130,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -149,8 +149,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -166,8 +166,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    *
    * @param x The x value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -185,8 +185,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param z The z value
    * @param w The w value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -206,8 +206,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param y The y value
    * @param z The z value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -225,8 +225,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    * @param x The x value
    * @param y The y value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors
@@ -242,8 +242,8 @@ public interface SMFSerializerDataAttributesValuesType extends Closeable
    *
    * @param x The x value
    *
-   * @throws IllegalStateException   If the header has not yet been serialized
-   * @throws IllegalStateException   If the serializer has previously failed
+   * @throws IllegalStateException    If the header has not yet been serialized
+   * @throws IllegalStateException    If the serializer has previously failed
    * @throws IllegalArgumentException If the current attribute is not of a type
    *                                  appropriate to this method call
    * @throws IOException              On I/O errors

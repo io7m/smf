@@ -20,7 +20,6 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.format.binary.SMFBDataStreamReaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
-
 import java.io.IOException;
 import java.util.Optional;
 

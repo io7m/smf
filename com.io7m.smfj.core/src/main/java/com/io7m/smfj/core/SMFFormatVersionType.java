@@ -17,9 +17,8 @@
 package com.io7m.smfj.core;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
-import org.immutables.value.Value;
-
 import java.util.Objects;
+import org.immutables.value.Value;
 
 /**
  * A format version.

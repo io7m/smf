@@ -21,30 +21,26 @@ import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
-import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.TreeMap;
-import io.vavr.control.Validation;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalInt;
 import org.apache.commons.io.input.BrokenInputStream;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalInt;
 
 public abstract class SMFSchemaParserContract
 {
@@ -55,10 +51,10 @@ public abstract class SMFSchemaParserContract
   }
 
   private static void showErrors(
-    final Validation<Seq<SMFErrorType>, SMFSchema> r)
+    final SMFPartialLogged<SMFSchema> r)
   {
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error("{}", e.fullMessage()));
+    if (r.isFailed()) {
+      r.errors().forEach(e -> LOG.error("{}", e.fullMessage()));
     }
   }
 
@@ -72,7 +68,8 @@ public abstract class SMFSchemaParserContract
   {
     final String path = "/com/io7m/smfj/tests/validation/api/" + name;
     final InputStream stream =
-      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(path), "Stream");
+      Objects.requireNonNull(SMFSchemaParserContract.class.getResourceAsStream(
+        path), "Stream");
     return this.create(Paths.get(path), stream);
   }
 
@@ -83,10 +80,10 @@ public abstract class SMFSchemaParserContract
     try (SMFSchemaParserType parser = this.create(
       Paths.get("/invalid"),
       new BrokenInputStream())) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "I/O error")));
     } catch (final IOException e) {
       LOG.debug("caught: ", e);
@@ -101,10 +98,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-unknown-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Unrecognized schema statement")));
     }
   }
@@ -115,10 +112,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-vertices-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse vertices requirement")));
     }
   }
@@ -129,10 +126,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-vertices-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse vertices requirement")));
     }
   }
@@ -143,10 +140,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-triangles-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse triangle requirement")));
     }
   }
@@ -157,10 +154,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-require-triangles-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse triangle requirement")));
     }
   }
@@ -171,10 +168,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Incorrect number of arguments")));
     }
   }
@@ -185,10 +182,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse requirement")));
     }
   }
@@ -199,10 +196,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-2.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse attribute name")));
     }
   }
@@ -213,10 +210,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-3.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Unrecognized type")));
     }
   }
@@ -227,10 +224,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-4.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse component count")));
     }
   }
@@ -241,10 +238,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-attribute-5.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse component size")));
     }
   }
@@ -254,10 +251,10 @@ public abstract class SMFSchemaParserContract
     throws Exception
   {
     try (SMFSchemaParserType parser = this.resourceParser("empty.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Empty file: Must begin with an smf-schema version declaration")));
     }
   }
@@ -268,10 +265,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "missing-ident.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Must specify a schema identifier")));
     }
   }
@@ -282,10 +279,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Incorrect number of arguments")));
     }
   }
@@ -296,10 +293,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -310,10 +307,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -324,10 +321,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-version-2.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.fullMessage().contains(
         "Unparseable version declaration")));
     }
   }
@@ -338,10 +335,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-schema-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.fullMessage().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.fullMessage().contains(
         "NumberFormatException")));
     }
   }
@@ -352,10 +349,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -366,10 +363,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -380,10 +377,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-2.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -394,10 +391,10 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "invalid-coords-3.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertFalse(r.isValid());
-      Assertions.assertTrue(r.getError().exists(e -> e.message().contains(
+      Assertions.assertFalse(r.isSucceeded());
+      Assertions.assertTrue(r.errors().stream().anyMatch(e -> e.message().contains(
         "Could not parse coordinate system")));
     }
   }
@@ -408,16 +405,18 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "valid-minimal.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isSucceeded());
       final SMFSchema schema = r.get();
       Assertions.assertEquals(
         SMFSchemaIdentifier.of(
           SMFSchemaName.of("com.io7m.smf.example"), 1, 2),
         schema.schemaIdentifier());
-      Assertions.assertEquals(Optional.empty(), schema.requiredCoordinateSystem());
-      Assertions.assertEquals(TreeMap.empty(), schema.requiredAttributes());
+      Assertions.assertEquals(
+        Optional.empty(),
+        schema.requiredCoordinateSystem());
+      Assertions.assertEquals(Map.of(), schema.requiredAttributes());
     }
   }
 
@@ -427,20 +426,20 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isSucceeded());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
       Assertions.assertEquals(1L, schema.requiredAttributes().size());
-      final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name).get();
+      final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name);
       Assertions.assertEquals(a_name, a.name());
       Assertions.assertEquals(
         SMFComponentType.ELEMENT_TYPE_FLOATING,
         a.requiredComponentType().get());
-      Assertions.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
-      Assertions.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
+      Assertions.assertEquals(4L, a.requiredComponentCount().getAsInt());
+      Assertions.assertEquals(32L, a.requiredComponentSize().getAsInt());
     }
   }
 
@@ -450,14 +449,14 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-1.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isSucceeded());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
       Assertions.assertEquals(1L, schema.requiredAttributes().size());
-      final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name).get();
+      final SMFSchemaAttribute a = schema.requiredAttributes().get(a_name);
       Assertions.assertEquals(a_name, a.name());
       Assertions.assertEquals(Optional.empty(), a.requiredComponentType());
       Assertions.assertEquals(OptionalInt.empty(), a.requiredComponentCount());
@@ -471,20 +470,20 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "valid-attribute-2.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isSucceeded());
       final SMFSchema schema = r.get();
 
       final SMFAttributeName a_name = SMFAttributeName.of("x");
       Assertions.assertEquals(1L, schema.optionalAttributes().size());
-      final SMFSchemaAttribute a = schema.optionalAttributes().get(a_name).get();
+      final SMFSchemaAttribute a = schema.optionalAttributes().get(a_name);
       Assertions.assertEquals(a_name, a.name());
       Assertions.assertEquals(
         SMFComponentType.ELEMENT_TYPE_FLOATING,
         a.requiredComponentType().get());
-      Assertions.assertEquals(4L, (long) a.requiredComponentCount().getAsInt());
-      Assertions.assertEquals(32L, (long) a.requiredComponentSize().getAsInt());
+      Assertions.assertEquals(4L, a.requiredComponentCount().getAsInt());
+      Assertions.assertEquals(32L, a.requiredComponentSize().getAsInt());
     }
   }
 
@@ -494,9 +493,9 @@ public abstract class SMFSchemaParserContract
   {
     try (SMFSchemaParserType parser = this.resourceParser(
       "valid-coords-0.smfs")) {
-      final Validation<Seq<SMFErrorType>, SMFSchema> r = parser.parseSchema();
+      final SMFPartialLogged<SMFSchema> r = parser.parseSchema();
       showErrors(r);
-      Assertions.assertTrue(r.isValid());
+      Assertions.assertTrue(r.isSucceeded());
       final SMFSchema schema = r.get();
       Assertions.assertEquals(
         SMFSchemaIdentifier.of(
@@ -510,7 +509,7 @@ public abstract class SMFSchemaParserContract
             CAxis.AXIS_NEGATIVE_Z),
           SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE)),
         schema.requiredCoordinateSystem());
-      Assertions.assertEquals(TreeMap.empty(), schema.requiredAttributes());
+      Assertions.assertEquals(Map.of(), schema.requiredAttributes());
     }
   }
 }

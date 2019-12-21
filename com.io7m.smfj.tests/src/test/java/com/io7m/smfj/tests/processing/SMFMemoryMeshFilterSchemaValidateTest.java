@@ -16,29 +16,27 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterSchemaValidate;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
 public final class SMFMemoryMeshFilterSchemaValidateTest extends
   SMFMemoryMeshFilterContract
@@ -52,34 +50,34 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
         List.of());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseOk0()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterSchemaValidate.parse(
         Optional.empty(),
         1,
         List.of("file.txt"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     final SMFMemoryMeshFilterType c = r.get();
     Assertions.assertEquals(c.name(), "schema-validate");
   }
@@ -90,9 +88,9 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final Path file = this.filesystem.getPath("/schema.smfs");
@@ -113,14 +111,14 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error(e.message()));
+    if (r.isFailed()) {
+      r.errors().forEach(e -> LOG.error(e.message()));
     }
 
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     Assertions.assertEquals(loader.mesh(), r.get());
   }
 
@@ -130,9 +128,9 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final Path file = this.filesystem.getPath("/schema.smfs");
@@ -153,14 +151,14 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error(e.message()));
+    if (r.isFailed()) {
+      r.errors().forEach(e -> LOG.error(e.message()));
     }
 
-    Assertions.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isSucceeded());
   }
 
   @Test
@@ -169,9 +167,9 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final Path file = this.filesystem.getPath("/schema.smfs");
@@ -185,13 +183,13 @@ public final class SMFMemoryMeshFilterSchemaValidateTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterSchemaValidate.create(file);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(context, loader.mesh());
 
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error(e.message()));
+    if (r.isFailed()) {
+      r.errors().forEach(e -> LOG.error(e.message()));
     }
 
-    Assertions.assertFalse(r.isValid());
+    Assertions.assertFalse(r.isSucceeded());
   }
 }

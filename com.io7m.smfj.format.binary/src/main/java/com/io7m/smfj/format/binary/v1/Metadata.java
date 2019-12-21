@@ -24,12 +24,11 @@ import com.io7m.smfj.format.binary.SMFBAlignment;
 import com.io7m.smfj.format.binary.SMFBDataStreamWriterType;
 import com.io7m.smfj.format.binary.SMFBSection;
 import com.io7m.smfj.format.binary.SMFBSectionMetadata;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 final class Metadata
 {

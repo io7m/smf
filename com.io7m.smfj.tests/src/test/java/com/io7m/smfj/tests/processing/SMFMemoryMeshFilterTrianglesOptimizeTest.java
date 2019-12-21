@@ -17,26 +17,22 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
-import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimize;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterTrianglesOptimizeConfiguration;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
 public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   SMFMemoryMeshFilterContract
@@ -71,9 +67,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMesh mesh,
     final int bits)
   {
-    final long max = (long) (Math.pow(2.0, (double) bits) - 1.0);
+    final long max = (long) (Math.pow(2.0, bits) - 1.0);
 
-    final Vector<Vector3L> triangles = mesh.triangles();
+    final List<Vector3L> triangles = mesh.triangles();
     for (int index = 0; index < triangles.size(); ++index) {
       final Vector3L triangle = triangles.get(index);
       Assertions.assertTrue(Long.compareUnsigned(triangle.x(), max) <= 0);
@@ -85,78 +81,78 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong2()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("16"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("16", "x"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong4()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("16", "validate", "x"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseOk0()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("16", "validate"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
   }
 
   @Test
   public void testParseOk1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("16", "no-validate"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
   }
 
   @Test
   public void testParseOk2()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterTrianglesOptimize.parse(
         Optional.empty(),
         1,
         List.of("-", "no-validate"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
   }
 
   @Test
@@ -165,9 +161,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "bad_triangle.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -178,13 +174,12 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e);
-      return SMFVoid.void_();
     });
   }
 
@@ -194,9 +189,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -208,9 +203,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -230,9 +225,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -244,9 +239,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -267,9 +262,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -281,15 +276,17 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assertions.assertEquals(8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(
+      8L,
+      mesh0.header().triangles().triangleIndexSizeBits());
     Assertions.assertEquals(
       32L,
       mesh1.header().triangles().triangleIndexSizeBits());
@@ -303,9 +300,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle8.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -317,15 +314,17 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
     checkMeshesSame(mesh0, mesh1);
 
-    Assertions.assertEquals(8L, mesh0.header().triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(
+      8L,
+      mesh0.header().triangles().triangleIndexSizeBits());
     Assertions.assertEquals(
       64L,
       mesh1.header().triangles().triangleIndexSizeBits());
@@ -339,9 +338,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -353,9 +352,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -364,7 +363,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     Assertions.assertEquals(
       16L,
       mesh0.header().triangles().triangleIndexSizeBits());
-    Assertions.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(
+      8L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -375,9 +376,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -389,9 +390,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -413,9 +414,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -427,9 +428,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -451,9 +452,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle16.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -465,9 +466,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -489,9 +490,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -503,9 +504,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -514,7 +515,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     Assertions.assertEquals(
       32L,
       mesh0.header().triangles().triangleIndexSizeBits());
-    Assertions.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(
+      8L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -525,9 +528,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -539,9 +542,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -563,9 +566,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -577,9 +580,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -601,9 +604,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle32.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -615,9 +618,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -639,9 +642,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -653,9 +656,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -664,7 +667,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     Assertions.assertEquals(
       64L,
       mesh0.header().triangles().triangleIndexSizeBits());
-    Assertions.assertEquals(8L, mesh1.header().triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(
+      8L,
+      mesh1.header().triangles().triangleIndexSizeBits());
 
     checkTriangles(mesh1, 8);
   }
@@ -675,9 +680,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -689,9 +694,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -713,9 +718,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -727,9 +732,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();
@@ -751,9 +756,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "triangle64.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFMemoryMeshFilterTrianglesOptimizeConfiguration config =
@@ -765,9 +770,9 @@ public final class SMFMemoryMeshFilterTrianglesOptimizeTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterTrianglesOptimize.create(config);
 
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh0 = loader.mesh();
     final SMFMemoryMesh mesh1 = r.get();

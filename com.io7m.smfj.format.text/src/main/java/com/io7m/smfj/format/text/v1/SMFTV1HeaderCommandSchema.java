@@ -23,9 +23,8 @@ import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
+import java.util.List;
 import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
@@ -77,7 +76,7 @@ public final class SMFTV1HeaderCommandSchema
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 4) {
+    if (line.size() == 4) {
       try {
         final SMFSchemaName schema =
           SMFSchemaName.of(line.get(1));

@@ -25,12 +25,6 @@ import com.io7m.smfj.format.binary.SMFBSectionTriangles;
 import com.io7m.smfj.format.binary.v1.SMFBv1SectionParserTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.Expectations;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
@@ -38,13 +32,32 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.BitSet;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 public final class SMFBv1SectionParserTrianglesTest
 {
+  private ArgumentCaptor<SMFErrorType> captor;
+  private SMFParserEventsBodyType eventsBody;
+  private SMFParserEventsDataTrianglesType eventsTriangles;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.eventsBody =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.eventsTriangles =
+      Mockito.mock(SMFParserEventsDataTrianglesType.class);
+    this.captor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+  }
+
   @Test
-  public void testEmpty(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmpty()
   {
     final BitSet state = new BitSet();
 
@@ -58,36 +71,29 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(1L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-      events_tri.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.exception().isPresent()
-            && e.exception().get() instanceof IOException
-            && e.message().contains(
-            "Failed to read the required number of octets");
-        }
-      }));
+    p.parse(header, this.eventsBody, reader);
 
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onError(this.captor.capture());
 
-    p.parse(header, events_body, reader);
+    final var e = this.captor.getValue();
+    Assertions.assertTrue(
+      e.exception().isPresent()
+        && e.exception().get() instanceof IOException
+        && e.message().contains("Failed to read the required number of octets"));
   }
 
   @Test
-  public void testEmptyIgnored(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmptyIgnored()
   {
     final BitSet state = new BitSet();
 
@@ -101,23 +107,18 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(1L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.empty();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.empty());
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
   }
 
   @Test
-  public void testEmptyNoneExpected(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testEmptyNoneExpected()
   {
     final BitSet state = new BitSet();
 
@@ -131,24 +132,21 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(0L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
   }
 
   @Test
-  public void testTriangle8(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testTriangle8()
   {
     final BitSet state = new BitSet();
 
@@ -162,26 +160,25 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 8))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
-      events_tri.onDataTriangle(0L, 1L, 2L);
-      events_tri.onDataTriangle(0L, 2L, 3L);
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 1L, 2L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 2L, 3L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
   }
 
   @Test
-  public void testTriangle16(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testTriangle16()
   {
     final BitSet state = new BitSet();
 
@@ -206,26 +203,25 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 16))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
-      events_tri.onDataTriangle(0L, 1L, 2L);
-      events_tri.onDataTriangle(0L, 2L, 3L);
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 1L, 2L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 2L, 3L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
   }
 
   @Test
-  public void testTriangle32(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testTriangle32()
   {
     final BitSet state = new BitSet();
 
@@ -250,26 +246,25 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 32))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
-      events_tri.onDataTriangle(0L, 1L, 2L);
-      events_tri.onDataTriangle(0L, 2L, 3L);
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 1L, 2L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 2L, 3L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
   }
 
   @Test
-  public void testTriangle64(
-    final @Mocked SMFParserEventsDataTrianglesType events_tri,
-    final @Mocked SMFParserEventsBodyType events_body)
+  public void testTriangle64()
   {
     final BitSet state = new BitSet();
 
@@ -294,19 +289,20 @@ public final class SMFBv1SectionParserTrianglesTest
         .setTriangles(SMFTriangles.of(2L, 64))
         .build();
 
-    final SMFBv1SectionParserTriangles p = new SMFBv1SectionParserTriangles(
-      state);
+    final SMFBv1SectionParserTriangles p =
+      new SMFBv1SectionParserTriangles(state);
     Assertions.assertEquals(SMFBSectionTriangles.MAGIC, p.magic());
 
-    new Expectations()
-    {{
-      events_body.onTriangles();
-      this.result = Optional.of(events_tri);
-      events_tri.onDataTriangle(0L, 1L, 2L);
-      events_tri.onDataTriangle(0L, 2L, 3L);
-      events_tri.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.eventsBody.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    p.parse(header, events_body, reader);
+    p.parse(header, this.eventsBody, reader);
+
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 1L, 2L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTriangle(0L, 2L, 3L);
+    Mockito.verify(this.eventsTriangles, new Times(1))
+      .onDataTrianglesFinish();
   }
 }
