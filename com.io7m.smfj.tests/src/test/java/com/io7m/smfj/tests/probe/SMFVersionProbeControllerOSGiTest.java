@@ -17,7 +17,7 @@
 package com.io7m.smfj.tests.probe;
 
 import com.io7m.smfj.core.SMFPartialLogged;
-import com.io7m.smfj.format.binary.SMFFormatBinary;
+import com.io7m.smfj.format.binary2.SMFFormatBinary2;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerOSGi;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
@@ -57,7 +57,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r = c.probe(() -> new ByteArrayInputStream(new byte[0]));
 
@@ -72,7 +72,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smft"));
@@ -91,7 +91,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smft"));
@@ -107,16 +107,16 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
-      c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smfb"));
+      c.probe(() -> resource("/com/io7m/smfj/tests/probe/smfFull_validBasic0.smfb"));
 
     dumpValidation(r);
     Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assertions.assertEquals(1L, v.version().major());
+    Assertions.assertEquals(2L, v.version().major());
     Assertions.assertEquals(0L, v.version().minor());
   }
 
@@ -126,7 +126,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smfb"));
@@ -142,7 +142,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/garbage.smfb"));
@@ -158,7 +158,7 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
     final var r =
       c.probe(() -> new BrokenInputStream());

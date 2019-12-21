@@ -45,11 +45,6 @@
         </dependency>
         <dependency>
           <groupId>${project.groupId}</groupId>
-          <artifactId>com.io7m.smfj.format.binary</artifactId>
-          <version>${project.version}</version>
-        </dependency>
-        <dependency>
-          <groupId>${project.groupId}</groupId>
           <artifactId>com.io7m.smfj.format.obj</artifactId>
           <version>${project.version}</version>
         </dependency>

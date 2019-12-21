@@ -26,7 +26,6 @@
     <module>com.io7m.smfj.cmdline</module>
     <module>com.io7m.smfj.core</module>
     <module>com.io7m.smfj.documentation</module>
-    <module>com.io7m.smfj.format.binary</module>
     <module>com.io7m.smfj.format.binary2</module>
     <module>com.io7m.smfj.format.obj</module>
     <module>com.io7m.smfj.format.text</module>
@@ -141,11 +140,6 @@
         <groupId>com.io7m.jaffirm</groupId>
         <artifactId>com.io7m.jaffirm.core</artifactId>
         <version>3.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.jpra</groupId>
-        <artifactId>com.io7m.jpra.runtime.java</artifactId>
-        <version>0.6.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jcoords</groupId>
@@ -286,13 +280,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- JPRA plugin for generating cursors. -->
-        <plugin>
-          <groupId>com.io7m.jpra</groupId>
-          <artifactId>com.io7m.jpra.maven.plugin</artifactId>
-          <version>0.6.0</version>
-        </plugin>
-
         <!-- KStructural Maven Plugin -->
         <plugin>
           <groupId>com.io7m.kstructural</groupId>

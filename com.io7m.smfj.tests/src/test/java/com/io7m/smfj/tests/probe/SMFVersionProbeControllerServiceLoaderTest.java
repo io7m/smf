@@ -104,13 +104,13 @@ public final class SMFVersionProbeControllerServiceLoaderTest
       new SMFVersionProbeControllerServiceLoader();
 
     final var r =
-      c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smfb"));
+      c.probe(() -> resource("/com/io7m/smfj/tests/probe/smfFull_validBasic0.smfb"));
 
     dumpValidation(r);
     Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assertions.assertEquals(1L, v.version().major());
+    Assertions.assertEquals(2L, v.version().major());
     Assertions.assertEquals(0L, v.version().minor());
   }
 
