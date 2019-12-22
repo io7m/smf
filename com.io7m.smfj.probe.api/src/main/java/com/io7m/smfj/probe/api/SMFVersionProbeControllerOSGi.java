@@ -32,9 +32,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
  * An OSGi probe controller component.
  */
 
-@Component(
-  immediate = true,
-  service = SMFVersionProbeControllerType.class)
+@Component(service = SMFVersionProbeControllerType.class)
 public final class SMFVersionProbeControllerOSGi
   implements SMFVersionProbeControllerType
 {

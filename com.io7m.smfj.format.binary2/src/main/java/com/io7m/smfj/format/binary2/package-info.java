@@ -19,11 +19,15 @@
  * The binary2 format.
  */
 
-@Export
-@Header(
+@org.osgi.annotation.bundle.Export
+
+@org.osgi.annotation.bundle.Header(
   name = "Automatic-Module-Name",
   value = "com.io7m.smfj.format.binary2")
-package com.io7m.smfj.format.binary2;
 
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.bundle.Header;
+@org.osgi.annotation.bundle.Capability(
+  namespace = "com.io7m.smf.format",
+  attribute = "name=binary",
+  version = "2.0")
+
+package com.io7m.smfj.format.binary2;
