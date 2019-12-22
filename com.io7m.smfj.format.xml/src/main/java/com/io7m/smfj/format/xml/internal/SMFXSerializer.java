@@ -69,6 +69,9 @@ public final class SMFXSerializer implements SMFSerializerType
       this.writer.writeAttribute(
         "vertexCount",
         Long.toUnsignedString(header.vertexCount()));
+      this.writer.writeAttribute(
+        "endianness",
+        header.dataByteOrder().toString());
 
       this.writeHeaderCoordinateSystem(namespaceURI, header.coordinateSystem());
       this.writeHeaderTriangles(namespaceURI, header.triangles());

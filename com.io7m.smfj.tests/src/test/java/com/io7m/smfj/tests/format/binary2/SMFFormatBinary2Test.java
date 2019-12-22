@@ -20,6 +20,7 @@ package com.io7m.smfj.tests.format.binary2;
 
 import com.io7m.smfj.format.binary2.SMFFormatBinary2;
 import com.io7m.smfj.format.xml.SMFFormatXML;
+import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.tests.processing.SMFMemoryMeshTesting;
@@ -75,6 +76,38 @@ public final class SMFFormatBinary2Test
     Assertions.assertFalse(
       meshes.errors().isEmpty(),
       "At least one error must have been logged");
+  }
+
+  @Test
+  public void testValid0()
+    throws Exception
+  {
+    final var format = new SMFFormatBinary2();
+    final var meshes = SMFMemoryMeshProducer.create();
+
+    try (var stream = resource("smfFull_validAll0.smfb")) {
+      try (var parser = format.parserCreateSequential(meshes, TEST, stream)) {
+        parser.parse();
+      }
+    }
+    logEverything(meshes);
+    SMFMemoryMeshTesting.checkStandardMesh(meshes.mesh());
+  }
+
+  @Test
+  public void testValid1()
+    throws Exception
+  {
+    final var format = new SMFFormatBinary2();
+    final var meshes = SMFMemoryMeshProducer.create();
+
+    try (var stream = resource("smfFull_validAll1.smfb")) {
+      try (var parser = format.parserCreateSequential(meshes, TEST, stream)) {
+        parser.parse();
+      }
+    }
+    logEverything(meshes);
+    SMFMemoryMeshTesting.checkStandardMesh(meshes.mesh());
   }
 
   @Test

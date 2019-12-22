@@ -24,6 +24,7 @@ import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
+import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -72,6 +73,8 @@ public final class SMFB2ParsingSectionSMF
     /* attributeCount */
     size += 4L;
     /* coordinateSystem */
+    size += 4L;
+    /* dataByteOrder */
     size += 4L;
     return size;
   }
@@ -138,79 +141,32 @@ public final class SMFB2ParsingSectionSMF
     final var coordinateOpt =
       new SMFB2ParsingCoordinateSystem().parse(context);
 
-    if (coordinateOpt.isPresent()) {
-      builder.setCoordinateSystem(coordinateOpt.get());
-      return OptionalLong.of(attributeCount);
+    if (coordinateOpt.isEmpty()) {
+      return OptionalLong.empty();
+    }
+    builder.setCoordinateSystem(coordinateOpt.get());
+
+    final var dataByteOrder =
+      reader.readU32BE("dataByteOrder");
+
+    final ByteOrder order;
+    if (dataByteOrder == 0L) {
+      order = ByteOrder.BIG_ENDIAN;
+    } else if (dataByteOrder == 1L) {
+      order = ByteOrder.LITTLE_ENDIAN;
+    } else {
+      context.publishError(SMFB2ParseErrors.errorOf(
+        reader,
+        "Unrecognized byte order: Expected big-endian (0x0) or little-endian (0x1), but received 0x%s",
+        Long.toUnsignedString(dataByteOrder, 16)
+      ));
+      return OptionalLong.empty();
     }
 
-    return OptionalLong.empty();
+    builder.setDataByteOrder(order);
+    LOG.trace("parsed byte order: {}", order);
+    return OptionalLong.of(attributeCount);
   }
-
-  //  public static void write(
-  //    final BSSWriterType writer,
-  //    final SMFHeader header)
-  //    throws IOException
-  //  {
-  //    final var dataSize =
-  //      fieldsSize() + ((long) header.attributesInOrder().size() * attributeSize());
-  //
-  //    writer.writeU64BE(magic());
-  //    writer.writeU64BE(dataSize);
-  //
-  //    try (var subWriter =
-  //           writer.createSubWriterAtBounded(
-  //             "data",
-  //             writer.offsetCurrentRelative(),
-  //             dataSize)) {
-  //
-  //      subWriter.writeU32BE("fieldSize", fieldsSize());
-  //      subWriter.writeU64BE("vertexCount", header.vertexCount());
-  //
-  //      final SMFTriangles triangles = header.triangles();
-  //      subWriter.writeU64BE(
-  //        "triangleCount", triangles.triangleCount());
-  //      subWriter.writeU32BE(
-  //        "triangleSizeBits",
-  //        Integer.toUnsignedLong(triangles.triangleIndexSizeBits()));
-  //      subWriter.writeU64BE(
-  //        "attributeCount",
-  //        Integer.toUnsignedLong(header.attributesInOrder().length()));
-  //
-  //      writeCoordinateSystem(subWriter, header.coordinateSystem());
-  //      for (final var attribute : header.attributesInOrder()) {
-  //        writeAttribute(writer, attribute);
-  //      }
-  //    }
-  //  }
-  //
-  //  private static void writeAttribute(
-  //    final BSSWriterType writer,
-  //    final SMFAttribute attribute)
-  //    throws IOException
-  //  {
-  //    try (var subWriter =
-  //           writer.createSubWriterAtBounded(
-  //             "attribute",
-  //             writer.offsetCurrentRelative(),
-  //             attributeSize())) {
-  //
-  //      final SMFAttributeName name = attribute.name();
-  //      final var nameDst = new byte[64];
-  //      final var nameSrc = name.value().getBytes(UTF_8);
-  //      System.arraycopy(nameSrc, 0, nameDst, 0, nameSrc.length);
-  //
-  //      subWriter.writeU32BE(
-  //        "nameLength",
-  //        Integer.toUnsignedLong(name.value().length()));
-  //      subWriter.writeBytes("name", nameDst);
-  //      subWriter.writeU32BE(
-  //        "kind",
-  //        componentToOrdinal(attribute.componentType()));
-  //      subWriter.writeU32BE("count", attribute.componentCount());
-  //      subWriter.writeU32BE("size", attribute.componentSizeBits());
-  //    }
-  //  }
-
 
   @Override
   public Optional<SMFHeader> parse(final SMFB2ParsingContextType context)

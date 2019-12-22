@@ -37,6 +37,7 @@ import com.io7m.smfj.tests.TestDirectories;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.net.URI;
+import java.nio.ByteOrder;
 import java.nio.file.Files;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
@@ -64,6 +65,9 @@ public final class SMFLargeRoundTripTest
   private static <T extends SMFParserProviderType & SMFSerializerProviderType>
   void runTrips(
     final String fileName,
+    final ByteOrder byteOrder,
+    final int triangleSize,
+    final T initialFormat,
     final List<T> formats)
     throws Exception
   {
@@ -72,9 +76,8 @@ public final class SMFLargeRoundTripTest
 
     final var memoryMeshes = SMFMemoryMeshProducer.create();
 
-    final var text = new SMFFormatText();
     try (var stream = resource(fileName)) {
-      try (var parser = text.parserCreateSequential(
+      try (var parser = initialFormat.parserCreateSequential(
         memoryMeshes,
         URI.create("urn:initial"),
         stream)) {
@@ -82,7 +85,20 @@ public final class SMFLargeRoundTripTest
       }
     }
 
-    var meshCurrent = memoryMeshes.mesh();
+    final var origHeader =
+      memoryMeshes.mesh()
+        .header();
+
+    final var newHeader =
+      origHeader
+        .withDataByteOrder(byteOrder)
+        .withTriangles(origHeader.triangles()
+                         .withTriangleIndexSizeBits(triangleSize));
+
+    var meshCurrent =
+      memoryMeshes.mesh()
+        .withHeader(newHeader);
+
     var meshPrevious = meshCurrent;
     int process = 0;
     for (final var format : formats) {
@@ -263,14 +279,305 @@ public final class SMFLargeRoundTripTest
   }
 
   @Test
-  public void testRoundTrip()
+  public void testRoundTrip_BE_8_TBXTBX()
     throws Exception
   {
     runTrips(
       "all.smft",
+      ByteOrder.BIG_ENDIAN,
+      8,
+      new SMFFormatText(),
       List.of(
         new SMFFormatText(),
         new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_BE_8_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.BIG_ENDIAN,
+      8,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_8_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.LITTLE_ENDIAN,
+      8,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_8_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.LITTLE_ENDIAN,
+      8,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+
+  @Test
+  public void testRoundTrip_BE_16_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.BIG_ENDIAN,
+      16,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_BE_16_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.BIG_ENDIAN,
+      16,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_16_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.LITTLE_ENDIAN,
+      16,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_16_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.LITTLE_ENDIAN,
+      16,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+
+  @Test
+  public void testRoundTrip_BE_32_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.BIG_ENDIAN,
+      32,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_BE_32_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.BIG_ENDIAN,
+      32,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_32_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.LITTLE_ENDIAN,
+      32,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_32_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.LITTLE_ENDIAN,
+      32,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+
+  @Test
+  public void testRoundTrip_BE_64_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.BIG_ENDIAN,
+      64,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_BE_64_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.BIG_ENDIAN,
+      64,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_64_TBXTBX()
+    throws Exception
+  {
+    runTrips(
+      "all.smft",
+      ByteOrder.LITTLE_ENDIAN,
+      64,
+      new SMFFormatText(),
+      List.of(
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML(),
+        new SMFFormatText(),
+        new SMFFormatBinary2(),
+        new SMFFormatXML()
+      ));
+  }
+
+  @Test
+  public void testRoundTrip_LE_64_BTXBTX()
+    throws Exception
+  {
+    runTrips(
+      "smfFull_validAll0.smfb",
+      ByteOrder.LITTLE_ENDIAN,
+      64,
+      new SMFFormatBinary2(),
+      List.of(
+        new SMFFormatBinary2(),
+        new SMFFormatText(),
         new SMFFormatXML(),
         new SMFFormatText(),
         new SMFFormatBinary2(),

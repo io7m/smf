@@ -23,12 +23,12 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import java.io.IOException;
 import java.util.Objects;
 
-abstract class Triangles implements SMFSerializerDataTrianglesType
+public abstract class Triangles implements SMFSerializerDataTrianglesType
 {
   private final BSSWriterSequentialType writer;
   private final SMFHeader header;
 
-  Triangles(
+  protected Triangles(
     final BSSWriterSequentialType inWriter,
     final SMFHeader inHeader)
   {

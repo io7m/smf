@@ -44,41 +44,57 @@ public final class SMFProcessingMainCommands extends
   {
     return Map.ofEntries(
       Map.entry(
+        SMFMemoryMeshFilterEndiannessSet.NAME,
+        SMFMemoryMeshFilterEndiannessSet::parse
+      ),
+      Map.entry(
         SMFMemoryMeshFilterAttributeResample.NAME,
-        SMFMemoryMeshFilterAttributeResample::parse),
+        SMFMemoryMeshFilterAttributeResample::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterApplicationInfoAdd.NAME,
-        SMFMemoryMeshFilterApplicationInfoAdd::parse),
+        SMFMemoryMeshFilterApplicationInfoAdd::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterMetadataAdd.NAME,
-        SMFMemoryMeshFilterMetadataAdd::parse),
+        SMFMemoryMeshFilterMetadataAdd::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterMetadataRemove.NAME,
-        SMFMemoryMeshFilterMetadataRemove::parse),
+        SMFMemoryMeshFilterMetadataRemove::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterSchemaValidate.NAME,
-        SMFMemoryMeshFilterSchemaValidate::parse),
+        SMFMemoryMeshFilterSchemaValidate::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterAttributeRemove.NAME,
-        SMFMemoryMeshFilterAttributeRemove::parse),
+        SMFMemoryMeshFilterAttributeRemove::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterAttributeRename.NAME,
-        SMFMemoryMeshFilterAttributeRename::parse),
+        SMFMemoryMeshFilterAttributeRename::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterAttributeTrim.NAME,
-        SMFMemoryMeshFilterAttributeTrim::parse),
+        SMFMemoryMeshFilterAttributeTrim::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterCheck.NAME,
-        SMFMemoryMeshFilterCheck::parse),
+        SMFMemoryMeshFilterCheck::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterSchemaCheck.NAME,
-        SMFMemoryMeshFilterSchemaCheck::parse),
+        SMFMemoryMeshFilterSchemaCheck::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterSchemaSet.NAME,
-        SMFMemoryMeshFilterSchemaSet::parse),
+        SMFMemoryMeshFilterSchemaSet::parse
+      ),
       Map.entry(
         SMFMemoryMeshFilterTrianglesOptimize.NAME,
-        SMFMemoryMeshFilterTrianglesOptimize::parse)
+        SMFMemoryMeshFilterTrianglesOptimize::parse
+      )
     );
   }
 }

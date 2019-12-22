@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <sx:SMF xmlns:sx="urn:com.io7m.smf:xml:2:0">
-  <sx:Header vertexCount="0">
+  <sx:Header vertexCount="0" endianness="BIG_ENDIAN">
     <sx:CoordinateSystem right="AXIS_POSITIVE_X"
                          up="AXIS_POSITIVE_Y"
                          forward="AXIS_NEGATIVE_Z"

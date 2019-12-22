@@ -34,15 +34,21 @@ import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionHeader;
 import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionMetadata;
 import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionSMF;
 import com.io7m.smfj.format.binary2.internal.serial.SMFB2SerializerDataAttributesNonInterleaved;
-import com.io7m.smfj.format.binary2.internal.serial.Triangles16;
-import com.io7m.smfj.format.binary2.internal.serial.Triangles32;
-import com.io7m.smfj.format.binary2.internal.serial.Triangles64;
 import com.io7m.smfj.format.binary2.internal.serial.Triangles8;
+import com.io7m.smfj.format.binary2.internal.serial.be.WriterBETriangles16;
+import com.io7m.smfj.format.binary2.internal.serial.be.WriterBETriangles32;
+import com.io7m.smfj.format.binary2.internal.serial.be.WriterBETriangles64;
+import com.io7m.smfj.format.binary2.internal.serial.le.WriterLETriangles16;
+import com.io7m.smfj.format.binary2.internal.serial.le.WriterLETriangles32;
+import com.io7m.smfj.format.binary2.internal.serial.le.WriterLETriangles64;
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
 import java.io.IOException;
 import java.util.Objects;
+
+import static java.nio.ByteOrder.BIG_ENDIAN;
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 final class SMFB2Serializer implements SMFSerializerType
 {
@@ -113,15 +119,47 @@ final class SMFB2Serializer implements SMFSerializerType
     final var subWriter =
       this.writer.createSubWriterBounded("triangles", sizeAlign);
 
+    final var byteOrder = this.headerReceived.dataByteOrder();
+    if (Objects.equals(byteOrder, BIG_ENDIAN)) {
+      return this.writeTrianglesBE(triangles, subWriter);
+    }
+    if (Objects.equals(byteOrder, LITTLE_ENDIAN)) {
+      return this.writeTrianglesLE(triangles, subWriter);
+    }
+    throw new UnreachableCodeException();
+  }
+
+  private SMFSerializerDataTrianglesType writeTrianglesLE(
+    final SMFTriangles triangles,
+    final BSSWriterSequentialType subWriter)
+  {
     switch (triangles.triangleIndexSizeBits()) {
       case 8:
         return new Triangles8(subWriter, this.headerReceived);
       case 16:
-        return new Triangles16(subWriter, this.headerReceived);
+        return new WriterLETriangles16(subWriter, this.headerReceived);
       case 32:
-        return new Triangles32(subWriter, this.headerReceived);
+        return new WriterLETriangles32(subWriter, this.headerReceived);
       case 64:
-        return new Triangles64(subWriter, this.headerReceived);
+        return new WriterLETriangles64(subWriter, this.headerReceived);
+      default:
+        throw new UnreachableCodeException();
+    }
+  }
+
+  private SMFSerializerDataTrianglesType writeTrianglesBE(
+    final SMFTriangles triangles,
+    final BSSWriterSequentialType subWriter)
+  {
+    switch (triangles.triangleIndexSizeBits()) {
+      case 8:
+        return new Triangles8(subWriter, this.headerReceived);
+      case 16:
+        return new WriterBETriangles16(subWriter, this.headerReceived);
+      case 32:
+        return new WriterBETriangles32(subWriter, this.headerReceived);
+      case 64:
+        return new WriterBETriangles64(subWriter, this.headerReceived);
       default:
         throw new UnreachableCodeException();
     }

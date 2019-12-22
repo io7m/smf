@@ -127,4 +127,18 @@ public final class SMFFormatXMLTest
   {
     checkFailure("invalid4.smfx");
   }
+
+  @Test
+  public void testInvalid5()
+    throws Exception
+  {
+    checkFailure("invalid5.smfx");
+  }
+
+  @Test
+  public void testInvalid6()
+    throws Exception
+  {
+    checkFailure("invalid6.smfx");
+  }
 }

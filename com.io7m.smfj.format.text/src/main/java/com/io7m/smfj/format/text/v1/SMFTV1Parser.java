@@ -113,6 +113,8 @@ public final class SMFTV1Parser implements SMFParserSequentialType
       new SMFTV1HeaderCommandTriangles(this.reader, this.header_builder));
     this.registerHeaderCommand(
       new SMFTV1HeaderCommandVertices(this.reader, this.header_builder));
+    this.registerHeaderCommand(
+      new SMFTV1HeaderCommandEndianness(this.reader, this.header_builder));
 
     this.body_commands = new TreeMap<>();
     this.registerBodyCommand(

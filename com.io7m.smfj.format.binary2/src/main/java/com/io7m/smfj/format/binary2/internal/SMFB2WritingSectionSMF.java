@@ -18,10 +18,13 @@
 package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSWriterSequentialType;
+import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
+import java.nio.ByteOrder;
+import java.util.Objects;
 
 public final class SMFB2WritingSectionSMF
   implements SMFB2StructureWriterType<SMFHeader>
@@ -101,6 +104,15 @@ public final class SMFB2WritingSectionSMF
 
     new SMFB2WritingCoordinateSystem()
       .write(writer, value.coordinateSystem());
+
+    final var byteOrder = value.dataByteOrder();
+    if (Objects.equals(byteOrder, ByteOrder.BIG_ENDIAN)) {
+      writer.writeU32BE("dataByteOrder", 0L);
+    } else if (Objects.equals(byteOrder, ByteOrder.LITTLE_ENDIAN)) {
+      writer.writeU32BE("dataByteOrder", 1L);
+    } else {
+      throw new UnreachableCodeException();
+    }
   }
 
   private static DataSizes determineDataSize(

@@ -20,7 +20,7 @@ import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.smfj.core.SMFAttribute;
 import java.io.IOException;
 
-final class Signed2_8 extends BaseValues
+final class Signed2_8 extends WriterBase
 {
   Signed2_8(
     final BSSWriterSequentialType in_writer,

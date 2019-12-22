@@ -31,11 +31,11 @@ import java.io.IOException;
 import java.util.Objects;
 import java.util.SortedMap;
 
-// Unavoidable class data abstraction coupling style issue: Too many classes referenced.
-// CHECKSTYLE:OFF
+import static java.nio.ByteOrder.BIG_ENDIAN;
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
+
 public final class SMFB2SerializerDataAttributesNonInterleaved
   implements SMFSerializerDataAttributesNonInterleavedType
-  // CHECKSTYLE:ON
 {
   private final BSSWriterSequentialType writer;
   private final SMFHeader header;
@@ -73,268 +73,6 @@ public final class SMFB2SerializerDataAttributesNonInterleaved
     final var sizeOfAll =
       sizeOfOne * header.vertexCount();
     return SMFB2Alignment.alignNext(sizeOfAll, 16);
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeFloat(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentCount()) {
-      case 1:
-        return serializeFloat1(writer, attribute);
-      case 2:
-        return serializeFloat2(writer, attribute);
-      case 3:
-        return serializeFloat3(writer, attribute);
-      case 4:
-        return serializeFloat4(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeFloat1(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 16:
-        return new Float1_16(writer, attribute);
-      case 32:
-        return new Float1_32(writer, attribute);
-      case 64:
-        return new Float1_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeFloat2(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 16:
-        return new Float2_16(writer, attribute);
-      case 32:
-        return new Float2_32(writer, attribute);
-      case 64:
-        return new Float2_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeFloat3(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 16:
-        return new Float3_16(writer, attribute);
-      case 32:
-        return new Float3_32(writer, attribute);
-      case 64:
-        return new Float3_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeFloat4(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 16:
-        return new Float4_16(writer, attribute);
-      case 32:
-        return new Float4_32(writer, attribute);
-      case 64:
-        return new Float4_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeSigned(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentCount()) {
-      case 1:
-        return serializeSigned1(writer, attribute);
-      case 2:
-        return serializeSigned2(writer, attribute);
-      case 3:
-        return serializeSigned3(writer, attribute);
-      case 4:
-        return serializeSigned4(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeSigned1(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Signed1_8(writer, attribute);
-      case 16:
-        return new Signed1_16(writer, attribute);
-      case 32:
-        return new Signed1_32(writer, attribute);
-      case 64:
-        return new Signed1_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeSigned2(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Signed2_8(writer, attribute);
-      case 16:
-        return new Signed2_16(writer, attribute);
-      case 32:
-        return new Signed2_32(writer, attribute);
-      case 64:
-        return new Signed2_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeSigned3(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Signed3_8(writer, attribute);
-      case 16:
-        return new Signed3_16(writer, attribute);
-      case 32:
-        return new Signed3_32(writer, attribute);
-      case 64:
-        return new Signed3_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeSigned4(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Signed4_8(writer, attribute);
-      case 16:
-        return new Signed4_16(writer, attribute);
-      case 32:
-        return new Signed4_32(writer, attribute);
-      case 64:
-        return new Signed4_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeUnsigned(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentCount()) {
-      case 1:
-        return serializeUnsigned1(writer, attribute);
-      case 2:
-        return serializeUnsigned2(writer, attribute);
-      case 3:
-        return serializeUnsigned3(writer, attribute);
-      case 4:
-        return serializeUnsigned4(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeUnsigned1(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Unsigned1_8(writer, attribute);
-      case 16:
-        return new Unsigned1_16(writer, attribute);
-      case 32:
-        return new Unsigned1_32(writer, attribute);
-      case 64:
-        return new Unsigned1_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeUnsigned2(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Unsigned2_8(writer, attribute);
-      case 16:
-        return new Unsigned2_16(writer, attribute);
-      case 32:
-        return new Unsigned2_32(writer, attribute);
-      case 64:
-        return new Unsigned2_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeUnsigned3(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Unsigned3_8(writer, attribute);
-      case 16:
-        return new Unsigned3_16(writer, attribute);
-      case 32:
-        return new Unsigned3_32(writer, attribute);
-      case 64:
-        return new Unsigned3_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
-  }
-
-  private static SMFSerializerDataAttributesValuesType serializeUnsigned4(
-    final BSSWriterSequentialType writer,
-    final SMFAttribute attribute)
-  {
-    switch (attribute.componentSizeBits()) {
-      case 8:
-        return new Unsigned4_8(writer, attribute);
-      case 16:
-        return new Unsigned4_16(writer, attribute);
-      case 32:
-        return new Unsigned4_32(writer, attribute);
-      case 64:
-        return new Unsigned4_64(writer, attribute);
-      default:
-        throw new UnreachableCodeException();
-    }
   }
 
   public SMFB2SerializerDataAttributesNonInterleaved start()
@@ -375,13 +113,41 @@ public final class SMFB2SerializerDataAttributesNonInterleaved
         attribute.name().value(),
         determineVertexDataSizeForAttribute(this.header, attribute));
 
+    final var byteOrder = this.header.dataByteOrder();
     switch (attribute.componentType()) {
-      case ELEMENT_TYPE_INTEGER_SIGNED:
-        return serializeSigned(subWriter, attribute);
-      case ELEMENT_TYPE_INTEGER_UNSIGNED:
-        return serializeUnsigned(subWriter, attribute);
-      case ELEMENT_TYPE_FLOATING:
-        return serializeFloat(subWriter, attribute);
+      case ELEMENT_TYPE_INTEGER_SIGNED: {
+        if (Objects.equals(byteOrder, BIG_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedBE
+            .serializeSignedBE(subWriter, attribute);
+        }
+        if (Objects.equals(byteOrder, LITTLE_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedLE
+            .serializeSignedLE(subWriter, attribute);
+        }
+        throw new UnreachableCodeException();
+      }
+      case ELEMENT_TYPE_INTEGER_UNSIGNED: {
+        if (Objects.equals(byteOrder, BIG_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedBE
+            .serializeUnsignedBE(subWriter, attribute);
+        }
+        if (Objects.equals(byteOrder, LITTLE_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedLE
+            .serializeUnsignedLE(subWriter, attribute);
+        }
+        throw new UnreachableCodeException();
+      }
+      case ELEMENT_TYPE_FLOATING: {
+        if (Objects.equals(byteOrder, BIG_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedBE
+            .serializeFloatBE(subWriter, attribute);
+        }
+        if (Objects.equals(byteOrder, LITTLE_ENDIAN)) {
+          return SMFB2SerializerDataAttributeNonInterleavedLE
+            .serializeFloatLE(subWriter, attribute);
+        }
+        throw new UnreachableCodeException();
+      }
     }
 
     throw new UnreachableCodeException();

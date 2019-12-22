@@ -29,6 +29,13 @@
     </restriction>
   </simpleType>
 
+  <simpleType name="Endianness">
+    <restriction base="string">
+      <enumeration value="BIG_ENDIAN"/>
+      <enumeration value="LITTLE_ENDIAN"/>
+    </restriction>
+  </simpleType>
+
   <simpleType name="WindingOrder">
     <restriction base="string">
       <enumeration value="FACE_WINDING_ORDER_CLOCKWISE"/>
@@ -129,6 +136,9 @@
       </sequence>
       <attribute name="vertexCount"
                  type="smfx:Unsigned64"
+                 use="required"/>
+      <attribute name="endianness"
+                 type="smfx:Endianness"
                  use="required"/>
     </complexType>
   </element>

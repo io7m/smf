@@ -28,6 +28,7 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsErrorType;
+import java.nio.ByteOrder;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -81,6 +82,26 @@ public final class SMFXHeader
     try {
       this.builder.setVertexCount(
         Long.parseUnsignedLong(attributes.getValue("vertexCount")));
+
+      final var endianness = attributes.getValue("endianness");
+      if (endianness == null) {
+        throw new IllegalArgumentException("No endianness specified");
+      }
+
+      switch (endianness) {
+        case "BIG_ENDIAN": {
+          this.builder.setDataByteOrder(ByteOrder.BIG_ENDIAN);
+          break;
+        }
+        case "LITTLE_ENDIAN": {
+          this.builder.setDataByteOrder(ByteOrder.LITTLE_ENDIAN);
+          break;
+        }
+        default: {
+          throw new IllegalArgumentException(
+            String.format("Unrecognized endianness: %s", endianness));
+        }
+      }
     } catch (final Exception e) {
       throw context.parseException(e);
     }

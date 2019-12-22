@@ -20,7 +20,7 @@ import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.smfj.core.SMFAttribute;
 import java.io.IOException;
 
-final class Unsigned4_8 extends BaseValues
+final class Unsigned4_8 extends WriterBase
 {
   Unsigned4_8(
     final BSSWriterSequentialType in_writer,

@@ -20,6 +20,7 @@ import com.io7m.jbssio.api.BSSReaderType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFPartial;
+import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.format.support.SMFTriangleTracker;
@@ -28,6 +29,9 @@ import java.io.IOException;
 import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static java.nio.ByteOrder.BIG_ENDIAN;
+import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
 /**
  * An 'end' section.
@@ -111,8 +115,23 @@ public final class SMFB2ParsingSectionTriangles
     }
 
     final var headerTriangles = this.smfHeader.triangles();
-    final var triangleCount = headerTriangles.triangleCount();
+    final var byteOrder = this.smfHeader.dataByteOrder();
+    if (Objects.equals(byteOrder, BIG_ENDIAN)) {
+      this.parseTrianglesBE(reader, headerTriangles);
+    } else if (Objects.equals(byteOrder, LITTLE_ENDIAN)) {
+      this.parseTrianglesLE(reader, headerTriangles);
+    }
 
+    this.triangles.onDataTrianglesFinish();
+    return SMFPartial.succeeded(SMFVoid.void_());
+  }
+
+  private void parseTrianglesBE(
+    final BSSReaderType reader,
+    final SMFTriangles headerTriangles)
+    throws IOException
+  {
+    final var triangleCount = headerTriangles.triangleCount();
     switch (headerTriangles.triangleIndexSizeBits()) {
       case 8: {
         for (long index = 0L;
@@ -170,8 +189,70 @@ public final class SMFB2ParsingSectionTriangles
         throw new UnreachableCodeException();
       }
     }
+  }
 
-    this.triangles.onDataTrianglesFinish();
-    return SMFPartial.succeeded(SMFVoid.void_());
+  private void parseTrianglesLE(
+    final BSSReaderType reader,
+    final SMFTriangles headerTriangles)
+    throws IOException
+  {
+    final var triangleCount = headerTriangles.triangleCount();
+    switch (headerTriangles.triangleIndexSizeBits()) {
+      case 8: {
+        for (long index = 0L;
+             Long.compareUnsigned(index, triangleCount) < 0;
+             ++index) {
+          final var v0 = reader.readU8("v0");
+          final var v1 = reader.readU8("v1");
+          final var v2 = reader.readU8("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
+          this.triangles.onDataTriangle(v0, v1, v2);
+        }
+        break;
+      }
+      case 16: {
+        for (long index = 0L;
+             Long.compareUnsigned(index, triangleCount) < 0;
+             ++index) {
+          final var v0 = reader.readU16LE("v0");
+          final var v1 = reader.readU16LE("v1");
+          final var v2 = reader.readU16LE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
+          this.triangles.onDataTriangle(v0, v1, v2);
+        }
+        break;
+      }
+      case 32: {
+        for (long index = 0L;
+             Long.compareUnsigned(index, triangleCount) < 0;
+             ++index) {
+          final var v0 = reader.readU32LE("v0");
+          final var v1 = reader.readU32LE("v1");
+          final var v2 = reader.readU32LE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
+          this.triangles.onDataTriangle(v0, v1, v2);
+        }
+        break;
+      }
+      case 64: {
+        for (long index = 0L;
+             Long.compareUnsigned(index, triangleCount) < 0;
+             ++index) {
+          final var v0 = reader.readU64LE("v0");
+          final var v1 = reader.readU64LE("v1");
+          final var v2 = reader.readU64LE("v2");
+          this.triangleTracker.addTriangle(
+            SMFB2Lexical.ofReader(reader), v0, v1, v2);
+          this.triangles.onDataTriangle(v0, v1, v2);
+        }
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
   }
 }
