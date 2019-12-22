@@ -1,5 +1,15 @@
-[record SMFBv1SchemaID
-  ([field schema_id            [string 64 "UTF-8"]]
-   [field schema_version_major [integer unsigned 32]]
-   [field schema_version_minor [integer unsigned 32]]
-   [padding-octets             4])]
+<composite name="SMFSchemaIdentifier">
+  <type name="nameLength"
+        description="The number of bytes in the following name array that should be extracted to form a name."
+        primitiveType="uint32"/>
+  <type name="name"
+        primitiveType="uint8"
+        characterEncoding="UTF-8"
+        length="64"/>
+  <type name="versionMajor"
+        description="The major version of the schema."
+        primitiveType="uint32"/>
+  <type name="versionMinor"
+        description="The minor version of the schema."
+        primitiveType="uint32"/>
+</composite>

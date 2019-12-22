@@ -1,3 +1,9 @@
-[record SMFBSection
-  ([field id   [integer unsigned 64]]
-   [field size [integer unsigned 64]])]
+<composite name="SMFSection">
+  <type name="magicNumber"
+        description="The magic number identifying the section."
+        primitiveType="uint64"/>
+  <type name="size"
+        description="The size of the section data"
+        primitiveType="uint64"
+        semanticType="Length"/>
+</composite>

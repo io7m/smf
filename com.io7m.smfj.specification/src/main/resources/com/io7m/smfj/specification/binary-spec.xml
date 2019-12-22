@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   byteOrder="bigEndian"
+                   id="29549"
+                   semanticVersion="2.0"
+                   version="2">
+  <types>
+    <enum name="SMFAxis"
+          encodingType="uint8">
+      <validValue name="AXIS_POSITIVE_X">0</validValue>
+      <validValue name="AXIS_POSITIVE_Y">1</validValue>
+      <validValue name="AXIS_POSITIVE_Z">2</validValue>
+      <validValue name="AXIS_NEGATIVE_X">3</validValue>
+      <validValue name="AXIS_NEGATIVE_Y">4</validValue>
+      <validValue name="AXIS_NEGATIVE_Z">5</validValue>
+    </enum>
+
+    <enum name="SMFWindingOrder"
+          encodingType="uint8">
+      <validValue name="FACE_WINDING_ORDER_CLOCKWISE">0</validValue>
+      <validValue name="FACE_WINDING_ORDER_COUNTER_CLOCKWISE">1</validValue>
+    </enum>
+
+    <composite name="SMFCoordinateSystem">
+      <ref name="right"
+           type="SMFAxis"/>
+      <ref name="up"
+           type="SMFAxis"/>
+      <ref name="forward"
+           type="SMFAxis"/>
+      <ref name="windingOrder"
+           type="SMFWindingOrder"/>
+    </composite>
+
+    <composite name="SMFSchemaIdentifier">
+      <type name="nameLength"
+            description="The number of bytes in the following name array that should be extracted to form a name."
+            primitiveType="uint32"/>
+      <type name="name"
+            primitiveType="uint8"
+            characterEncoding="UTF-8"
+            length="64"/>
+      <type name="versionMajor"
+            description="The major version of the schema."
+            primitiveType="uint32"/>
+      <type name="versionMinor"
+            description="The minor version of the schema."
+            primitiveType="uint32"/>
+    </composite>
+
+    <composite name="SMFSchemaAttribute">
+      <type name="nameLength"
+            description="The number of bytes in the following name array that should be extracted to form a name."
+            primitiveType="uint32"/>
+
+      <type name="name"
+            primitiveType="uint8"
+            characterEncoding="UTF-8"
+            length="64"/>
+
+      <enum name="componentKind"
+            encodingType="uint32">
+        <validValue name="ELEMENT_TYPE_INTEGER_SIGNED">0</validValue>
+        <validValue name="ELEMENT_TYPE_INTEGER_UNSIGNED">1</validValue>
+        <validValue name="ELEMENT_TYPE_FLOATING">2</validValue>
+      </enum>
+
+      <type name="componentCount"
+            description="The number of components in a single attribute value."
+            minValue="1"
+            maxValue="4"
+            primitiveType="uint32"/>
+
+      <type name="componentSizeBits"
+            description="The size in bits of components in a single attribute value."
+            minValue="1"
+            maxValue="64"
+            primitiveType="uint32"/>
+    </composite>
+
+    <composite name="SMFHeader">
+      <type name="magicNumber"
+            description="The magic number identifying the section."
+            presence="constant"
+            primitiveType="uint64">
+        0x89534D460D0A1A0A
+      </type>
+      <type name="versionMajor"
+            description="The major version of the specification to which this file conforms."
+            primitiveType="uint32"/>
+      <type name="versionMinor"
+            description="The minor version of the specification to which this file conforms."
+            primitiveType="uint32"/>
+    </composite>
+
+    <composite name="SMFSection">
+      <type name="magicNumber"
+            description="The magic number identifying the section."
+            primitiveType="uint64"/>
+      <type name="size"
+            description="The size of the section data"
+            primitiveType="uint64"
+            semanticType="Length"/>
+    </composite>
+
+    <composite name="SMFSectionFields">
+      <ref name="fieldsSize"
+           type="uint32"/>
+      <ref name="schemaIdentifier"
+           type="SMFSchemaIdentifier"/>
+      <ref name="vertexCount"
+           type="uint64"/>
+      <type name="triangleCount"
+            primitiveType="uint64"
+            semanticType="Length"/>
+      <type name="triangleSizeBits"
+            primitiveType="uint32"
+            semanticType="Length"/>
+      <ref name="attributeCount"
+           type="uint32"/>
+      <ref name="coordinateSystem"
+           type="SMFCoordinateSystem"/>
+      <enum name="SMFByteOrder"
+            encodingType="uint32">
+        <validValue name="BIG_ENDIAN">0</validValue>
+        <validValue name="LITTLE_ENDIAN">1</validValue>
+      </enum>
+    </composite>
+
+    <composite name="SMFMeta">
+      <ref name="metaSchemaIdentifier"
+           type="SMFSchemaIdentifier"/>
+      <ref name="metaSize"
+           type="uint32"/>
+    </composite>
+  </types>
+
+  <sbe:message id="0"
+               name="unused"
+               description="Unused"/>
+
+</sbe:messageSchema>
