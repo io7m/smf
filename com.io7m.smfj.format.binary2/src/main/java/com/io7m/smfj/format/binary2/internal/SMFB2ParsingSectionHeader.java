@@ -19,7 +19,6 @@
 package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSReaderType;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

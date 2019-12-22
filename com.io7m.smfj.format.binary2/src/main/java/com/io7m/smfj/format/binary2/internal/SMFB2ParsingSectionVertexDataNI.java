@@ -22,7 +22,6 @@ import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 import java.io.IOException;

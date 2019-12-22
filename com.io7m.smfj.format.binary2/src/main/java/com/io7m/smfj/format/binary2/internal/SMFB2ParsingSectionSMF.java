@@ -22,7 +22,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFPartial;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.List;

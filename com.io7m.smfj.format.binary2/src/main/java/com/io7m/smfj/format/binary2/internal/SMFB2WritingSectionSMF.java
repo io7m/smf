@@ -21,7 +21,6 @@ import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import java.util.Objects;

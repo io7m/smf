@@ -14,7 +14,7 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-package com.io7m.smfj.format.binary2;
+package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;

@@ -19,7 +19,6 @@ package com.io7m.smfj.format.binary2.internal;
 import com.io7m.jbssio.api.BSSReaderType;
 import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import java.io.IOException;

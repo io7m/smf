@@ -68,7 +68,7 @@ public final class SMFB2SerializerDataAttributeNonInterleavedLE
 {
   private SMFB2SerializerDataAttributeNonInterleavedLE()
   {
-    
+
   }
 
   static SMFSerializerDataAttributesValuesType serializeFloatLE(

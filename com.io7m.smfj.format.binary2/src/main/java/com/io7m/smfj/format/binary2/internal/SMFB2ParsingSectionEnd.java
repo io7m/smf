@@ -19,7 +19,6 @@ package com.io7m.smfj.format.binary2.internal;
 import com.io7m.jbssio.api.BSSWriterType;
 import com.io7m.smfj.core.SMFPartial;
 import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 import java.util.Objects;
 import org.slf4j.Logger;

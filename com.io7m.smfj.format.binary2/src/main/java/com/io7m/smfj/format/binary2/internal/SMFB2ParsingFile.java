@@ -21,7 +21,6 @@ package com.io7m.smfj.format.binary2.internal;
 import com.io7m.jbssio.api.BSSReaderType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.format.support.SMFTriangleTracker;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;

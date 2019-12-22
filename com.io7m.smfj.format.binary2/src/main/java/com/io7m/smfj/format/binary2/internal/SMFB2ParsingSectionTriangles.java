@@ -22,7 +22,6 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFPartial;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import com.io7m.smfj.format.support.SMFTriangleTracker;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import java.io.IOException;

@@ -16,7 +16,7 @@
  */
 
 
-package com.io7m.smfj.format.binary2;
+package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.junreachable.UnreachableCodeException;
@@ -26,13 +26,6 @@ import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFVoid;
-import com.io7m.smfj.format.binary2.internal.SMFB2Alignment;
-import com.io7m.smfj.format.binary2.internal.SMFB2ParsingSectionTriangles;
-import com.io7m.smfj.format.binary2.internal.SMFB2WritingFileHeader;
-import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionEnd;
-import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionHeader;
-import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionMetadata;
-import com.io7m.smfj.format.binary2.internal.SMFB2WritingSectionSMF;
 import com.io7m.smfj.format.binary2.internal.serial.SMFB2SerializerDataAttributesNonInterleaved;
 import com.io7m.smfj.format.binary2.internal.serial.Triangles8;
 import com.io7m.smfj.format.binary2.internal.serial.be.WriterBETriangles16;
@@ -50,13 +43,13 @@ import java.util.Objects;
 import static java.nio.ByteOrder.BIG_ENDIAN;
 import static java.nio.ByteOrder.LITTLE_ENDIAN;
 
-final class SMFB2Serializer implements SMFSerializerType
+public final class SMFB2Serializer implements SMFSerializerType
 {
   private final SMFFormatVersion version;
   private final BSSWriterSequentialType writer;
   private SMFHeader headerReceived;
 
-  SMFB2Serializer(
+  public SMFB2Serializer(
     final SMFFormatVersion inVersion,
     final BSSWriterSequentialType inWriter)
   {

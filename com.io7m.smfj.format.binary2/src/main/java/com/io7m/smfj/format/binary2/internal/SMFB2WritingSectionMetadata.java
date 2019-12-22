@@ -20,7 +20,6 @@ package com.io7m.smfj.format.binary2.internal;
 
 import com.io7m.jbssio.api.BSSWriterSequentialType;
 import com.io7m.smfj.core.SMFMetadataValue;
-import com.io7m.smfj.format.binary2.SMFB2Section;
 import java.io.IOException;
 
 public final class SMFB2WritingSectionMetadata
