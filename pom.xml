@@ -49,6 +49,7 @@
     <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
     <com.io7m.blackthorne.version>0.0.5</com.io7m.blackthorne.version>
     <com.io7m.immutables.version>2.8.3</com.io7m.immutables.version>
+    <com.codacy.id>a7ba30b8044e40839aa5b526cf02bb11</com.codacy.id>
   </properties>
 
   <licenses>
