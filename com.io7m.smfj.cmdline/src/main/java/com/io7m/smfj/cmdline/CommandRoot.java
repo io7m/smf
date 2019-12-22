@@ -27,7 +27,7 @@ public class CommandRoot implements CommandType
     names = "--verbose",
     converter = SMFLogLevelConverter.class,
     description = "Set the minimum logging verbosity level")
-  private final SMFLogLevel verbose = SMFLogLevel.LOG_INFO;
+  private SMFLogLevel verbose = SMFLogLevel.LOG_INFO;
 
   CommandRoot()
   {

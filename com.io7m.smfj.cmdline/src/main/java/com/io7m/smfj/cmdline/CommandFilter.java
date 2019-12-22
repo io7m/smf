@@ -81,7 +81,7 @@ public final class CommandFilter extends CommandRoot
   @Parameter(
     names = "--source-directory",
     description = "The source directory")
-  private final Path sourceDirectory = Paths.get("");
+  private Path sourceDirectory = Paths.get("");
 
   CommandFilter()
   {
