@@ -6,4 +6,6 @@ This section provides a brief summary of specification changes over time.
 
 [formal-item [title "History"] [id history.history.def]]
 [list-unordered
-  [item [term [type expression] 1.0] Initial specification.]]
+  [item [term [type expression] 1.0] Initial specification.]
+  [item [term [type expression] 2.0] Optional endianness, redesigned binary encoding.]
+]

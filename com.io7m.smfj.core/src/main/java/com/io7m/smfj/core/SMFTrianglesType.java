@@ -18,14 +18,12 @@ package com.io7m.smfj.core;
 
 import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
-import org.immutables.vavr.encodings.VavrEncodingEnabled;
 
 /**
  * Information about triangles in a mesh.
  */
 
 @Value.Immutable
-@VavrEncodingEnabled
 @ImmutablesStyleType
 public interface SMFTrianglesType
 {
@@ -79,6 +77,7 @@ public interface SMFTrianglesType
   default void checkPreconditions()
   {
     SMFSupportedSizes.checkIntegerUnsignedSupported(
+      "triangle indices",
       this.triangleIndexSizeBits());
   }
 }

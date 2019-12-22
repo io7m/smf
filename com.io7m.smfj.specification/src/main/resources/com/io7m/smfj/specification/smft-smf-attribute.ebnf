@@ -1,5 +1,5 @@
 attribute_name_raw =
-  ? [\p{IsAlphabetic}\p{IsDigit}_\-\.:]{1,64} ? ;
+  ? [a-z_.0-9]{1,64} ? ;
 
 attribute_name_quoted =
   """ , attribute_name_raw , """ ;

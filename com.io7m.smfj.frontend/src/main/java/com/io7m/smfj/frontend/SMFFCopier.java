@@ -32,10 +32,11 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import io.vavr.collection.List;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -63,8 +64,8 @@ public final class SMFFCopier
     final SMFSerializerType in_serializer)
   {
     this.serializer = Objects.requireNonNull(in_serializer, "Serializer");
-    this.errors = List.empty();
-    this.warnings = List.empty();
+    this.errors = new ArrayList<>();
+    this.warnings = new ArrayList<>();
   }
 
   /**
@@ -84,7 +85,8 @@ public final class SMFFCopier
   @Override
   public void onStart()
   {
-
+    this.errors.clear();
+    this.warnings.clear();
   }
 
   @Override
@@ -108,16 +110,15 @@ public final class SMFFCopier
   public void onError(
     final SMFErrorType e)
   {
-    this.errors = this.errors.append(e);
+    this.errors.add(e);
   }
 
   @Override
   public void onWarning(
     final SMFWarningType w)
   {
-    this.warnings = this.warnings.append(w);
+    this.warnings.add(w);
   }
-
 
   @Override
   public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
@@ -329,13 +330,13 @@ public final class SMFFCopier
   @Override
   public List<SMFErrorType> errors()
   {
-    return this.errors;
+    return List.copyOf(this.errors);
   }
 
   @Override
   public List<SMFWarningType> warnings()
   {
-    return this.warnings;
+    return List.copyOf(this.warnings);
   }
 
   @Override

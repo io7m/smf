@@ -18,7 +18,7 @@ package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
-import io.vavr.collection.TreeMap;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public final class SMFFilterCommandModuleProviderAbstractTest
   public void testDuplicateModule()
   {
     final SMFFilterCommandModule m =
-      SMFFilterCommandModule.of("a", TreeMap.empty());
+      SMFFilterCommandModule.of("a", Map.of());
 
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       new SMFFilterCommandModuleProviderAbstract(m, m)

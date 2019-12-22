@@ -15,7 +15,6 @@
  * SOFTWARE.
  */
 
-
 package com.io7m.smfj.cmdline;
 
 import com.beust.jcommander.Parameter;

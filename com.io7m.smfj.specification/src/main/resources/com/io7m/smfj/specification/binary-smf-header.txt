@@ -1,10 +1,23 @@
-[record SMFBv1_0Header
-  ([field fields_size              [integer unsigned 32]]
-   [field schema                   SMFBv1SchemaID]
-   [padding-octets                 4]
-   [field vertex_count             [integer unsigned 64]]
-   [field triangle_count           [integer unsigned 64]]
-   [field triangle_index_size_bits [integer unsigned 32]]
-   [field attribute_count          [integer unsigned 32]]
-   [field coordinate_system        SMFBv1CoordinateSystems]
-   [padding-octets                 14])]
+<composite name="SMFSectionFields">
+  <ref name="fieldsSize"
+       type="uint32"/>
+  <ref name="schemaIdentifier"
+       type="SMFSchemaIdentifier"/>
+  <ref name="vertexCount"
+       type="uint64"/>
+  <type name="triangleCount"
+        primitiveType="uint64"
+        semanticType="Length"/>
+  <type name="triangleSizeBits"
+        primitiveType="uint32"
+        semanticType="Length"/>
+  <ref name="attributeCount"
+       type="uint32"/>
+  <ref name="coordinateSystem"
+       type="SMFCoordinateSystem"/>
+  <enum name="SMFByteOrder"
+        encodingType="uint32">
+    <validValue name="BIG_ENDIAN">0</validValue>
+    <validValue name="LITTLE_ENDIAN">1</validValue>
+  </enum>
+</composite>

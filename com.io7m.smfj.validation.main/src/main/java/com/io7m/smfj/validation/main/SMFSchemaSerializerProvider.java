@@ -25,33 +25,30 @@ import com.io7m.smfj.validation.api.SMFSchemaAttribute;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaSerializerType;
 import com.io7m.smfj.validation.api.SMFSchemaVersion;
-import io.vavr.Tuple2;
-import io.vavr.collection.SortedSet;
-import io.vavr.collection.TreeSet;
-import org.osgi.service.component.annotations.Component;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.osgi.service.component.annotations.Component;
 
 /**
  * The default implementation of the {@link SMFSchemaSerializerProviderType} interface.
  */
 
 @Component
-public final class SMFSchemaSerializerProvider implements SMFSchemaSerializerProviderType
+public final class SMFSchemaSerializerProvider implements
+  SMFSchemaSerializerProviderType
 {
-  private static final SortedSet<SMFSchemaVersion> SUPPORTED;
-
-  static {
-    SUPPORTED = TreeSet.of(SMFSchemaVersion.of(1, 0));
-  }
+  private static final SortedSet<SMFSchemaVersion> SUPPORTED = makeSupported();
 
   /**
    * Construct a serializer provider.
@@ -60,6 +57,13 @@ public final class SMFSchemaSerializerProvider implements SMFSchemaSerializerPro
   public SMFSchemaSerializerProvider()
   {
 
+  }
+
+  private static SortedSet<SMFSchemaVersion> makeSupported()
+  {
+    final var versions = new TreeSet<SMFSchemaVersion>();
+    versions.add(SMFSchemaVersion.of(1, 0));
+    return Collections.unmodifiableSortedSet(versions);
   }
 
   @Override
@@ -101,11 +105,11 @@ public final class SMFSchemaSerializerProvider implements SMFSchemaSerializerPro
     private static void serializeAttribute(
       final BufferedWriter writer,
       final String requirement,
-      final Tuple2<SMFAttributeName, SMFSchemaAttribute> p)
+      final Map.Entry<SMFAttributeName, SMFSchemaAttribute> entry)
       throws IOException
     {
-      final SMFAttributeName name = p._1;
-      final SMFSchemaAttribute attr = p._2;
+      final SMFAttributeName name = entry.getKey();
+      final SMFSchemaAttribute attr = entry.getValue();
 
       writer.append("attribute ");
       writer.append(requirement);
@@ -200,12 +204,12 @@ public final class SMFSchemaSerializerProvider implements SMFSchemaSerializerPro
       }
       writer.newLine();
 
-      for (final Tuple2<SMFAttributeName, SMFSchemaAttribute> p : schema.requiredAttributes()) {
-        serializeAttribute(writer, "required", p);
+      for (final Map.Entry<SMFAttributeName, SMFSchemaAttribute> entry : schema.requiredAttributes().entrySet()) {
+        serializeAttribute(writer, "required", entry);
       }
 
-      for (final Tuple2<SMFAttributeName, SMFSchemaAttribute> p : schema.optionalAttributes()) {
-        serializeAttribute(writer, "optional", p);
+      for (final Map.Entry<SMFAttributeName, SMFSchemaAttribute> entry : schema.optionalAttributes().entrySet()) {
+        serializeAttribute(writer, "optional", entry);
       }
 
       writer.flush();

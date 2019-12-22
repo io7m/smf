@@ -17,7 +17,7 @@
 package com.io7m.smfj.tests.format.text;
 
 import com.io7m.smfj.format.text.SMFTLineLexer;
-import io.vavr.collection.List;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -28,7 +28,7 @@ public final class SMFLineLexerTest
   public void testLexEmpty()
   {
     Assertions.assertEquals(
-      List.empty(), new SMFTLineLexer().lex(""));
+      List.of(), new SMFTLineLexer().lex(""));
   }
 
   @Test

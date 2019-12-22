@@ -23,13 +23,14 @@
 
   <modules>
     <module>com.io7m.smfj.blender</module>
-    <module>com.io7m.smfj.bytebuffer</module>
     <module>com.io7m.smfj.cmdline</module>
     <module>com.io7m.smfj.core</module>
     <module>com.io7m.smfj.documentation</module>
-    <module>com.io7m.smfj.format.binary</module>
+    <module>com.io7m.smfj.format.binary2</module>
     <module>com.io7m.smfj.format.obj</module>
+    <module>com.io7m.smfj.format.support</module>
     <module>com.io7m.smfj.format.text</module>
+    <module>com.io7m.smfj.format.xml</module>
     <module>com.io7m.smfj.frontend</module>
     <module>com.io7m.smfj.parser.api</module>
     <module>com.io7m.smfj.probe.api</module>
@@ -45,7 +46,9 @@
   <properties>
     <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
     <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
-    <com.io7m.smfj.jmockit.version>1.42</com.io7m.smfj.jmockit.version>
+    <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
+    <com.io7m.blackthorne.version>0.0.5</com.io7m.blackthorne.version>
+    <com.io7m.immutables.version>2.8.3</com.io7m.immutables.version>
   </properties>
 
   <licenses>
@@ -123,6 +126,11 @@
         <version>0.3.0</version>
       </dependency>
       <dependency>
+        <groupId>com.io7m.blackthorne</groupId>
+        <artifactId>com.io7m.blackthorne.api</artifactId>
+        <version>${com.io7m.blackthorne.version}</version>
+      </dependency>
+      <dependency>
         <groupId>com.io7m.jtensors</groupId>
         <artifactId>com.io7m.jtensors.core</artifactId>
         <version>${com.io7m.smfj.jtensors.versionRange}</version>
@@ -141,11 +149,6 @@
         <groupId>com.io7m.jaffirm</groupId>
         <artifactId>com.io7m.jaffirm.core</artifactId>
         <version>3.0.1</version>
-      </dependency>
-      <dependency>
-        <groupId>com.io7m.jpra</groupId>
-        <artifactId>com.io7m.jpra.runtime.java</artifactId>
-        <version>0.6.0</version>
       </dependency>
       <dependency>
         <groupId>com.io7m.jcoords</groupId>
@@ -172,21 +175,26 @@
         <artifactId>com.io7m.primogenitor.support</artifactId>
         <version>3.5.0</version>
       </dependency>
-
       <dependency>
-        <groupId>io.vavr</groupId>
-        <artifactId>vavr</artifactId>
-        <version>1.0.0-alpha-3</version>
+        <groupId>com.io7m.jbssio</groupId>
+        <artifactId>com.io7m.jbssio.api</artifactId>
+        <version>${com.io7m.jbssio.version}</version>
       </dependency>
+      <dependency>
+        <groupId>com.io7m.jbssio</groupId>
+        <artifactId>com.io7m.jbssio.vanilla</artifactId>
+        <version>${com.io7m.jbssio.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.io7m.jxe</groupId>
+        <artifactId>com.io7m.jxe.core</artifactId>
+        <version>0.0.2</version>
+      </dependency>
+
       <dependency>
         <groupId>org.immutables</groupId>
         <artifactId>value</artifactId>
-        <version>2.8.3</version>
-      </dependency>
-      <dependency>
-        <groupId>org.immutables.vavr</groupId>
-        <artifactId>vavr-encodings</artifactId>
-        <version>0.6.0</version>
+        <version>${com.io7m.immutables.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
@@ -246,14 +254,9 @@
         <version>2.1.0</version>
       </dependency>
       <dependency>
-        <groupId>org.jmockit</groupId>
-        <artifactId>jmockit</artifactId>
-        <version>1.48</version>
-      </dependency>
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>4.13-rc-2</version>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>3.0.0</version>
       </dependency>
       <dependency>
         <groupId>org.junit.jupiter</groupId>
@@ -281,11 +284,19 @@
   <build>
     <pluginManagement>
       <plugins>
-        <!-- JPRA plugin for generating cursors. -->
+        <!-- Add immutables.org artifacts to compiler classpath -->
         <plugin>
-          <groupId>com.io7m.jpra</groupId>
-          <artifactId>com.io7m.jpra.maven.plugin</artifactId>
-          <version>0.6.0</version>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <annotationProcessorPaths>
+              <dependency>
+                <groupId>org.immutables</groupId>
+                <artifactId>value</artifactId>
+                <version>${com.io7m.immutables.version}</version>
+              </dependency>
+            </annotationProcessorPaths>
+          </configuration>
         </plugin>
 
         <!-- KStructural Maven Plugin -->

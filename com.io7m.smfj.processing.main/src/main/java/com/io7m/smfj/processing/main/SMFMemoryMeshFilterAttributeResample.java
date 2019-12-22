@@ -19,24 +19,21 @@ package com.io7m.smfj.processing.main;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedMap;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.stream.Collectors;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandChecks.checkAttributeExists;
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that resamples attribute data.
@@ -74,7 +71,7 @@ public final class SMFMemoryMeshFilterAttributeResample implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -82,11 +79,11 @@ public final class SMFMemoryMeshFilterAttributeResample implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 2) {
+    if (text.size() == 2) {
       try {
         final SMFAttributeName name = SMFAttributeName.of(text.get(0));
         final int size = Integer.parseUnsignedInt(text.get(1));
-        return valid(create(name, size));
+        return SMFPartialLogged.succeeded(create(name, size));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -128,7 +125,7 @@ public final class SMFMemoryMeshFilterAttributeResample implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -139,30 +136,47 @@ public final class SMFMemoryMeshFilterAttributeResample implements
 
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       m.header().attributesByName();
-    Seq<SMFProcessingError> errors = List.empty();
-    errors = checkAttributeExists(errors, by_name, this.attribute);
+
+    final var errors =
+      new ArrayList<>(checkAttributeExists(List.of(), by_name, this.attribute));
 
     if (errors.isEmpty()) {
       try {
         final SMFAttribute original =
-          by_name.get(this.attribute).get();
+          by_name.get(this.attribute);
         final SMFAttribute resampled =
           original.withComponentSizeBits(this.size);
-        final List<SMFAttribute> ordered =
-          header.attributesInOrder().replace(original, resampled);
+        final List<SMFAttribute> newAttributes =
+          header.attributesInOrder()
+            .stream()
+            .map(existing ->
+                   replaceExistingWithResampled(original, resampled, existing))
+            .collect(Collectors.toList());
+
         final SMFHeader new_header =
-          header.withAttributesInOrder(ordered);
-        return valid(
+          header.withAttributesInOrder(newAttributes);
+
+        return SMFPartialLogged.succeeded(
           SMFMemoryMesh.builder()
             .from(m)
             .setHeader(new_header)
             .build());
       } catch (final UnsupportedOperationException e) {
-        errors = errors.append(
-          SMFProcessingError.of(e.getMessage(), Optional.of(e)));
+        errors.add(SMFProcessingError.of(e.getMessage(), Optional.of(e)));
       }
     }
 
-    return invalid(List.ofAll(errors));
+    return SMFPartialLogged.failed(errors);
+  }
+
+  private static SMFAttribute replaceExistingWithResampled(
+    final SMFAttribute original,
+    final SMFAttribute resampled,
+    final SMFAttribute existing)
+  {
+    if (Objects.equals(existing, original)) {
+      return resampled;
+    }
+    return existing;
   }
 }

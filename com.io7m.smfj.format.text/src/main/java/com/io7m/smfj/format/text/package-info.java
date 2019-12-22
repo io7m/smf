@@ -15,12 +15,19 @@
  */
 
 /**
- * Parser API.
+ * Text format implementation.
  */
 
 @org.osgi.annotation.bundle.Export
+
 @org.osgi.annotation.bundle.Header(
   name = "Automatic-Module-Name",
   value = "com.io7m.smfj.format.text")
+
+@org.osgi.annotation.bundle.Capability(
+  namespace = "com.io7m.smf.format",
+  attribute = "name=text",
+  version = "2.0")
+
 package com.io7m.smfj.format.text;
 

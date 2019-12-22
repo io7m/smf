@@ -45,9 +45,7 @@ Sections MUST be aligned to [term [type constant] 16] octet boundaries. As
 the section [link [target smfb.header] header] is defined to be exactly
 [term [type constant] 16] octets, this implies that the data within a section
 will also be aligned to a [term [type constant] 16] octet boundary
-[footnote-ref smfb.sections.alignment.vector]. Implementations MUST reject
-[term [type type] SMF/B] files containing one or more incorrectly aligned
-sections.
+[footnote-ref smfb.sections.alignment.vector].
 
 [footnote [id smfb.sections.alignment.vector]]
 The requirement for data to be aligned to [term [type constant] 16] octet

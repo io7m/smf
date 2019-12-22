@@ -16,9 +16,8 @@
 
 package com.io7m.smfj.core;
 
-import org.immutables.value.Value;
-
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * The type of warnings.

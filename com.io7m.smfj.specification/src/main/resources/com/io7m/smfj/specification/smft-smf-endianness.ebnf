@@ -1,0 +1,5 @@
+byte_order =
+  "big" | "little" ;
+
+smf_attribute =
+  "endianness" , byte_order ;

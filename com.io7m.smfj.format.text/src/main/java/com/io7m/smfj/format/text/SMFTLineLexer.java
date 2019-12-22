@@ -17,9 +17,8 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.jaffirm.core.Invariants;
-import io.vavr.collection.List;
-
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A mindlessly trivial line lexer.
@@ -27,7 +26,7 @@ import java.util.ArrayList;
 
 public final class SMFTLineLexer
 {
-  private final java.util.List<String> tokens;
+  private final List<String> tokens;
   private final StringBuilder buffer;
 
   /**
@@ -134,7 +133,7 @@ public final class SMFTLineLexer
         this.tokens.add(this.buffer.toString());
       }
 
-      return List.ofAll(this.tokens);
+      return List.copyOf(this.tokens);
     } finally {
       this.tokens.clear();
       this.buffer.setLength(0);

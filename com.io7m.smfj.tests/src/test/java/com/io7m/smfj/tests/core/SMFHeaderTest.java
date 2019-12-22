@@ -27,8 +27,8 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
-import io.vavr.collection.List;
-import io.vavr.collection.TreeMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +58,9 @@ public final class SMFHeaderTest
     Assertions.assertEquals(256L, h.vertexCount());
     Assertions.assertEquals(16L, h.triangles().triangleIndexSizeBits());
     Assertions.assertEquals(List.of(attr0), h.attributesInOrder());
-    Assertions.assertEquals(TreeMap.of(attr0.name(), attr0), h.attributesByName());
+    Assertions.assertEquals(
+      Map.of(attr0.name(), attr0),
+      h.attributesByName());
   }
 
   @Test

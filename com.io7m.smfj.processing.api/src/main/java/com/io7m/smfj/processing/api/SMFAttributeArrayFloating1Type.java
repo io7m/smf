@@ -17,7 +17,7 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.smfj.core.SMFPartialBiFunctionType;
-import io.vavr.collection.Vector;
+import java.util.List;
 import org.immutables.value.Value;
 
 /**
@@ -25,7 +25,6 @@ import org.immutables.value.Value;
  */
 
 @com.io7m.immutables.styles.ImmutablesStyleType
-@org.immutables.vavr.encodings.VavrEncodingEnabled
 @Value.Immutable
 public interface SMFAttributeArrayFloating1Type extends SMFAttributeArrayType
 {
@@ -63,5 +62,5 @@ public interface SMFAttributeArrayFloating1Type extends SMFAttributeArrayType
    */
 
   @Value.Parameter
-  Vector<Double> values();
+  List<Double> values();
 }

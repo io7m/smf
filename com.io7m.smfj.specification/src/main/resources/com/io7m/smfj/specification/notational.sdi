@@ -36,10 +36,10 @@ of the [term [type function] cross] function defined in the
 [term [type package] Vector3f] module, to the arguments [term [type variable] n]
 and [term [type variable] t].
 
-[section [title JPRA] [id conventions.jpra]]
+[section [title FIX SBE] [id conventions.fix_sbe]]
 [paragraph]
 Definitions of binary structures are given as
-[link-ext [target "http://io7m.github.io/jpra/"] jpra] language definitions.
+[link-ext [target "http://fixprotocol.io/2016/sbe/"] FIX SBE] definitions.
 All values are considered to be in big-endian byte order unless otherwise
 specified.
 

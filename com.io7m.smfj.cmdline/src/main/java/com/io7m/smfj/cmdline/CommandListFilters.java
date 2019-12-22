@@ -21,6 +21,7 @@ import com.beust.jcommander.Parameters;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
+import java.util.Map;
 
 @Parameters(commandDescription = "List available filters")
 public final class CommandListFilters extends CommandRoot
@@ -36,19 +37,20 @@ public final class CommandListFilters extends CommandRoot
   {
     super.call();
 
-    final SMFFilterCommandModuleResolverType r =
+    final SMFFilterCommandModuleResolverType resolver =
       SMFFilterCommandModuleResolver.create();
+    final Map<String, SMFFilterCommandModuleType> available =
+      resolver.available();
 
-    for (final String module_name : r.available().keySet()) {
-      final SMFFilterCommandModuleType module =
-        r.available().get(module_name).get();
-      for (final String command_name : module.parsers().keySet()) {
-        System.out.print(module_name);
+    available.keySet().stream().sorted().forEach(moduleName -> {
+      final SMFFilterCommandModuleType module = available.get(moduleName);
+      module.parsers().keySet().stream().sorted().forEach(commandName -> {
+        System.out.print(moduleName);
         System.out.print(":");
-        System.out.print(command_name);
+        System.out.print(commandName);
         System.out.println();
-      }
-    }
+      });
+    });
 
     return Integer.valueOf(0);
   }

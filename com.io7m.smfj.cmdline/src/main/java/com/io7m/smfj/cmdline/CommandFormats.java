@@ -22,9 +22,9 @@ import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
-import io.vavr.collection.SortedSet;
 import java.util.Iterator;
 import java.util.ServiceLoader;
+import java.util.SortedSet;
 
 @Parameters(commandDescription = "List supported formats")
 final class CommandFormats extends CommandRoot

@@ -29,13 +29,13 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -101,6 +101,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
       this.serializeHeaderVertices(in_header);
       this.serializeHeaderTriangles(in_header);
       this.serializeHeaderCoordinates(in_header);
+      this.serializeHeaderEndianness(in_header);
       this.serializeHeaderAttributes(in_header);
       this.serializeHeaderEnd();
     } finally {
@@ -140,6 +141,20 @@ public final class SMFTV1Serializer implements SMFSerializerType
     } catch (final UncheckedIOException e) {
       throw e.getCause();
     }
+  }
+
+  private void serializeHeaderEndianness(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    this.writer.append("endianness ");
+    final var byteOrder = in_header.dataByteOrder();
+    if (Objects.equals(byteOrder, ByteOrder.BIG_ENDIAN)) {
+      this.writer.append("big");
+    } else if (Objects.equals(byteOrder, ByteOrder.LITTLE_ENDIAN)) {
+      this.writer.append("little");
+    }
+    this.writer.newLine();
   }
 
   private void serializeHeaderCoordinates(

@@ -17,13 +17,12 @@
 package com.io7m.smfj.tests.processing;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.nio.file.FileSystem;
-import java.nio.file.Path;
 
 public abstract class SMFFilterCommandContextContract
 {

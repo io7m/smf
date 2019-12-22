@@ -19,12 +19,11 @@ package com.io7m.smfj.tests.format.text;
 
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-
 import java.util.function.Consumer;
 
 public interface SMFTextTestType
 {
   SMFParserSequentialType parserFor(
-    final SMFParserEventsType events,
-    final Consumer<SMFTextTestWriterType> o);
+    SMFParserEventsType events,
+    Consumer<SMFTextTestWriterType> o);
 }

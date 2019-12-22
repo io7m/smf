@@ -17,8 +17,7 @@
 package com.io7m.smfj.core;
 
 import com.io7m.junreachable.UnreachableCodeException;
-import io.vavr.collection.List;
-
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -71,6 +70,7 @@ public final class SMFSupportedSizes
   /**
    * Check if an unsigned integer type with the given size is supported.
    *
+   * @param type The name of the type (such as "triangle indices")
    * @param bits The size in bits
    *
    * @return {@code bits}
@@ -79,11 +79,15 @@ public final class SMFSupportedSizes
    */
 
   public static int checkIntegerUnsignedSupported(
+    final String type,
     final int bits)
     throws UnsupportedOperationException
   {
     if (!isIntegerUnsignedSupported(bits)) {
-      return unsupported(bits, "unsigned integer", SUPPORTED_INTEGER_UNSIGNED);
+      return unsupported(
+        bits,
+        String.format("unsigned integer (%s)", type),
+        SUPPORTED_INTEGER_UNSIGNED);
     }
     return bits;
   }
@@ -103,6 +107,7 @@ public final class SMFSupportedSizes
   /**
    * Check if a signed integer type with the given size is supported.
    *
+   * @param type The name of the type (such as "triangle indices")
    * @param bits The size in bits
    *
    * @return {@code bits}
@@ -111,11 +116,15 @@ public final class SMFSupportedSizes
    */
 
   public static int checkIntegerSignedSupported(
+    final String type,
     final int bits)
     throws UnsupportedOperationException
   {
     if (!isIntegerSignedSupported(bits)) {
-      return unsupported(bits, "signed integer", SUPPORTED_INTEGER_SIGNED);
+      return unsupported(
+        bits,
+        String.format("signed integer (%s)", type),
+        SUPPORTED_INTEGER_SIGNED);
     }
     return bits;
   }
@@ -135,6 +144,7 @@ public final class SMFSupportedSizes
   /**
    * Check if a floating point type with the given size is supported.
    *
+   * @param type The name of the type (such as "triangle indices")
    * @param bits The size in bits
    *
    * @return {@code bits}
@@ -143,11 +153,15 @@ public final class SMFSupportedSizes
    */
 
   public static int checkFloatSupported(
+    final String type,
     final int bits)
     throws UnsupportedOperationException
   {
     if (!isFloatSupported(bits)) {
-      return unsupported(bits, "float", SUPPORTED_FLOAT);
+      return unsupported(
+        bits,
+        String.format("float (%s)", type),
+        SUPPORTED_FLOAT);
     }
     return bits;
   }
@@ -166,7 +180,7 @@ public final class SMFSupportedSizes
     sb.append(bits);
     sb.append(System.lineSeparator());
     sb.append("  Supported: ");
-    sb.append(sizes.toJavaStream()
+    sb.append(sizes.stream()
                 .map(x -> Integer.toUnsignedString(x.intValue()))
                 .collect(Collectors.joining("|")));
     sb.append(System.lineSeparator());

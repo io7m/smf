@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import io.vavr.collection.SortedSet;
+import java.util.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.InputStream;

@@ -1,4 +1,14 @@
-[record SMFBHeaderStart
-  ([field magic           [integer unsigned 64]]
-   [field version_major   [integer unsigned 32]]
-   [field version_minor   [integer unsigned 32]])]
+<composite name="SMFHeader">
+  <type name="magicNumber"
+        description="The magic number identifying the section."
+        presence="constant"
+        primitiveType="uint64">
+    0x89534D460D0A1A0A
+  </type>
+  <type name="versionMajor"
+        description="The major version of the specification to which this file conforms."
+        primitiveType="uint32"/>
+  <type name="versionMinor"
+        description="The minor version of the specification to which this file conforms."
+        primitiveType="uint32"/>
+</composite>

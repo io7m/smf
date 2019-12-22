@@ -50,12 +50,17 @@
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
-      <artifactId>com.io7m.smfj.format.binary</artifactId>
+      <artifactId>com.io7m.smfj.format.binary2</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>com.io7m.smfj.format.text</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>com.io7m.smfj.format.xml</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -84,10 +89,6 @@
       <artifactId>com.io7m.junreachable.core</artifactId>
     </dependency>
 
-    <dependency>
-      <groupId>io.vavr</groupId>
-      <artifactId>vavr</artifactId>
-    </dependency>
     <dependency>
       <groupId>com.beust</groupId>
       <artifactId>jcommander</artifactId>

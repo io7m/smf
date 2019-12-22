@@ -16,10 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import com.io7m.smfj.core.SMFErrorType;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-
+import com.io7m.smfj.core.SMFPartialLogged;
 import java.io.Closeable;
 
 /**
@@ -32,5 +29,5 @@ public interface SMFSchemaParserType extends Closeable
    * @return A parsed schema, or a list of parse errors
    */
 
-  Validation<Seq<SMFErrorType>, SMFSchema> parseSchema();
+  SMFPartialLogged<SMFSchema> parseSchema();
 }

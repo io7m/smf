@@ -20,12 +20,11 @@ package com.io7m.smfj.cmdline;
 
 import com.beust.jcommander.Parameter;
 import com.beust.jcommander.Parameters;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.frontend.SMFFilterCommandFile;
 import com.io7m.smfj.frontend.SMFParserProviders;
 import com.io7m.smfj.frontend.SMFSerializerProviders;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
-import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
@@ -34,18 +33,14 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
-import com.io7m.smfj.serializer.api.SMFSerializerType;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +55,7 @@ public final class CommandFilter extends CommandRoot
     names = "--input-file",
     required = true,
     description = "The input file")
-  private String fileIn;
+  private Path fileIn;
 
   @Parameter(
     names = "--input-format",
@@ -70,7 +65,7 @@ public final class CommandFilter extends CommandRoot
   @Parameter(
     names = "--output-file",
     description = "The output file")
-  private String fileOut;
+  private Path fileOut;
 
   @Parameter(
     names = "--output-format",
@@ -81,12 +76,12 @@ public final class CommandFilter extends CommandRoot
     names = "--commands",
     required = true,
     description = "The filter commands")
-  private String fileCommands;
+  private Path fileCommands;
 
   @Parameter(
     names = "--source-directory",
     description = "The source directory")
-  private String sourceDirectory = System.getProperty("user.dir");
+  private Path sourceDirectory = Paths.get("");
 
   CommandFilter()
   {
@@ -111,17 +106,16 @@ public final class CommandFilter extends CommandRoot
     final Optional<SMFParserProviderType> providerParserOpt =
       SMFParserProviders.findParserProvider(
         Optional.ofNullable(this.formatIn),
-        this.fileIn);
+        this.fileIn.toString());
 
     if (providerParserOpt.isEmpty()) {
       return this.fail();
     }
 
     final SMFParserProviderType providerParser = providerParserOpt.get();
-    final Path pathIn = Paths.get(this.fileIn);
 
     final Optional<SMFMemoryMesh> meshOpt =
-      this.loadMemoryMesh(providerParser, pathIn);
+      this.loadMemoryMesh(providerParser, this.fileIn);
 
     if (meshOpt.isEmpty()) {
       return this.fail();
@@ -129,8 +123,8 @@ public final class CommandFilter extends CommandRoot
 
     final SMFFilterCommandContext context =
       SMFFilterCommandContext.of(
-        Paths.get(this.sourceDirectory).toAbsolutePath(),
-        Paths.get(this.fileCommands).toAbsolutePath());
+        this.sourceDirectory.toAbsolutePath(),
+        this.fileCommands.toAbsolutePath());
 
     final Optional<SMFMemoryMesh> filteredOpt =
       this.runFilters(context, filters, meshOpt.get());
@@ -149,24 +143,24 @@ public final class CommandFilter extends CommandRoot
     if (this.fileOut != null) {
       final Optional<SMFSerializerProviderType> providerSerializerOpt =
         SMFSerializerProviders.findSerializerProvider(
-          Optional.ofNullable(this.formatOut), this.fileOut);
+          Optional.ofNullable(this.formatOut),
+          this.fileOut.toString());
 
       if (providerSerializerOpt.isEmpty()) {
         this.fail();
         return;
       }
 
-      final SMFSerializerProviderType providerSerializer =
+      final SMFSerializerProviderType serializers =
         providerSerializerOpt.get();
-      final Path pathOut =
-        Paths.get(this.fileOut);
 
-      LOG.debug("serializing to {}", pathOut);
-      try (OutputStream os = Files.newOutputStream(pathOut)) {
-        try (SMFSerializerType serializer =
-               providerSerializer.serializerCreate(
-                 providerSerializer.serializerSupportedVersions().last(),
-                 pathOut.toUri(),
+      LOG.debug("serializing to {}", this.fileOut);
+      final var timeThen = LocalDateTime.now();
+      try (var os = Files.newOutputStream(this.fileOut)) {
+        try (var serializer =
+               serializers.serializerCreate(
+                 serializers.serializerSupportedVersions().last(),
+                 this.fileOut.toUri(),
                  os)) {
           SMFMemoryMeshSerializer.serialize(filtered, serializer);
         }
@@ -176,6 +170,8 @@ public final class CommandFilter extends CommandRoot
         this.fail();
         return;
       }
+      final var timeNow = LocalDateTime.now();
+      LOG.debug("serialized in {}", Duration.between(timeThen, timeNow));
     }
   }
 
@@ -187,47 +183,76 @@ public final class CommandFilter extends CommandRoot
 
   private Optional<SMFMemoryMesh> runFilters(
     final SMFFilterCommandContext context,
-    final Seq<SMFMemoryMeshFilterType> filters,
+    final List<SMFMemoryMeshFilterType> filters,
     final SMFMemoryMesh mesh)
   {
-    SMFMemoryMesh mesh_current = mesh;
+    SMFMemoryMesh meshCurrent = mesh;
     for (int index = 0; index < filters.size(); ++index) {
       final SMFMemoryMeshFilterType filter = filters.get(index);
       LOG.debug("evaluating filter: {}", filter.name());
 
-      final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> result =
-        filter.filter(context, mesh_current);
-      if (result.isValid()) {
-        mesh_current = result.get();
+      final SMFPartialLogged<SMFMemoryMesh> result =
+        filter.filter(context, meshCurrent);
+
+      result.warnings().forEach(e -> {
+        LOG.warn("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
+      result.errors().forEach(e -> {
+        LOG.error("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
+      if (result.isSucceeded()) {
+        meshCurrent = result.get();
       } else {
-        result.getError().map(e -> {
-          LOG.error("filter: {}: {}", filter.name(), e.message());
-          return null;
-        });
         this.exitCode = 1;
         return Optional.empty();
       }
     }
 
-    return Optional.of(mesh_current);
+    return Optional.of(meshCurrent);
   }
 
   private Optional<SMFMemoryMesh> loadMemoryMesh(
-    final SMFParserProviderType provider_parser,
-    final Path path_in)
+    final SMFParserProviderType parsers,
+    final Path path)
     throws IOException
   {
     final SMFMemoryMeshProducerType loader =
       SMFMemoryMeshProducer.create();
 
-    try (InputStream is = Files.newInputStream(path_in)) {
-      try (SMFParserSequentialType parser =
-             provider_parser.parserCreateSequential(
-               loader, path_in.toUri(), is)) {
+    LOG.debug("open {}", path);
+    try (var stream = Files.newInputStream(path)) {
+      try (var parser = parsers.parserCreateSequential(
+        loader, path.toUri(), stream)) {
         parser.parse();
       }
+
+      loader.warnings().forEach(e -> {
+        LOG.warn("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
+      loader.errors().forEach(e -> {
+        LOG.error("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
       if (!loader.errors().isEmpty()) {
-        loader.errors().forEach(e -> LOG.error(e.fullMessage()));
         this.exitCode = 1;
         return Optional.empty();
       }
@@ -238,19 +263,34 @@ public final class CommandFilter extends CommandRoot
   private Optional<List<SMFMemoryMeshFilterType>> parseFilterCommands()
     throws IOException
   {
-    final Path path_commands = Paths.get(this.fileCommands);
     final SMFFilterCommandModuleResolverType resolver =
       SMFFilterCommandModuleResolver.create();
 
-    try (InputStream stream = Files.newInputStream(path_commands)) {
-      final Validation<Seq<SMFParseError>, List<SMFMemoryMeshFilterType>> r =
+    try (var stream = Files.newInputStream(this.fileCommands)) {
+      final SMFPartialLogged<List<SMFMemoryMeshFilterType>> result =
         SMFFilterCommandFile.parseFromStream(
-          resolver, Optional.of(path_commands.toUri()), stream);
-      if (r.isValid()) {
-        return Optional.of(r.get());
+          resolver, Optional.of(this.fileCommands.toUri()), stream);
+
+      result.warnings().forEach(e -> {
+        LOG.warn("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
+      result.errors().forEach(e -> {
+        LOG.error("{}", e.fullMessage());
+        final Optional<Exception> exceptionOpt = e.exception();
+        if (exceptionOpt.isPresent()) {
+          LOG.error("exception: ", exceptionOpt.get());
+        }
+      });
+
+      if (result.isSucceeded()) {
+        return Optional.of(result.get());
       }
 
-      r.getError().forEach(e -> LOG.error(e.fullMessage()));
       return Optional.empty();
     }
   }

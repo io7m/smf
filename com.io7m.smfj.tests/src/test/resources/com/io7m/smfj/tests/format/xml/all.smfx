@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sx:SMF xmlns:sx="urn:com.io7m.smf:xml:2:0">
+  <sx:Header vertexCount="3" endianness="BIG_ENDIAN">
+    <sx:CoordinateSystem right="AXIS_POSITIVE_X"
+                         up="AXIS_POSITIVE_Y"
+                         forward="AXIS_NEGATIVE_Z"
+                         windingOrder="FACE_WINDING_ORDER_COUNTER_CLOCKWISE"/>
+    <sx:TriangleSpecification count="1"
+                              sizeBits="8"/>
+    <sx:SchemaIdentifier name="com.io7m.smf.example"
+                         versionMajor="1"
+                         versionMinor="2"/>
+    <sx:Attributes>
+      <sx:Attribute name="f16_4"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="4"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="f16_3"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="3"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="f16_2"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="2"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="f16_1"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="1"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="f32_4"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="4"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="f32_3"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="3"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="f32_2"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="2"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="f32_1"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="1"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="f64_4"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="4"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="f64_3"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="3"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="f64_2"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="2"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="f64_1"
+                    componentKind="ELEMENT_TYPE_FLOATING"
+                    componentCount="1"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="i64_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="4"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="i64_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="3"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="i64_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="2"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="i64_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="1"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="i32_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="4"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="i32_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="3"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="i32_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="2"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="i32_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="1"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="i16_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="4"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="i16_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="3"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="i16_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="2"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="i16_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="1"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="i8_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="4"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="i8_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="3"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="i8_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="2"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="i8_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_SIGNED"
+                    componentCount="1"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="u64_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="4"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="u64_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="3"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="u64_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="2"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="u64_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="1"
+                    componentSizeBits="64"/>
+      <sx:Attribute name="u32_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="4"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="u32_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="3"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="u32_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="2"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="u32_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="1"
+                    componentSizeBits="32"/>
+      <sx:Attribute name="u16_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="4"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="u16_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="3"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="u16_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="2"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="u16_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="1"
+                    componentSizeBits="16"/>
+      <sx:Attribute name="u8_4"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="4"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="u8_3"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="3"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="u8_2"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="2"
+                    componentSizeBits="8"/>
+      <sx:Attribute name="u8_1"
+                    componentKind="ELEMENT_TYPE_INTEGER_UNSIGNED"
+                    componentCount="1"
+                    componentSizeBits="8"/>
+    </sx:Attributes>
+  </sx:Header>
+  <sx:VertexDataNonInterleaved>
+    <sx:AttributeData name="f16_4">
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0001219511032104"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0001219511032104"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0001219511032104"
+                          c3="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f16_3">
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f16_2">
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f16_1">
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f32_4">
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f32_3">
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f32_2">
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f32_1">
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f64_4">
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+      <sx:AttributeFloat4 c0="-127.0"
+                          c1="0.0"
+                          c2="1.0"
+                          c3="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f64_3">
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+      <sx:AttributeFloat3 c0="-127.0"
+                          c1="0.0"
+                          c2="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f64_2">
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+      <sx:AttributeFloat2 c0="-127.0"
+                          c1="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="f64_1">
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+      <sx:AttributeFloat1 c0="127.0"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i64_4">
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i64_3">
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i64_2">
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i64_1">
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i32_4">
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i32_3">
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i32_2">
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i32_1">
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i16_4">
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i16_3">
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i16_2">
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i16_1">
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i8_4">
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+      <sx:AttributeIntegerSigned4 c0="-127"
+                                  c1="0"
+                                  c2="1"
+                                  c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i8_3">
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+      <sx:AttributeIntegerSigned3 c0="-127"
+                                  c1="0"
+                                  c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i8_2">
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+      <sx:AttributeIntegerSigned2 c0="-127"
+                                  c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="i8_1">
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+      <sx:AttributeIntegerSigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u64_4">
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u64_3">
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u64_2">
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u64_1">
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u32_4">
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u32_3">
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u32_2">
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u32_1">
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u16_4">
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u16_3">
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u16_2">
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u16_1">
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u8_4">
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+      <sx:AttributeIntegerUnsigned4 c0="127"
+                                    c1="0"
+                                    c2="1"
+                                    c3="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u8_3">
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+      <sx:AttributeIntegerUnsigned3 c0="127"
+                                    c1="0"
+                                    c2="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u8_2">
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+      <sx:AttributeIntegerUnsigned2 c0="127"
+                                    c1="127"/>
+    </sx:AttributeData>
+    <sx:AttributeData name="u8_1">
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+      <sx:AttributeIntegerUnsigned1 c0="127"/>
+    </sx:AttributeData>
+  </sx:VertexDataNonInterleaved>
+  <sx:Triangles>
+    <sx:Triangle v0="0"
+                 v1="1"
+                 v2="2"/>
+  </sx:Triangles>
+  <sx:Metadata>
+    <sx:SchemaIdentifier name="com.io7m.smf.example"
+                         versionMajor="0"
+                         versionMinor="0"/>
+    <sx:Base64Data><![CDATA[aGVsbG8=]]></sx:Base64Data>
+  </sx:Metadata>
+  <sx:Metadata>
+    <sx:SchemaIdentifier name="com.io7m.smf.example"
+                         versionMajor="1"
+                         versionMinor="0"/>
+    <sx:Base64Data><![CDATA[b2xsZWg=]]></sx:Base64Data>
+  </sx:Metadata>
+  <sx:Metadata>
+    <sx:SchemaIdentifier name="com.io7m.smf.example.different"
+                         versionMajor="1"
+                         versionMinor="0"/>
+    <sx:Base64Data><![CDATA[b2xsZWg=]]></sx:Base64Data>
+  </sx:Metadata>
+  <sx:Metadata>
+    <sx:SchemaIdentifier name="com.io7m.smf.example"
+                         versionMajor="2"
+                         versionMinor="0"/>
+    <sx:Base64Data><![CDATA[dGhlIGVuZA==]]></sx:Base64Data>
+  </sx:Metadata>
+</sx:SMF>

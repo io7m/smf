@@ -16,16 +16,14 @@
 
 package com.io7m.smfj.processing.api;
 
-import org.immutables.value.Value;
-
 import java.nio.file.Path;
+import org.immutables.value.Value;
 
 /**
  * The context used during filtering.
  */
 
 @Value.Immutable
-@org.immutables.vavr.encodings.VavrEncodingEnabled
 @com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFFilterCommandContextType
 {

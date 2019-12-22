@@ -93,17 +93,21 @@ public interface SMFAttributeType
         "Component count must be in the range [1, 4]");
     }
 
+    final var name = this.name().value();
     switch (this.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
-        SMFSupportedSizes.checkIntegerSignedSupported(this.componentSizeBits());
+        SMFSupportedSizes.checkIntegerSignedSupported(
+          name, this.componentSizeBits());
         break;
       }
       case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-        SMFSupportedSizes.checkIntegerUnsignedSupported(this.componentSizeBits());
+        SMFSupportedSizes.checkIntegerUnsignedSupported(
+          name, this.componentSizeBits());
         break;
       }
       case ELEMENT_TYPE_FLOATING: {
-        SMFSupportedSizes.checkFloatSupported(this.componentSizeBits());
+        SMFSupportedSizes.checkFloatSupported(
+          name, this.componentSizeBits());
         break;
       }
     }

@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.format.text.v1;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
@@ -23,36 +24,45 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.format.text.v1.SMFTV1HeaderCommandCoordinates;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import io.vavr.collection.List;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.Expectations;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
 
 public final class SMFTV1HeaderCommandCoordinatesTest
 {
+  private SMFParserEventsHeaderType events;
+  private SMFTLineReaderType reader;
+  private ArgumentCaptor<SMFErrorType> captor;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.events = Mockito.mock(SMFParserEventsHeaderType.class);
+    this.reader = Mockito.mock(SMFTLineReaderType.class);
+    this.captor = ArgumentCaptor.forClass(SMFErrorType.class);
+
+    Mockito.when(this.reader.position())
+      .thenReturn(LexicalPosition.of(0, 0, Optional.empty()));
+  }
+
   @Test
-  public void testOK_0(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testOK_0()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandCoordinates cmd =
-      new SMFTV1HeaderCommandCoordinates(reader, header);
-
-    new Expectations()
-    {{
-
-    }};
+      new SMFTV1HeaderCommandCoordinates(this.reader, header);
 
     final SMFTParsingStatus r =
       cmd.parse(
-        events,
+        this.events,
         List.of("coordinates", "+x", "+y", "-z", "counter-clockwise"));
     Assertions.assertEquals(SUCCESS, r);
 
@@ -62,110 +72,74 @@ public final class SMFTV1HeaderCommandCoordinatesTest
   }
 
   @Test
-  public void testFailure_0(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_0()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandCoordinates cmd =
-      new SMFTV1HeaderCommandCoordinates(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandCoordinates.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandCoordinates(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("coordinates"));
+      cmd.parse(this.events, List.of("coordinates"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandCoordinates.SYNTAX));
   }
 
   @Test
-  public void testFailure_1(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_1()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandCoordinates cmd =
-      new SMFTV1HeaderCommandCoordinates(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandCoordinates.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandCoordinates(this.reader, header);
 
     final SMFTParsingStatus r =
       cmd.parse(
-        events,
+        this.events,
         List.of("coordinates", "a", "b", "c", "counter-clockwise"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandCoordinates.SYNTAX));
   }
 
   @Test
-  public void testFailure_2(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_2()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandCoordinates cmd =
-      new SMFTV1HeaderCommandCoordinates(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains(SMFTV1HeaderCommandCoordinates.SYNTAX);
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandCoordinates(this.reader, header);
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("coordinates", "+x", "+y", "-z", "q"));
+      cmd.parse(this.events, List.of("coordinates", "+x", "+y", "-z", "q"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      SMFTV1HeaderCommandCoordinates.SYNTAX));
   }
 
   @Test
-  public void testFailure_3(
-    final @Mocked SMFParserEventsHeaderType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testFailure_3()
     throws Exception
   {
     final SMFHeader.Builder header = SMFHeader.builder();
     final SMFTV1HeaderCommandCoordinates cmd =
-      new SMFTV1HeaderCommandCoordinates(reader, header);
-
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Axes must be perpendicular");
-        }
-      }));
-    }};
+      new SMFTV1HeaderCommandCoordinates(this.reader, header);
 
     final SMFTParsingStatus r =
       cmd.parse(
-        events,
+        this.events,
         List.of("coordinates", "+x", "+x", "+x", "counter-clockwise"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Axes must be perpendicular"));
   }
 }

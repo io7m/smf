@@ -25,10 +25,9 @@ import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesIgnoringReceiver;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import io.vavr.collection.List;
-
 import java.io.IOException;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -212,7 +211,7 @@ public final class SMFTV1BodySectionParserTriangles implements
     final SMFParserEventsDataTrianglesType receiver,
     final List<String> line)
   {
-    if (line.length() == 3) {
+    if (line.size() == 3) {
       try {
         final long v0 = Long.parseUnsignedLong(line.get(0));
         final long v1 = Long.parseUnsignedLong(line.get(1));

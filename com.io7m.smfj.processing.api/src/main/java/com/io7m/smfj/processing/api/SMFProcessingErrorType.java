@@ -17,9 +17,8 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.smfj.core.SMFErrorType;
-import org.immutables.value.Value;
-
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * The type of processing errors.

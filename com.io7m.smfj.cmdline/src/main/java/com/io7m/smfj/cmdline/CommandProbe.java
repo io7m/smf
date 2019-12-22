@@ -24,24 +24,19 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFWarningType;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerServiceLoader;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerType;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +52,7 @@ public final class CommandProbe extends CommandRoot
     names = "--input-file",
     required = true,
     description = "The input file")
-  private String file_in;
+  private Path path;
 
   CommandProbe()
   {
@@ -70,22 +65,33 @@ public final class CommandProbe extends CommandRoot
   {
     super.call();
 
-    final Path path_in = Paths.get(this.file_in);
+    final var pathN = this.path.normalize();
 
     final SMFVersionProbeControllerType controller =
       new SMFVersionProbeControllerServiceLoader();
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final SMFPartialLogged<SMFVersionProbed> r =
       controller.probe(() -> {
         try {
-          return Files.newInputStream(path_in);
+          return Files.newInputStream(pathN);
         } catch (final IOException e) {
           throw new UncheckedIOException(e);
         }
       });
 
-    if (r.isInvalid()) {
-      r.getError().forEach(e -> LOG.error(e.fullMessage()));
+    r.warnings().forEach(e -> {
+      LOG.warn("{}", e.fullMessage());
+      final Optional<Exception> exceptionOpt = e.exception();
+      exceptionOpt.ifPresent(value -> LOG.warn("exception: ", value));
+    });
+
+    r.errors().forEach(e -> {
+      LOG.error("{}", e.fullMessage());
+      final Optional<Exception> exceptionOpt = e.exception();
+      exceptionOpt.ifPresent(value -> LOG.error("exception: ", value));
+    });
+
+    if (r.isFailed()) {
       return Integer.valueOf(1);
     }
 
@@ -97,9 +103,9 @@ public final class CommandProbe extends CommandRoot
       format.mimeType(),
       version.version().toHumanString());
 
-    try (InputStream stream = Files.newInputStream(path_in)) {
-      try (SMFParserSequentialType p = version.provider()
-        .parserCreateSequential(this, path_in.toUri(), stream)) {
+    try (var stream = Files.newInputStream(pathN)) {
+      try (var p = version.provider().parserCreateSequential(
+        this, pathN.toUri(), stream)) {
         p.parse();
       }
     }

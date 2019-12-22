@@ -41,6 +41,7 @@ This version of the specification defines the following [term [type command] smf
 [list-unordered
   [item [link [target smft.sections.smf.subs.attribute] attribute]]
   [item [link [target smft.sections.smf.subs.coordinates] coordinates]]
+  [item [link [target smft.sections.smf.subs.endianness] endianness]]
   [item [link [target smft.sections.smf.subs.schema] schema]]
   [item [link [target smft.sections.smf.subs.triangles] triangles]]
   [item [link [target smft.sections.smf.subs.vertices] vertices]]
@@ -97,6 +98,32 @@ as if the following subcommand had been specified:
 
 [formal-item [title "coordinates Default"] [id smft.sections.smf.subs.coordinates.default]]
 [verbatim "coordinates +x +y -z counter-clockwise"]
+
+
+
+[subsection [title Subcommand - endianness] [id smft.sections.smf.subs.endianness]]
+[paragraph]
+The [term [type command] endianness] subcommand specifies the byte order
+of data that will appear in the file. Because byte ordering is irrelevant
+in an SMF/T file, the effect of evaluating this subcommand is to set the
+byte order in the parsed SMF model to the specified value. This will
+affect subsequent serializations of the model to formats with which
+byte ordering is relevant "(such as SMF/B)".
+
+[formal-item [title "endianness"] [id smft.sections.smf.subs.endianness.def]]
+[verbatim [include "smft-smf-endianness.ebnf"]]
+
+[paragraph]
+The subcommand takes the following arguments:
+
+[formal-item [title "attributes Arguments"] [id smft.sections.smf.subs.endianness.args]]
+[list-ordered
+  [item The name of the byte order]]
+
+[paragraph]
+The subcommand is allowed to appear at most once. If the command does not
+appear, implementations MUST behave as if big-endian byte ordering was
+specified.
 
 
 

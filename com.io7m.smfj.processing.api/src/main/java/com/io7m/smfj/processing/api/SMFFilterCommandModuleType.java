@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import io.vavr.collection.SortedMap;
+import java.util.Map;
 import org.immutables.value.Value;
 
 /**
@@ -39,5 +39,5 @@ public interface SMFFilterCommandModuleType
    */
 
   @Value.Parameter
-  SortedMap<String, SMFFilterCommandParserType> parsers();
+  Map<String, SMFFilterCommandParserType> parsers();
 }

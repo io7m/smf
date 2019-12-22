@@ -19,12 +19,11 @@ package com.io7m.smfj.cmdline;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.ParameterException;
 import com.beust.jcommander.internal.Console;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The main command line program.
@@ -70,40 +69,6 @@ public final class Main implements Runnable
     this.commander.addCommand("probe", probe);
   }
 
-  private static final class StringConsole implements Console
-  {
-    private final StringBuilder stringBuilder;
-
-    StringConsole()
-    {
-      this.stringBuilder = new StringBuilder();
-    }
-
-    public StringBuilder stringBuilder()
-    {
-      return this.stringBuilder;
-    }
-
-    @Override
-    public void print(final String s)
-    {
-      this.stringBuilder.append(s);
-    }
-
-    @Override
-    public void println(final String s)
-    {
-      this.stringBuilder.append(s);
-      this.stringBuilder.append(System.lineSeparator());
-    }
-
-    @Override
-    public char[] readPassword(final boolean b)
-    {
-      return new char[0];
-    }
-  }
-
   /**
    * The main entry point.
    *
@@ -135,7 +100,9 @@ public final class Main implements Runnable
       final String cmd = this.commander.getParsedCommand();
       if (cmd == null) {
         this.commander.usage();
-        LOG.info("Arguments required.\n{}", this.console.stringBuilder().toString());
+        LOG.info(
+          "Arguments required.\n{}",
+          this.console.stringBuilder().toString());
         return;
       }
 
@@ -143,11 +110,48 @@ public final class Main implements Runnable
       this.exitCode = command.call().intValue();
     } catch (final ParameterException e) {
       this.commander.usage();
-      LOG.error("{}\n{}", e.getMessage(), this.console.stringBuilder().toString());
+      LOG.error(
+        "{}\n{}",
+        e.getMessage(),
+        this.console.stringBuilder().toString());
       this.exitCode = 1;
     } catch (final Exception e) {
       LOG.error("{}: ", e.getMessage(), e);
       this.exitCode = 1;
+    }
+  }
+
+  private static final class StringConsole implements Console
+  {
+    private final StringBuilder stringBuilder;
+
+    StringConsole()
+    {
+      this.stringBuilder = new StringBuilder();
+    }
+
+    public StringBuilder stringBuilder()
+    {
+      return this.stringBuilder;
+    }
+
+    @Override
+    public void print(final String s)
+    {
+      this.stringBuilder.append(s);
+    }
+
+    @Override
+    public void println(final String s)
+    {
+      this.stringBuilder.append(s);
+      this.stringBuilder.append(System.lineSeparator());
+    }
+
+    @Override
+    public char[] readPassword(final boolean b)
+    {
+      return new char[0];
     }
   }
 }

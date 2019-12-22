@@ -16,23 +16,17 @@
 
 package com.io7m.smfj.processing.main;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFFilterCommandParsing;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
-
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -82,7 +76,7 @@ public final class SMFMemoryMeshFilterSchemaSet implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -90,12 +84,12 @@ public final class SMFMemoryMeshFilterSchemaSet implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 3) {
+    if (text.size() == 3) {
       try {
         final SMFSchemaName schema = SMFSchemaName.of(text.get(0));
         final int major = Integer.parseUnsignedInt(text.get(1));
         final int minor = Integer.parseUnsignedInt(text.get(2));
-        return valid(create(
+        return SMFPartialLogged.succeeded(create(
           SMFSchemaIdentifier.builder()
             .setName(schema)
             .setVersionMajor(major)
@@ -128,12 +122,13 @@ public final class SMFMemoryMeshFilterSchemaSet implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
     Objects.requireNonNull(context, "Context");
     Objects.requireNonNull(m, "Mesh");
-    return valid(m.withHeader(m.header().withSchemaIdentifier(this.config)));
+    return SMFPartialLogged.succeeded(m.withHeader(m.header().withSchemaIdentifier(
+      this.config)));
   }
 }

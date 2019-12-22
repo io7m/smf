@@ -35,13 +35,14 @@ public final class SMFSchemaNameTest
   public void testValid()
   {
     final String[] valids = {
-      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "abcdefghijklmnopqrstuvwxyz0123456789",
+      "0123456789",
       "a.b.c",
+      "_",
+      ".",
       "a0.b0.c0",
-      "a0_.b0_.c0_",
-      "Ямогуестьстекло",
-      "Μπορώ"
+      "a0_.b0_.c0_"
     };
 
     final boolean[] ok = new boolean[valids.length];
@@ -76,18 +77,17 @@ public final class SMFSchemaNameTest
   {
     final String[] invalids = {
       "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      "0123456789",
       "\\",
       "\"",
-      "_",
       "-",
-      ".",
       ":",
       ",",
       "@",
       "$",
       "a a",
-      "'"
+      "'",
+      "Ямогуестьстекло",
+      "Μπορώ"
     };
 
     final boolean[] ok = new boolean[invalids.length];

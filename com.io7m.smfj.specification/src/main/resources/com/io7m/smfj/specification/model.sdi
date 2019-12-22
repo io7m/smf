@@ -18,7 +18,7 @@ guarantees of [term [type term] forwards] and [term [type term] backwards]
 compatibility as the specification evolves.
 
 [paragraph]
-The version of the SMF model described by this specification is [term [type expression] "(1, 0)"].
+The version of the SMF model described by this specification is [term [type expression] "(2, 0)"].
 See [link [target smf_model.versioning] versioning] for details.
 
 [footnote [id smf_model.collada]]
@@ -110,6 +110,13 @@ point values.
 
 [formal-item [title "Attribute Type"] [id smf_model.attribute.def]]
 [verbatim [include "attribute.hs"]]
+
+[paragraph]
+Attribute names may be at most [term [type constant] 64] characters in length
+and must conform to the following syntax:
+
+[formal-item [title "Attribute Name Syntax"] [id smf_model.attribute.name_syntax]]
+[verbatim [include "attribute-name.ebnf"]]
 
 [paragraph]
 Implementations are required to support attributes of at least the following

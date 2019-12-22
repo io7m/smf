@@ -16,9 +16,9 @@
 
 package com.io7m.smfj.tests.processing;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
@@ -26,67 +26,63 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMetadata;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterMetadataAdd;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
-public final class SMFMemoryMeshFilterMetadataAddTest extends
-  SMFMemoryMeshFilterContract
+public final class SMFMemoryMeshFilterMetadataAddTest
+  extends SMFMemoryMeshFilterContract
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataAddTest.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshFilterMetadataAddTest.class);
 
   @Test
   public void testParseWrong1()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
         List.of());
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong2()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
         List.of("x", "y"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
         List.of("x", "y", "z", "w"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong4()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -94,13 +90,13 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
           "x",
           "0",
           "z"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong5()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
@@ -108,18 +104,18 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
           "0",
           "x",
           "z"));
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParse()
   {
-    final Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterMetadataAdd.parse(
         Optional.empty(),
         1,
         List.of("com.io7m.smf.example", "1", "2", "x"));
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     final SMFMemoryMeshFilterType c = r.get();
     Assertions.assertEquals(c.name(), SMFMemoryMeshFilterMetadataAdd.NAME);
   }
@@ -130,9 +126,8 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final Path path =
@@ -144,16 +139,16 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
 
     final SMFSchemaIdentifier schema_id =
       SMFSchemaIdentifier.of(
-      SMFSchemaName.of("com.io7m.example"), 1, 0);
+        SMFSchemaName.of("com.io7m.example"), 1, 0);
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assertions.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
@@ -162,9 +157,8 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (SMFParserSequentialType parser =
-           SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+    try (var parser = SMFTestFiles.createParser(loader, "all.smft")) {
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final Path path =
@@ -191,17 +185,21 @@ public final class SMFMemoryMeshFilterMetadataAddTest extends
       SMFMemoryMeshFilterMetadataAdd.create(schema_id, path);
 
     final SMFMemoryMesh mesh0 = loader.mesh();
-    final Validation<Seq<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(context, mesh0);
 
-    Assertions.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFMemoryMesh mesh1 = r.get();
     Assertions.assertEquals(mesh0.arrays(), mesh1.arrays());
     Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assertions.assertEquals(mesh0.metadata(), mesh1.metadata().dropRight(1));
 
-    final SMFMetadata meta = mesh1.metadata().last();
+    final var metadataWithout = new ArrayList<>(mesh1.metadata());
+    metadataWithout.remove(metadataWithout.size() - 1);
+
+    Assertions.assertEquals(metadataWithout, mesh0.metadata());
+
+    final SMFMetadata meta = mesh1.metadata().get(mesh1.metadata().size() - 1);
     Assertions.assertEquals(schema_id, meta.schema());
     Assertions.assertArrayEquals(data, meta.data());
   }

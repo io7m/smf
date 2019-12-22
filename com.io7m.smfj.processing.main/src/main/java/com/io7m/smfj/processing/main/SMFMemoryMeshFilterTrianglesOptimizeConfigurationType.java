@@ -16,9 +16,8 @@
 
 package com.io7m.smfj.processing.main;
 
-import org.immutables.value.Value;
-
 import java.util.OptionalInt;
+import org.immutables.value.Value;
 
 /**
  * A specification of how triangles should be processed.

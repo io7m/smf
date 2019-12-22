@@ -18,14 +18,13 @@ package com.io7m.smfj.tests.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.parser.api.SMFParseError;
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.util.Optional;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Optional;
 
 public final class SMFParseErrorTest
 {

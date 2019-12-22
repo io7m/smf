@@ -20,6 +20,7 @@ import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.format.text.v1.SMFTV1Parser;
 import com.io7m.smfj.format.text.v1.SMFTV1Serializer;
 import com.io7m.smfj.parser.api.SMFParseError;
@@ -31,16 +32,6 @@ import com.io7m.smfj.probe.api.SMFVersionProbeProviderType;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
 import com.io7m.smfj.serializer.api.SMFSerializerProviderType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedSet;
-import io.vavr.collection.TreeSet;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
-import org.osgi.service.component.annotations.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,9 +40,15 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import org.osgi.service.component.annotations.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.format.text.implementation.Flags.TRIANGLES_RECEIVED;
 import static com.io7m.smfj.format.text.implementation.Flags.TRIANGLES_REQUIRED;
@@ -61,8 +58,6 @@ import static com.io7m.smfj.parser.api.SMFParseErrors.errorException;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorExpectedGot;
 import static com.io7m.smfj.parser.api.SMFParseErrors.errorWithMessage;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * The implementation of the text format.
@@ -74,24 +69,28 @@ public final class SMFFormatText
   SMFSerializerProviderType,
   SMFVersionProbeProviderType
 {
-  private static final Logger LOG;
-  private static final SMFFormatDescription FORMAT;
-  private static final SortedSet<SMFFormatVersion> SUPPORTED;
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFFormatText.class);
 
-  static {
-    LOG = LoggerFactory.getLogger(SMFFormatText.class);
+  private static final SMFFormatDescription FORMAT = makeFormat();
+  private static final SortedSet<SMFFormatVersion> SUPPORTED = makeVersion();
 
-    {
-      final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
-      b.setDescription("A plain text encoding of SMF data");
-      b.setMimeType("text/vnd.io7m.smf");
-      b.setName("smf/t");
-      b.setRandomAccess(false);
-      b.setSuffix("smft");
-      FORMAT = b.build();
-    }
+  private static SMFFormatDescription makeFormat()
+  {
+    final SMFFormatDescription.Builder b = SMFFormatDescription.builder();
+    b.setDescription("A plain text encoding of SMF data");
+    b.setMimeType("text/vnd.io7m.smf");
+    b.setName("smf/t");
+    b.setRandomAccess(false);
+    b.setSuffix("smft");
+    return b.build();
+  }
 
-    SUPPORTED = TreeSet.of(SMFFormatVersion.of(1, 0));
+  private static SortedSet<SMFFormatVersion> makeVersion()
+  {
+    final var supported = new TreeSet<SMFFormatVersion>();
+    supported.add(SMFFormatVersion.of(1, 0));
+    return Collections.unmodifiableSortedSet(supported);
   }
 
   /**
@@ -103,46 +102,50 @@ public final class SMFFormatText
 
   }
 
-  private static Validation<List<SMFParseError>, SMFFormatVersion> parseSMFVersion(
+  private static SMFPartialLogged<SMFFormatVersion> parseSMFVersion(
     final List<String> line,
     final LexicalPosition<URI> position)
   {
     if (line.isEmpty()) {
-      return invalid(List.of(errorExpectedGot(
-        "The first line must be a version declaration.",
-        "smf <version-major> <version-minor>",
-        line.toJavaStream().collect(Collectors.joining(" ")),
-        position)));
+      return SMFPartialLogged.failed(
+        errorExpectedGot(
+          "The first line must be a version declaration.",
+          "smf <version-major> <version-minor>",
+          String.join(" ", line),
+          position));
     }
 
     switch (line.get(0)) {
       case "smf": {
-        if (line.length() != 3) {
-          return invalid(List.of(errorExpectedGot(
-            "Incorrect number of arguments.",
-            "smf <version-major> <version-minor>",
-            line.toJavaStream().collect(Collectors.joining(" ")),
-            position)));
+        if (line.size() != 3) {
+          return SMFPartialLogged.failed(
+            errorExpectedGot(
+              "Incorrect number of arguments.",
+              "smf <version-major> <version-minor>",
+              String.join(" ", line),
+              position));
         }
 
         try {
           final int major = Integer.parseUnsignedInt(line.get(1));
           final int minor = Integer.parseUnsignedInt(line.get(2));
-          return valid(SMFFormatVersion.of(major, minor));
+          return SMFPartialLogged.succeeded(SMFFormatVersion.of(major, minor));
         } catch (final NumberFormatException e) {
-          return invalid(List.of(errorExpectedGot(
-            "Cannot parse number: " + e.getMessage(),
-            "smf <version-major> <version-minor>",
-            line.toJavaStream().collect(Collectors.joining(" ")),
-            position)));
+          return SMFPartialLogged.failed(
+            errorExpectedGot(
+              "Cannot parse number: " + e.getMessage(),
+              "smf <version-major> <version-minor>",
+              String.join(" ", line),
+              position));
         }
       }
       default: {
-        return invalid(List.of(errorExpectedGot(
-          "Unrecognized command.",
-          "smf <version-major> <version-minor>",
-          line.toJavaStream().collect(Collectors.joining(" ")),
-          position)));
+        return SMFPartialLogged.failed(
+          errorExpectedGot(
+            "Unrecognized command.",
+            "smf <version-major> <version-minor>",
+            String.join(" ", line),
+            position));
       }
     }
   }
@@ -225,34 +228,35 @@ public final class SMFFormatText
   }
 
   @Override
-  public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  public SMFPartialLogged<SMFVersionProbed> probe(
     final InputStream stream)
   {
     Objects.requireNonNull(stream, "Stream");
 
-    try (BufferedReader reader =
-           new BufferedReader(new InputStreamReader(stream, UTF_8))) {
+    try (var reader = new BufferedReader(new InputStreamReader(stream, UTF_8))) {
 
       final String line = reader.readLine();
       if (line != null) {
         final SMFTLineLexer lexer = new SMFTLineLexer();
         final List<String> line_tokens = lexer.lex(line);
 
-        final Validation<List<SMFParseError>, SMFFormatVersion> result =
+        final var result =
           parseSMFVersion(line_tokens, LexicalPositions.zero());
 
-        return result.flatMap(v -> {
-          if (SUPPORTED.contains(v)) {
-            return valid(SMFVersionProbed.of(this, v));
+        return result.flatMap(version -> {
+          if (SUPPORTED.contains(version)) {
+            return SMFPartialLogged.succeeded(
+              SMFVersionProbed.of(this, version));
           }
-          return invalid(List.of(errorWithMessage(notSupported(v))));
-        }).mapError(Vector::ofAll);
+          return SMFPartialLogged.failed(
+            errorWithMessage(notSupported(version)));
+        });
       }
 
-      return invalid(Vector.of(
-        errorWithMessage("Could not read first line of file.")));
+      return SMFPartialLogged.failed(
+        errorWithMessage("Could not read first line of file."));
     } catch (final Exception e) {
-      return invalid(Vector.of(errorException(e)));
+      return SMFPartialLogged.failed(errorException(e));
     }
   }
 
@@ -292,11 +296,11 @@ public final class SMFFormatText
         }
 
         final List<String> initial = initial_opt.get();
-        final Validation<List<SMFParseError>, SMFFormatVersion> result =
-          parseSMFVersion(initial, LexicalPositions.zero());
+        final var result = parseSMFVersion(initial, LexicalPositions.zero());
 
-        if (!result.isValid()) {
-          result.getError().forEach(this.events::onError);
+        if (result.isFailed()) {
+          result.warnings().forEach(this.events::onWarning);
+          result.errors().forEach(this.events::onError);
           return;
         }
 
@@ -304,8 +308,7 @@ public final class SMFFormatText
         final SMFFormatVersion version = result.get();
         switch (version.major()) {
           case 1: {
-            try (SMFTV1Parser p =
-                   new SMFTV1Parser(version, state, this.events, this.reader)) {
+            try (var p = new SMFTV1Parser(version, state, this.events, this.reader)) {
               p.parse();
             }
             break;

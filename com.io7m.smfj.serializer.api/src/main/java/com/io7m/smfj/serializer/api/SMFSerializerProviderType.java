@@ -18,11 +18,11 @@ package com.io7m.smfj.serializer.api;
 
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
-import io.vavr.collection.SortedSet;
-import org.osgi.annotation.versioning.ProviderType;
-
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.util.SortedSet;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The type of serializer providers.
@@ -51,6 +51,7 @@ public interface SMFSerializerProviderType
    *
    * @return A new serializer for the format
    *
+   * @throws IOException                   On I/O errors
    * @throws UnsupportedOperationException If the given version is not
    *                                       supported
    */
@@ -59,5 +60,5 @@ public interface SMFSerializerProviderType
     SMFFormatVersion version,
     URI uri,
     OutputStream stream)
-    throws UnsupportedOperationException;
+    throws UnsupportedOperationException, IOException;
 }

@@ -16,10 +16,8 @@
 
 package com.io7m.smfj.validation.api;
 
-import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import com.io7m.smfj.core.SMFPartialLogged;
 
 /**
  * The type of schema validators.
@@ -36,7 +34,7 @@ public interface SMFSchemaValidatorType
    * @return The validated header or a list of validation errors
    */
 
-  Validation<Seq<SMFErrorType>, SMFHeader> validate(
+  SMFPartialLogged<SMFHeader> validate(
     SMFHeader header,
     SMFSchema schema);
 }

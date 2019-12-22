@@ -22,24 +22,22 @@ import com.io7m.smfj.core.SMFComponentType;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
-import io.vavr.Tuple2;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.SortedMap;
-import io.vavr.collection.SortedSet;
-import io.vavr.control.Validation;
-import org.osgi.service.component.annotations.Component;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.SortedMap;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
+import org.osgi.service.component.annotations.Component;
 
 import static com.io7m.smfj.validation.api.SMFSchemaAllowExtraAttributes.SMF_EXTRA_ATTRIBUTES_DISALLOWED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireTriangles.SMF_TRIANGLES_REQUIRED;
 import static com.io7m.smfj.validation.api.SMFSchemaRequireVertices.SMF_VERTICES_REQUIRED;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * The default implementation of the {@link SMFSchemaValidatorType} interface.
@@ -115,7 +113,7 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     return SMFSchemaValidationError.of(sb.toString(), Optional.empty());
   }
 
-  private static List<SMFErrorType> checkComponentCount(
+  private static void checkComponentCount(
     final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
@@ -125,16 +123,14 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     if (req_count_opt.isPresent()) {
       final int req_count = req_count_opt.getAsInt();
       if (attr.componentCount() != req_count) {
-        return errors.append(errorWrongComponentCount(
-          name,
-          req_count,
-          attr.componentCount()));
+        errors.add(errorWrongComponentCount(
+          name, req_count, attr.componentCount()));
+        return;
       }
     }
-    return errors;
   }
 
-  private static List<SMFErrorType> checkComponentSize(
+  private static void checkComponentSize(
     final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
@@ -144,16 +140,14 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     if (req_size_opt.isPresent()) {
       final int req_size = req_size_opt.getAsInt();
       if (attr.componentSizeBits() != req_size) {
-        return errors.append(errorWrongComponentSize(
-          name,
-          req_size,
-          attr.componentSizeBits()));
+        errors.add(errorWrongComponentSize(
+          name, req_size, attr.componentSizeBits()));
+        return;
       }
     }
-    return errors;
   }
 
-  private static List<SMFErrorType> checkComponentType(
+  private static void checkComponentType(
     final List<SMFErrorType> errors,
     final SMFAttributeName name,
     final SMFSchemaAttribute attr_schema,
@@ -164,13 +158,11 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
     if (req_type_opt.isPresent()) {
       final SMFComponentType req_type = req_type_opt.get();
       if (attr.componentType() != req_type) {
-        return errors.append(errorWrongComponentType(
-          name,
-          req_type,
-          attr.componentType()));
+        errors.add(errorWrongComponentType(
+          name, req_type, attr.componentType()));
+        return;
       }
     }
-    return errors;
   }
 
   private static SMFSchemaValidationError errorWrongComponentCount(
@@ -247,117 +239,108 @@ public final class SMFSchemaValidator implements SMFSchemaValidatorType
       Optional.empty());
   }
 
-  private static List<SMFErrorType> checkVerticesAndTriangles(
+  private static void checkVerticesAndTriangles(
     final SMFHeader header,
     final SMFSchema schema,
     final List<SMFErrorType> errors)
   {
-    List<SMFErrorType> error_accum = errors;
-
     if (schema.requireTriangles() == SMF_TRIANGLES_REQUIRED) {
       if (header.triangles().triangleCount() == 0L) {
-        error_accum = error_accum.append(errorTrianglesRequiredButEmpty());
+        errors.add(errorTrianglesRequiredButEmpty());
       }
     }
 
     if (schema.requireVertices() == SMF_VERTICES_REQUIRED) {
       if (header.vertexCount() == 0L) {
-        error_accum = error_accum.append(errorVerticesRequiredButEmpty());
+        errors.add(errorVerticesRequiredButEmpty());
       }
     }
-
-    return error_accum;
   }
 
-  private static List<SMFErrorType> checkCoordinateSystem(
+  private static void checkCoordinateSystem(
     final SMFHeader header,
     final SMFSchema schema,
     final List<SMFErrorType> errors)
   {
-    List<SMFErrorType> error_accum = errors;
-
     final Optional<SMFCoordinateSystem> coords_opt =
       schema.requiredCoordinateSystem();
     if (coords_opt.isPresent()) {
       final SMFCoordinateSystem req_coords = coords_opt.get();
       if (!Objects.equals(req_coords, header.coordinateSystem())) {
-        error_accum =
-          error_accum.append(errorWrongCoordinateSystem(
-            req_coords,
-            header.coordinateSystem()));
+        errors.add(errorWrongCoordinateSystem(
+          req_coords,
+          header.coordinateSystem()));
       }
     }
-    return error_accum;
   }
 
-  private static List<SMFErrorType> checkAttributes(
+  private static void checkAttributes(
     final SMFHeader header,
     final SMFSchema schema,
     final List<SMFErrorType> errors)
   {
-    List<SMFErrorType> error_x = errors;
-
-    final SortedMap<SMFAttributeName, SMFSchemaAttribute> optional_by_name =
+    final Map<SMFAttributeName, SMFSchemaAttribute> optional_by_name =
       schema.optionalAttributes();
-    final SortedMap<SMFAttributeName, SMFSchemaAttribute> required_by_name =
+    final Map<SMFAttributeName, SMFSchemaAttribute> required_by_name =
       schema.requiredAttributes();
     final SortedMap<SMFAttributeName, SMFAttribute> by_name =
       header.attributesByName();
 
-    for (final Tuple2<SMFAttributeName, SMFAttribute> p : by_name) {
-      final SMFAttributeName name = p._1;
-      final SMFAttribute attribute = p._2;
+    for (final Map.Entry<SMFAttributeName, SMFAttribute> p : by_name.entrySet()) {
+      final SMFAttributeName name = p.getKey();
+      final SMFAttribute attribute = p.getValue();
 
       if (required_by_name.containsKey(name)) {
-        final SMFSchemaAttribute attr_schema = required_by_name.get(name).get();
-        error_x = checkComponentType(error_x, name, attr_schema, attribute);
-        error_x = checkComponentSize(error_x, name, attr_schema, attribute);
-        error_x = checkComponentCount(error_x, name, attr_schema, attribute);
+        final SMFSchemaAttribute attr_schema = required_by_name.get(name);
+        checkComponentType(errors, name, attr_schema, attribute);
+        checkComponentSize(errors, name, attr_schema, attribute);
+        checkComponentCount(errors, name, attr_schema, attribute);
       } else if (optional_by_name.containsKey(name)) {
-        final SMFSchemaAttribute attr_schema = optional_by_name.get(name).get();
-        error_x = checkComponentType(error_x, name, attr_schema, attribute);
-        error_x = checkComponentSize(error_x, name, attr_schema, attribute);
-        error_x = checkComponentCount(error_x, name, attr_schema, attribute);
+        final SMFSchemaAttribute attr_schema = optional_by_name.get(name);
+        checkComponentType(errors, name, attr_schema, attribute);
+        checkComponentSize(errors, name, attr_schema, attribute);
+        checkComponentCount(errors, name, attr_schema, attribute);
       } else if (schema.allowExtraAttributes() == SMF_EXTRA_ATTRIBUTES_DISALLOWED) {
-        error_x = errors.append(errorExtraAttribute(name));
+        errors.add(errorExtraAttribute(name));
       }
     }
 
-    final SortedSet<SMFAttributeName> missing =
-      required_by_name.keySet().diff(by_name.keySet());
-    error_x = error_x.appendAll(
-      missing.toList().map(SMFSchemaValidator::errorMissingAttribute));
-    return error_x;
+    final var namesPresent = new TreeSet<>(by_name.keySet());
+    final var namesMissing = new TreeSet<>(required_by_name.keySet());
+    namesMissing.removeAll(namesPresent);
+
+    errors.addAll(
+      namesMissing.stream()
+        .map(SMFSchemaValidator::errorMissingAttribute)
+        .collect(Collectors.toList()));
   }
 
   @Override
-  public Validation<Seq<SMFErrorType>, SMFHeader> validate(
+  public SMFPartialLogged<SMFHeader> validate(
     final SMFHeader header,
     final SMFSchema schema)
   {
     Objects.requireNonNull(header, "Header");
     Objects.requireNonNull(schema, "Schema");
 
-    List<SMFErrorType> errors = List.empty();
-
+    final List<SMFErrorType> errors = new ArrayList<>();
     final Optional<SMFSchemaIdentifier> file_id_opt = header.schemaIdentifier();
     if (file_id_opt.isPresent()) {
       final SMFSchemaIdentifier file_id = file_id_opt.get();
       final SMFSchemaIdentifier schema_id = schema.schemaIdentifier();
       if (!Objects.equals(schema_id, file_id)) {
-        errors = errors.append(errorWrongSchemaID(schema_id, file_id));
+        errors.add(errorWrongSchemaID(schema_id, file_id));
       }
     }
 
-    errors = checkVerticesAndTriangles(header, schema, errors);
-    errors = checkAttributes(header, schema, errors);
-    errors = checkCoordinateSystem(header, schema, errors);
+    checkVerticesAndTriangles(header, schema, errors);
+    checkAttributes(header, schema, errors);
+    checkCoordinateSystem(header, schema, errors);
 
     if (errors.isEmpty()) {
-      return valid(header);
+      return SMFPartialLogged.succeeded(header);
     }
 
-    return invalid(errors);
+    return SMFPartialLogged.failed(errors);
   }
-
 }

@@ -19,7 +19,7 @@ package com.io7m.smfj.tests.processing;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolver;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleResolverType;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleType;
-import io.vavr.collection.SortedMap;
+import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -30,9 +30,9 @@ public final class SMFFilterCommandModuleResolverTest
     throws Exception
   {
     final SMFFilterCommandModuleResolverType r = SMFFilterCommandModuleResolver.create();
-    final SortedMap<String, SMFFilterCommandModuleType> m = r.available();
+    final Map<String, SMFFilterCommandModuleType> m = r.available();
 
-    Assertions.assertEquals(1L, (long) m.size());
+    Assertions.assertEquals(1L, m.size());
     Assertions.assertTrue(m.containsKey("com.io7m.smf"));
   }
 }

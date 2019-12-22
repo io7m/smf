@@ -29,14 +29,14 @@ The [term [type type] smf] section begins with the following structure:
 [verbatim [include "binary-smf-header.txt"]]
 
 [paragraph]
-The [term [type field] fields_size] field specifies the total size of the
+The [term [type field] fieldsSize] field specifies the total size of the
 header fields, after which a list of attributes will be declared. The purpose
 of this field is to allow for forward compatibility: Future updates to this
 specification may add extra fields to the end of the header structure, and the
 value of this field allows older implementations to skip those newer fields.
 
 [paragraph]
-The [term [type field] schema] field specifies the
+The [term [type field] schemaIdentifier] field specifies the
 [link [target smf_model.schema_id] schema identifier] for the model:
 
 [formal-item [title "Schema Identifier"] [id smfb.sections.smf.header.schema_id.def]]
@@ -47,27 +47,27 @@ If the length of the [term [type field] schema_id] field is
 [term [type constant] 0], the schema identifier as a whole is ignored.
 
 [paragraph]
-The [term [type field] vertex_count] field specifies the number of vertices
+The [term [type field] vertexCount] field specifies the number of vertices
 that will be specified in a
 [link [target smfb.sections.vertices-noninterleaved] vertices-noninterleaved]
 section. Parsers MUST raise an appropriate error if a non-zero vertex count
 is specified but no vertices are actually provided in any following section.
 
 [paragraph]
-The [term [type field] triangle_count] field specifies the number of triangles
+The [term [type field] triangleCount] field specifies the number of triangles
 that will be specified in a
 [link [target smfb.sections.triangles] triangles] section. The
-[term [type field] triangle_size] field specifies the size in bits of the
+[term [type field] triangleSizeBits] field specifies the size in bits of the
 individual vertex indices within each triangle.
 Parsers MUST raise an appropriate error if a non-zero triangle count
 is specified but no triangles are actually provided in any following section.
 
 [paragraph]
-The [term [type field] attribute_count] field specifies the number of
+The [term [type field] attributeCount] field specifies the number of
 [link [target smf_model.attribute] attributes] that will be declared.
 
 [paragraph]
-The [term [type field] coordinate_system] field specifies the
+The [term [type field] coordinateSystem] field specifies the
 [link [target smf_model.coords] coordinate system] of the model:
 
 [formal-item [title "Coordinate System"] [id smfb.sections.smf.header.coords.def]]
@@ -81,6 +81,11 @@ related to integer values via the following functions:
 [verbatim [include "axis_map.hs"]]
 
 [paragraph]
+The [term [type field] byteOrder] field specifies the [term [type term] endianness]
+of the values in the [link [target "smfb.sections.vertices-noninterleaved"] vertex]
+and [link [target "smfb.sections.triangles"] triangle].
+
+[paragraph]
 Directly following the end of the header structure is a series of attribute
 declarations:
 
@@ -89,10 +94,10 @@ declarations:
 
 [paragraph]
 The [term [type field] name] field specifies the name of the attribute. The
-[term [type field] component_kind] field specifies the type of the attribute
-components. The [term [type field] component_count] field specifies the number
+[term [type field] componentKind] field specifies the type of the attribute
+components. The [term [type field] componentCount] field specifies the number
 of components in each value in the attribute, and the
-[term [type field] component_size] field specifies the size in bits of each
+[term [type field] componentSizeBits] field specifies the size in bits of each
 component value.
 
 [paragraph]

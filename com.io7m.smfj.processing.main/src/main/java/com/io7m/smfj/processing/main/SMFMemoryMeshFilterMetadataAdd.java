@@ -16,41 +16,35 @@
 
 package com.io7m.smfj.processing.main;
 
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import io.vavr.collection.List;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
-import io.vavr.control.Validation;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static io.vavr.control.Validation.invalid;
-import static io.vavr.control.Validation.valid;
 
 /**
  * A filter that adds metadata to a mesh.
  */
 
-public final class SMFMemoryMeshFilterMetadataAdd implements
-  SMFMemoryMeshFilterType
+public final class SMFMemoryMeshFilterMetadataAdd
+  implements SMFMemoryMeshFilterType
 {
   /**
    * The command name.
@@ -102,7 +96,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<Seq<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
@@ -110,13 +104,18 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     Objects.requireNonNull(file, "file");
     Objects.requireNonNull(text, "text");
 
-    if (text.length() == 4) {
+    if (text.size() == 4) {
       try {
         final SMFSchemaName name = SMFSchemaName.of(text.get(0));
         final int major = Integer.parseUnsignedInt(text.get(1));
         final int minor = Integer.parseUnsignedInt(text.get(2));
         final Path path = Paths.get(text.get(3));
-        return valid(create(SMFSchemaIdentifier.of(name, major, minor), path));
+        return SMFPartialLogged.succeeded(create(
+          SMFSchemaIdentifier.of(
+            name,
+            major,
+            minor),
+          path));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -142,7 +141,7 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
   }
 
   @Override
-  public Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
@@ -153,20 +152,20 @@ public final class SMFMemoryMeshFilterMetadataAdd implements
     LOG.debug("resolved metadata file: {}", file);
 
     try (InputStream stream = Files.newInputStream(file)) {
-      final byte[] data = IOUtils.toByteArray(stream);
+      final byte[] data = stream.readAllBytes();
       final SMFMetadata meta = SMFMetadata.of(this.schema_id, data);
 
-      final Vector<SMFMetadata> new_meta =
-        m.metadata().append(meta);
+      final var newMeta = new ArrayList<>(m.metadata());
+      newMeta.add(meta);
 
-      return valid(
+      return SMFPartialLogged.succeeded(
         SMFMemoryMesh.builder()
           .from(m)
-          .setMetadata(new_meta)
+          .setMetadata(newMeta)
           .build());
     } catch (final IOException e) {
-      return invalid(List.of(
-        SMFProcessingError.of(e.getMessage(), Optional.of(e))));
+      return SMFPartialLogged.failed(
+        SMFProcessingError.of(e.getMessage(), Optional.of(e)));
     }
   }
 }

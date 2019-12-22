@@ -18,7 +18,6 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFWarningType;
-
 import java.util.Objects;
 
 /**

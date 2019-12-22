@@ -16,28 +16,23 @@
 
 package com.io7m.smfj.probe.api;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import com.io7m.smfj.core.SMFPartialLogged;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Supplier;
-
 /**
  * An OSGi probe controller component.
  */
 
-@Component(
-  immediate = true,
-  service = SMFVersionProbeControllerType.class)
+@Component(service = SMFVersionProbeControllerType.class)
 public final class SMFVersionProbeControllerOSGi
   implements SMFVersionProbeControllerType
 {
@@ -86,7 +81,7 @@ public final class SMFVersionProbeControllerOSGi
   }
 
   @Override
-  public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  public SMFPartialLogged<SMFVersionProbed> probe(
     final Supplier<InputStream> streams)
   {
     final List<SMFVersionProbeProviderType> probes_current;

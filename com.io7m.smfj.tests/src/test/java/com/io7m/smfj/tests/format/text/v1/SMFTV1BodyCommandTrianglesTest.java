@@ -26,27 +26,42 @@ import com.io7m.smfj.format.text.implementation.Flags;
 import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserTriangles;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import io.vavr.collection.List;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.Expectations;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.net.URI;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
 
 public final class SMFTV1BodyCommandTrianglesTest
 {
+  private ArgumentCaptor<SMFErrorType> captor;
+  private SMFParserEventsBodyType events;
+  private SMFParserEventsDataTrianglesType eventsTriangles;
+  private SMFTLineReaderType reader;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.events =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.eventsTriangles =
+      Mockito.mock(SMFParserEventsDataTrianglesType.class);
+    this.reader =
+      Mockito.mock(SMFTLineReaderType.class);
+    this.captor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+  }
+
   @Test
-  public void testOK_0(
-    final @Mocked SMFParserEventsBodyType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testOK_0()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -55,23 +70,18 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserTriangles cmd =
-      new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
+      new SMFTV1BodySectionParserTriangles(() -> header, this.reader, state);
 
-    new Expectations()
-    {{
-      reader.line();
-      this.result = Optional.of(List.of("end"));
-    }};
+    Mockito.when(this.reader.line())
+      .thenReturn(Optional.of(List.of("end")));
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(SUCCESS, r);
     Assertions.assertTrue(state.get(Flags.TRIANGLES_RECEIVED));
   }
 
   @Test
-  public void testMalformedCommand(
-    final @Mocked SMFParserEventsBodyType events)
+  public void testMalformedCommand()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -91,26 +101,16 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Could not parse");
-        }
-      }));
-    }};
-
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles", "what?"));
+      cmd.parse(this.events, List.of("triangles", "what?"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains("Could not parse"));
   }
 
   @Test
-  public void testTooManyTriangles(
-    final @Mocked SMFParserEventsDataTrianglesType events_triangles,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testTooManyTriangles()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -130,31 +130,19 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onTriangles();
-      this.result = Optional.of(events_triangles);
+    Mockito.when(this.events.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-      events_triangles.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Too many triangles");
-        }
-      }));
-
-      events_triangles.onDataTrianglesFinish();
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsTriangles).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains("Too many triangles"));
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTrianglesFinish();
   }
 
   @Test
-  public void testTooFewTriangles(
-    final @Mocked SMFParserEventsDataTrianglesType events_triangles,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testTooFewTriangles()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -173,31 +161,19 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onTriangles();
-      this.result = Optional.of(events_triangles);
+    Mockito.when(this.events.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-      events_triangles.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Too few triangles");
-        }
-      }));
-
-      events_triangles.onDataTrianglesFinish();
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsTriangles).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains("Too few triangles"));
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTrianglesFinish();
   }
 
   @Test
-  public void testBadTriangles0(
-    final @Mocked SMFParserEventsDataTrianglesType events_triangles,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testBadTriangles0()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -217,31 +193,19 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onTriangles();
-      this.result = Optional.of(events_triangles);
+    Mockito.when(this.events.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-      events_triangles.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse triangle");
-        }
-      }));
-
-      events_triangles.onDataTrianglesFinish();
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsTriangles).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains("Cannot parse triangle"));
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTrianglesFinish();
   }
 
   @Test
-  public void testBadTriangles1(
-    final @Mocked SMFParserEventsDataTrianglesType events_triangles,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testBadTriangles1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -261,31 +225,19 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onTriangles();
-      this.result = Optional.of(events_triangles);
+    Mockito.when(this.events.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-      events_triangles.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse triangle");
-        }
-      }));
-
-      events_triangles.onDataTrianglesFinish();
-    }};
-
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsTriangles).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains("Cannot parse triangle"));
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTrianglesFinish();
   }
 
   @Test
-  public void testTriangles(
-    final @Mocked SMFParserEventsDataTrianglesType events_triangles,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testTriangles()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -305,16 +257,13 @@ public final class SMFTV1BodyCommandTrianglesTest
     final SMFTV1BodySectionParserTriangles cmd =
       new SMFTV1BodySectionParserTriangles(() -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onTriangles();
-      this.result = Optional.of(events_triangles);
-      events_triangles.onDataTriangle(1L, 2L, 3L);
-      events_triangles.onDataTrianglesFinish();
-    }};
+    Mockito.when(this.events.onTriangles())
+      .thenReturn(Optional.of(this.eventsTriangles));
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("triangles"));
+    final SMFTParsingStatus r = cmd.parse(this.events, List.of("triangles"));
     Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTriangle(1L, 2L, 3L);
+    Mockito.verify(this.eventsTriangles, new Times(1)).onDataTrianglesFinish();
   }
 }

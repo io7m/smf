@@ -31,7 +31,6 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-
 import java.io.IOException;
 import java.util.Objects;
 
@@ -106,7 +105,7 @@ public final class SMFMemoryMeshSerializer
         final SMFAttributeName name = attribute.name();
         try (SMFSerializerDataAttributesValuesType sav =
                sv.serializeData(name)) {
-          final SMFAttributeArrayType array = mesh.arrays().get(name).get();
+          final SMFAttributeArrayType array = mesh.arrays().get(name);
           array.matchArray(
             sav,
             SMFMemoryMeshSerializer::serializeFloat4,

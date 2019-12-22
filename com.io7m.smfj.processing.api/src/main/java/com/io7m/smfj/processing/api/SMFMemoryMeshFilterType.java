@@ -16,8 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import io.vavr.collection.Seq;
-import io.vavr.control.Validation;
+import com.io7m.smfj.core.SMFPartialLogged;
 
 /**
  * A filter that transforms an in-memory mesh.
@@ -46,7 +45,7 @@ public interface SMFMemoryMeshFilterType
    * @return A filtered mesh, or a list or reasons why the filtering did not work
    */
 
-  Validation<Seq<SMFProcessingError>, SMFMemoryMesh> filter(
+  SMFPartialLogged<SMFMemoryMesh> filter(
     SMFFilterCommandContext context,
     SMFMemoryMesh m);
 }
