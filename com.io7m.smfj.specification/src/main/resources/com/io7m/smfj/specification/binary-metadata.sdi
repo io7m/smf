@@ -27,9 +27,8 @@ fixed-size header:
 [verbatim [include "binary-metadata-header.txt"]]
 
 [paragraph]
-The [term [type field] meta_schema_id], [term [type field] meta_schema_version_major],
-and [term [type field] meta_schema_version_minor] fields are intended to provide
-type information for the metadata. They have the same semantics and purpose as
+The [term [type field] metaSchemaIdentifier], field is intended to provide
+type information for the metadata. It has the same semantics and purpose as
 [link [target smf_model.schema_id] schema identifiers]. The
-[term [type field] meta_size] field specifies the size in octets of the
+[term [type field] metaSize] field specifies the size in octets of the
 metadata.
