@@ -8,4 +8,4 @@
 [formal-item
   [title "Example"]
   [id smfb.example.diagram]
-  [image [target "layout.svg.png"] Example file]]]
+  [image [target "diagram.png"] Example file]]]
