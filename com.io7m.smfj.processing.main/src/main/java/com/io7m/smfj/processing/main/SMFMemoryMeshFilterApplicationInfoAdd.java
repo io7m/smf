@@ -140,7 +140,7 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd
     final ZonedDateTime time =
       ZonedDateTime.now(ZoneId.of("UTC"));
     final String time_text =
-      time.format(DateTimeFormatter.ofPattern("YYYY-mm-dd'T'HH:MM:SSZ"));
+      time.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ssZ"));
 
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       final Properties props = new Properties();
