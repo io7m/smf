@@ -16,7 +16,10 @@
    height="936"
    viewBox="0 0 1200 936"
    sodipodi:docname="diagram.svg"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14">
+   inkscape:version="0.92.4 5da689c313, 2019-01-14"
+   inkscape:export-filename="/home/rm/git/com.github/io7m/smf/com.io7m.smfj.specification/src/main/resources/com/io7m/smfj/specification/diagram.png"
+   inkscape:export-xdpi="100"
+   inkscape:export-ydpi="100">
   <metadata
      id="metadata8">
     <rdf:RDF>
@@ -45,9 +48,9 @@
      id="namedview4"
      showgrid="false"
      scale-x="1"
-     inkscape:zoom="2.017094"
-     inkscape:cx="622.5296"
-     inkscape:cy="163.6715"
+     inkscape:zoom="1.008547"
+     inkscape:cx="475.38184"
+     inkscape:cy="558.29356"
      inkscape:window-x="0"
      inkscape:window-y="54"
      inkscape:window-maximized="0"
