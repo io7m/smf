@@ -18,6 +18,4 @@
  * Command-line frontend.
  */
 
-
 package com.io7m.smfj.cmdline;
-

@@ -18,9 +18,9 @@
  * Main filter implementations.
  */
 
-@org.osgi.annotation.bundle.Export
-@org.osgi.annotation.bundle.Header(
-  name = "Automatic-Module-Name",
-  value = "com.io7m.smfj.processing.main")
+@Export
+@Version("1.0.0")
 package com.io7m.smfj.processing.main;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

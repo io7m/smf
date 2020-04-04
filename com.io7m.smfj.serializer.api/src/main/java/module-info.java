@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2020 Mark Raynsford <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -15,13 +15,15 @@
  */
 
 /**
- * Support code for implementing formats.
+ * Serializer API.
  */
 
-@Export
-@Version("1.0.0")
+module com.io7m.smfj.serializer.api
+{
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
 
-package com.io7m.smfj.format.support;
+  requires com.io7m.smfj.core;
 
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+  exports com.io7m.smfj.serializer.api;
+}

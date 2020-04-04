@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2020 Mark Raynsford <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,25 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+import com.io7m.smfj.validation.api.SMFSchemaValidator;
+import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
+
 /**
- * Support code for implementing formats.
+ * Validation API.
  */
 
-@Export
-@Version("1.0.0")
+module com.io7m.smfj.validation.api
+{
+  requires static com.io7m.immutables.style;
+  requires static org.immutables.value;
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
+  requires static org.osgi.service.component.annotations;
 
-package com.io7m.smfj.format.support;
+  requires com.io7m.smfj.core;
+  requires com.io7m.jaffirm.core;
 
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+  provides SMFSchemaValidatorType with SMFSchemaValidator;
+
+  exports com.io7m.smfj.validation.api;
+}

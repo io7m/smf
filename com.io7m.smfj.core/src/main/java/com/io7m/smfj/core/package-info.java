@@ -18,9 +18,9 @@
  * Core types and functions.
  */
 
-@org.osgi.annotation.bundle.Export
-@org.osgi.annotation.bundle.Header(
-  name = "Automatic-Module-Name",
-  value = "com.io7m.smfj.core")
+@Export
+@Version("1.0.0")
 package com.io7m.smfj.core;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

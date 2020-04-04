@@ -18,9 +18,9 @@
  * Serializer API.
  */
 
-@org.osgi.annotation.bundle.Export
-@org.osgi.annotation.bundle.Header(
-  name = "Automatic-Module-Name",
-  value = "com.io7m.smfj.serializer.api")
+@Export
+@Version("1.0.0")
 package com.io7m.smfj.serializer.api;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2016 <code@io7m.com> http://io7m.com
+ * Copyright © 2020 Mark Raynsford <code@io7m.com> http://io7m.com
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,14 +14,21 @@
  * IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-/**
- * Support code for implementing formats.
- */
+module com.io7m.smfj.processing.api
+{
+  requires static com.io7m.immutables.style;
+  requires static org.immutables.value;
+  requires static org.osgi.annotation.bundle;
+  requires static org.osgi.annotation.versioning;
 
-@Export
-@Version("1.0.0")
+  requires com.io7m.jaffirm.core;
+  requires com.io7m.jlexing.core;
+  requires com.io7m.jtensors.core;
+  requires com.io7m.junreachable.core;
+  requires com.io7m.smfj.core;
+  requires com.io7m.smfj.parser.api;
+  requires com.io7m.smfj.serializer.api;
+  requires org.slf4j;
 
-package com.io7m.smfj.format.support;
-
-import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.versioning.Version;
+  exports com.io7m.smfj.processing.api;
+}

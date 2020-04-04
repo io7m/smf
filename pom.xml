@@ -44,12 +44,12 @@
   </modules>
 
   <properties>
-    <io7m.api.previousVersion>0.12.0</io7m.api.previousVersion>
-    <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
-    <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
+    <com.codacy.id>a7ba30b8044e40839aa5b526cf02bb11</com.codacy.id>
     <com.io7m.blackthorne.version>0.0.5</com.io7m.blackthorne.version>
     <com.io7m.immutables.version>2.8.3</com.io7m.immutables.version>
-    <com.codacy.id>a7ba30b8044e40839aa5b526cf02bb11</com.codacy.id>
+    <com.io7m.jbssio.version>0.0.2</com.io7m.jbssio.version>
+    <com.io7m.smfj.jtensors.versionRange>9.0.0</com.io7m.smfj.jtensors.versionRange>
+    <io7m.api.previousVersion>0.15.0-SNAPSHOT</io7m.api.previousVersion>
   </properties>
 
   <licenses>
@@ -310,6 +310,11 @@
     </pluginManagement>
 
     <plugins>
+      <plugin>
+        <groupId>biz.aQute.bnd</groupId>
+        <artifactId>bnd-baseline-maven-plugin</artifactId>
+      </plugin>
+
       <!-- Generate a site -->
       <plugin>
         <groupId>com.io7m.minisite</groupId>

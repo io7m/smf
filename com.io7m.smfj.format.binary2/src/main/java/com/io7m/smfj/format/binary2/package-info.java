@@ -21,9 +21,7 @@
 
 @Export
 
-@Header(
-  name = "Automatic-Module-Name",
-  value = "com.io7m.smfj.format.binary2")
+@Version("1.0.0")
 
 @Capability(
   namespace = "com.io7m.smf.format",
@@ -34,4 +32,4 @@ package com.io7m.smfj.format.binary2;
 
 import org.osgi.annotation.bundle.Capability;
 import org.osgi.annotation.bundle.Export;
-import org.osgi.annotation.bundle.Header;
+import org.osgi.annotation.versioning.Version;
