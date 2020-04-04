@@ -1,5 +1,9 @@
 language: java
 
+env:
+  global:
+    JAVA_OPTS=-Xmx2g
+
 jdk:
   - oraclejdk11
   - openjdk11
