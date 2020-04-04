@@ -18,7 +18,7 @@ before_install:
 install: true
 
 script:
-  - mvn --errors clean verify site
+  - mvn -Dbnd.baseline.include.distribution.management=false --errors clean verify site
   - bash <(curl -s https://codecov.io/bash) -f ./com.io7m.smfj.tests/target/site/jacoco-aggregate/jacoco.xml
 
 notifications:
