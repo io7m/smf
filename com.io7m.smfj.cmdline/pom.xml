@@ -8,7 +8,7 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.15.0</version>
+    <version>0.16.0-SNAPSHOT</version>
   </parent>
   <artifactId>com.io7m.smfj.cmdline</artifactId>
 
