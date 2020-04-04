@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import org.immutables.value.Value;
 
@@ -24,7 +23,7 @@ import org.immutables.value.Value;
  * Parsed immutable metadata.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFMetadataType
 {

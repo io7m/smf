@@ -17,7 +17,6 @@
 package com.io7m.smfj.cmdline;
 
 import com.beust.jcommander.IStringConverter;
-
 import java.util.Objects;
 
 /**

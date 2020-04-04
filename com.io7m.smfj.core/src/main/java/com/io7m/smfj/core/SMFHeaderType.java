@@ -16,24 +16,22 @@
 
 package com.io7m.smfj.core;
 
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
-import javaslang.control.Option;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
-import org.immutables.value.Value;
-
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import java.nio.ByteOrder;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import org.immutables.value.Value;
 
 /**
  * Information about an SMF file.
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFHeaderType
 {
   /**
@@ -77,6 +75,17 @@ public interface SMFHeaderType
   }
 
   /**
+   * @return The endianness of the mesh data
+   */
+
+  @Value.Default
+  @Value.Parameter
+  default ByteOrder dataByteOrder()
+  {
+    return ByteOrder.BIG_ENDIAN;
+  }
+
+  /**
    * @return The attributes in the order that they appeared in the file
    */
 
@@ -90,7 +99,7 @@ public interface SMFHeaderType
   @Value.Derived
   default SortedMap<SMFAttributeName, SMFAttribute> attributesByName()
   {
-    SortedMap<SMFAttributeName, SMFAttribute> m = TreeMap.empty();
+    final SortedMap<SMFAttributeName, SMFAttribute> m = new TreeMap<>();
     final List<SMFAttribute> ordered = this.attributesInOrder();
     for (int index = 0; index < ordered.size(); ++index) {
       final SMFAttribute attr = ordered.get(index);
@@ -103,7 +112,7 @@ public interface SMFHeaderType
         sb.append(System.lineSeparator());
         throw new IllegalArgumentException(sb.toString());
       }
-      m = m.put(attr.name(), attr);
+      m.put(attr.name(), attr);
     }
     return m;
   }
@@ -132,9 +141,9 @@ public interface SMFHeaderType
 
     final Map<SMFAttributeName, SMFAttribute> named = this.attributesByName();
     for (final SMFAttribute attribute : this.attributesInOrder()) {
-      final Option<SMFAttribute> attribute_opt = named.get(attribute.name());
-      if (attribute_opt.isDefined()) {
-        if (!Objects.equals(attribute, attribute_opt.get())) {
+      final SMFAttribute attributeOpt = named.get(attribute.name());
+      if (attributeOpt != null) {
+        if (!Objects.equals(attribute, attributeOpt)) {
           final StringBuilder sb = new StringBuilder(128);
           sb.append(
             "An attribute that appears in the ordered list does not match that in the named map.");

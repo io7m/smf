@@ -16,16 +16,15 @@
 
 package com.io7m.smfj.format.text;
 
-import com.io7m.jnull.NullCheck;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A line reader based on blocking stream IO.
@@ -48,7 +47,7 @@ public final class SMFTLineReaderStreamIO extends SMFTLineReaderAbstract
     super(in_uri, 1);
     this.reader = new BufferedReader(
       new InputStreamReader(
-        NullCheck.notNull(in_stream, "stream"), StandardCharsets.UTF_8));
+        Objects.requireNonNull(in_stream, "stream"), StandardCharsets.UTF_8));
   }
 
   /**

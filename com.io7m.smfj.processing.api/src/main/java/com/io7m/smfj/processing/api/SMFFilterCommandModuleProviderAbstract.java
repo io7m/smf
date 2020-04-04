@@ -16,13 +16,13 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
- * An abstract implementation of the {@link SMFFilterCommandModuleProviderType}
- * interface.
+ * An abstract implementation of the {@link SMFFilterCommandModuleProviderType} interface.
  */
 
 public abstract class SMFFilterCommandModuleProviderAbstract
@@ -33,9 +33,9 @@ public abstract class SMFFilterCommandModuleProviderAbstract
   protected SMFFilterCommandModuleProviderAbstract(
     final SMFFilterCommandModuleType... in_modules)
   {
-    NullCheck.notNull(in_modules, "Modules");
+    Objects.requireNonNull(in_modules, "Modules");
 
-    SortedMap<String, SMFFilterCommandModuleType> m = TreeMap.empty();
+    final SortedMap<String, SMFFilterCommandModuleType> m = new TreeMap<>();
 
     for (int index = 0; index < in_modules.length; ++index) {
       final SMFFilterCommandModuleType module = in_modules[index];
@@ -43,10 +43,10 @@ public abstract class SMFFilterCommandModuleProviderAbstract
         throw new IllegalArgumentException(
           "Duplicate published module: " + module.name());
       }
-      m = m.put(module.name(), module);
+      m.put(module.name(), module);
     }
 
-    this.available = m;
+    this.available = Collections.unmodifiableSortedMap(m);
   }
 
   @Override

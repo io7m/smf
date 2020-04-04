@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -25,11 +24,11 @@ import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.collection.List;
-
 import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -58,8 +57,8 @@ public final class SMFTV1HeaderCommandAttribute
   /**
    * Construct a parser.
    *
-   * @param in_attributes_lines A map that keeps track of the line numbers of
-   *                            other attribute commands
+   * @param in_attributes_lines A map that keeps track of the line numbers of other attribute
+   *                            commands
    * @param in_attributes_list  The current attributes in declaration order
    * @param in_reader           A line reader
    * @param in_header           A header builder
@@ -72,13 +71,13 @@ public final class SMFTV1HeaderCommandAttribute
     final SMFHeader.Builder in_header)
   {
     this.attributes_lines =
-      NullCheck.notNull(in_attributes_lines, "Attribute Lines");
+      Objects.requireNonNull(in_attributes_lines, "Attribute Lines");
     this.attributes_list =
-      NullCheck.notNull(in_attributes_list, "Attributes List");
+      Objects.requireNonNull(in_attributes_list, "Attributes List");
     this.reader =
-      NullCheck.notNull(in_reader, "Reader");
+      Objects.requireNonNull(in_reader, "Reader");
     this.header =
-      NullCheck.notNull(in_header, "Header");
+      Objects.requireNonNull(in_header, "Header");
   }
 
   @Override
@@ -93,7 +92,7 @@ public final class SMFTV1HeaderCommandAttribute
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 5) {
+    if (line.size() == 5) {
       try {
         final SMFAttributeName name =
           SMFAttributeName.of(line.get(1));

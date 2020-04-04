@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -34,9 +33,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.Vector;
-
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -63,8 +62,8 @@ public final class SMFMemoryMeshParser
     final SMFMemoryMesh mesh,
     final SMFParserEventsType events)
   {
-    NullCheck.notNull(mesh, "mesh");
-    NullCheck.notNull(events, "events");
+    Objects.requireNonNull(mesh, "mesh");
+    Objects.requireNonNull(events, "events");
     throw new UnreachableCodeException();
   }
 
@@ -81,8 +80,8 @@ public final class SMFMemoryMeshParser
     final SMFMemoryMesh mesh,
     final SMFParserEventsType events)
   {
-    NullCheck.notNull(mesh, "mesh");
-    NullCheck.notNull(events, "events");
+    Objects.requireNonNull(mesh, "mesh");
+    Objects.requireNonNull(events, "events");
     return new Sequential(mesh, events);
   }
 
@@ -95,8 +94,152 @@ public final class SMFMemoryMeshParser
       final SMFMemoryMesh in_mesh,
       final SMFParserEventsType in_events)
     {
-      this.mesh = NullCheck.notNull(in_mesh, "Mesh");
-      this.events = NullCheck.notNull(in_events, "Events");
+      this.mesh = Objects.requireNonNull(in_mesh, "Mesh");
+      this.events = Objects.requireNonNull(in_events, "Events");
+    }
+
+    private static Boolean sendArray4D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating4Type array_4d)
+    {
+      final List<Vector4D> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4D v = vv.get(index);
+        events.onDataAttributeValueFloat4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating3Type array_3d)
+    {
+      final List<Vector3D> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3D v = vv.get(index);
+        events.onDataAttributeValueFloat3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating2Type array_2d)
+    {
+      final List<Vector2D> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2D v = vv.get(index);
+        events.onDataAttributeValueFloat2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1D(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayFloating1Type array_1d)
+    {
+      final List<Double> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Double v = vv.get(index);
+        events.onDataAttributeValueFloat1(v.doubleValue());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray4L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned4Type array_4d)
+    {
+      final List<Vector4L> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned3Type array_3d)
+    {
+      final List<Vector3L> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned2Type array_2d)
+    {
+      final List<Vector2L> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2L v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1L(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerSigned1Type array_1d)
+    {
+      final List<Long> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Long v = vv.get(index);
+        events.onDataAttributeValueIntegerSigned1(v.longValue());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray4UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned4Type array_4d)
+    {
+      final List<Vector4L> vv = array_4d.values();
+      for (int index = 0; index < array_4d.size(); ++index) {
+        final Vector4L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned4(v.x(), v.y(), v.z(), v.w());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray3UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned3Type array_3d)
+    {
+      final List<Vector3L> vv = array_3d.values();
+      for (int index = 0; index < array_3d.size(); ++index) {
+        final Vector3L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned3(v.x(), v.y(), v.z());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray2UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned2Type array_2d)
+    {
+      final List<Vector2L> vv = array_2d.values();
+      for (int index = 0; index < array_2d.size(); ++index) {
+        final Vector2L v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned2(v.x(), v.y());
+      }
+      return Boolean.TRUE;
+    }
+
+    private static Boolean sendArray1UL(
+      final SMFParserEventsDataAttributeValuesType events,
+      final SMFAttributeArrayIntegerUnsigned1Type array_1d)
+    {
+      final List<Long> vv = array_1d.values();
+      for (int index = 0; index < array_1d.size(); ++index) {
+        final Long v = vv.get(index);
+        events.onDataAttributeValueIntegerUnsigned1(v.longValue());
+      }
+      return Boolean.TRUE;
     }
 
     @Override
@@ -132,7 +275,7 @@ public final class SMFMemoryMeshParser
     private void parseDataMeta(
       final SMFParserEventsBodyType b)
     {
-      final Vector<SMFMetadata> metas = this.mesh.metadata();
+      final List<SMFMetadata> metas = this.mesh.metadata();
       for (int index = 0; index < metas.size(); ++index) {
         final SMFMetadata meta = metas.get(index);
         final Optional<SMFParserEventsDataMetaType> m_opt =
@@ -151,7 +294,7 @@ public final class SMFMemoryMeshParser
       if (t_opt.isPresent()) {
         final SMFParserEventsDataTrianglesType t = t_opt.get();
         try {
-          final Vector<Vector3L> triangles = this.mesh.triangles();
+          final List<Vector3L> triangles = this.mesh.triangles();
           for (int index = 0; index < triangles.size(); ++index) {
             final Vector3L tri = triangles.get(index);
             t.onDataTriangle(tri.x(), tri.y(), tri.z());
@@ -179,7 +322,7 @@ public final class SMFMemoryMeshParser
               final SMFParserEventsDataAttributeValuesType av = av_opt.get();
               try {
                 final SMFAttributeArrayType array =
-                  this.mesh.arrays().get(a.name()).get();
+                  this.mesh.arrays().get(a.name());
                 array.matchArray(
                   av,
                   Sequential::sendArray4D,
@@ -203,150 +346,6 @@ public final class SMFMemoryMeshParser
           ni.onDataAttributesNonInterleavedFinish();
         }
       }
-    }
-
-    private static Boolean sendArray4D(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayFloating4Type array_4d)
-    {
-      final Vector<Vector4D> vv = array_4d.values();
-      for (int index = 0; index < array_4d.size(); ++index) {
-        final Vector4D v = vv.get(index);
-        events.onDataAttributeValueFloat4(v.x(), v.y(), v.z(), v.w());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray3D(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayFloating3Type array_3d)
-    {
-      final Vector<Vector3D> vv = array_3d.values();
-      for (int index = 0; index < array_3d.size(); ++index) {
-        final Vector3D v = vv.get(index);
-        events.onDataAttributeValueFloat3(v.x(), v.y(), v.z());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray2D(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayFloating2Type array_2d)
-    {
-      final Vector<Vector2D> vv = array_2d.values();
-      for (int index = 0; index < array_2d.size(); ++index) {
-        final Vector2D v = vv.get(index);
-        events.onDataAttributeValueFloat2(v.x(), v.y());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray1D(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayFloating1Type array_1d)
-    {
-      final Vector<Double> vv = array_1d.values();
-      for (int index = 0; index < array_1d.size(); ++index) {
-        final Double v = vv.get(index);
-        events.onDataAttributeValueFloat1(v.doubleValue());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray4L(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerSigned4Type array_4d)
-    {
-      final Vector<Vector4L> vv = array_4d.values();
-      for (int index = 0; index < array_4d.size(); ++index) {
-        final Vector4L v = vv.get(index);
-        events.onDataAttributeValueIntegerSigned4(v.x(), v.y(), v.z(), v.w());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray3L(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerSigned3Type array_3d)
-    {
-      final Vector<Vector3L> vv = array_3d.values();
-      for (int index = 0; index < array_3d.size(); ++index) {
-        final Vector3L v = vv.get(index);
-        events.onDataAttributeValueIntegerSigned3(v.x(), v.y(), v.z());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray2L(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerSigned2Type array_2d)
-    {
-      final Vector<Vector2L> vv = array_2d.values();
-      for (int index = 0; index < array_2d.size(); ++index) {
-        final Vector2L v = vv.get(index);
-        events.onDataAttributeValueIntegerSigned2(v.x(), v.y());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray1L(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerSigned1Type array_1d)
-    {
-      final Vector<Long> vv = array_1d.values();
-      for (int index = 0; index < array_1d.size(); ++index) {
-        final Long v = vv.get(index);
-        events.onDataAttributeValueIntegerSigned1(v.longValue());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray4UL(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerUnsigned4Type array_4d)
-    {
-      final Vector<Vector4L> vv = array_4d.values();
-      for (int index = 0; index < array_4d.size(); ++index) {
-        final Vector4L v = vv.get(index);
-        events.onDataAttributeValueIntegerUnsigned4(v.x(), v.y(), v.z(), v.w());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray3UL(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerUnsigned3Type array_3d)
-    {
-      final Vector<Vector3L> vv = array_3d.values();
-      for (int index = 0; index < array_3d.size(); ++index) {
-        final Vector3L v = vv.get(index);
-        events.onDataAttributeValueIntegerUnsigned3(v.x(), v.y(), v.z());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray2UL(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerUnsigned2Type array_2d)
-    {
-      final Vector<Vector2L> vv = array_2d.values();
-      for (int index = 0; index < array_2d.size(); ++index) {
-        final Vector2L v = vv.get(index);
-        events.onDataAttributeValueIntegerUnsigned2(v.x(), v.y());
-      }
-      return Boolean.TRUE;
-    }
-
-    private static Boolean sendArray1UL(
-      final SMFParserEventsDataAttributeValuesType events,
-      final SMFAttributeArrayIntegerUnsigned1Type array_1d)
-    {
-      final Vector<Long> vv = array_1d.values();
-      for (int index = 0; index < array_1d.size(); ++index) {
-        final Long v = vv.get(index);
-        events.onDataAttributeValueIntegerUnsigned1(v.longValue());
-      }
-      return Boolean.TRUE;
     }
 
     @Override

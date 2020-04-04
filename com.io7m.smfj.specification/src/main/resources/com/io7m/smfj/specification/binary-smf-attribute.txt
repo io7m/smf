@@ -1,5 +1,29 @@
-[record SMFBv1Attribute
-  ([field name            [string 64 "UTF-8"]]
-   [field component_kind  [integer unsigned 32]]
-   [field component_count [integer unsigned 32]]
-   [field component_size  [integer unsigned 32]])]
+<composite name="SMFSchemaAttribute">
+  <type name="nameLength"
+        description="The number of bytes in the following name array that should be extracted to form a name."
+        primitiveType="uint32"/>
+
+  <type name="name"
+        primitiveType="uint8"
+        characterEncoding="UTF-8"
+        length="64"/>
+
+  <enum name="componentKind"
+        encodingType="uint32">
+    <validValue name="ELEMENT_TYPE_INTEGER_SIGNED">0</validValue>
+    <validValue name="ELEMENT_TYPE_INTEGER_UNSIGNED">1</validValue>
+    <validValue name="ELEMENT_TYPE_FLOATING">2</validValue>
+  </enum>
+
+  <type name="componentCount"
+        description="The number of components in a single attribute value."
+        minValue="1"
+        maxValue="4"
+        primitiveType="uint32"/>
+
+  <type name="componentSizeBits"
+        description="The size in bits of components in a single attribute value."
+        minValue="1"
+        maxValue="64"
+        primitiveType="uint32"/>
+</composite>

@@ -16,31 +16,28 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayType;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
-import com.io7m.smfj.processing.api.SMFProcessingError;
 import com.io7m.smfj.processing.main.SMFMemoryMeshFilterAttributeRename;
-import javaslang.Tuple2;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.control.Validation;
-import org.junit.Assert;
-import org.junit.Test;
+import java.nio.file.FileSystem;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.file.FileSystem;
-import java.util.Objects;
-import java.util.Optional;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
 
 public final class SMFMemoryMeshFilterAttributeRenameTest extends
   SMFMemoryMeshFilterContract
@@ -56,40 +53,40 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
   @Test
   public void testParseWrong1()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRename.parse(
         Optional.empty(),
         1,
         List.of());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong2()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRename.parse(
         Optional.empty(),
         1,
         List.of("x", "<#@"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong3()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRename.parse(
         Optional.empty(),
         1,
         List.of("<#@", "y"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParseWrong4()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRename.parse(
         Optional.empty(),
         1,
@@ -97,20 +94,20 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
           "x",
           "y",
           "z"));
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
   }
 
   @Test
   public void testParse()
   {
-    final Validation<List<SMFParseError>, SMFMemoryMeshFilterType> r =
+    final SMFPartialLogged<SMFMemoryMeshFilterType> r =
       SMFMemoryMeshFilterAttributeRename.parse(
         Optional.empty(),
         1,
         List.of("x", "y"));
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
     final SMFMemoryMeshFilterType c = r.get();
-    Assert.assertEquals(c.name(), "rename");
+    Assertions.assertEquals(c.name(), "rename");
   }
 
   @Test
@@ -119,24 +116,23 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
-    final SMFAttributeName name_target = SMFAttributeName.of("RENAMED");
+    final SMFAttributeName name_target = SMFAttributeName.of("renamed");
     final SMFAttributeName name_source = SMFAttributeName.of("nonexistent");
 
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e.message());
-      return Unit.unit();
     });
   }
 
@@ -146,9 +142,9 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
     final SMFAttributeName name_target = SMFAttributeName.of("f16_3");
@@ -157,13 +153,12 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
     final SMFMemoryMeshFilterType filter =
       SMFMemoryMeshFilterAttributeRename.create(name_source, name_target);
 
-    final Validation<List<SMFProcessingError>, SMFMemoryMesh> r =
+    final SMFPartialLogged<SMFMemoryMesh> r =
       filter.filter(this.createContext(), loader.mesh());
-    Assert.assertTrue(r.isInvalid());
+    Assertions.assertTrue(r.isFailed());
 
-    r.getError().map(e -> {
+    r.errors().forEach(e -> {
       LOG.error("error: {}", e.message());
-      return Unit.unit();
     });
   }
 
@@ -173,12 +168,12 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
   {
     final SMFMemoryMeshProducerType loader = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser =
+    try (var parser =
            SMFTestFiles.createParser(loader, "all.smft")) {
-      // Nothing
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader, WARNINGS_DISALLOWED);
     }
 
-    final SMFAttributeName name_target = SMFAttributeName.of("RENAMED");
+    final SMFAttributeName name_target = SMFAttributeName.of("renamed");
     final SMFAttributeName name_source = SMFAttributeName.of("f16_4");
 
     final SMFMemoryMeshFilterType filter =
@@ -192,21 +187,21 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
     final SMFHeader header0 = mesh0.header();
     final SMFHeader header1 = mesh1.header();
 
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
-    Assert.assertEquals((long) arrays0.size(), (long) arrays1.size());
-    Assert.assertEquals(
-      (long) header0.attributesByName().size(),
-      (long) header1.attributesByName().size());
-    Assert.assertEquals(
-      (long) header0.attributesInOrder().size(),
-      (long) header1.attributesInOrder().size());
-    Assert.assertEquals(
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(arrays0.size(), arrays1.size());
+    Assertions.assertEquals(
+      header0.attributesByName().size(),
+      header1.attributesByName().size());
+    Assertions.assertEquals(
+      header0.attributesInOrder().size(),
+      header1.attributesInOrder().size());
+    Assertions.assertEquals(
       header0.coordinateSystem(),
       header1.coordinateSystem());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       header0.schemaIdentifier(),
       header1.schemaIdentifier());
-    Assert.assertEquals(
+    Assertions.assertEquals(
       mesh0.metadata(),
       mesh1.metadata());
 
@@ -214,12 +209,12 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
       final SMFAttribute attr0 = header0.attributesInOrder().get(index);
       final SMFAttribute attr1 = header1.attributesInOrder().get(index);
       if (!Objects.equals(attr0.name(), name_source)) {
-        Assert.assertEquals(attr0, attr1);
+        Assertions.assertEquals(attr0, attr1);
       }
     }
 
-    for (final Tuple2<SMFAttributeName, SMFAttribute> pair0 : header0.attributesByName()) {
-      final SMFAttributeName name0 = pair0._1;
+    for (final Map.Entry<SMFAttributeName, SMFAttribute> entry : header0.attributesByName().entrySet()) {
+      final SMFAttributeName name0 = entry.getKey();
       final SMFAttributeName name1;
 
       if (Objects.equals("f16_4", name0.value())) {
@@ -228,9 +223,9 @@ public final class SMFMemoryMeshFilterAttributeRenameTest extends
         name1 = name0;
       }
 
-      final SMFAttributeArrayType array0 = arrays0.get(name0).get();
-      final SMFAttributeArrayType array1 = arrays1.get(name1).get();
-      Assert.assertEquals(array0, array1);
+      final SMFAttributeArrayType array0 = arrays0.get(name0);
+      final SMFAttributeArrayType array1 = arrays1.get(name1);
+      Assertions.assertEquals(array0, array1);
     }
   }
 }

@@ -16,10 +16,7 @@
 
 package com.io7m.smfj.probe.api;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
-
+import com.io7m.smfj.core.SMFPartialLogged;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -44,7 +41,7 @@ public final class SMFVersionProbeControllerServiceLoader
   }
 
   @Override
-  public Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  public SMFPartialLogged<SMFVersionProbed> probe(
     final Supplier<InputStream> streams)
   {
     final ServiceLoader<SMFVersionProbeProviderType> loader =

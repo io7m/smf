@@ -18,17 +18,15 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.value.Value;
-
 import java.util.Optional;
 import java.util.OptionalInt;
+import org.immutables.value.Value;
 
 /**
  * A specification of how an attribute should be checked.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFMemoryMeshFilterCheckConfigurationType
 {

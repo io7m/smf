@@ -16,24 +16,21 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.value.Value;
-
 import java.util.OptionalInt;
+import org.immutables.value.Value;
 
 /**
  * A specification of how triangles should be processed.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFMemoryMeshFilterTrianglesOptimizeConfigurationType
 {
   /**
-   * A specification of whether triangles should be optimized. If a value is
-   * provided, it represents the smallest size in bits that an implementation is
-   * allowed to use for triangle indices. If no value is specified, optimization
-   * is not performed.
+   * A specification of whether triangles should be optimized. If a value is provided, it represents
+   * the smallest size in bits that an implementation is allowed to use for triangle indices. If no
+   * value is specified, optimization is not performed.
    *
    * @return The minimum size of triangle indices, if any
    */
@@ -42,9 +39,8 @@ public interface SMFMemoryMeshFilterTrianglesOptimizeConfigurationType
   OptionalInt optimize();
 
   /**
-   * A specification of whether or not triangle indices should be validated. A
-   * triangle index is valid iff there is an existing vertex with the same index
-   * value.
+   * A specification of whether or not triangle indices should be validated. A triangle index is
+   * valid iff there is an existing vertex with the same index value.
    *
    * @return {@code true} iff triangle indices should be validated
    */

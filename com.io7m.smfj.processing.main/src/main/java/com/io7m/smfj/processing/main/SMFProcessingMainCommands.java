@@ -18,8 +18,8 @@ package com.io7m.smfj.processing.main;
 
 import com.io7m.smfj.processing.api.SMFFilterCommandModule;
 import com.io7m.smfj.processing.api.SMFFilterCommandModuleProviderAbstract;
-import javaslang.Tuple;
-import javaslang.collection.TreeMap;
+import com.io7m.smfj.processing.api.SMFFilterCommandParserType;
+import java.util.Map;
 import org.osgi.service.component.annotations.Component;
 
 /**
@@ -36,44 +36,65 @@ public final class SMFProcessingMainCommands extends
 
   public SMFProcessingMainCommands()
   {
-    super(SMFFilterCommandModule.of(
-      "com.io7m.smf",
-      TreeMap.ofEntries(
-        Tuple.of(
-          SMFMemoryMeshFilterAttributeResample.NAME,
-          SMFMemoryMeshFilterAttributeResample::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterApplicationInfoAdd.NAME,
-          SMFMemoryMeshFilterApplicationInfoAdd::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterMetadataAdd.NAME,
-          SMFMemoryMeshFilterMetadataAdd::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterMetadataRemove.NAME,
-          SMFMemoryMeshFilterMetadataRemove::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterSchemaValidate.NAME,
-          SMFMemoryMeshFilterSchemaValidate::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterAttributeRemove.NAME,
-          SMFMemoryMeshFilterAttributeRemove::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterAttributeRename.NAME,
-          SMFMemoryMeshFilterAttributeRename::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterAttributeTrim.NAME,
-          SMFMemoryMeshFilterAttributeTrim::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterCheck.NAME,
-          SMFMemoryMeshFilterCheck::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterSchemaCheck.NAME,
-          SMFMemoryMeshFilterSchemaCheck::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterSchemaSet.NAME,
-          SMFMemoryMeshFilterSchemaSet::parse),
-        Tuple.of(
-          SMFMemoryMeshFilterTrianglesOptimize.NAME,
-          SMFMemoryMeshFilterTrianglesOptimize::parse))));
+    super(SMFFilterCommandModule.of("com.io7m.smf", module()));
+
+  }
+
+  private static Map<String, SMFFilterCommandParserType> module()
+  {
+    return Map.ofEntries(
+      Map.entry(
+        SMFMemoryMeshFilterEndiannessSet.NAME,
+        SMFMemoryMeshFilterEndiannessSet::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterAttributeResample.NAME,
+        SMFMemoryMeshFilterAttributeResample::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterApplicationInfoAdd.NAME,
+        SMFMemoryMeshFilterApplicationInfoAdd::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterMetadataAdd.NAME,
+        SMFMemoryMeshFilterMetadataAdd::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterMetadataRemove.NAME,
+        SMFMemoryMeshFilterMetadataRemove::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterSchemaValidate.NAME,
+        SMFMemoryMeshFilterSchemaValidate::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterAttributeRemove.NAME,
+        SMFMemoryMeshFilterAttributeRemove::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterAttributeRename.NAME,
+        SMFMemoryMeshFilterAttributeRename::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterAttributeTrim.NAME,
+        SMFMemoryMeshFilterAttributeTrim::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterCheck.NAME,
+        SMFMemoryMeshFilterCheck::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterSchemaCheck.NAME,
+        SMFMemoryMeshFilterSchemaCheck::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterSchemaSet.NAME,
+        SMFMemoryMeshFilterSchemaSet::parse
+      ),
+      Map.entry(
+        SMFMemoryMeshFilterTrianglesOptimize.NAME,
+        SMFMemoryMeshFilterTrianglesOptimize::parse
+      )
+    );
   }
 }

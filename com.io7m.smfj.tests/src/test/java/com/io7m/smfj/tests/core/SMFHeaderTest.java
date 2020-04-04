@@ -27,17 +27,13 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFTriangles;
-import javaslang.collection.List;
-import javaslang.collection.TreeMap;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public final class SMFHeaderTest
 {
-  @Rule public ExpectedException expected = ExpectedException.none();
-
   @Test
   public void testAll()
   {
@@ -58,11 +54,13 @@ public final class SMFHeaderTest
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     final SMFHeader h = b.build();
 
-    Assert.assertEquals(128L, h.triangles().triangleCount());
-    Assert.assertEquals(256L, h.vertexCount());
-    Assert.assertEquals(16L, h.triangles().triangleIndexSizeBits());
-    Assert.assertEquals(List.of(attr0), h.attributesInOrder());
-    Assert.assertEquals(TreeMap.of(attr0.name(), attr0), h.attributesByName());
+    Assertions.assertEquals(128L, h.triangles().triangleCount());
+    Assertions.assertEquals(256L, h.vertexCount());
+    Assertions.assertEquals(16L, h.triangles().triangleIndexSizeBits());
+    Assertions.assertEquals(List.of(attr0), h.attributesInOrder());
+    Assertions.assertEquals(
+      Map.of(attr0.name(), attr0),
+      h.attributesByName());
   }
 
   @Test
@@ -85,7 +83,8 @@ public final class SMFHeaderTest
       SMFFaceWindingOrder.FACE_WINDING_ORDER_COUNTER_CLOCKWISE));
     b.setAttributesInOrder(List.of(attr0, attr1));
 
-    this.expected.expect(IllegalArgumentException.class);
-    b.build();
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      b.build();
+    });
   }
 }

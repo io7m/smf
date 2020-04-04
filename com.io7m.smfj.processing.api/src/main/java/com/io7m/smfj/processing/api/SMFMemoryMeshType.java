@@ -20,18 +20,15 @@ import com.io7m.jaffirm.core.Preconditions;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Map;
-import javaslang.collection.Vector;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import java.util.List;
+import java.util.Map;
 import org.immutables.value.Value;
 
 /**
  * An immutable in-memory copy of a mesh.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFMemoryMeshType
 {
@@ -54,14 +51,14 @@ public interface SMFMemoryMeshType
    */
 
   @Value.Parameter
-  Vector<SMFMetadata> metadata();
+  List<SMFMetadata> metadata();
 
   /**
    * @return The triangles
    */
 
   @Value.Parameter
-  Vector<Vector3L> triangles();
+  List<Vector3L> triangles();
 
   /**
    * Check preconditions for the type.
@@ -71,23 +68,21 @@ public interface SMFMemoryMeshType
   default void checkPreconditions()
   {
     {
-      final long tri_lsize = (long) this.triangles().size();
-      final long tri_hcount = this.header().triangles().triangleCount();
+      final long triSize = (long) this.triangles().size();
+      final long triHCount = this.header().triangles().triangleCount();
       Preconditions.checkPreconditionL(
-        tri_lsize,
-        tri_lsize == tri_hcount,
+        triSize,
+        triSize == triHCount,
         x -> "Triangle list size must match header count");
     }
 
-    {
-      this.arrays().forEach(p -> {
-        final long array_lsize = (long) p._2.size();
-        final long array_hcount = this.header().vertexCount();
-        Preconditions.checkPreconditionL(
-          array_lsize,
-          array_lsize == array_hcount,
-          x -> "Attribute array size must match header count");
-      });
-    }
+    this.arrays().forEach((name, array) -> {
+      final long arraySize = array.size();
+      final long arrayVCount = this.header().vertexCount();
+      Preconditions.checkPreconditionL(
+        arraySize,
+        arraySize == arrayVCount,
+        x -> "Attribute array size must match header count");
+    });
   }
 }

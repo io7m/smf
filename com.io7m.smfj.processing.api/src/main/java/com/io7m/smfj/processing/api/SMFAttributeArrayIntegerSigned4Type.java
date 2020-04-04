@@ -16,41 +16,41 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jfunctional.PartialBiFunctionType;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import javaslang.collection.Vector;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import com.io7m.smfj.core.SMFPartialBiFunctionType;
+import java.util.List;
 import org.immutables.value.Value;
 
 /**
  * The type of 4-element signed integer arrays.
  */
 
-@SMFImmutableStyleType
-@JavaslangEncodingEnabled
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFAttributeArrayIntegerSigned4Type extends
   SMFAttributeArrayType
 {
+  // Unavoidable "too many parameters" issue.
+  // CHECKSTYLE:OFF
   @Override
   default <A, B, E extends Exception> B matchArray(
     final A context,
-    final PartialBiFunctionType<A, SMFAttributeArrayFloating4Type, B, E> on_f4,
-    final PartialBiFunctionType<A, SMFAttributeArrayFloating3Type, B, E> on_f3,
-    final PartialBiFunctionType<A, SMFAttributeArrayFloating2Type, B, E> on_f2,
-    final PartialBiFunctionType<A, SMFAttributeArrayFloating1Type, B, E> on_f1,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned4Type, B, E> on_u4,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned3Type, B, E> on_u3,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned2Type, B, E> on_u2,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned1Type, B, E> on_u1,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned4Type, B, E> on_i4,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned3Type, B, E> on_i3,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
-    final PartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayFloating4Type, B, E> on_f4,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayFloating3Type, B, E> on_f3,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayFloating2Type, B, E> on_f2,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayFloating1Type, B, E> on_f1,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned4Type, B, E> on_u4,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned3Type, B, E> on_u3,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned2Type, B, E> on_u2,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerUnsigned1Type, B, E> on_u1,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned4Type, B, E> on_i4,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned3Type, B, E> on_i3,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned2Type, B, E> on_i2,
+    final SMFPartialBiFunctionType<A, SMFAttributeArrayIntegerSigned1Type, B, E> on_i1)
     throws E
+  // CHECKSTYLE:ON
   {
-    return on_i4.call(context, this);
+    return on_i4.apply(context, this);
   }
 
   @Override
@@ -64,5 +64,5 @@ public interface SMFAttributeArrayIntegerSigned4Type extends
    */
 
   @Value.Parameter
-  Vector<Vector4L> values();
+  List<Vector4L> values();
 }

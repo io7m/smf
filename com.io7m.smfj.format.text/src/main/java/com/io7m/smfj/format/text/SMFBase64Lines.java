@@ -16,12 +16,11 @@
 
 package com.io7m.smfj.format.text;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -40,8 +39,8 @@ public final class SMFBase64Lines
   }
 
   /**
-   * Serialize the given binary data into lines of at most 72 characters
-   * of Base64 text. The lines do not have terminating line breaks.
+   * Serialize the given binary data into lines of at most 72 characters of Base64 text. The lines
+   * do not have terminating line breaks.
    *
    * @param data The data
    *
@@ -51,7 +50,7 @@ public final class SMFBase64Lines
   public static List<String> toBase64Lines(
     final byte[] data)
   {
-    NullCheck.notNull(data, "Data");
+    Objects.requireNonNull(data, "Data");
     final Base64.Encoder encoder = Base64.getUrlEncoder();
     final String text = encoder.encodeToString(data);
     return Arrays.asList(SPLIT_PATTERN.split(text));
@@ -68,7 +67,7 @@ public final class SMFBase64Lines
   public static byte[] fromBase64Lines(
     final List<String> lines)
   {
-    NullCheck.notNull(lines, "Lines");
+    Objects.requireNonNull(lines, "Lines");
 
     final String text =
       lines.stream().map(String::trim).collect(Collectors.joining()).trim();

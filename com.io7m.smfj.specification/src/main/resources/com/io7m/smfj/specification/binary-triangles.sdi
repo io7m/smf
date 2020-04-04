@@ -24,3 +24,5 @@ with each integer component being of the size declared in the preceding
 [link [target smfb.sections.smf.data] smf] section. No padding is inserted
 between triangles, but padding may need to be added at the end of the array
 in order to ensure proper section [link [target smfb.sections.alignment] alignment].
+All values are stored in either big-endian or little-endian form depending on
+the order specified in the [link [target "smfb.sections.smf"] SMF] section.

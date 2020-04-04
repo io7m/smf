@@ -17,7 +17,6 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -38,16 +37,17 @@ import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.collection.HashMap;
-import javaslang.collection.List;
-import javaslang.collection.Map;
-import javaslang.collection.Vector;
-
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * The default implementation of the {@link SMFMemoryMeshProducerType}
- * interface.
+ * The default implementation of the {@link SMFMemoryMeshProducerType} interface.
  */
 
 public final class SMFMemoryMeshProducer
@@ -59,26 +59,30 @@ public final class SMFMemoryMeshProducer
   SMFParserEventsDataMetaType,
   SMFParserEventsDataAttributeValuesType
 {
-  private List<SMFWarningType> warnings;
-  private Vector<SMFMetadata> metadata;
-  private boolean started;
-  private List<SMFErrorType> errors;
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshProducer.class);
+
+  private final List<Object> elements;
+  private final List<SMFErrorType> errors;
+  private final List<SMFMetadata> metadata;
+  private final List<SMFWarningType> warnings;
+  private final List<Vector3L> triangles;
+  private final Map<SMFAttributeName, SMFAttributeArrayType> arrays;
+  private SMFAttribute attribute_current;
   private SMFHeader header;
-  private Vector<Object> elements;
-  private Map<SMFAttributeName, SMFAttributeArrayType> arrays;
-  private Vector<Vector3L> triangles;
   private SMFMemoryMesh mesh;
   private boolean finished;
-  private SMFAttribute attribute_current;
+  private boolean started;
 
   private SMFMemoryMeshProducer()
   {
     this.started = false;
-    this.errors = List.empty();
-    this.warnings = List.empty();
-    this.arrays = HashMap.empty();
-    this.triangles = Vector.empty();
-    this.metadata = Vector.empty();
+    this.errors = new ArrayList<>();
+    this.warnings = new ArrayList<>();
+    this.arrays = new HashMap<>();
+    this.triangles = new ArrayList<>();
+    this.metadata = new ArrayList<>();
+    this.elements = new ArrayList<>();
   }
 
   /**
@@ -94,14 +98,14 @@ public final class SMFMemoryMeshProducer
   public void onError(
     final SMFErrorType e)
   {
-    this.errors = this.errors.append(e);
+    this.errors.add(e);
   }
 
   @Override
   public void onWarning(
     final SMFWarningType w)
   {
-    this.warnings = this.warnings.append(w);
+    this.warnings.add(w);
   }
 
   @Override
@@ -117,7 +121,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsHeaderType> onVersionReceived(
     final SMFFormatVersion version)
   {
-    NullCheck.notNull(version, "Version");
+    Objects.requireNonNull(version, "Version");
     return Optional.of(this);
   }
 
@@ -125,6 +129,23 @@ public final class SMFMemoryMeshProducer
   public void onFinish()
   {
     if (this.errors.isEmpty()) {
+      for (final var arrayEntry : this.arrays.entrySet()) {
+        final var attributeName = arrayEntry.getKey();
+        if (!this.header.attributesByName().containsKey(attributeName)) {
+          throw new IllegalStateException(String.format(
+            "Attribute %s is not specified in the header",
+            attributeName.value()));
+        }
+      }
+
+      for (final var attribute : this.header.attributesInOrder()) {
+        if (!this.arrays.containsKey(attribute.name())) {
+          throw new IllegalStateException(String.format(
+            "Attribute %s is specified in the header but is not present in the mesh",
+            attribute.name().value()));
+        }
+      }
+
       this.mesh =
         SMFMemoryMesh.builder()
           .setArrays(this.arrays)
@@ -140,13 +161,13 @@ public final class SMFMemoryMeshProducer
   @Override
   public List<SMFErrorType> errors()
   {
-    return this.errors;
+    return List.copyOf(this.errors);
   }
 
   @Override
   public List<SMFWarningType> warnings()
   {
-    return this.warnings;
+    return List.copyOf(this.warnings);
   }
 
   @Override
@@ -188,7 +209,7 @@ public final class SMFMemoryMeshProducer
   public void onDataAttributeValueIntegerSigned1(
     final long x)
   {
-    this.elements = this.elements.append(Long.valueOf(x));
+    this.elements.add(Long.valueOf(x));
   }
 
   @Override
@@ -196,7 +217,7 @@ public final class SMFMemoryMeshProducer
     final long x,
     final long y)
   {
-    this.elements = this.elements.append(Vector2L.of(x, y));
+    this.elements.add(Vector2L.of(x, y));
   }
 
   @Override
@@ -205,7 +226,7 @@ public final class SMFMemoryMeshProducer
     final long y,
     final long z)
   {
-    this.elements = this.elements.append(Vector3L.of(x, y, z));
+    this.elements.add(Vector3L.of(x, y, z));
   }
 
   @Override
@@ -215,14 +236,14 @@ public final class SMFMemoryMeshProducer
     final long z,
     final long w)
   {
-    this.elements = this.elements.append(Vector4L.of(x, y, z, w));
+    this.elements.add(Vector4L.of(x, y, z, w));
   }
 
   @Override
   public void onDataAttributeValueIntegerUnsigned1(
     final long x)
   {
-    this.elements = this.elements.append(Long.valueOf(x));
+    this.elements.add(Long.valueOf(x));
   }
 
   @Override
@@ -230,7 +251,7 @@ public final class SMFMemoryMeshProducer
     final long x,
     final long y)
   {
-    this.elements = this.elements.append(Vector2L.of(x, y));
+    this.elements.add(Vector2L.of(x, y));
   }
 
   @Override
@@ -239,7 +260,7 @@ public final class SMFMemoryMeshProducer
     final long y,
     final long z)
   {
-    this.elements = this.elements.append(Vector3L.of(x, y, z));
+    this.elements.add(Vector3L.of(x, y, z));
   }
 
   @Override
@@ -249,14 +270,14 @@ public final class SMFMemoryMeshProducer
     final long z,
     final long w)
   {
-    this.elements = this.elements.append(Vector4L.of(x, y, z, w));
+    this.elements.add(Vector4L.of(x, y, z, w));
   }
 
   @Override
   public void onDataAttributeValueFloat1(
     final double x)
   {
-    this.elements = this.elements.append(Double.valueOf(x));
+    this.elements.add(Double.valueOf(x));
   }
 
   @Override
@@ -264,7 +285,7 @@ public final class SMFMemoryMeshProducer
     final double x,
     final double y)
   {
-    this.elements = this.elements.append(Vector2D.of(x, y));
+    this.elements.add(Vector2D.of(x, y));
   }
 
   @Override
@@ -273,7 +294,7 @@ public final class SMFMemoryMeshProducer
     final double y,
     final double z)
   {
-    this.elements = this.elements.append(Vector3D.of(x, y, z));
+    this.elements.add(Vector3D.of(x, y, z));
   }
 
   @Override
@@ -283,134 +304,157 @@ public final class SMFMemoryMeshProducer
     final double z,
     final double w)
   {
-    this.elements = this.elements.append(Vector4D.of(x, y, z, w));
+    this.elements.add(Vector4D.of(x, y, z, w));
   }
 
   @Override
   public void onDataAttributeValueFinish()
   {
+    LOG.debug("finished attribute {}", this.attribute_current.name().value());
+
     switch (this.attribute_current.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned4.builder()
-                .setValues(this.elements.map(x -> (Vector4L) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned3.builder()
-                .setValues(this.elements.map(x -> (Vector3L) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned2.builder()
-                .setValues(this.elements.map(x -> (Vector2L) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerSigned1.builder()
-                .setValues(this.elements.map(x -> (Long) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishIntegerSignedAttribute();
         break;
       }
 
       case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned4.builder()
-                .setValues(this.elements.map(x -> (Vector4L) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned3.builder()
-                .setValues(this.elements.map(x -> (Vector3L) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned2.builder()
-                .setValues(this.elements.map(x -> (Vector2L) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayIntegerUnsigned1.builder()
-                .setValues(this.elements.map(x -> (Long) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishIntegerUnsignedAttribute();
         break;
       }
 
       case ELEMENT_TYPE_FLOATING: {
-        switch (this.attribute_current.componentCount()) {
-          case 4: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating4.builder()
-                .setValues(this.elements.map(x -> (Vector4D) x))
-                .build());
-            break;
-          }
-          case 3: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating3.builder()
-                .setValues(this.elements.map(x -> (Vector3D) x))
-                .build());
-            break;
-          }
-          case 2: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating2.builder()
-                .setValues(this.elements.map(x -> (Vector2D) x))
-                .build());
-            break;
-          }
-          case 1: {
-            this.arrays = this.arrays.put(
-              this.attribute_current.name(),
-              SMFAttributeArrayFloating1.builder()
-                .setValues(this.elements.map(x -> (Double) x))
-                .build());
-            break;
-          }
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        this.finishFloatingAttribute();
         break;
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private static <A, B extends A> List<B> unsafeListCast(final List<A> xs)
+  {
+    return (List<B>) xs;
+  }
+
+  private void finishFloatingAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating4.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating3.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating2.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayFloating1.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private void finishIntegerUnsignedAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned4.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned3.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned2.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerUnsigned1.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private void finishIntegerSignedAttribute()
+  {
+    switch (this.attribute_current.componentCount()) {
+      case 4: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned4.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 3: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned3.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 2: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned2.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      case 1: {
+        this.arrays.put(
+          this.attribute_current.name(),
+          SMFAttributeArrayIntegerSigned1.builder()
+            .setValues(unsafeListCast(this.elements))
+            .build());
+        break;
+      }
+      default: {
+        throw new UnreachableCodeException();
       }
     }
   }
@@ -421,7 +465,7 @@ public final class SMFMemoryMeshProducer
     final long v1,
     final long v2)
   {
-    this.triangles = this.triangles.append(Vector3L.of(v0, v1, v2));
+    this.triangles.add(Vector3L.of(v0, v1, v2));
   }
 
   @Override
@@ -434,7 +478,7 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsBodyType> onHeaderParsed(
     final SMFHeader in_header)
   {
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.header = Objects.requireNonNull(in_header, "Header");
     return Optional.of(this);
   }
 
@@ -442,9 +486,9 @@ public final class SMFMemoryMeshProducer
   public Optional<SMFParserEventsDataAttributeValuesType> onDataAttributeStart(
     final SMFAttribute attribute)
   {
-    NullCheck.notNull(attribute, "Attribute");
+    Objects.requireNonNull(attribute, "Attribute");
     this.attribute_current = attribute;
-    this.elements = Vector.empty();
+    this.elements.clear();
     return Optional.of(this);
   }
 
@@ -459,16 +503,16 @@ public final class SMFMemoryMeshProducer
     final SMFSchemaIdentifier schema,
     final byte[] data)
   {
-    NullCheck.notNull(schema, "Schema");
-    NullCheck.notNull(data, "Data");
-    this.metadata = this.metadata.append(SMFMetadata.of(schema, data));
+    Objects.requireNonNull(schema, "Schema");
+    Objects.requireNonNull(data, "Data");
+    this.metadata.add(SMFMetadata.of(schema, data));
   }
 
   @Override
   public Optional<SMFParserEventsDataMetaType> onMeta(
     final SMFSchemaIdentifier schema)
   {
-    NullCheck.notNull(schema, "Schema");
+    Objects.requireNonNull(schema, "Schema");
     return Optional.of(this);
   }
 }

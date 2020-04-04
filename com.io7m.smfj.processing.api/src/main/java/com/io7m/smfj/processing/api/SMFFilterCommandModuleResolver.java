@@ -16,14 +16,17 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.jnull.NullCheck;
-import javaslang.collection.SortedMap;
-import javaslang.collection.TreeMap;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.ServiceLoader;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Iterator;
-import java.util.ServiceLoader;
 
 /**
  * <p>The default implementation of the {@link SMFFilterCommandModuleResolverType}
@@ -36,18 +39,16 @@ import java.util.ServiceLoader;
 public final class SMFFilterCommandModuleResolver implements
   SMFFilterCommandModuleResolverType
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFFilterCommandModuleResolver.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFFilterCommandModuleResolver.class);
 
   private final SortedMap<String, SMFFilterCommandModuleType> modules;
 
   private SMFFilterCommandModuleResolver(
-    final SortedMap<String, SMFFilterCommandModuleType> in_modules)
+    final SortedMap<String, SMFFilterCommandModuleType> inModules)
   {
-    this.modules = NullCheck.notNull(in_modules, "Modules");
+    this.modules = Collections.unmodifiableSortedMap(
+      Objects.requireNonNull(inModules, "Modules"));
   }
 
   /**
@@ -56,20 +57,25 @@ public final class SMFFilterCommandModuleResolver implements
 
   public static SMFFilterCommandModuleResolverType create()
   {
-    SortedMap<String, SMFFilterCommandModuleType> modules =
-      TreeMap.empty();
-
+    final SortedMap<String, SMFFilterCommandModuleType> modules =
+      new TreeMap<>();
     final ServiceLoader<SMFFilterCommandModuleProviderType> providers =
       ServiceLoader.load(SMFFilterCommandModuleProviderType.class);
 
     final Iterator<SMFFilterCommandModuleProviderType> iter = providers.iterator();
     while (iter.hasNext()) {
       final SMFFilterCommandModuleProviderType provider = iter.next();
-      final SortedMap<String, SMFFilterCommandModuleType> available =
+      final Map<String, SMFFilterCommandModuleType> available =
         provider.available();
 
-      for (final String name : available.keySet()) {
-        final SMFFilterCommandModuleType module = available.get(name).get();
+      final List<String> sortedNames =
+        available.keySet()
+          .stream()
+          .sorted()
+          .collect(Collectors.toList());
+
+      for (final String name : sortedNames) {
+        final SMFFilterCommandModuleType module = available.get(name);
         if (modules.containsKey(name)) {
           LOG.warn("multiple modules with the same name: {}", name);
         }
@@ -77,7 +83,7 @@ public final class SMFFilterCommandModuleResolver implements
         if (LOG.isDebugEnabled()) {
           LOG.debug("registered module {} via provider {}", name, provider);
         }
-        modules = modules.put(name, module);
+        modules.put(name, module);
       }
     }
 

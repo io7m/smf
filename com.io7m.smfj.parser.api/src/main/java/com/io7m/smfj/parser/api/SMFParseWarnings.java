@@ -18,7 +18,6 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.net.URI;
 import java.util.Optional;
 

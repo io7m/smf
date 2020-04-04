@@ -22,32 +22,29 @@ package com.io7m.smfj.format.text.implementation;
 
 public final class Flags
 {
-  private Flags()
-  {
-
-  }
-
   /**
    * Are vertices required?
    */
 
   public static final int VERTICES_REQUIRED = 0;
-
   /**
    * Are vertices received?
    */
 
   public static final int VERTICES_RECEIVED = 1;
-
   /**
    * Are triangles required?
    */
 
   public static final int TRIANGLES_REQUIRED = 2;
-
   /**
    * Are triangles received?
    */
 
   public static final int TRIANGLES_RECEIVED = 3;
+
+  private Flags()
+  {
+
+  }
 }

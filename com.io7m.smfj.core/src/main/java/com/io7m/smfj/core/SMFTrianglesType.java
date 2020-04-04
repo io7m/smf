@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.core;
 
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
+import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 /**
@@ -24,8 +24,7 @@ import org.immutables.value.Value;
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFTrianglesType
 {
   /**
@@ -78,6 +77,7 @@ public interface SMFTrianglesType
   default void checkPreconditions()
   {
     SMFSupportedSizes.checkIntegerUnsignedSupported(
+      "triangle indices",
       this.triangleIndexSizeBits());
   }
 }

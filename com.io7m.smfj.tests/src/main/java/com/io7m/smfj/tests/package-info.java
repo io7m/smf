@@ -18,5 +18,4 @@
  * Core types and functions.
  */
 
-@com.io7m.jnull.NonNullByDefault package com.io7m.smfj.tests;
-
+package com.io7m.smfj.tests;

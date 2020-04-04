@@ -17,7 +17,6 @@
 package com.io7m.smfj.probe.api;
 
 import com.io7m.smfj.core.SMFFormatVersion;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import org.immutables.value.Value;
 
@@ -25,7 +24,7 @@ import org.immutables.value.Value;
  * A probed version.
  */
 
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 @Value.Immutable
 public interface SMFVersionProbedType
 {

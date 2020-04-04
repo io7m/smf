@@ -16,10 +16,8 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
-import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
-import com.io7m.smfj.parser.api.SMFParseError;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
@@ -28,11 +26,6 @@ import com.io7m.smfj.validation.api.SMFSchema;
 import com.io7m.smfj.validation.api.SMFSchemaParserProviderType;
 import com.io7m.smfj.validation.api.SMFSchemaParserType;
 import com.io7m.smfj.validation.api.SMFSchemaValidatorType;
-import javaslang.collection.List;
-import javaslang.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -40,12 +33,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ServiceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
 
 /**
  * A filter that validates the current mesh against a schema.
@@ -54,24 +49,22 @@ import static javaslang.control.Validation.valid;
 public final class SMFMemoryMeshFilterSchemaValidate implements
   SMFMemoryMeshFilterType
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
+
   /**
    * The command name.
    */
 
   public static final String NAME = "schema-validate";
-  private static final Logger LOG;
   private static final String SYNTAX = "<file>";
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterSchemaValidate.class);
-  }
 
   private final Path schema_file;
 
   private SMFMemoryMeshFilterSchemaValidate(
     final Path in_file)
   {
-    this.schema_file = NullCheck.notNull(in_file, "File");
+    this.schema_file = Objects.requireNonNull(in_file, "File");
   }
 
   /**
@@ -98,17 +91,17 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
-    if (text.length() == 1) {
+    if (text.size() == 1) {
       try {
-        return valid(create(Paths.get(text.get(0))));
+        return SMFPartialLogged.succeeded(create(Paths.get(text.get(0))));
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -160,44 +153,53 @@ public final class SMFMemoryMeshFilterSchemaValidate implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Path file = context.resolvePath(this.schema_file);
     LOG.debug("resolved schema file: {}", file);
 
-    final SMFSchemaParserProviderType parser_provider = findParserProvider();
-    final SMFSchemaValidatorType validator = findValidator();
+    final SMFSchemaParserProviderType parser_provider =
+      findParserProvider();
+    final SMFSchemaValidatorType validator =
+      findValidator();
 
-    try (final InputStream stream = Files.newInputStream(file)) {
-      try (final SMFSchemaParserType parser =
+    try (InputStream stream = Files.newInputStream(file)) {
+      try (SMFSchemaParserType parser =
              parser_provider.schemaParserCreate(file.toUri(), stream)) {
-        final Validation<List<SMFErrorType>, SMFSchema> result_schema = parser.parseSchema();
-        if (result_schema.isValid()) {
-          final SMFSchema schema = result_schema.get();
-          final Validation<List<SMFErrorType>, SMFHeader> result_valid =
-            validator.validate(m.header(), schema);
 
-          if (result_valid.isValid()) {
-            return valid(m);
-          }
-
-          return invalid(
-            result_valid.getError()
-              .map(e -> SMFProcessingError.of(e.message(), e.exception())));
+        final SMFPartialLogged<SMFSchema> resultSchema = parser.parseSchema();
+        if (resultSchema.isFailed()) {
+          return SMFPartialLogged.failed(
+            resultSchema.errors(),
+            resultSchema.warnings());
         }
 
-        return invalid(
-          result_schema.getError()
-            .map(e -> SMFProcessingError.of(e.message(), e.exception())));
+        final SMFSchema schema = resultSchema.get();
+        final SMFPartialLogged<SMFHeader> validationResult =
+          validator.validate(m.header(), schema);
+
+        if (validationResult.isFailed()) {
+          return resultSchema.flatMap(x -> {
+            return SMFPartialLogged.failed(
+              resultSchema.errors(),
+              resultSchema.warnings());
+          });
+        }
+
+        return resultSchema.flatMap(ignored0 -> {
+          return validationResult.flatMap(ignored1 -> {
+            return SMFPartialLogged.succeeded(m);
+          });
+        });
       }
     } catch (final IOException e) {
-      return invalid(List.of(
-        SMFProcessingError.of(e.getMessage(), Optional.of(e))));
+      return SMFPartialLogged.failed(
+        SMFProcessingError.of(e.getMessage(), Optional.of(e)));
     }
   }
 }

@@ -16,29 +16,23 @@
 
 package com.io7m.smfj.tests.probe;
 
-import com.io7m.smfj.format.binary.SMFFormatBinary;
+import com.io7m.smfj.core.SMFPartialLogged;
+import com.io7m.smfj.format.binary2.SMFFormatBinary2;
 import com.io7m.smfj.format.text.SMFFormatText;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.probe.api.SMFVersionProbeControllerOSGi;
 import com.io7m.smfj.probe.api.SMFVersionProbed;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import org.apache.commons.io.input.BrokenInputStream;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
 public final class SMFVersionProbeControllerOSGiTest
 {
-  private static final Logger LOG;
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFVersionProbeControllerOSGiTest.class);
-  }
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFVersionProbeControllerOSGiTest.class);
 
   private static InputStream resource(
     final String name)
@@ -47,12 +41,13 @@ public final class SMFVersionProbeControllerOSGiTest
   }
 
   private static void dumpValidation(
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r)
+    final SMFPartialLogged<?> r)
   {
-    if (r.isValid()) {
+    r.errors().forEach(c -> LOG.error("{}", c));
+    r.warnings().forEach(c -> LOG.warn("{}", c));
+
+    if (r.isSucceeded()) {
       LOG.debug("{}", r.get());
-    } else {
-      r.getError().forEach(c -> LOG.error("{}", c));
     }
   }
 
@@ -62,14 +57,13 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
-      c.probe(() -> new ByteArrayInputStream(new byte[0]));
+    final var r = c.probe(() -> new ByteArrayInputStream(new byte[0]));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -78,17 +72,17 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smft"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assert.assertEquals(1L, (long) v.version().major());
-    Assert.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(1L, v.version().major());
+    Assertions.assertEquals(0L, v.version().minor());
   }
 
   @Test
@@ -97,14 +91,14 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smft"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -113,17 +107,17 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
-      c.probe(() -> resource("/com/io7m/smfj/tests/probe/one.smfb"));
+    final var r =
+      c.probe(() -> resource("/com/io7m/smfj/tests/probe/smfFull_validBasic0.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isValid());
+    Assertions.assertTrue(r.isSucceeded());
 
     final SMFVersionProbed v = r.get();
-    Assert.assertEquals(1L, (long) v.version().major());
-    Assert.assertEquals(0L, (long) v.version().minor());
+    Assertions.assertEquals(2L, v.version().major());
+    Assertions.assertEquals(0L, v.version().minor());
   }
 
   @Test
@@ -132,14 +126,14 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/bad.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -148,14 +142,14 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> resource("/com/io7m/smfj/tests/probe/garbage.smfb"));
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 
   @Test
@@ -164,13 +158,13 @@ public final class SMFVersionProbeControllerOSGiTest
     final SMFVersionProbeControllerOSGi c =
       new SMFVersionProbeControllerOSGi();
     c.onProbeProviderAdd(new SMFFormatText());
-    c.onProbeProviderAdd(new SMFFormatBinary());
+    c.onProbeProviderAdd(new SMFFormatBinary2());
 
-    final Validation<Seq<SMFParseError>, SMFVersionProbed> r =
+    final var r =
       c.probe(() -> new BrokenInputStream());
 
     dumpValidation(r);
-    Assert.assertTrue(r.isInvalid());
-    Assert.assertTrue(r.getError().size() >= 1);
+    Assertions.assertTrue(r.isFailed());
+    Assertions.assertTrue(r.errors().size() >= 1);
   }
 }

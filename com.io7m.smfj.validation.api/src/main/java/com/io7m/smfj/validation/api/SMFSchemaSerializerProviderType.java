@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.validation.api;
 
-import javaslang.collection.SortedSet;
+import java.util.SortedSet;
 import org.osgi.annotation.versioning.ProviderType;
 
 import java.io.OutputStream;
@@ -37,14 +37,12 @@ public interface SMFSchemaSerializerProviderType
 
   /**
    * @param version The schema version
-   * @param path    The path referred to by the output stream, for diagnostic
-   *                messages
+   * @param path    The path referred to by the output stream, for diagnostic messages
    * @param stream  An output stream
    *
    * @return A new serializer for the version
    *
-   * @throws UnsupportedOperationException If the given version is not
-   *                                       supported
+   * @throws UnsupportedOperationException If the given version is not supported
    */
 
   SMFSchemaSerializerType schemaSerializerCreate(

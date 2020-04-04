@@ -22,8 +22,9 @@ import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserProviderType;
 import com.io7m.smfj.parser.api.SMFParserRandomAccessType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import javaslang.collection.SortedSet;
-import javaslang.collection.TreeSet;
+import java.util.Collections;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import org.osgi.service.component.annotations.Component;
 
 import java.io.InputStream;
@@ -38,24 +39,25 @@ import java.util.Optional;
 @Component
 public final class SMFFormatOBJ implements SMFParserProviderType
 {
-  private static final SMFFormatDescription FORMAT;
-  private static final SortedSet<SMFFormatVersion> SUPPORTED;
+  private static final SMFFormatDescription FORMAT = makeFormat();
+  private static final SortedSet<SMFFormatVersion> SUPPORTED = makeSupported();
 
-  static {
+  private static SMFFormatDescription makeFormat()
+  {
+    final SMFFormatDescription.Builder fb = SMFFormatDescription.builder();
+    fb.setDescription("Wavefront OBJ");
+    fb.setSuffix("obj");
+    fb.setRandomAccess(false);
+    fb.setName("obj");
+    fb.setMimeType("application/wavefront-obj");
+    return fb.build();
+  }
 
-    {
-      final SMFFormatDescription.Builder fb = SMFFormatDescription.builder();
-      fb.setDescription("Wavefront OBJ");
-      fb.setSuffix("obj");
-      fb.setRandomAccess(false);
-      fb.setName("obj");
-      fb.setMimeType("application/wavefront-obj");
-      FORMAT = fb.build();
-    }
-
-    {
-      SUPPORTED = TreeSet.of(SMFFormatVersion.of(1, 0));
-    }
+  private static SortedSet<SMFFormatVersion> makeSupported()
+  {
+    final var versions = new TreeSet<SMFFormatVersion>();
+    versions.add(SMFFormatVersion.of(1, 0));
+    return Collections.unmodifiableSortedSet(versions);
   }
 
   /**

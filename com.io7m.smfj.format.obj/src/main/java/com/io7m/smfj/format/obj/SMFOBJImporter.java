@@ -21,8 +21,6 @@ import com.io7m.jcoords.core.conversion.CAxisSystem;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionType;
 import com.io7m.jlexing.core.LexicalPositions;
-import com.io7m.jnull.NullCheck;
-import com.io7m.jnull.Nullable;
 import com.io7m.jobj.core.JOParser;
 import com.io7m.jobj.core.JOParserErrorCode;
 import com.io7m.jobj.core.JOParserType;
@@ -55,6 +53,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.jcoords.core.conversion.CAxis.AXIS_NEGATIVE_Z;
@@ -95,7 +94,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     final InputStream in_stream,
     final SMFParserEventsType in_events)
   {
-    this.events = NullCheck.notNull(in_events, "Events");
+    this.events = Objects.requireNonNull(in_events, "Events");
     this.parser = JOParser.newParserFromStream(in_path, in_stream, this);
     this.positions = new ArrayList<>(8);
     this.normals = new ArrayList<>(8);
@@ -191,8 +190,8 @@ public final class SMFOBJImporter implements SMFOBJImporterType
     header_b.setSchemaIdentifier(SMFSchemaIdentifier.of(
       SMFSchemaName.of("com.io7m.example"), 0, 0));
 
-    javaslang.collection.List<SMFAttribute> attributes =
-      javaslang.collection.List.empty();
+    final List<SMFAttribute> attributes =
+      new ArrayList<>();
 
     final SMFAttributeName name_position =
       SMFAttributeName.of("POSITION");
@@ -212,13 +211,13 @@ public final class SMFOBJImporter implements SMFOBJImporterType
       header_b.setVertexCount((long) this.vertices.size());
       final Vertex vertex = this.vertices.get(0);
       if (vertex.position != null) {
-        attributes = attributes.append(this.attrib_position);
+        attributes.add(this.attrib_position);
       }
       if (vertex.normal != null) {
-        attributes = attributes.append(this.attrib_normal);
+        attributes.add(this.attrib_normal);
       }
       if (vertex.uv != null) {
-        attributes = attributes.append(this.attrib_uv);
+        attributes.add(this.attrib_uv);
       }
     }
 
@@ -730,7 +729,7 @@ public final class SMFOBJImporter implements SMFOBJImporterType
       if (this == o) {
         return true;
       }
-      if (o == null || this.getClass() != o.getClass()) {
+      if (o == null || !Objects.equals(this.getClass(), o.getClass())) {
         return false;
       }
 
@@ -750,9 +749,9 @@ public final class SMFOBJImporter implements SMFOBJImporterType
 
   private static final class Vertex
   {
-    private final @Nullable Vector3D position;
-    private final @Nullable Vector3D normal;
-    private final @Nullable Vector2D uv;
+    private final Vector3D position;
+    private final Vector3D normal;
+    private final Vector2D uv;
 
     Vertex(
       final Vector3D in_position,

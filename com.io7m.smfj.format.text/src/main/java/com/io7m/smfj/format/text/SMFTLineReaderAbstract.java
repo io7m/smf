@@ -18,12 +18,11 @@ package com.io7m.smfj.format.text;
 
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositionMutable;
-import javaslang.collection.List;
-import org.slf4j.Logger;
-
 import java.io.IOException;
 import java.net.URI;
+import java.util.List;
 import java.util.Optional;
+import org.slf4j.Logger;
 
 /**
  * An abstract line reader implementation.
@@ -64,11 +63,11 @@ abstract class SMFTLineReaderAbstract implements SMFTLineReaderType
 
     final String trimmed = line.trim();
     if (trimmed.isEmpty()) {
-      return Optional.of(List.empty());
+      return Optional.of(List.of());
     }
 
     if (trimmed.startsWith("#")) {
-      return Optional.of(List.empty());
+      return Optional.of(List.of());
     }
 
     if (this.log().isTraceEnabled()) {

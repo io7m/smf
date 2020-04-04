@@ -16,20 +16,19 @@
 
 package com.io7m.smfj.parser.api;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
 import com.io7m.jlexing.core.LexicalPosition;
-import com.io7m.smfj.core.SMFImmutableStyleType;
 import com.io7m.smfj.core.SMFWarningType;
-import org.immutables.value.Value;
-
 import java.net.URI;
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * The type of parse warnings.
  */
 
 @Value.Immutable
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFParseWarningType extends SMFWarningType
 {
   /**

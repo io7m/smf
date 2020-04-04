@@ -16,14 +16,13 @@
 
 package com.io7m.smfj.format.text;
 
-import com.io7m.jnull.NullCheck;
-import javaslang.collection.Iterator;
-import javaslang.collection.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URI;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A line reader based on a list of strings.
@@ -45,7 +44,7 @@ public final class SMFTLineReaderList extends SMFTLineReaderAbstract
     final int in_start)
   {
     super(in_uri, in_start);
-    this.lines = NullCheck.notNull(in_lines, "Lines").iterator();
+    this.lines = Objects.requireNonNull(in_lines, "Lines").iterator();
   }
 
   /**

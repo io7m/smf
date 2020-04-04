@@ -18,6 +18,9 @@
  * Serializer API.
  */
 
-@com.io7m.jnull.NonNullByDefault
+@Export
+@Version("1.0.0")
 package com.io7m.smfj.serializer.api;
 
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

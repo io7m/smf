@@ -10,4 +10,9 @@ An [term [type type] SMF/B] file begins with a simple fixed-size
 
 [paragraph]
 All data in an [term [type type] SMF/B] file is written in
-[term [type term] big-endian] byte order.
+[term [type term] big-endian] byte order, with the exception of
+[link [target "smfb.sections.triangles"] triangle] and
+[link [target "smfb.sections.vertices-noninterleaved"] vertex] data
+which may be electively written in big-endian or little-endian byte order
+based on the order specified in the [link [target "smfb.sections.smf"] SMF]
+section.

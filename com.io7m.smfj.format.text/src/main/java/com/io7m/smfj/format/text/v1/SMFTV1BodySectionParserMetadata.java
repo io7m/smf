@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
@@ -30,10 +29,10 @@ import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
-import javaslang.collection.List;
-
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -68,8 +67,8 @@ public final class SMFTV1BodySectionParserMetadata
     final Supplier<SMFHeader> in_header_get,
     final SMFTLineReaderType in_reader)
   {
-    this.header_get = NullCheck.notNull(in_header_get, "Header");
-    this.reader = NullCheck.notNull(in_reader, "Reader");
+    this.header_get = Objects.requireNonNull(in_header_get, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
   }
 
   private static SMFParserEventsDataMetaType makeMetadataReceiver(
@@ -100,7 +99,7 @@ public final class SMFTV1BodySectionParserMetadata
     final SMFParserEventsBodyType receiver)
     throws IOException
   {
-    if (line.length() == 5) {
+    if (line.size() == 5) {
       try {
         final SMFSchemaName name = SMFSchemaName.of(line.get(1));
         final int major = Integer.parseUnsignedInt(line.get(2));
@@ -156,7 +155,7 @@ public final class SMFTV1BodySectionParserMetadata
       }
 
       final List<String> data_line = data_line_opt.get();
-      if (data_line.length() == 1) {
+      if (data_line.size() == 1) {
         lines_saved.add(data_line.get(0));
       } else {
         receiver.onError(SMFTErrors.errorExpectedGot(
@@ -176,7 +175,7 @@ public final class SMFTV1BodySectionParserMetadata
       receiver.onError(SMFTErrors.errorExpectedGotWithException(
         "Cannot parse base64 encoded data.",
         "Base64 encoded data",
-        List.ofAll(lines_saved),
+        List.copyOf(lines_saved),
         this.reader.position(),
         e));
       return FAILURE;
@@ -191,7 +190,7 @@ public final class SMFTV1BodySectionParserMetadata
     IgnoringMetaReceiver(
       final SMFParserEventsBodyType in_receiver)
     {
-      this.receiver = NullCheck.notNull(in_receiver, "Receiver");
+      this.receiver = Objects.requireNonNull(in_receiver, "Receiver");
     }
 
     @Override

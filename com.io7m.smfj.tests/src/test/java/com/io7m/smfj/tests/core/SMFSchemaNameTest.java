@@ -18,10 +18,8 @@ package com.io7m.smfj.tests.core;
 
 import com.io7m.smfj.core.SMFSchemaName;
 import com.io7m.smfj.core.SMFSchemaNames;
-import org.junit.Assert;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,19 +31,18 @@ public final class SMFSchemaNameTest
     LOG = LoggerFactory.getLogger(SMFSchemaNameTest.class);
   }
 
-  @Rule public final ExpectedException expected = ExpectedException.none();
-
   @Test
   public void testValid()
   {
     final String[] valids = {
-      "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "abcdefghijklmnopqrstuvwxyz0123456789",
+      "0123456789",
       "a.b.c",
+      "_",
+      ".",
       "a0.b0.c0",
-      "a0_.b0_.c0_",
-      "Ямогуестьстекло",
-      "Μπορώ"
+      "a0_.b0_.c0_"
     };
 
     final boolean[] ok = new boolean[valids.length];
@@ -71,7 +68,7 @@ public final class SMFSchemaNameTest
     }
 
     if (!all_ok) {
-      Assert.fail();
+      Assertions.fail();
     }
   }
 
@@ -80,18 +77,17 @@ public final class SMFSchemaNameTest
   {
     final String[] invalids = {
       "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-      "0123456789",
       "\\",
       "\"",
-      "_",
       "-",
-      ".",
       ":",
       ",",
       "@",
       "$",
       "a a",
-      "'"
+      "'",
+      "Ямогуестьстекло",
+      "Μπορώ"
     };
 
     final boolean[] ok = new boolean[invalids.length];
@@ -118,7 +114,7 @@ public final class SMFSchemaNameTest
     }
 
     if (!all_ok) {
-      Assert.fail();
+      Assertions.fail();
     }
   }
 }

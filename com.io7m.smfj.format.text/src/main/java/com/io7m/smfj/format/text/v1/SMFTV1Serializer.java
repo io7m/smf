@@ -17,8 +17,6 @@
 package com.io7m.smfj.format.text.v1;
 
 import com.io7m.jaffirm.core.Preconditions;
-import com.io7m.jnull.NullCheck;
-import com.io7m.jnull.Nullable;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFComponentType;
@@ -31,13 +29,13 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesNonInterleavedTyp
 import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
 import com.io7m.smfj.serializer.api.SMFSerializerDataTrianglesType;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UncheckedIOException;
 import java.net.URI;
+import java.nio.ByteOrder;
 import java.nio.charset.StandardCharsets;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -59,7 +57,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
   private final BufferedWriter writer;
   private boolean done_header;
   private boolean done_vertices;
-  private @Nullable SMFHeader header;
+  private SMFHeader header;
   private boolean done_triangles;
 
   /**
@@ -75,7 +73,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
     final URI in_uri,
     final OutputStream in_stream)
   {
-    this.version = NullCheck.notNull(in_version, "Version");
+    this.version = Objects.requireNonNull(in_version, "Version");
 
     Preconditions.checkPreconditionI(
       in_version.major(),
@@ -91,91 +89,135 @@ public final class SMFTV1Serializer implements SMFSerializerType
     final SMFHeader in_header)
     throws IOException
   {
-    NullCheck.notNull(in_header, "Header");
+    Objects.requireNonNull(in_header, "Header");
 
     if (this.done_header) {
       throw new IllegalStateException("Header has already been serialized");
     }
 
     try {
-      this.writer.append("smf ");
-      this.writer.append(Integer.toUnsignedString(this.version.major()));
-      this.writer.append(" ");
-      this.writer.append(Integer.toUnsignedString(this.version.minor()));
-      this.writer.newLine();
-
-      {
-        try {
-          in_header.schemaIdentifier().ifPresent(s -> {
-            try {
-              this.writer.append("schema ");
-              this.writer.append(s.name().value());
-              this.writer.append(" ");
-              this.writer.append(Integer.toUnsignedString(s.versionMajor()));
-              this.writer.append(" ");
-              this.writer.append(Integer.toUnsignedString(s.versionMinor()));
-              this.writer.newLine();
-            } catch (final IOException e) {
-              throw new UncheckedIOException(e);
-            }
-          });
-        } catch (final UncheckedIOException e) {
-          throw e.getCause();
-        }
-      }
-
-      {
-        this.writer.append("vertices ");
-        this.writer.append(Long.toUnsignedString(in_header.vertexCount()));
-        this.writer.newLine();
-      }
-
-      {
-        final SMFTriangles triangles = in_header.triangles();
-        this.writer.append("triangles ");
-        this.writer.append(Long.toUnsignedString(triangles.triangleCount()));
-        this.writer.append(" ");
-        this.writer.append(Long.toUnsignedString(triangles.triangleIndexSizeBits()));
-        this.writer.newLine();
-      }
-
-      {
-        this.writer.append("coordinates ");
-        this.writer.append(in_header.coordinateSystem().toHumanString());
-        this.writer.newLine();
-      }
-
-      try {
-        in_header.attributesInOrder().forEach(a -> {
-          try {
-            this.writer.append("attribute ");
-            this.writer.append('"');
-            this.writer.append(a.name().value());
-            this.writer.append('"');
-            this.writer.append(" ");
-            this.writer.append(a.componentType().getName());
-            this.writer.append(" ");
-            this.writer.append(Integer.toUnsignedString(a.componentCount()));
-            this.writer.append(" ");
-            this.writer.append(Integer.toUnsignedString(a.componentSizeBits()));
-            this.writer.newLine();
-          } catch (final IOException e) {
-            throw new UncheckedIOException(e);
-          }
-        });
-      } catch (final UncheckedIOException e) {
-        throw e.getCause();
-      }
-
-      {
-        this.writer.append("end");
-        this.writer.newLine();
-      }
-
+      this.serializeHeaderSMF();
+      this.serializeHeaderSchema(in_header);
+      this.serializeHeaderVertices(in_header);
+      this.serializeHeaderTriangles(in_header);
+      this.serializeHeaderCoordinates(in_header);
+      this.serializeHeaderEndianness(in_header);
+      this.serializeHeaderAttributes(in_header);
+      this.serializeHeaderEnd();
     } finally {
       this.header = in_header;
       this.done_header = true;
     }
+  }
+
+  private void serializeHeaderEnd()
+    throws IOException
+  {
+    this.writer.append("end");
+    this.writer.newLine();
+  }
+
+  private void serializeHeaderAttributes(final SMFHeader in_header)
+    throws IOException
+  {
+    try {
+      in_header.attributesInOrder().forEach(a -> {
+        try {
+          this.writer.append("attribute ");
+          this.writer.append('"');
+          this.writer.append(a.name().value());
+          this.writer.append('"');
+          this.writer.append(" ");
+          this.writer.append(a.componentType().getName());
+          this.writer.append(" ");
+          this.writer.append(Integer.toUnsignedString(a.componentCount()));
+          this.writer.append(" ");
+          this.writer.append(Integer.toUnsignedString(a.componentSizeBits()));
+          this.writer.newLine();
+        } catch (final IOException e) {
+          throw new UncheckedIOException(e);
+        }
+      });
+    } catch (final UncheckedIOException e) {
+      throw e.getCause();
+    }
+  }
+
+  private void serializeHeaderEndianness(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    this.writer.append("endianness ");
+    final var byteOrder = in_header.dataByteOrder();
+    if (Objects.equals(byteOrder, ByteOrder.BIG_ENDIAN)) {
+      this.writer.append("big");
+    } else if (Objects.equals(byteOrder, ByteOrder.LITTLE_ENDIAN)) {
+      this.writer.append("little");
+    }
+    this.writer.newLine();
+  }
+
+  private void serializeHeaderCoordinates(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    this.writer.append("coordinates ");
+    this.writer.append(in_header.coordinateSystem().toHumanString());
+    this.writer.newLine();
+  }
+
+  private void serializeHeaderTriangles(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    final SMFTriangles triangles = in_header.triangles();
+    this.writer.append("triangles ");
+    this.writer.append(Long.toUnsignedString(triangles.triangleCount()));
+    this.writer.append(" ");
+    this.writer.append(Long.toUnsignedString(triangles.triangleIndexSizeBits()));
+    this.writer.newLine();
+  }
+
+  private void serializeHeaderVertices(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    this.writer.append("vertices ");
+    this.writer.append(Long.toUnsignedString(in_header.vertexCount()));
+    this.writer.newLine();
+  }
+
+  private void serializeHeaderSchema(
+    final SMFHeader in_header)
+    throws IOException
+  {
+    try {
+      in_header.schemaIdentifier().ifPresent(s -> {
+        try {
+          this.writer.append("schema ");
+          this.writer.append(s.name().value());
+          this.writer.append(" ");
+          this.writer.append(Integer.toUnsignedString(s.versionMajor()));
+          this.writer.append(" ");
+          this.writer.append(Integer.toUnsignedString(s.versionMinor()));
+          this.writer.newLine();
+        } catch (final IOException e) {
+          throw new UncheckedIOException(e);
+        }
+      });
+    } catch (final UncheckedIOException e) {
+      throw e.getCause();
+    }
+  }
+
+  private void serializeHeaderSMF()
+    throws IOException
+  {
+    this.writer.append("smf ");
+    this.writer.append(Integer.toUnsignedString(this.version.major()));
+    this.writer.append(" ");
+    this.writer.append(Integer.toUnsignedString(this.version.minor()));
+    this.writer.newLine();
   }
 
   @Override
@@ -275,8 +317,8 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final BufferedWriter in_writer,
       final SMFHeader in_header)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
-      this.header = NullCheck.notNull(in_header, "Header");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
+      this.header = Objects.requireNonNull(in_header, "Header");
       this.queue = new LinkedList<>();
       this.header.attributesInOrder().forEach(this.queue::add);
     }
@@ -286,7 +328,7 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final SMFAttributeName name)
       throws IllegalArgumentException, IOException
     {
-      NullCheck.notNull(name, "Name");
+      Objects.requireNonNull(name, "Name");
 
       if (this.queue.isEmpty()) {
         throw new IllegalStateException("No more attributes to serialize.");
@@ -352,9 +394,9 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final long in_vertices,
       final SMFAttribute in_attribute)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
       this.vertices = in_vertices;
-      this.attribute = NullCheck.notNull(in_attribute, "Attribute");
+      this.attribute = Objects.requireNonNull(in_attribute, "Attribute");
     }
 
     @Override
@@ -636,8 +678,8 @@ public final class SMFTV1Serializer implements SMFSerializerType
       final BufferedWriter in_writer,
       final SMFHeader in_header)
     {
-      this.writer = NullCheck.notNull(in_writer, "Writer");
-      this.header = NullCheck.notNull(in_header, "Header");
+      this.writer = Objects.requireNonNull(in_writer, "Writer");
+      this.header = Objects.requireNonNull(in_header, "Header");
       this.remaining = this.header.triangles().triangleCount();
     }
 

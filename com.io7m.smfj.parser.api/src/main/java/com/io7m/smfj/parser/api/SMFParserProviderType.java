@@ -18,12 +18,11 @@ package com.io7m.smfj.parser.api;
 
 import com.io7m.smfj.core.SMFFormatDescription;
 import com.io7m.smfj.core.SMFFormatVersion;
-import javaslang.collection.SortedSet;
-import org.osgi.annotation.versioning.ProviderType;
-
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.channels.FileChannel;
+import java.util.SortedSet;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The type of parser providers.

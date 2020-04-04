@@ -20,10 +20,7 @@ package com.io7m.smfj.tests.format.text;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.xml.bind.DatatypeConverter;
+import com.io7m.smfj.tests.TestDirectories;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -34,6 +31,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.function.Consumer;
+import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class SMFTextTest implements SMFTextTestType
 {
@@ -49,12 +49,12 @@ public abstract class SMFTextTest implements SMFTextTestType
     final Consumer<SMFTextTestWriterType> o)
   {
     try {
-      final Path dir = Files.createTempDirectory("smf-tests-");
+      final Path dir = TestDirectories.temporaryDirectory();
       final Path target = dir.resolve("data");
 
       LOG.debug("path: {}", target);
 
-      try (final OutputStream os =
+      try (OutputStream os =
              Files.newOutputStream(
                target,
                StandardOpenOption.CREATE,
@@ -72,16 +72,14 @@ public abstract class SMFTextTest implements SMFTextTestType
 
       LOG.debug("wrote {} octets", Long.valueOf(Files.size(target)));
 
-      try (final InputStream is = Files.newInputStream(target)) {
+      try (InputStream is = Files.newInputStream(target)) {
         final byte[] buffer = new byte[16];
         while (true) {
           final int r = is.read(buffer);
           if (r == -1) {
             break;
           }
-          LOG.debug(
-            "{}",
-            DatatypeConverter.printHexBinary(Arrays.copyOf(buffer, r)));
+          LOG.debug("{}", Hex.encodeHex(Arrays.copyOf(buffer, r)));
         }
       }
 

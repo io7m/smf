@@ -18,5 +18,5 @@
  * Specification.
  */
 
-@com.io7m.jnull.NonNullByDefault package com.io7m.smfj.specification;
+ package com.io7m.smfj.specification;
 

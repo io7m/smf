@@ -8,31 +8,18 @@
   <parent>
     <groupId>com.io7m.smfj</groupId>
     <artifactId>com.io7m.smfj</artifactId>
-    <version>0.14.0</version>
+    <version>0.15.0</version>
   </parent>
   <artifactId>com.io7m.smfj.specification</artifactId>
 
   <packaging>jar</packaging>
   <name>com.io7m.smfj.specification</name>
   <description>Sequential mesh format (Specification)</description>
-  <url>http://io7m.github.io/smfj/</url>
+  <url>https://www.io7m.com/software/smfj/</url>
 
   <properties>
     <mdep.analyze.skip>true</mdep.analyze.skip>
   </properties>
-
-  <scm>
-    <url>${project.parent.scm.url}</url>
-    <connection>${project.parent.scm.connection}</connection>
-    <developerConnection>${project.parent.scm.developerConnection}</developerConnection>
-  </scm>
-
-  <dependencies>
-    <dependency>
-      <groupId>com.io7m.jnull</groupId>
-      <artifactId>com.io7m.jnull.core</artifactId>
-    </dependency>
-  </dependencies>
 
   <build>
     <plugins>
@@ -109,54 +96,6 @@
         </executions>
       </plugin>
 
-      <!-- Javadoc handling -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <!-- Produce javadoc jar for Central -->
-          <execution>
-            <id>attach-javadocs</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-            <configuration>
-              <bottom><![CDATA[Copyright &#169; {currentYear} &lt;code@io7m.com&gt; http://io7m.com]]></bottom>
-              <archive>
-                <manifestEntries>
-                  <Specification-Title>${project.name}</Specification-Title>
-                  <Specification-Version>${project.version}</Specification-Version>
-                  <Specification-Vendor>io7m.com</Specification-Vendor>
-                  <Implementation-Title>${project.name}</Implementation-Title>
-                  <Implementation-Version>${project.version}</Implementation-Version>
-                  <Implementation-Vendor>io7m.com</Implementation-Vendor>
-                  <Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
-                  <Built-By>io7m</Built-By>
-                </manifestEntries>
-              </archive>
-            </configuration>
-          </execution>
-          <!-- Produce aggregate dependency javadocs -->
-          <execution>
-            <id>javadoc-aggregate</id>
-            <phase>package</phase>
-            <goals>
-              <goal>javadoc-no-fork</goal>
-            </goals>
-            <configuration>
-              <bottom><![CDATA[Copyright &#169; {currentYear} &lt;code@io7m.com&gt; http://io7m.com]]></bottom>
-              <outputDirectory>${project.build.directory}/apidocs</outputDirectory>
-              <includeDependencySources>true</includeDependencySources>
-              <includeTransitiveDependencySources>true</includeTransitiveDependencySources>
-              <dependencySourceIncludes>
-                <dependencySourceSet>com.io7m.smfj*</dependencySourceSet>
-              </dependencySourceIncludes>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Produce specification archive -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -180,7 +119,7 @@
         </executions>
       </plugin>
 
-      <!-- Unpack the specification archive to the parent's generated site staging directory. -->
+      <!-- Unpack the specification archive to the parent's generated site minisite directory. -->
       <!-- This is arguably abusive, but there appears to be no other way to achieve it. -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -197,7 +136,7 @@
               <verbose>true</verbose>
               <fileset>
                 <directory>${project.build.directory}/${project.name}-${project.version}.zip/${project.name}-${project.version}/</directory>
-                <outputDirectory>${project.parent.build.directory}/staging/specification/</outputDirectory>
+                <outputDirectory>${project.parent.build.directory}/minisite/specification/</outputDirectory>
               </fileset>
             </configuration>
           </execution>

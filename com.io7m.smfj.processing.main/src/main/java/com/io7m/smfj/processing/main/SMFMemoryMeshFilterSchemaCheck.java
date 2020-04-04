@@ -16,24 +16,19 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFProcessingError;
-import javaslang.collection.List;
-import javaslang.control.Validation;
-
 import java.net.URI;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.invalid;
-import static javaslang.control.Validation.valid;
 
 /**
  * A filter that checks the existence and type of an attribute.
@@ -56,7 +51,7 @@ public final class SMFMemoryMeshFilterSchemaCheck
   private SMFMemoryMeshFilterSchemaCheck(
     final SMFSchemaIdentifier in_config)
   {
-    this.config = NullCheck.notNull(in_config, "Config");
+    this.config = Objects.requireNonNull(in_config, "Config");
   }
 
   /**
@@ -83,20 +78,20 @@ public final class SMFMemoryMeshFilterSchemaCheck
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
-    if (text.length() == 3) {
+    if (text.size() == 3) {
       try {
         final SMFSchemaName schema = SMFSchemaName.of(text.get(0));
         final int major = Integer.parseUnsignedInt(text.get(1));
         final int minor = Integer.parseUnsignedInt(text.get(2));
-        return valid(create(
+        return SMFPartialLogged.succeeded(create(
           SMFSchemaIdentifier.builder()
             .setName(schema)
             .setVersionMajor(major)
@@ -126,19 +121,19 @@ public final class SMFMemoryMeshFilterSchemaCheck
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final Optional<SMFSchemaIdentifier> received_opt =
       m.header().schemaIdentifier();
     if (received_opt.isPresent()) {
       final SMFSchemaIdentifier received = received_opt.get();
       if (Objects.equals(received, this.config)) {
-        return valid(m);
+        return SMFPartialLogged.succeeded(m);
       }
     }
 
@@ -157,7 +152,7 @@ public final class SMFMemoryMeshFilterSchemaCheck
     }
     sb.append(System.lineSeparator());
 
-    return invalid(List.of(
-      SMFProcessingError.of(sb.toString(), Optional.empty())));
+    return SMFPartialLogged.failed(
+      SMFProcessingError.of(sb.toString(), Optional.empty()));
   }
 }

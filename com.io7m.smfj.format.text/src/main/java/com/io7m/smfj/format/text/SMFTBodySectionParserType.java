@@ -17,9 +17,8 @@
 package com.io7m.smfj.format.text;
 
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import javaslang.collection.List;
-
 import java.io.IOException;
+import java.util.List;
 
 /**
  * The type of body section parsers.

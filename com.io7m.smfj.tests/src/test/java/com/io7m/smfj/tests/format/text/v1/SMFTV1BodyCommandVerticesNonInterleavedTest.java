@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.tests.format.text.v1;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFAttribute;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFErrorType;
@@ -25,20 +26,19 @@ import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.format.text.implementation.Flags;
 import com.io7m.smfj.format.text.v1.SMFTV1BodySectionParserVerticesNonInterleaved;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import javaslang.collection.List;
-import mockit.Delegate;
-import mockit.Expectations;
-import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Assert;
-import org.junit.Test;
-
 import java.net.URI;
 import java.util.BitSet;
+import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 import static com.io7m.smfj.core.SMFComponentType.ELEMENT_TYPE_FLOATING;
 import static com.io7m.smfj.core.SMFComponentType.ELEMENT_TYPE_INTEGER_SIGNED;
@@ -48,10 +48,32 @@ import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
 
 public final class SMFTV1BodyCommandVerticesNonInterleavedTest
 {
+  private SMFParserEventsBodyType events;
+  private SMFTLineReaderType reader;
+  private ArgumentCaptor<SMFErrorType> captor;
+  private SMFParserEventsDataAttributeValuesType eventsValues;
+  private SMFParserEventsDataAttributesNonInterleavedType eventsData;
+
+  @BeforeEach
+  public void testSetup()
+  {
+    this.events =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.eventsValues =
+      Mockito.mock(SMFParserEventsDataAttributeValuesType.class);
+    this.eventsData =
+      Mockito.mock(SMFParserEventsDataAttributesNonInterleavedType.class);
+    this.reader =
+      Mockito.mock(SMFTLineReaderType.class);
+    this.captor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+
+    Mockito.when(this.reader.position())
+      .thenReturn(LexicalPosition.of(0, 0, Optional.empty()));
+  }
+
   @Test
-  public void testOK_0(
-    final @Mocked SMFParserEventsBodyType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testOK_0()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -60,24 +82,20 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, this.reader, state);
 
-    new StrictExpectations()
-    {{
-      reader.line();
-      this.result = Optional.of(List.of("end"));
-    }};
+    Mockito.when(this.reader.line())
+      .thenReturn(Optional.of(List.of("end")));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
-    Assert.assertTrue(state.get(Flags.VERTICES_RECEIVED));
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+    Assertions.assertTrue(state.get(Flags.VERTICES_RECEIVED));
   }
 
   @Test
-  public void testUndeclaredAttribute(
-    final @Mocked SMFParserEventsBodyType events,
-    final @Mocked SMFTLineReaderType reader)
+  public void testUndeclaredAttribute()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -86,30 +104,26 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, this.reader, state);
 
-    new Expectations()
-    {{
-      reader.line();
-      this.result = Optional.of(List.of("attribute", "x"));
+    Mockito.when(this.reader.line())
+      .thenReturn(Optional.of(List.of("attribute", "x")));
 
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Unknown attribute");
-        }
-      }));
-    }};
+    final SMFTParsingStatus r = cmd.parse(
+      this.events,
+      List.of(
+        "vertices",
+        "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Unknown attribute"));
   }
 
   @Test
-  public void testDuplicateAttribute(
-    final @Mocked SMFParserEventsBodyType events)
+  public void testDuplicateAttribute()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -133,27 +147,23 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Attribute already specified");
-        }
-      }));
-    }};
+    final SMFTParsingStatus r = cmd.parse(
+      this.events,
+      List.of(
+        "vertices",
+        "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Attribute already specified"));
   }
 
   @Test
-  public void testBadAttribute(
-    final @Mocked SMFParserEventsBodyType events)
+  public void testBadAttribute()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -169,29 +179,23 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("attribute <name>");
-        }
-      }));
-    }};
+    final SMFTParsingStatus r = cmd.parse(
+      this.events,
+      List.of(
+        "vertices",
+        "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Mockito.verify(this.events).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "attribute <name>"));
   }
 
   @Test
-  public void testUnexpectedEOF(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testUnexpectedEOF()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -206,33 +210,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
 
-      events_data.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Unexpected EOF");
-        }
-      }));
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    final SMFTParsingStatus r = cmd.parse(
+      this.events,
+      List.of(
+        "vertices",
+        "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
 
-    final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+    Mockito.verify(this.eventsData).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Unexpected EOF"));
+    Mockito.verify(
+      this.eventsData,
+      new Times(1)).onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeFloat4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeFloat4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -255,32 +255,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFloat4(0.0, 1.0, 2.0, 3.0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeFloat3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeFloat3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -303,32 +299,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader, state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueFloat3(0.0, 1.0, 2.0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFloat3(0.0, 1.0, 2.0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeFloat2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeFloat2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -351,33 +343,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueFloat2(0.0, 1.0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFloat2(0.0, 1.0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeFloat1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeFloat1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -400,33 +387,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueFloat1(0.0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFloat1(0.0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadFloat4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadFloat4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -449,39 +431,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadFloat3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadFloat3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -504,39 +476,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadFloat2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadFloat2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -559,39 +521,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadFloat1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadFloat1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -614,39 +566,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerSigned4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerSigned4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -669,33 +611,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerSigned4(0, 1, 2, 3);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned4(0, 1, 2, 3);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerSigned3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerSigned3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -718,33 +655,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerSigned3(0, 1, 2);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned3(0, 1, 2);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerSigned2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerSigned2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -767,33 +699,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerSigned2(0, 1);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned2(0, 1);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerSigned1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerSigned1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -816,33 +743,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerSigned1(0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerSigned1(0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerSigned4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerSigned4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -865,39 +787,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerSigned3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerSigned3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -920,39 +832,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerSigned2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerSigned2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -975,39 +877,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerSigned1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerSigned1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1030,39 +922,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerUnsigned4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerUnsigned4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1085,33 +967,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerUnsigned4(0, 1, 2, 3);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerUnsigned4(0, 1, 2, 3);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerUnsigned3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerUnsigned3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1134,33 +1011,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerUnsigned3(0, 1, 2);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerUnsigned3(0, 1, 2);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerUnsigned2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerUnsigned2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1183,33 +1055,27 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerUnsigned2(0, 1);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerUnsigned2(0, 1);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeIntegerUnsigned1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeIntegerUnsigned1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1232,33 +1098,28 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onDataAttributeValueIntegerUnsigned1(0);
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(SUCCESS, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(SUCCESS, r);
+
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueIntegerUnsigned1(0);
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerUnsigned4(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerUnsigned4()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1281,39 +1142,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerUnsigned3(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerUnsigned3()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1336,39 +1187,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerUnsigned2(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerUnsigned2()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1391,39 +1232,29 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 
   @Test
-  public void testAttributeBadIntegerUnsigned1(
-    final @Mocked SMFParserEventsDataAttributeValuesType events_values,
-    final @Mocked SMFParserEventsDataAttributesNonInterleavedType events_data,
-    final @Mocked SMFParserEventsBodyType events)
+  public void testAttributeBadIntegerUnsigned1()
     throws Exception
   {
     final BitSet state = new BitSet();
@@ -1446,31 +1277,24 @@ public final class SMFTV1BodyCommandVerticesNonInterleavedTest
     final SMFHeader header = header_b.build();
 
     final SMFTV1BodySectionParserVerticesNonInterleaved cmd =
-      new SMFTV1BodySectionParserVerticesNonInterleaved(() -> header, reader,
-                                                        state);
+      new SMFTV1BodySectionParserVerticesNonInterleaved(
+        () -> header, reader, state);
 
-    new Expectations()
-    {{
-      events.onAttributesNonInterleaved();
-      this.result = Optional.of(events_data);
-
-      events_data.onDataAttributeStart(attribute);
-      this.result = Optional.of(events_values);
-
-      events_values.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse");
-        }
-      }));
-      events_values.onDataAttributeValueFinish();
-
-      events_data.onDataAttributesNonInterleavedFinish();
-    }};
+    Mockito.when(this.events.onAttributesNonInterleaved())
+      .thenReturn(Optional.of(this.eventsData));
+    Mockito.when(this.eventsData.onDataAttributeStart(attribute))
+      .thenReturn(Optional.of(this.eventsValues));
 
     final SMFTParsingStatus r =
-      cmd.parse(events, List.of("vertices", "noninterleaved"));
-    Assert.assertEquals(FAILURE, r);
+      cmd.parse(this.events, List.of("vertices", "noninterleaved"));
+    Assertions.assertEquals(FAILURE, r);
+
+    Mockito.verify(this.eventsValues).onError(this.captor.capture());
+    Assertions.assertTrue(this.captor.getValue().message().contains(
+      "Cannot parse"));
+    Mockito.verify(this.eventsValues, new Times(1))
+      .onDataAttributeValueFinish();
+    Mockito.verify(this.eventsData, new Times(1))
+      .onDataAttributesNonInterleavedFinish();
   }
 }

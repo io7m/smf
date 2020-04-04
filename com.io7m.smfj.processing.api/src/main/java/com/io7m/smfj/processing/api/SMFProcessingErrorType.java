@@ -17,17 +17,15 @@
 package com.io7m.smfj.processing.api;
 
 import com.io7m.smfj.core.SMFErrorType;
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.value.Value;
-
 import java.util.Optional;
+import org.immutables.value.Value;
 
 /**
  * The type of processing errors.
  */
 
 @Value.Immutable
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFProcessingErrorType extends SMFErrorType
 {
   @Override

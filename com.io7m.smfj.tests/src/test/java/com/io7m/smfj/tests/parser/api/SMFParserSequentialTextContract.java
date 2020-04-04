@@ -16,22 +16,17 @@
 
 package com.io7m.smfj.tests.parser.api;
 
+import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFFormatVersion;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFTriangles;
 import com.io7m.smfj.core.SMFWarningType;
+import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import mockit.Delegate;
-import mockit.Mocked;
-import mockit.StrictExpectations;
-import org.junit.Test;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -39,6 +34,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.NoSuchFileException;
 import java.util.Optional;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.Times;
 
 public abstract class SMFParserSequentialTextContract
 {
@@ -73,401 +74,292 @@ public abstract class SMFParserSequentialTextContract
     return this.parser(events, uri, url.openStream());
   }
 
-  @Test
-  public void testEmpty(
-    final @Mocked SMFParserEventsType events)
-    throws Exception
+  private String capturedError()
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        public boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Unexpected EOF");
-        }
-      }));
-      events.onFinish();
-    }};
+    return this.errorCaptor.getValue().message();
+  }
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "empty.smft")) {
-      p.parse();
-    }
+  private String capturedWarning()
+  {
+    return this.warningCaptor.getValue().message();
+  }
+
+  private ArgumentCaptor<SMFErrorType> errorCaptor;
+  private ArgumentCaptor<SMFWarningType> warningCaptor;
+  private SMFParserEventsType events;
+  private SMFParserEventsHeaderType eventsHeader;
+  private SMFParserEventsBodyType eventsData;
+  private SMFTLineReaderType reader;
+
+  @BeforeEach
+  public final void testSetup()
+  {
+    this.events =
+      Mockito.mock(SMFParserEventsType.class);
+    this.eventsHeader =
+      Mockito.mock(SMFParserEventsHeaderType.class);
+    this.eventsData =
+      Mockito.mock(SMFParserEventsBodyType.class);
+    this.reader =
+      Mockito.mock(SMFTLineReaderType.class);
+    this.errorCaptor =
+      ArgumentCaptor.forClass(SMFErrorType.class);
+    this.warningCaptor =
+      ArgumentCaptor.forClass(SMFWarningType.class);
+
+    Mockito.when(this.reader.position())
+      .thenReturn(LexicalPosition.of(0, 0, Optional.empty()));
   }
 
   @Test
-  public void testMinimal(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testEmpty()
     throws Exception
   {
-    final SMFHeader.Builder header_builder = SMFHeader.builder();
-    final SMFHeader header = header_builder.build();
-
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(header);
-      events.onFinish();
-    }};
-
-    try (final SMFParserSequentialType p =
-           this.parser(events, "minimal.smft")) {
+    try (var p = this.parser(this.events, "empty.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Unexpected EOF"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderEarlyEOF(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
-    throws Exception
-  {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        public boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Unexpected EOF");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_early_eof.smft")) {
-      p.parse();
-    }
-  }
-
-  @Test
-  public void testHeaderUnrecognized(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testMinimal()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onWarning(this.with(new Delegate<SMFWarningType>()
-      {
-        boolean check(final SMFWarningType w)
-        {
-          return w.message().contains("Unrecognized");
-        }
-      }));
-      events_header.onHeaderParsed(header);
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_unrecognized.smft")) {
+    try (var p = this.parser(this.events, "minimal.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsHeader, new Times(1)).onHeaderParsed(header);
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderMalformedEnd(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderEarlyEOF()
+    throws Exception
+  {
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+
+    try (var p = this.parser(this.events, "header_early_eof.smft")) {
+      p.parse();
+    }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsHeader).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Unexpected EOF"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
+  }
+
+  @Test
+  public void testHeaderUnrecognized()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Malformed");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_malformed_end.smft")) {
+    try (var p = this.parser(this.events, "header_unrecognized.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsHeader).onWarning(this.warningCaptor.capture());
+    Assertions.assertTrue(this.capturedWarning().contains("Unrecognized"));
+    Mockito.verify(this.eventsHeader, new Times(1)).onHeaderParsed(header);
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderAttributeDuplicate(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderMalformedEnd()
     throws Exception
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Duplicate attribute name");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_attribute_duplicate.smft")) {
+    try (var p = this.parser(this.events, "header_malformed_end.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsHeader).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Malformed"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderUnsupportedVersion(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderAttributeDuplicate()
     throws Exception
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("is not supported");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_version_unsupported.smft")) {
+    try (var p = this.parser(this.events, "header_attribute_duplicate.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsHeader).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Duplicate attribute name"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderBrokenVersion0(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderUnsupportedVersion()
     throws Exception
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Cannot parse number");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_version_broken0.smft")) {
+    try (var p = this.parser(this.events, "header_version_unsupported.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("is not supported"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderBrokenVersion1(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderBrokenVersion0()
     throws Exception
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("Incorrect number of arguments");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_version_broken1.smft")) {
+    try (var p = this.parser(this.events, "header_version_broken0.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Cannot parse number"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testHeaderBrokenVersion2(
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderBrokenVersion1()
     throws Exception
   {
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("The first line must be a version declaration");
-        }
-      }));
-      events.onFinish();
-    }};
-
-    try (final SMFParserSequentialType p =
-           this.parser(events, "header_version_broken2.smft")) {
+    try (var p = this.parser(this.events, "header_version_broken1.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("Incorrect number of arguments"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testBodyUnrecognized0(
-    final @Mocked SMFParserEventsBodyType events_data,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testHeaderBrokenVersion2()
+    throws Exception
+  {
+    try (var p = this.parser(this.events, "header_version_broken2.smft")) {
+      p.parse();
+    }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("The first line must be a version declaration"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
+  }
+
+  @Test
+  public void testBodyUnrecognized0()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(header);
-      this.result = Optional.of(events_data);
-      events_data.onWarning(this.with(new Delegate<SMFWarningType>()
-      {
-        boolean check(final SMFWarningType w)
-        {
-          return w.message().contains("Unrecognized command");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "body_unrecognized0.smft")) {
+    try (var p = this.parser(this.events, "body_unrecognized0.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsData).onWarning(this.warningCaptor.capture());
+    Assertions.assertTrue(this.capturedWarning().contains("Unrecognized command"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testBodyUnrecognized1(
-    final @Mocked SMFParserEventsBodyType events_data,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testBodyUnrecognized1()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(header);
-      this.result = Optional.of(events_data);
-      events_data.onWarning(this.with(new Delegate<SMFWarningType>()
-      {
-        boolean check(final SMFWarningType w)
-        {
-          return w.message().contains("Unrecognized command");
-        }
-      }));
-      events_data.onTriangles();
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "body_unrecognized1.smft")) {
+    try (var p = this.parser(this.events, "body_unrecognized1.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.eventsData).onWarning(this.warningCaptor.capture());
+    Assertions.assertTrue(this.capturedWarning().contains("Unrecognized command"));
+    Mockito.verify(this.eventsData, new Times(1)).onTriangles();
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testVerticesMissing(
-    final @Mocked SMFParserEventsBodyType events_data,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testVerticesMissing()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     header_builder.setVertexCount(1L);
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(header);
-      this.result = Optional.of(events_data);
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("A non-zero vertex count was specified, but no vertices were provided");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "vertices_missing.smft")) {
+    try (var p = this.parser(this.events, "vertices_missing.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("A non-zero vertex count was specified, but no vertices were provided"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 
   @Test
-  public void testTrianglesMissing(
-    final @Mocked SMFParserEventsBodyType events_data,
-    final @Mocked SMFParserEventsHeaderType events_header,
-    final @Mocked SMFParserEventsType events)
+  public void testTrianglesMissing()
     throws Exception
   {
     final SMFHeader.Builder header_builder = SMFHeader.builder();
     header_builder.setTriangles(SMFTriangles.of(1L, 32));
     final SMFHeader header = header_builder.build();
 
-    new StrictExpectations()
-    {{
-      events.onStart();
-      events.onVersionReceived(SMFFormatVersion.of(1, 0));
-      this.result = Optional.of(events_header);
-      events_header.onHeaderParsed(header);
-      this.result = Optional.of(events_data);
-      events.onError(this.with(new Delegate<SMFErrorType>()
-      {
-        boolean check(final SMFErrorType e)
-        {
-          return e.message().contains("A non-zero triangle count was specified, but no triangles were provided");
-        }
-      }));
-      events.onFinish();
-    }};
+    Mockito.when(this.events.onVersionReceived(SMFFormatVersion.of(1, 0)))
+      .thenReturn(Optional.of(this.eventsHeader));
+    Mockito.when(this.eventsHeader.onHeaderParsed(header))
+      .thenReturn(Optional.of(this.eventsData));
 
-    try (final SMFParserSequentialType p =
-           this.parser(events, "triangles_missing.smft")) {
+    try (var p = this.parser(this.events, "triangles_missing.smft")) {
       p.parse();
     }
+
+    Mockito.verify(this.events, new Times(1)).onStart();
+    Mockito.verify(this.events).onError(this.errorCaptor.capture());
+    Assertions.assertTrue(this.capturedError().contains("A non-zero triangle count was specified, but no triangles were provided"));
+    Mockito.verify(this.events, new Times(1)).onFinish();
   }
 }

@@ -16,6 +16,7 @@
 
 package com.io7m.smfj.core;
 
+import com.io7m.immutables.styles.ImmutablesStyleType;
 import org.immutables.value.Value;
 
 /**
@@ -23,7 +24,7 @@ import org.immutables.value.Value;
  */
 
 @Value.Immutable
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFSchemaIdentifierType
 {
   /**

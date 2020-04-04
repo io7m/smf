@@ -16,24 +16,20 @@
 
 package com.io7m.smfj.processing.api;
 
-import com.io7m.smfj.core.SMFImmutableStyleType;
-import org.immutables.javaslang.encodings.JavaslangEncodingEnabled;
-import org.immutables.value.Value;
-
 import java.nio.file.Path;
+import org.immutables.value.Value;
 
 /**
  * The context used during filtering.
  */
 
 @Value.Immutable
-@JavaslangEncodingEnabled
-@SMFImmutableStyleType
+@com.io7m.immutables.styles.ImmutablesStyleType
 public interface SMFFilterCommandContextType
 {
   /**
-   * The source root directory. If a filter causes files to be open, they must
-   * be descendants of this directory.
+   * The source root directory. If a filter causes files to be open, they must be descendants of
+   * this directory.
    *
    * @return A source root directory
    */
@@ -42,8 +38,8 @@ public interface SMFFilterCommandContextType
   Path sourceRoot();
 
   /**
-   * The current path. If a filter command specifies a relative path, the path
-   * is resolved relative to the <i>current path</i>.
+   * The current path. If a filter command specifies a relative path, the path is resolved relative
+   * to the <i>current path</i>.
    *
    * @return The current path
    *
@@ -73,8 +69,7 @@ public interface SMFFilterCommandContextType
    *
    * @return A resolved path
    *
-   * @throws IllegalArgumentException Iff the resolved path would fall outside
-   *                                  of the source root
+   * @throws IllegalArgumentException Iff the resolved path would fall outside of the source root
    */
 
   default Path resolvePath(

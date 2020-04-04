@@ -34,11 +34,11 @@ public interface SMFSerializerDataTrianglesType extends Closeable
    *
    * @throws IllegalStateException If the header has not yet been serialized
    * @throws IllegalStateException If the attribute has not yet been
-   *                                serialized
+   *                               serialized
    * @throws IllegalStateException If the required number of triangles have
-   *                                already been serialized
+   *                               already been serialized
    * @throws IllegalStateException If the serializer has previously failed
-   * @throws IOException            On I/O errors
+   * @throws IOException           On I/O errors
    */
 
   void serializeTriangle(

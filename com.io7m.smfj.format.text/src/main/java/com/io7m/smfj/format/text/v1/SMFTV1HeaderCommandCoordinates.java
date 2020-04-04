@@ -18,7 +18,6 @@ package com.io7m.smfj.format.text.v1;
 
 import com.io7m.jcoords.core.conversion.CAxis;
 import com.io7m.jcoords.core.conversion.CAxisSystem;
-import com.io7m.jnull.NullCheck;
 import com.io7m.smfj.core.SMFCoordinateSystem;
 import com.io7m.smfj.core.SMFFaceWindingOrder;
 import com.io7m.smfj.core.SMFHeader;
@@ -26,9 +25,9 @@ import com.io7m.smfj.format.text.SMFTHeaderCommandParserType;
 import com.io7m.smfj.format.text.SMFTLineReaderType;
 import com.io7m.smfj.format.text.SMFTParsingStatus;
 import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
-import javaslang.collection.List;
-
 import java.io.IOException;
+import java.util.List;
+import java.util.Objects;
 
 import static com.io7m.smfj.format.text.SMFTParsingStatus.FAILURE;
 import static com.io7m.smfj.format.text.SMFTParsingStatus.SUCCESS;
@@ -63,8 +62,8 @@ public final class SMFTV1HeaderCommandCoordinates
     final SMFTLineReaderType in_reader,
     final SMFHeader.Builder in_header)
   {
-    this.reader = NullCheck.notNull(in_reader, "Reader");
-    this.header = NullCheck.notNull(in_header, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
+    this.header = Objects.requireNonNull(in_header, "Header");
   }
 
   @Override
@@ -79,7 +78,7 @@ public final class SMFTV1HeaderCommandCoordinates
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 5) {
+    if (line.size() == 5) {
       try {
         final CAxis axis_right = CAxis.of(line.get(1));
         final CAxis axis_up = CAxis.of(line.get(2));

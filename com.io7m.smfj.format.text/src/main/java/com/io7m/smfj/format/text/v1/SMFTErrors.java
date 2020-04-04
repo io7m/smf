@@ -20,10 +20,8 @@ import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.parser.api.SMFParseErrors;
-import javaslang.collection.List;
-
 import java.net.URI;
-import java.util.stream.Collectors;
+import java.util.List;
 
 final class SMFTErrors
 {
@@ -41,7 +39,7 @@ final class SMFTErrors
     return SMFParseErrors.errorExpectedGot(
       String.format("Could not parse '%s' command.", name),
       syntax,
-      line.collect(Collectors.joining(" ")),
+      String.join(" ", line),
       position);
   }
 
@@ -83,7 +81,7 @@ final class SMFTErrors
     return SMFParseErrors.errorExpectedGotWithException(
       message,
       syntax,
-      line.collect(Collectors.joining(" ")),
+      String.join(" ", line),
       position,
       exception);
   }
@@ -97,7 +95,7 @@ final class SMFTErrors
     return SMFParseErrors.errorExpectedGot(
       message,
       syntax,
-      line.collect(Collectors.joining(" ")),
+      String.join(" ", line),
       position);
   }
 }

@@ -19,7 +19,7 @@ package com.io7m.smfj.frontend;
 import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import javaslang.collection.List;
+import java.util.List;
 
 /**
  * A copier that simply delivers data from a parser to a serializer.

@@ -16,7 +16,7 @@
 
 package com.io7m.smfj.processing.api;
 
-import javaslang.collection.SortedMap;
+import java.util.Map;
 
 /**
  * The type of module resolvers.
@@ -28,5 +28,5 @@ public interface SMFFilterCommandModuleResolverType
    * @return A map of the available modules
    */
 
-  SortedMap<String, SMFFilterCommandModuleType> available();
+  Map<String, SMFFilterCommandModuleType> available();
 }

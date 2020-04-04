@@ -16,51 +16,45 @@
 
 package com.io7m.smfj.processing.main;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
+import com.io7m.smfj.core.SMFPartialLogged;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFSchemaName;
-import com.io7m.smfj.parser.api.SMFParseError;
 import com.io7m.smfj.processing.api.SMFFilterCommandContext;
 import com.io7m.smfj.processing.api.SMFMemoryMesh;
 import com.io7m.smfj.processing.api.SMFMemoryMeshFilterType;
 import com.io7m.smfj.processing.api.SMFMetadata;
-import com.io7m.smfj.processing.api.SMFProcessingError;
-import javaslang.collection.List;
-import javaslang.control.Validation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Properties;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.io7m.smfj.processing.api.SMFFilterCommandParsing.errorExpectedGotValidation;
-import static javaslang.control.Validation.valid;
 
 /**
  * A filter that adds application info as metadata to a mesh.
  */
 
-public final class SMFMemoryMeshFilterApplicationInfoAdd implements
-  SMFMemoryMeshFilterType
+public final class SMFMemoryMeshFilterApplicationInfoAdd
+  implements SMFMemoryMeshFilterType
 {
+  private static final Logger LOG =
+    LoggerFactory.getLogger(SMFMemoryMeshFilterApplicationInfoAdd.class);
+
   /**
    * The command name.
    */
 
   public static final String NAME = "application-info-add";
-  private static final Logger LOG;
   private static final String SYNTAX = "";
-
-  static {
-    LOG = LoggerFactory.getLogger(SMFMemoryMeshFilterApplicationInfoAdd.class);
-  }
 
   private SMFMemoryMeshFilterApplicationInfoAdd()
   {
@@ -88,17 +82,17 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
    * @return A parsed command or a list of parse errors
    */
 
-  public static Validation<List<SMFParseError>, SMFMemoryMeshFilterType> parse(
+  public static SMFPartialLogged<SMFMemoryMeshFilterType> parse(
     final Optional<URI> file,
     final int line,
     final List<String> text)
   {
-    NullCheck.notNull(file, "file");
-    NullCheck.notNull(text, "text");
+    Objects.requireNonNull(file, "file");
+    Objects.requireNonNull(text, "text");
 
     if (text.isEmpty()) {
       try {
-        return valid(create());
+        return SMFPartialLogged.succeeded(create());
       } catch (final IllegalArgumentException e) {
         return errorExpectedGotValidation(file, line, makeSyntax(), text);
       }
@@ -136,19 +130,19 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
   }
 
   @Override
-  public Validation<List<SMFProcessingError>, SMFMemoryMesh> filter(
+  public SMFPartialLogged<SMFMemoryMesh> filter(
     final SMFFilterCommandContext context,
     final SMFMemoryMesh m)
   {
-    NullCheck.notNull(context, "Context");
-    NullCheck.notNull(m, "Mesh");
+    Objects.requireNonNull(context, "Context");
+    Objects.requireNonNull(m, "Mesh");
 
     final ZonedDateTime time =
       ZonedDateTime.now(ZoneId.of("UTC"));
     final String time_text =
-      time.format(DateTimeFormatter.ofPattern("YYYY-mm-dd'T'HH:MM:SSZ"));
+      time.format(DateTimeFormatter.ofPattern("YYYY-MM-dd'T'HH:mm:ssZ"));
 
-    try (final ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+    try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       final Properties props = new Properties();
       props.setProperty("time", time_text);
       props.setProperty("app.role", "filter");
@@ -164,11 +158,10 @@ public final class SMFMemoryMeshFilterApplicationInfoAdd implements
             0),
           out.toByteArray());
 
-      return valid(
-        SMFMemoryMesh.builder()
-          .from(m)
-          .setMetadata(m.metadata().append(appinfo))
-          .build());
+      final SMFMemoryMesh.Builder builder = SMFMemoryMesh.builder();
+      builder.from(m);
+      builder.addMetadata(appinfo);
+      return SMFPartialLogged.succeeded(builder.build());
     } catch (final IOException e) {
       throw new UnreachableCodeException();
     }

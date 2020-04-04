@@ -20,11 +20,11 @@ import com.io7m.smfj.core.SMFErrorType;
 import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
-import javaslang.collection.List;
+import java.util.List;
 
 /**
- * The type of parser event listeners that produce values of type {@link
- * SMFMemoryMeshType} as a result.
+ * The type of parser event listeners that produce values of type {@link SMFMemoryMeshType} as a
+ * result.
  */
 
 public interface SMFMemoryMeshProducerType extends SMFParserEventsType

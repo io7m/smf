@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.tests.processing;
 
-import com.io7m.jfunctional.Unit;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector2L;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector3D;
@@ -25,6 +24,7 @@ import com.io7m.jtensors.core.unparameterized.vectors.Vector4D;
 import com.io7m.jtensors.core.unparameterized.vectors.Vector4L;
 import com.io7m.smfj.core.SMFAttributeName;
 import com.io7m.smfj.core.SMFFormatVersion;
+import com.io7m.smfj.core.SMFVoid;
 import com.io7m.smfj.format.text.SMFFormatText;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
 import com.io7m.smfj.processing.api.SMFAttributeArrayFloating1Type;
@@ -45,21 +45,21 @@ import com.io7m.smfj.processing.api.SMFMemoryMeshProducer;
 import com.io7m.smfj.processing.api.SMFMemoryMeshProducerType;
 import com.io7m.smfj.processing.api.SMFMemoryMeshSerializer;
 import com.io7m.smfj.serializer.api.SMFSerializerType;
-import javaslang.Tuple2;
-import javaslang.collection.Vector;
-import org.junit.Assert;
-import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import static com.io7m.jfunctional.Unit.unit;
-import static java.nio.file.StandardOpenOption.*;
+import static com.io7m.smfj.core.SMFVoid.void_;
+import static com.io7m.smfj.tests.processing.SMFMemoryMeshFilterTesting.WarningsAllowed.WARNINGS_DISALLOWED;
+import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 
 public final class SMFMemoryMeshSerializerTest
 {
@@ -69,172 +69,172 @@ public final class SMFMemoryMeshSerializerTest
     LOG = LoggerFactory.getLogger(SMFMemoryMeshSerializerTest.class);
   }
 
-  private static Unit checkFloat4(
+  private static SMFVoid checkFloat4(
     final SMFAttributeArrayFloating4Type a0,
     final SMFAttributeArrayFloating4Type a1)
   {
-    final Vector<Vector4D> v0 = a0.values();
-    final Vector<Vector4D> v1 = a1.values();
+    final List<Vector4D> v0 = a0.values();
+    final List<Vector4D> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat3(
+  private static SMFVoid checkFloat3(
     final SMFAttributeArrayFloating3Type a0,
     final SMFAttributeArrayFloating3Type a1)
   {
-    final Vector<Vector3D> v0 = a0.values();
-    final Vector<Vector3D> v1 = a1.values();
+    final List<Vector3D> v0 = a0.values();
+    final List<Vector3D> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat2(
+  private static SMFVoid checkFloat2(
     final SMFAttributeArrayFloating2Type a0,
     final SMFAttributeArrayFloating2Type a1)
   {
-    final Vector<Vector2D> v0 = a0.values();
-    final Vector<Vector2D> v1 = a1.values();
+    final List<Vector2D> v0 = a0.values();
+    final List<Vector2D> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkFloat1(
+  private static SMFVoid checkFloat1(
     final SMFAttributeArrayFloating1Type a0,
     final SMFAttributeArrayFloating1Type a1)
   {
-    final Vector<Double> v0 = a0.values();
-    final Vector<Double> v1 = a1.values();
+    final List<Double> v0 = a0.values();
+    final List<Double> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned4(
+  private static SMFVoid checkUnsigned4(
     final SMFAttributeArrayIntegerUnsigned4Type a0,
     final SMFAttributeArrayIntegerUnsigned4Type a1)
   {
-    final Vector<Vector4L> v0 = a0.values();
-    final Vector<Vector4L> v1 = a1.values();
+    final List<Vector4L> v0 = a0.values();
+    final List<Vector4L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned3(
+  private static SMFVoid checkUnsigned3(
     final SMFAttributeArrayIntegerUnsigned3Type a0,
     final SMFAttributeArrayIntegerUnsigned3Type a1)
   {
-    final Vector<Vector3L> v0 = a0.values();
-    final Vector<Vector3L> v1 = a1.values();
+    final List<Vector3L> v0 = a0.values();
+    final List<Vector3L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned2(
+  private static SMFVoid checkUnsigned2(
     final SMFAttributeArrayIntegerUnsigned2Type a0,
     final SMFAttributeArrayIntegerUnsigned2Type a1)
   {
-    final Vector<Vector2L> v0 = a0.values();
-    final Vector<Vector2L> v1 = a1.values();
+    final List<Vector2L> v0 = a0.values();
+    final List<Vector2L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkUnsigned1(
+  private static SMFVoid checkUnsigned1(
     final SMFAttributeArrayIntegerUnsigned1Type a0,
     final SMFAttributeArrayIntegerUnsigned1Type a1)
   {
-    final Vector<Long> v0 = a0.values();
-    final Vector<Long> v1 = a1.values();
+    final List<Long> v0 = a0.values();
+    final List<Long> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned4(
+  private static SMFVoid checkSigned4(
     final SMFAttributeArrayIntegerSigned4Type a0,
     final SMFAttributeArrayIntegerSigned4Type a1)
   {
-    final Vector<Vector4L> v0 = a0.values();
-    final Vector<Vector4L> v1 = a1.values();
+    final List<Vector4L> v0 = a0.values();
+    final List<Vector4L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned3(
+  private static SMFVoid checkSigned3(
     final SMFAttributeArrayIntegerSigned3Type a0,
     final SMFAttributeArrayIntegerSigned3Type a1)
   {
-    final Vector<Vector3L> v0 = a0.values();
-    final Vector<Vector3L> v1 = a1.values();
+    final List<Vector3L> v0 = a0.values();
+    final List<Vector3L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned2(
+  private static SMFVoid checkSigned2(
     final SMFAttributeArrayIntegerSigned2Type a0,
     final SMFAttributeArrayIntegerSigned2Type a1)
   {
-    final Vector<Vector2L> v0 = a0.values();
-    final Vector<Vector2L> v1 = a1.values();
+    final List<Vector2L> v0 = a0.values();
+    final List<Vector2L> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
-  private static Unit checkSigned1(
+  private static SMFVoid checkSigned1(
     final SMFAttributeArrayIntegerSigned1Type a0,
     final SMFAttributeArrayIntegerSigned1Type a1)
   {
-    final Vector<Long> v0 = a0.values();
-    final Vector<Long> v1 = a1.values();
+    final List<Long> v0 = a0.values();
+    final List<Long> v1 = a1.values();
 
-    for (int index = 0; index < v0.length(); ++index) {
-      Assert.assertEquals(v0.get(index), v1.get(index));
+    for (int index = 0; index < v0.size(); ++index) {
+      Assertions.assertEquals(v0.get(index), v1.get(index));
     }
 
-    return unit();
+    return void_();
   }
 
   @Test
@@ -243,28 +243,28 @@ public final class SMFMemoryMeshSerializerTest
   {
     final SMFMemoryMeshProducerType loader0 = SMFMemoryMeshProducer.create();
 
-    try (final SMFParserSequentialType parser0 =
+    try (SMFParserSequentialType parser0 =
            SMFTestFiles.createParser(loader0, "all.smft")) {
-      // Parse already called by SMFTestFiles.createParser
+      SMFMemoryMeshFilterTesting.logEverything(LOG, loader0, WARNINGS_DISALLOWED);
     }
 
-    Assert.assertTrue(loader0.errors().isEmpty());
+    Assertions.assertTrue(loader0.errors().isEmpty());
 
     final SMFMemoryMesh mesh0 = loader0.mesh();
     final SMFFormatText fmt = new SMFFormatText();
     final Path tmp = Files.createTempFile("smf-memory-", ".smft");
-    try (final OutputStream stream =
+    try (OutputStream stream =
            Files.newOutputStream(tmp, CREATE, TRUNCATE_EXISTING)) {
       final SMFFormatVersion version = SMFFormatVersion.of(1, 0);
-      try (final SMFSerializerType serial =
+      try (SMFSerializerType serial =
              fmt.serializerCreate(version, tmp.toUri(), stream)) {
         SMFMemoryMeshSerializer.serialize(mesh0, serial);
       }
     }
 
     final SMFMemoryMeshProducerType loader1 = SMFMemoryMeshProducer.create();
-    try (final InputStream stream = Files.newInputStream(tmp)) {
-      try (final SMFParserSequentialType parser1 =
+    try (InputStream stream = Files.newInputStream(tmp)) {
+      try (SMFParserSequentialType parser1 =
              fmt.parserCreateSequential(loader1, tmp.toUri(), stream)) {
         parser1.parse();
       }
@@ -275,16 +275,16 @@ public final class SMFMemoryMeshSerializerTest
     LOG.debug("mesh0: {} ", mesh0);
     LOG.debug("mesh1: {} ", mesh1);
 
-    Assert.assertEquals(mesh0.header(), mesh1.header());
-    Assert.assertEquals(mesh0.triangles(), mesh1.triangles());
+    Assertions.assertEquals(mesh0.header(), mesh1.header());
+    Assertions.assertEquals(mesh0.triangles(), mesh1.triangles());
 
-    for (final Tuple2<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays()) {
-      final SMFAttributeName name = pair._1;
-      final SMFAttributeArrayType a0 = pair._2;
-      final SMFAttributeArrayType a1 = mesh1.arrays().get(name).get();
+    for (final Map.Entry<SMFAttributeName, SMFAttributeArrayType> pair : mesh0.arrays().entrySet()) {
+      final SMFAttributeName name = pair.getKey();
+      final SMFAttributeArrayType a0 = pair.getValue();
+      final SMFAttributeArrayType a1 = mesh1.arrays().get(name);
 
       a0.matchArray(
-        unit(),
+        void_(),
         (x, y) -> checkFloat4(y, (SMFAttributeArrayFloating4Type) a1),
         (x, y) -> checkFloat3(y, (SMFAttributeArrayFloating3Type) a1),
         (x, y) -> checkFloat2(y, (SMFAttributeArrayFloating2Type) a1),

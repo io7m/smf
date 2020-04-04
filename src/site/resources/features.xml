@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<div xmlns="http://www.w3.org/1999/xhtml">
+  <ul>
+    <li>Strongly-typed generic non-interleaved storage format.</li>
+    <li>Carefully designed binary format that allows for mapping sections of files into memory for direct upload to the GPU. All data is strictly aligned for performance.</li>
+    <li>Rich integer types: Store named arrays of 1-4 component 8/16/32/64-bit signed and unsigned integer vectors.</li>
+    <li>Rich floating point types: Store named arrays of 1-4 component 16/32/64-bit floating-point vectors.</li>
+    <li>Text and binary encodings.</li>
+    <li><a href="http://blender.org">Blender</a> plugin to export directly to the text format.</li>
+    <li>Event-based parsers for near zero-allocation parsing.</li>
+    <li>Extensible filter system for processing and transforming mesh data.</li>
+    <li><a href="https://www.osgi.org/">OSGi</a>-ready</li>
+    <li>High-coverage automated test suite.</li>
+    <li>ISC license.</li>
+  </ul>
+</div>

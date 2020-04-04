@@ -19,7 +19,6 @@ package com.io7m.smfj.parser.api;
 import com.io7m.jlexing.core.LexicalPosition;
 import com.io7m.jlexing.core.LexicalPositions;
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.net.URI;
 import java.util.Optional;
 
@@ -45,8 +44,15 @@ public final class SMFParseErrors
   public static SMFParseError errorException(
     final Exception e)
   {
-    return SMFParseError.of(
-      LexicalPositions.zero(), e.getMessage(), Optional.of(e));
+    final var originalMessage = e.getMessage();
+    final String message;
+    if (originalMessage == null) {
+      message = e.getClass().getName();
+    } else {
+      message = originalMessage;
+    }
+
+    return SMFParseError.of(LexicalPositions.zero(), message, Optional.of(e));
   }
 
   /**

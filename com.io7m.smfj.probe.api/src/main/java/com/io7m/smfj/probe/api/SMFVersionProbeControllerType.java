@@ -16,13 +16,10 @@
 
 package com.io7m.smfj.probe.api;
 
-import com.io7m.smfj.parser.api.SMFParseError;
-import javaslang.collection.Seq;
-import javaslang.control.Validation;
-import org.osgi.annotation.versioning.ProviderType;
-
+import com.io7m.smfj.core.SMFPartialLogged;
 import java.io.InputStream;
 import java.util.function.Supplier;
+import org.osgi.annotation.versioning.ProviderType;
 
 /**
  * The type of version probe controllers. A version probe controller iterates
@@ -41,6 +38,6 @@ public interface SMFVersionProbeControllerType
    * @return A probed version or a set of errors
    */
 
-  Validation<Seq<SMFParseError>, SMFVersionProbed> probe(
+  SMFPartialLogged<SMFVersionProbed> probe(
     Supplier<InputStream> stream);
 }

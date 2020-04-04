@@ -16,7 +16,6 @@
 
 package com.io7m.smfj.format.text.v1;
 
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnimplementedCodeException;
 import com.io7m.junreachable.UnreachableCodeException;
 import com.io7m.smfj.core.SMFAttribute;
@@ -33,15 +32,14 @@ import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesIgnoringReceiver;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-import javaslang.collection.List;
-import javaslang.collection.SortedMap;
-import javaslang.collection.SortedSet;
-
 import java.io.IOException;
 import java.util.BitSet;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -74,16 +72,17 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFTLineReaderType in_reader,
     final BitSet in_state)
   {
-    this.header_get = NullCheck.notNull(in_header_get, "Header");
-    this.reader = NullCheck.notNull(in_reader, "Reader");
-    this.state = NullCheck.notNull(in_state, "State");
+    this.header_get = Objects.requireNonNull(in_header_get, "Header");
+    this.reader = Objects.requireNonNull(in_reader, "Reader");
+    this.state = Objects.requireNonNull(in_state, "State");
   }
 
   private static String remainingAttributes(
-    final SortedSet<SMFAttributeName> all_attributes,
+    final Set<SMFAttributeName> all_attributes,
     final Set<String> specified_attributes)
   {
     return all_attributes
+      .stream()
       .map(SMFAttributeName::value)
       .filter(a -> !specified_attributes.contains(a))
       .collect(Collectors.joining(" "));
@@ -105,9 +104,10 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
   }
 
   private static String knownAttributes(
-    final SortedSet<SMFAttributeName> names)
+    final Set<SMFAttributeName> names)
   {
     return names
+      .stream()
       .map(SMFAttributeName::value)
       .collect(Collectors.joining(" "));
   }
@@ -194,7 +194,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final List<String> line)
     throws IOException
   {
-    if (line.length() == 2) {
+    if (line.size() == 2) {
       final SMFAttributeName name = SMFAttributeName.of(line.get(1));
       final SortedMap<SMFAttributeName, SMFAttribute> by_name =
         header.attributesByName();
@@ -203,7 +203,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
         receiver.onError(errorExpectedGot(
           "Unknown attribute.",
           "One of " + knownAttributes(by_name.keySet()),
-          line.collect(Collectors.joining(" ")),
+          line.stream().collect(Collectors.joining(" ")),
           this.reader.position()
         ));
         return FAILURE;
@@ -213,13 +213,13 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
         receiver.onError(errorExpectedGot(
           "Attribute already specified.",
           "One of " + remainingAttributes(by_name.keySet(), attributes),
-          line.collect(Collectors.joining(" ")),
+          line.stream().collect(Collectors.joining(" ")),
           this.reader.position()
         ));
         return FAILURE;
       }
 
-      final SMFAttribute attr = by_name.get(name).get();
+      final SMFAttribute attr = by_name.get(name);
       attributes.add(name.value());
 
       final SMFParserEventsDataAttributeValuesType new_receiver =
@@ -278,86 +278,116 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
   {
     switch (attribute.componentType()) {
       case ELEMENT_TYPE_INTEGER_SIGNED: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementSigned1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementSigned2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementSigned3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementSigned4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementIntegerSigned(
+          receiver,
+          attribute,
+          line);
       }
 
       case ELEMENT_TYPE_INTEGER_UNSIGNED: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementUnsigned1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementUnsigned2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementUnsigned3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementUnsigned4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementIntegerUnsigned(
+          receiver,
+          attribute,
+          line);
       }
 
       case ELEMENT_TYPE_FLOATING: {
-        switch (attribute.componentCount()) {
-          case 1: {
-            return this.parseAttributeElementFloat1(receiver, line);
-          }
-
-          case 2: {
-            return this.parseAttributeElementFloat2(receiver, line);
-          }
-
-          case 3: {
-            return this.parseAttributeElementFloat3(receiver, line);
-          }
-
-          case 4: {
-            return this.parseAttributeElementFloat4(receiver, line);
-          }
-
-          default: {
-            throw new UnreachableCodeException();
-          }
-        }
+        return this.parseAttributeElementFloating(receiver, attribute, line);
       }
     }
 
     throw new UnreachableCodeException();
   }
 
+  private SMFTParsingStatus parseAttributeElementFloating(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementFloat1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementFloat2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementFloat3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementFloat4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private SMFTParsingStatus parseAttributeElementIntegerUnsigned(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementUnsigned1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementUnsigned2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementUnsigned3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementUnsigned4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
+  private SMFTParsingStatus parseAttributeElementIntegerSigned(
+    final SMFParserEventsDataAttributeValuesType receiver,
+    final SMFAttribute attribute,
+    final List<String> line)
+  {
+    switch (attribute.componentCount()) {
+      case 1: {
+        return this.parseAttributeElementSigned1(receiver, line);
+      }
+
+      case 2: {
+        return this.parseAttributeElementSigned2(receiver, line);
+      }
+
+      case 3: {
+        return this.parseAttributeElementSigned3(receiver, line);
+      }
+
+      case 4: {
+        return this.parseAttributeElementSigned4(receiver, line);
+      }
+
+      default: {
+        throw new UnreachableCodeException();
+      }
+    }
+  }
+
   private SMFTParsingStatus parseAttributeElementUnsigned4(
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 4) {
+    if (line.size() == 4) {
       try {
         final long x = Long.parseUnsignedLong(line.get(0));
         final long y = Long.parseUnsignedLong(line.get(1));
@@ -387,7 +417,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 3) {
+    if (line.size() == 3) {
       try {
         final long x = Long.parseUnsignedLong(line.get(0));
         final long y = Long.parseUnsignedLong(line.get(1));
@@ -416,7 +446,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 2) {
+    if (line.size() == 2) {
       try {
         final long x = Long.parseUnsignedLong(line.get(0));
         final long y = Long.parseUnsignedLong(line.get(1));
@@ -444,7 +474,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 1) {
+    if (line.size() == 1) {
       try {
         final long x = Long.parseUnsignedLong(line.get(0));
         receiver.onDataAttributeValueIntegerUnsigned1(x);
@@ -471,7 +501,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 4) {
+    if (line.size() == 4) {
       try {
         final long x = Long.parseLong(line.get(0));
         final long y = Long.parseLong(line.get(1));
@@ -501,7 +531,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 3) {
+    if (line.size() == 3) {
       try {
         final long x = Long.parseLong(line.get(0));
         final long y = Long.parseLong(line.get(1));
@@ -530,7 +560,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 2) {
+    if (line.size() == 2) {
       try {
         final long x = Long.parseLong(line.get(0));
         final long y = Long.parseLong(line.get(1));
@@ -558,7 +588,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 1) {
+    if (line.size() == 1) {
       try {
         final long x = Long.parseLong(line.get(0));
         receiver.onDataAttributeValueIntegerSigned1(x);
@@ -585,7 +615,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 4) {
+    if (line.size() == 4) {
       try {
         final double x = Double.parseDouble(line.get(0));
         final double y = Double.parseDouble(line.get(1));
@@ -615,7 +645,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 3) {
+    if (line.size() == 3) {
       try {
         final double x = Double.parseDouble(line.get(0));
         final double y = Double.parseDouble(line.get(1));
@@ -644,7 +674,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 2) {
+    if (line.size() == 2) {
       try {
         final double x = Double.parseDouble(line.get(0));
         final double y = Double.parseDouble(line.get(1));
@@ -672,7 +702,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     final SMFParserEventsDataAttributeValuesType receiver,
     final List<String> line)
   {
-    if (line.length() == 1) {
+    if (line.size() == 1) {
       try {
         final double x = Double.parseDouble(line.get(0));
         receiver.onDataAttributeValueFloat1(x);
@@ -703,7 +733,7 @@ public final class SMFTV1BodySectionParserVerticesNonInterleaved implements
     IgnoringDataReceiver(
       final SMFParserEventsBodyType in_receiver)
     {
-      this.receiver = NullCheck.notNull(in_receiver, "Receiver");
+      this.receiver = Objects.requireNonNull(in_receiver, "Receiver");
     }
 
     @Override

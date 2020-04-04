@@ -7,17 +7,14 @@ import com.io7m.smfj.core.SMFHeader;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.core.SMFWarningType;
 import com.io7m.smfj.format.text.SMFFormatText;
+import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributeValuesType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataAttributesNonInterleavedType;
-import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
-import com.io7m.smfj.parser.api.SMFParserEventsBodyType;
-import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import com.io7m.smfj.parser.api.SMFParserEventsDataTrianglesType;
+import com.io7m.smfj.parser.api.SMFParserEventsHeaderType;
 import com.io7m.smfj.parser.api.SMFParserEventsType;
 import com.io7m.smfj.parser.api.SMFParserSequentialType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -25,6 +22,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class FMT
 {
@@ -45,7 +44,7 @@ public final class FMT
   {
     final SMFFormatText fmt = new SMFFormatText();
     final Path path = Paths.get("mesh-ascii.txt");
-    try (final InputStream stream = Files.newInputStream(path)) {
+    try (InputStream stream = Files.newInputStream(path)) {
 
       final SMFParserSequentialType p =
         fmt.parserCreateSequential(new Events(), path.toUri(), stream);

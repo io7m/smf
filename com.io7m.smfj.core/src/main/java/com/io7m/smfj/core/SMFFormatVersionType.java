@@ -16,7 +16,8 @@
 
 package com.io7m.smfj.core;
 
-import com.io7m.jnull.NullCheck;
+import com.io7m.immutables.styles.ImmutablesStyleType;
+import java.util.Objects;
 import org.immutables.value.Value;
 
 /**
@@ -25,7 +26,7 @@ import org.immutables.value.Value;
 
 @Value.Immutable
 @Value.Modifiable
-@SMFImmutableStyleType
+@ImmutablesStyleType
 public interface SMFFormatVersionType extends Comparable<SMFFormatVersionType>
 {
   /**
@@ -58,7 +59,7 @@ public interface SMFFormatVersionType extends Comparable<SMFFormatVersionType>
   @Override
   default int compareTo(final SMFFormatVersionType o)
   {
-    NullCheck.notNull(o, "Other");
+    Objects.requireNonNull(o, "Other");
 
     final int r = Integer.compareUnsigned(this.major(), o.major());
     if (r == 0) {

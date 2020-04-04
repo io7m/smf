@@ -15,9 +15,19 @@
  */
 
 /**
- * Parser API.
+ * Text format implementation.
  */
 
-@com.io7m.jnull.NonNullByDefault
+@Export
+@Version("1.0.0")
+
+@Capability(
+  namespace = "com.io7m.smf.format",
+  attribute = "name=text",
+  version = "2.0")
+
 package com.io7m.smfj.format.text;
 
+import org.osgi.annotation.bundle.Capability;
+import org.osgi.annotation.bundle.Export;
+import org.osgi.annotation.versioning.Version;

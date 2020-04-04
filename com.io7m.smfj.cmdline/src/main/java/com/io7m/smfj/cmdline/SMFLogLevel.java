@@ -17,8 +17,8 @@
 package com.io7m.smfj.cmdline;
 
 import ch.qos.logback.classic.Level;
-import com.io7m.jnull.NullCheck;
 import com.io7m.junreachable.UnreachableCodeException;
+import java.util.Objects;
 
 /**
  * Log level.
@@ -61,7 +61,7 @@ public enum SMFLogLevel
 
   SMFLogLevel(final String in_name)
   {
-    this.name = NullCheck.notNull(in_name);
+    this.name = Objects.requireNonNull(in_name);
   }
 
   @Override

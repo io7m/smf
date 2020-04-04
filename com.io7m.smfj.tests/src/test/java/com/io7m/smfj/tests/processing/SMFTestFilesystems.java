@@ -19,7 +19,6 @@ package com.io7m.smfj.tests.processing;
 import com.github.marschall.memoryfilesystem.MemoryFileSystemBuilder;
 import com.github.marschall.memoryfilesystem.StringTransformers;
 import com.io7m.junreachable.UnreachableCodeException;
-
 import java.io.IOException;
 import java.nio.file.FileSystem;
 import java.nio.file.attribute.DosFileAttributeView;
@@ -39,7 +38,7 @@ public final class SMFTestFilesystems
       final MemoryFileSystemBuilder base = MemoryFileSystemBuilder.newEmpty();
       base.addRoot("/");
       base.setCurrentWorkingDirectory("/");
-      base.setSeprator("/");
+      base.setSeparator("/");
       base.addUser(user);
       base.addGroup(user);
       base.addFileAttributeView(PosixFileAttributeView.class);
@@ -59,7 +58,7 @@ public final class SMFTestFilesystems
       final String user = "Administrator";
       final MemoryFileSystemBuilder base = MemoryFileSystemBuilder.newEmpty();
       base.addRoot("C:\\");
-      base.setSeprator("\\");
+      base.setSeparator("\\");
       base.addUser(user);
       base.addGroup(user);
       base.addFileAttributeView(DosFileAttributeView.class);
