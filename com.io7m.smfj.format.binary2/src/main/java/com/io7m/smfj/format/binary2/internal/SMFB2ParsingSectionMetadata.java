@@ -21,11 +21,13 @@ import com.io7m.smfj.core.SMFMetadataValue;
 import com.io7m.smfj.core.SMFSchemaIdentifier;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaOptionalSupplierType;
 import com.io7m.smfj.parser.api.SMFParserEventsDataMetaType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.util.OptionalLong;
 
 /**
  * A 'metadata' section.
@@ -120,13 +122,16 @@ public final class SMFB2ParsingSectionMetadata
 
     final var identifier = identifierOpt.get();
     final var dataSize = this.readSize(context, reader);
+    if (dataSize.isEmpty()) {
+      return Optional.empty();
+    }
 
     final Optional<SMFParserEventsDataMetaType> receiverOpt =
       this.metadataReceivers.onMeta(identifier);
 
     if (receiverOpt.isPresent()) {
       final var receiver = receiverOpt.get();
-      final var data = new byte[Math.toIntExact(dataSize)];
+      final var data = new byte[Math.toIntExact(dataSize.getAsLong())];
       reader.readBytes(data);
       receiver.onMetaData(identifier, data);
       return Optional.of(SMFMetadataValue.of(identifier, data));
@@ -135,7 +140,7 @@ public final class SMFB2ParsingSectionMetadata
     return Optional.empty();
   }
 
-  private long readSize(
+  private OptionalLong readSize(
     final SMFB2ParsingContextType context,
     final BSSReaderType reader)
     throws IOException
@@ -153,8 +158,8 @@ public final class SMFB2ParsingSectionMetadata
           Long.toUnsignedString(metaSize),
           Long.toUnsignedString(remaining))
       );
-      return remaining;
+      return OptionalLong.empty();
     }
-    return metaSize;
+    return OptionalLong.of(metaSize);
   }
 }

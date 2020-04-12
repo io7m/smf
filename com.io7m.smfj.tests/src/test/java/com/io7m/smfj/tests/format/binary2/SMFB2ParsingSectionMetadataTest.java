@@ -318,9 +318,12 @@ public final class SMFB2ParsingSectionMetadataTest
         URI.create("urn:file"), input, this)) {
         final var header =
           new SMFB2ParsingSectionHeader().parse(context);
-        final var meta =
-          new SMFB2ParsingSectionMetadata(this.acceptAll, header)
-            .parse(context);
+
+        Assertions.assertThrows(IOException.class, () -> {
+          final var meta =
+            new SMFB2ParsingSectionMetadata(this.acceptAll, header)
+              .parse(context);
+        });
       }
     }
 
