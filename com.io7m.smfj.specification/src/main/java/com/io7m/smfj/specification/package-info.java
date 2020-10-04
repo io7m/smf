@@ -18,5 +18,4 @@
  * Specification.
  */
 
- package com.io7m.smfj.specification;
-
+package com.io7m.smfj.specification;

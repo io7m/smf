@@ -64,8 +64,8 @@ import com.io7m.smfj.serializer.api.SMFSerializerDataAttributesValuesType;
  * Unavoidable class-data coupling; too many classes referenced.
  */
 public final class SMFB2SerializerDataAttributeNonInterleavedBE
-  // CHECKSTYLE:ON
 {
+  // CHECKSTYLE:ON
   private SMFB2SerializerDataAttributeNonInterleavedBE()
   {
 

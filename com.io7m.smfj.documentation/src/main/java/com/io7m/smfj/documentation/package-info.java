@@ -18,5 +18,4 @@
  * Documentation.
  */
 
- package com.io7m.smfj.documentation;
-
+package com.io7m.smfj.documentation;
