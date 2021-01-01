@@ -47,7 +47,7 @@ public final class SMFParseErrorTest
         Optional.empty());
 
     LOG.error(e.fullMessage());
-    Assertions.assertEquals("file:///x/y.txt:23:127: Failed", e.fullMessage());
+    Assertions.assertTrue(e.fullMessage().endsWith("y.txt:23:127: Failed"));
   }
 
   @Test
@@ -63,9 +63,8 @@ public final class SMFParseErrorTest
         Optional.of(new IOException("Printer on fire")));
 
     LOG.error(e.fullMessage());
-    Assertions.assertEquals(
-      "file:///x/y.txt:23:127: Failed (java.io.IOException: Printer on fire)",
-      e.fullMessage());
+    Assertions.assertTrue(
+      e.fullMessage().endsWith("y.txt:23:127: Failed (java.io.IOException: Printer on fire)"));
   }
 
   @Test
@@ -81,9 +80,8 @@ public final class SMFParseErrorTest
         Optional.of(new IOException("Printer on fire")));
 
     LOG.error(e.fullMessage());
-    Assertions.assertEquals(
-      "23:127: Failed (java.io.IOException: Printer on fire)",
-      e.fullMessage());
+    Assertions.assertTrue(
+      e.fullMessage().endsWith("23:127: Failed (java.io.IOException: Printer on fire)"));
   }
 
   @Test
